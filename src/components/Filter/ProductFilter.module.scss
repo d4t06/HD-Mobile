@@ -1,0 +1,32 @@
+.product-filter {
+   padding: 10px;
+   padding-top: 15px;
+   margin-top: 15px;
+   margin-left: 30px;
+}
+.filter-section {
+   margin-bottom: 25px;
+   padding-left: 5px;
+}
+.filter-title {
+   margin-bottom: 15px;
+   font-weight: 600;
+}
+.filter-list {
+   display: flex;
+   flex-wrap: wrap;
+   column-gap: 15px;
+   row-gap: 17px;
+}
+.label {
+   font-size: 1.7rem;
+   padding-left: 5px;
+}
+.price {
+   flex-direction: column;
+}
+
+input[type='checkbox'], input[type='radio'] {
+   scale: 1.2;
+   margin-right: 4px;
+}

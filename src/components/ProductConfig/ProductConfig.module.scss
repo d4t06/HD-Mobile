@@ -1,0 +1,6 @@
+input.error-input {
+   background-color: rgba($color: red, $alpha: 0.2);
+   &::placeholder {
+      color: red;
+   }
+}

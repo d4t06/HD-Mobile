@@ -1,0 +1,29 @@
+.btn-group,
+.product-sort {
+   display: flex;
+}
+.product-sort {
+   margin-top: 15px;
+   align-items: center;
+   h1 {
+      margin-right: 20px;
+   }
+}
+.btn-group {
+   gap: 12px;
+   .sort-btn {
+      border-radius: 99px;
+      padding: 5px 10px;
+      font-size: 1.6rem;
+      border: 1px solid rgba($color: #000000, $alpha: 0.1);
+      cursor: pointer;
+      &:hover {
+         border-color: #cd1818;
+      }
+   }
+   .sort-btn.active {
+      background-color: #cd1818;
+      border-color: transparent;
+      color: #fff;
+   }
+}

@@ -1,0 +1,131 @@
+$alpha: rgba($color: #000000, $alpha: 0.1);
+
+.page {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   min-height: 100vh;
+}
+
+.form {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+   flex-grow: 1;
+   padding: 20px 30px 15px;
+   font-weight: 500;
+   border: 1px solid $alpha;
+   box-shadow: 0 5px 15px $alpha;
+   border-radius: 20px;
+   &:not(.full) {
+      max-width: 400px;
+   }
+   h1 {
+      font-size: 26px;
+      text-align: center;
+   }
+}
+.form-group {
+   width: 100%;
+}
+.label {
+   font-size: 1.8rem;
+   font-weight: 500;
+   &.min {
+      font-size: 1.6rem;
+   }
+   &.center {
+      text-align: center;
+   }
+   margin-bottom: 5px;
+}
+.form-group {
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+   &.large {
+      gap: 12px;
+   }
+   input,
+   select {
+      border: 2px solid $alpha;
+      border-radius: 4px;
+      width: 100%;
+      padding: 6px;
+      outline: none;
+      font-size: 1.8rem;
+      background-color: #fff;
+   }
+}
+.persist-check {
+   font-size: 1.6rem;
+   display: flex;
+   align-self: flex-start;
+   input {
+      margin: 0 5px;
+      -ms-transform: scale(1.4); /* IE */
+      -moz-transform: scale(1.4); /* FF */
+      -webkit-transform: scale(1.4); /* Safari and Chrome */
+      -o-transform: scale(1.4); /* Opera */
+      transform: scale(1.4);
+   }
+}
+.submit-btn {
+   border: none;
+   border-radius: 5px;
+   font-size: 1.8rem;
+   padding: 8px 0px;
+   background-color: #cd1818;
+   color: #fff;
+   cursor: pointer;
+   &:hover {
+      background-color: #b21616;
+   }
+}
+
+.messgae-container {
+   font-size: 1.6rem;
+   color: red;
+}
+.login-with {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+.login-option {
+   border-radius: 4px;
+   font-size: 1.6rem;
+   padding: 5px 10px;
+   background-color: #ccc;
+}
+.login-option + .login-option {
+   margin-left: 15px;
+}
+.register-text {
+   font-size: 1.6rem;
+   a {
+      color: #cd1818;
+      &:hover {
+         // color: #fff;
+         text-decoration: underline;
+      }
+   }
+}
+
+.instruction {
+   background-color: #333;
+   color: #fff;
+   font-size: 1.5rem;
+   padding: 5px;
+   margin-top: 5px;
+   border-radius: 6px;
+}
+.error-msg {
+   font-size: 18px;
+   width: 100%;
+   text-align: center;
+   border-radius: 4px;
+   padding: 5px;
+   color: rgb(196, 22, 22);
+   background-color: rgba($color: #cd1818, $alpha: 0.3);
+}

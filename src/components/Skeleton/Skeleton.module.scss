@@ -1,0 +1,42 @@
+.skeleton {
+   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+   background-color: #e8e8e8;
+}
+
+@keyframes pulse {
+   0%,
+   100% {
+      opacity: 1;
+   }
+   50% {
+      opacity: 0.5;
+   }
+}
+
+.product-skeleton {
+   width: 100%;
+   height: 362px;
+   border-radius: 8px;
+   margin-top: 15px;
+}
+.slider-image-skeleton {
+   width: 100%;
+   height: 100%;
+}
+.brand-skeleton {
+   height: 34px;
+   width: 150px;
+   border-radius: 99px;
+}
+
+.filter-brand-skeleton {
+   height: 22px;
+   width: 45%;
+   border-radius: 4px;
+}
+
+.filter-price-skeleton {
+   height: 22px;
+   width: 70%;
+   border-radius: 4px;
+}

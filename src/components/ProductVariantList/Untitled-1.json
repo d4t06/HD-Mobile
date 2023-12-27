@@ -1,0 +1,66 @@
+{
+	"datas": {
+		"listReview": {
+			"currentPage": 1,
+			"recordPerPage": 4,
+			"totalRecordRest": 0,
+			"totalRecord": 4,
+			"listItems": [
+				{
+					"id": 582907,
+					"rateStar": 5,
+					"commentCustomer": "Sản phẩm rất ok đáng mua",
+					"nameCustomer": "Trần Thị tú trinh ",
+					"totalLike": 0,
+					"address": null,
+					"timeBuy": "0001-01-01T00:00:00",
+					"dateCreate": "2023-12-14T19:16:07.223",
+					"convertDate": "3 giờ trước"
+				},
+				{
+					"id": 579486,
+					"rateStar": 5,
+					"commentCustomer": "Sản phẩm bên shop rất  tốt ",
+					"nameCustomer": "Hoàng văn lộc ",
+					"totalLike": 0,
+					"address": null,
+					"timeBuy": "0001-01-01T00:00:00",
+					"dateCreate": "2023-12-12T15:18:01.437",
+					"convertDate": "2 ngày trước"
+				},
+				{
+					"id": 575112,
+					"rateStar": 5,
+					"commentCustomer": "Hơn cả sự mong đợi , mình hài lòng với sản phẩm",
+					"nameCustomer": "Lục Tốn",
+					"totalLike": 0,
+					"address": null,
+					"timeBuy": "0001-01-01T00:00:00",
+					"dateCreate": "2023-12-09T11:01:12.637",
+					"convertDate": "5 ngày trước"
+				},
+				{
+					"id": 558818,
+					"rateStar": 3,
+					"commentCustomer": "aaaa",
+					"nameCustomer": "hùng",
+					"totalLike": 0,
+					"address": null,
+					"timeBuy": "0001-01-01T00:00:00",
+					"dateCreate": "2023-11-20T20:39:20.907",
+					"convertDate": "24 ngày trước"
+				}
+			]
+		},
+		"rates": {
+			"productID": 46450,
+			"rate1": 0,
+			"rate2": 0,
+			"rate3": 0,
+			"rate4": 2,
+			"rate5": 1,
+			"total": 3,
+			"average": 4.3
+		}
+	}
+}

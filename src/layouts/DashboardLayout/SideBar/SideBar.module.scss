@@ -1,0 +1,29 @@
+.sibebar {
+    width: 180px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #333;
+    color: #fff;
+    .logo {
+      font-weight: 900;
+      line-height: 60px;
+      margin-left: 12px;
+      
+    }
+    &__item {
+       display: flex;
+       align-items: center;
+       padding: 10px 12px;
+       font-size: 1.6rem;
+       font-weight: bold;
+       cursor: pointer;
+       &:hover {
+          color: #961212;
+       }
+       i {
+          margin-right: 5px;
+       }
+    }
+ }
