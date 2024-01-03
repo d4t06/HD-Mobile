@@ -5,12 +5,11 @@ import classNames from "classnames/bind";
 import styles from "./Search.module.scss";
 import searchService from "../../services/searchService";
 import useDebounce from "../../hooks/useDebounce";
-import {Popup} from "../";
-
-import PopupStyles from "../ui/Popup/Popup.module.scss";
+import Popup from "../ui/Popup";
+import { Product } from "@/types";
 
 const cx = classNames.bind(styles);
-const cy = classNames.bind(PopupStyles);
+// const  = classNames.bind(PopupStyles);
 
 type Props = {
    setShowModal: Dispatch<SetStateAction<boolean>>;
@@ -19,7 +18,7 @@ type Props = {
 function Search({ setShowModal }: Props) {
    const [loading, setLoading] = useState(false);
    const [query, setQuery] = useState("");
-   const [searchResult, setSearchResult] = useState<{ products: any[] }>();
+   const [searchResult, setSearchResult] = useState<{ products: Product[] }>();
    const [show, setShow] = useState(false);
 
    // use hooks
@@ -82,31 +81,19 @@ function Search({ setShowModal }: Props) {
    return (
       <Popup
          content={
-            <div className={cy("wrap")}>
-               <h2 className={cy("search-result-title")}>Sản phẩm được gợi ý</h2>
+            <div className={cx("search-result")}>
+               <h2 className={cx("search-result-title")}>Sản phẩm được gợi ý</h2>
                <ul>
                   {searchResult &&
-                     searchResult?.products.map((item) => {
+                     searchResult?.products.map((p, index) => {
                         return (
-                           <li
-                              onClick={() => handleDetailPage(item)}
-                              className={cy("product-item")}
-                              key={item.product_id}
-                           >
-                              <div className={cy("product-img")}>
-                                 <img src={item.image_url} alt="" />
+                           <li onClick={() => handleDetailPage(p)} className={cx("product")} key={index}>
+                              <div className={cx("product-img")}>
+                                 <img src={p.image_url} alt="" />
                               </div>
-                              <div className={cy("product-info")}>
-                                 <h2 className={cy("title")}>{item.name}</h2>
-                                 {item.old_price && (
-                                    <>
-                                       <span className={cy("old_price")}>{moneyFormat(item?.old_price)}₫</span>
-                                       <span className={cy("discount-percent")}>
-                                          -{(((+item.old_price - +item.cur_price) / +item.old_price) * 100).toFixed(0)}%
-                                       </span>
-                                    </>
-                                 )}
-                                 <p className={cy("cur_price")}>{moneyFormat(item.cur_price)}₫</p>
+                              <div className={cx("product-info")}>
+                                 <h2 className={cx("title")}>{p.product_name}</h2>
+                                 <p className={cx("price")}>{moneyFormat(p.combines_data[0].price)}₫</p>
                               </div>
                            </li>
                         );
@@ -114,7 +101,7 @@ function Search({ setShowModal }: Props) {
                </ul>
             </div>
          }
-         option={{
+         opts={{
             visible: isShowResult,
             appendTo: () => document.body,
             onClickOutside: () => handleShow(false),

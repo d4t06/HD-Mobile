@@ -1,66 +1,101 @@
 .wrap {
-    max-width: 500px;
-    flex-grow: 1;
-    height: 34px;
-    border-radius: 99px;
-    position: relative;
-    overflow: hidden;
- }
- .form {
-    height: 100%;
- }
- .input {
-    height: 100%;
-    width: 100%;
-    outline: none;
-    padding-left: 20px;
-    padding-right: 70px;
-    font-size: 1.7rem;
-    border: none;
-    
- }
+   max-width: 500px;
+   flex-grow: 1;
+   height: 34px;
+   border-radius: 99px;
+   position: relative;
+   overflow: hidden;
+}
+.form {
+   height: 100%;
+}
+.input {
+   height: 100%;
+   width: 100%;
+   outline: none;
+   padding-left: 20px;
+   padding-right: 70px;
+   font-size: 1.7rem;
+   border: none;
+}
 
- .btn {
+.btn {
    display: flex;
    align-items: center;
    justify-content: center;
- }
- .search-btn {
-    position: absolute;
-    right: 0;
-    bottom: 5px;
-    width: 45px;
-    color: #999;
-    font-size: 2rem;
-    padding-top: 1px;
-    background-color: transparent;
-    border-left: 1px solid #aaa;
+}
+.search-btn {
+   position: absolute;
+   right: 0;
+   bottom: 5px;
+   width: 45px;
+   color: #999;
+   font-size: 2rem;
+   padding-top: 1px;
+   background-color: transparent;
+   border-left: 1px solid #aaa;
+}
+.input:not(:placeholder-shown) ~ .search-btn {
+   color: #333;
+}
+.search-btn:hover {
+   color: #333;
+}
+.clear-btn,
+.loading-btn {
+   position: absolute;
+   right: 60px;
+   height: 100%;
+   background-color: transparent;
+   top: 0;
+   color: #666;
+   font-size: 1.8rem;
+}
+.loading-btn i {
+   animation: spinner 1s linear infinite;
+}
 
- }
- .input:not(:placeholder-shown) ~ .search-btn {
-    color: #333;
- }
- .search-btn:hover {
-    color: #333;
- }
- .clear-btn, .loading-btn {
-    position: absolute;
-    right: 60px;
-    height: 100%;
-    background-color: transparent;
-    top: 0;
-    color: #666;
-    font-size: 1.8rem;
- }
- .loading-btn i{
-    animation: spinner 1s linear infinite;
- }
+@keyframes spinner {
+   from {
+      transform: rotate(0);
+   }
+   to {
+      transform: rotate(-360deg);
+   }
+}
 
- @keyframes spinner {
-    from {
-        transform: rotate(0);
-    }
-    to {
-        transform: rotate(-360deg);
-    }
- }
+.search-result {
+   background-color: #fff;
+   width: 500px;
+   border-radius: 16px;
+   padding: 10px 14px;
+   max-height: 60vh;
+   overflow: auto;
+   &-title {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 10px;
+   }
+   .product {
+      display: flex;
+      border-left: 4px solid transparent;
+      transition: padding linear 0.15s;
+      cursor: pointer;
+      &-img {
+         width: 75px;
+      }
+      &-info {
+         margin-left: 6px;
+         font-size: 16px;
+         font-weight: 500;
+         .price {
+            color: #cd1818;
+            font-size: 18px;
+         }
+      }
+      &:hover {
+         border-color: #cd1818;
+         padding-left: 10px;
+      }
+   }
+}

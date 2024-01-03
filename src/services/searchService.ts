@@ -6,7 +6,7 @@ export const searchService = async (query: any) => {
    const {sort, ...rest} = query
 
     try { 
-        const response = await publicRequest.get(`products/search`, {
+        const response = await publicRequest.get(`/search`, {
            params: {
             ...rest,
             ...sort

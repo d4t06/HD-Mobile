@@ -1,9 +1,9 @@
 import { ReactNode, createContext, useContext, useState } from "react";
-import { Product } from "@/types";
+import { Product, ProductSchema } from "@/types";
 import { initProductObject } from "@/utils/appHelper";
 
 type StateType = {
-   productData: Product;
+   productData: ProductSchema;
 };
 
 const initialState: StateType = {

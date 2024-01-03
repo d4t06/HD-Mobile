@@ -1,34 +1,31 @@
 import { addIcon, gearIcon } from "@/assets/icons";
 import jwtDecode from "jwt-decode";
 import { useAuth } from "@/store/AuthContext";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Search, Modal } from "@/components";
 import classNames from "classnames/bind";
 import styles from "./Header.module.scss";
 import { routes } from "@/routes";
-import { publicRequest } from "@/utils/request";
-import { Category } from "@/types";
 import { useApp } from "@/store/AppContext";
+import Skeleton from "@/components/Skeleton";
 
 const cx = classNames.bind(styles);
 
 function Header() {
    const { auth } = useAuth();
-   const { categories, setCategories } = useApp();
    const [showModal, setShowModal] = useState(false);
-   const defaultImage = "src/assets/images/avatar.jpg";
 
-   const ranUseEffect = useRef(false);
+   // use hooks
+   const location = useLocation();
+   const { categories, initLoading } = useApp();
    const decode: any = auth?.token ? jwtDecode(auth.token) : undefined;
 
-   const location = useLocation();
-
    const renderCategories = useMemo(() => {
-      if (!categories.length) return;
+      if (!categories.length) return <h1>Not category found</h1>;
       return categories.map((cat, index) => (
-         <li key={index} className={cx("nav-item", { active: location.pathname === "/" + cat.category_name_ascii })}>
-            <Link to={`/${cat.category_name_ascii}`}>
+         <li key={index} className={cx("nav-item", { active: location.pathname === "/" + cat.category_ascii })}>
+            <Link to={`/${cat.category_ascii}`}>
                <i className="material-icons">{cat.icon}</i>
                <p className={cx("nav-text")}>{cat.category_name}</p>
             </Link>
@@ -36,25 +33,18 @@ function Header() {
       ));
    }, [categories, location]);
 
-   useEffect(() => {
-      const getConfig = async () => {
-         try {
-            const categoriesRes = await publicRequest.get("app/category");
-            const categories = categoriesRes.data as Category[];
+   // const categorySkeleton = useMemo(
+   //    () => (
+   //       <div className="flex items-center gap-[20px]">
+   //          {[...Array(3).keys()].map((index) => {
+   //             return <Skeleton key={index} className="w-[80px] h-[24px] rounded-[99px]"/>;
+   //          })}
+   //       </div>
+   //    ),
+   //    []
+   // );
 
-            if (categories.length > 0) {
-               setCategories(categoriesRes.data || []);
-            }
-         } catch (error) {
-            console.log({ message: error });
-         }
-      };
-
-      if (!ranUseEffect.current) {
-         ranUseEffect.current = true;
-         getConfig();
-      }
-   }, []);
+   // console.log('check initLoading', initLoading);
 
    return (
       <>
@@ -90,7 +80,11 @@ function Header() {
             </div>
             <div className={cx("header-nav")}>
                <div className={cx("container", "header-nav-wrap")}>
-                  <ul className={cx("nav-list")}>{renderCategories}</ul>
+                  {/* render categories */}
+                  <ul className={cx("nav-list")}>
+                     {/* {initLoading && categorySkeleton} */}
+                     {!initLoading && renderCategories}
+                  </ul>
                   {!decode?.username && (
                      <ul className={cx("nav-list", "left-nav-list")}>
                         <li className={cx("nav-item")}>
@@ -101,6 +95,12 @@ function Header() {
                         <li className={cx("nav-item")}>
                            <Link to={routes.REGISTER}>
                               <p className={cx("nav-text")}>Đăng Ký</p>
+                           </Link>
+                        </li>
+                        <li className={cx("nav-item")}>
+                           <Link to={"/dashboard"}>
+                              {gearIcon}
+                              <p className={cx("nav-text")}>Trang quản lí</p>
                            </Link>
                         </li>
                      </ul>
@@ -114,7 +114,7 @@ function Header() {
                            </Link>
                         </li>
                         <li className={cx("nav-item")}>
-                           <Link to={"/admin"}>
+                           <Link to={"/dashboard"}>
                               {gearIcon}
                               <p className={cx("nav-text")}>Trang quản lí</p>
                            </Link>
@@ -124,7 +124,7 @@ function Header() {
                </div>
             </div>
          </div>
-         {/* {showModal && <Modal showModal={showModal} setShowModal={setShowModal}></Modal>} */}
+         {showModal && <Modal setShowModal={setShowModal}></Modal>}
       </>
    );
 }

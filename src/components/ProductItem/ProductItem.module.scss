@@ -30,9 +30,8 @@
    }
 
    &_name {
-      font-size: 1.7rem;
+      font-size: 1.8rem;
       font-weight: 500;
-      color: #333;
       height: 3.6rem;
       line-height: 1.8rem;
       margin-top: 14px;
@@ -116,25 +115,28 @@
 }
 .variant-box {
    display: flex;
-   margin: 6px 0;
+   gap: 6px;
+   margin: 6px 0 12px;
    li {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
 
+      height: 24px;
       width: 33.33%;
+
+      font-size: 1.4rem;
+      border-radius: 99px;
+      border: 1px solid rgba($color: #000000, $alpha: 0.1);
       cursor: pointer;
-      border-radius: 4px;
-      min-height: 30px;
-      background-color: #e8e8e8;
+
       &.active {
          @include active-variant();
       }
       &:hover {
          color: #cd1818;
+         border-color: #cd1818;
          font-weight: bold;
-         border: 1px solid rgba($color: #000000, $alpha: 0.1);
       }
    }
 }

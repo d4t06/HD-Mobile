@@ -1,16 +1,19 @@
-import { Ref, forwardRef, useImperativeHandle, useState } from "react";
+import { Ref, forwardRef, useImperativeHandle, useRef, useState } from "react";
 
 import Empty from "@/components/ui/Empty";
-import { Slider } from "@/types";
+import { Slider, SliderImage, SliderImageSchema, SliderSchema } from "@/types";
 
 import { usePrivateRequest } from "@/hooks";
 import { Gallery, Modal } from "@/components";
+import { useToast } from "@/store/ToastContext";
+import OverlayCTA from "@/components/ui/OverlayCTA";
+import Image from "@/components/Image";
 // import { sleep } from "@/utils/appHelper";
 // import { sleep } from "@/utils/appHelper";
 
 // const cy = classNames.bind(stylesMain);
 
-const SLIDER_URL = "/slider-management";
+const SLIDER_URL = "/slider-management/sliders";
 
 type SliderGroupProps = {
    initSlider: Slider;
@@ -19,47 +22,78 @@ type SliderGroupProps = {
 };
 
 export type SliderRef = {
-   submit: () => Promise<{ id: number; color_ascii: string } | undefined>;
+   submit: () => Promise<(SliderSchema & { id: number; color_ascii: string }) | undefined>;
    validate: () => boolean;
 };
 
 function SliderGroup({ initSlider, isExist, color_ascii }: SliderGroupProps, ref: Ref<SliderRef>) {
-   const [images, setImages] = useState<Slider["images"]>(initSlider.images);
+   const [sliderImages, setSlideImages] = useState<SliderImage[]>(initSlider.images || []);
    const [isOpenModal, setIsOpenModal] = useState(false);
    const [error, setError] = useState(false);
+   const curIndex = useRef(0);
+   const openGalleryType = useRef<"add" | "change">("add");
 
+   // hooks
+   const { setErrorToast } = useToast();
    const privateRequest = usePrivateRequest();
 
-   const handleAddSliderImage = (imageUrl: string) => {
-      setImages((prev) => [...prev, { image_url: imageUrl, slider_id: 99 }]);
-      setError(false);
+   const handleOpenModal = (type: typeof openGalleryType.current, i?: number) => {
+      openGalleryType.current = type;
+      curIndex.current = i || 0;
+      setIsOpenModal(true);
+   };
+   const filterImages = (image_url: string[]) => {
+      return image_url.filter((url) => {
+         const currentImageUrls = sliderImages.map((si) => si.image_url);
+         return !currentImageUrls.includes(url);
+      });
+   };
+
+   const handleAddSliderImage = (imageUrlList: string[]) => {
+      const filteredImageUrls = filterImages(imageUrlList);
+      switch (openGalleryType.current) {
+         case "add":
+            const initSliderImageArray = filteredImageUrls.map(
+               (url) => ({ image_url: url, id: undefined } as SliderImage)
+            );
+            setSlideImages((prev) => [...prev, ...initSliderImageArray]);
+            setError(false);
+            break;
+         case "change":
+            const newImages = [...sliderImages];
+            newImages[curIndex.current].image_url = imageUrlList[0];
+            setSlideImages(newImages);
+      }
    };
 
    const handleRemoveSliderImage = (imageUrl: string) => {
-      const newImages = images.filter((item) => item.image_url != imageUrl);
-      setImages(newImages);
+      const newImages = sliderImages.filter((item) => item.image_url != imageUrl);
+      setSlideImages(newImages);
    };
 
    const trackingSliderImages = () => {
-      let newImages: Slider["images"] = [];
-      if (!initSlider.images.length) newImages = images;
+      let newSliderImages: SliderImage[] = [];
+      if (!initSlider.images.length) newSliderImages = sliderImages;
       else
-         images.forEach((UKImage) => {
+         sliderImages.forEach((UKImage) => {
             const exist = initSlider.images.find((existImage) => existImage.image_url === UKImage.image_url);
-            if (!exist) newImages.push(UKImage);
+            if (!exist) newSliderImages.push(UKImage);
          });
 
-      let removeImages: string[] = [];
-      initSlider.images.forEach((existImage) => {
-         const exist = images.find((UKImage) => existImage.image_url === UKImage.image_url);
-         if (!exist) removeImages.push(existImage.image_url);
-      });
+      let removeSliderImages: number[] = [];
+      if (initSlider.images.length) {
+         // slider image alway include id when have init sliderI images
+         initSlider.images.forEach((existImage) => {
+            const exist = sliderImages.find((UKImage) => existImage.image_url === UKImage.image_url);
+            if (!exist) removeSliderImages.push(existImage.id as number);
+         });
+      }
 
-      return { newImages, removeImages };
+      return { newSliderImages, removeSliderImages };
    };
 
    const validate = () => {
-      if (!images.length) {
+      if (!sliderImages.length) {
          setError(true);
          return true;
       } else return false;
@@ -67,40 +101,48 @@ function SliderGroup({ initSlider, isExist, color_ascii }: SliderGroupProps, ref
 
    const submit = async () => {
       try {
-         console.log(">>> submit slider");
-         const sliderData = {
+         const sliderData: SliderSchema = {
             slider_name: initSlider.slider_name,
          };
 
-         let newSlider: { id: number; color_ascii: string } | undefined = undefined;
+         let sliderDataToReturn: (SliderSchema & { id: number; color_ascii: string }) | undefined = undefined;
 
          if (!isExist) {
-            console.log(">> submit add slider");
             const res = await privateRequest.post(SLIDER_URL, sliderData, {
                headers: { "Content-Type": "application/json" },
             });
 
-            const newSliderData = res.data as Slider & { id: number };
-            newSlider = { id: newSliderData.id, color_ascii };
+            const sliderRes = res.data as SliderSchema & { id: number };
+            sliderDataToReturn = { ...sliderData, id: sliderRes.id, color_ascii: color_ascii };
          }
 
-         const { newImages, removeImages } = trackingSliderImages();
-         console.log("check image new =", newImages, "remove =", removeImages);
+         const { newSliderImages, removeSliderImages } = trackingSliderImages();
+         // console.log("check image new =", newSliderImages, "remove =", removeSliderImages);
 
-         if (newImages.length) {
-            if (!newSlider?.id) {
-               throw new Error("New slider don't have id");
+         if (newSliderImages.length) {
+            const slider_id = isExist ? initSlider?.id : sliderDataToReturn?.id;
+            if (!slider_id) {
+               setErrorToast("Error when add slider images");
+               return;
             }
 
-            console.log(">>> submit add images");
-            const newImagesWithId = newImages.map((image) => ({ ...image, slider_id: newSlider!.id }));
+            const sliderImages: SliderImageSchema[] = newSliderImages.map((image) => ({
+               image_url: image.image_url,
+               slider_id,
+            }));
 
-            await privateRequest.post(SLIDER_URL + "/image", newImagesWithId, {
+            await privateRequest.post(`${SLIDER_URL}/images`, sliderImages, {
                headers: { "Content-Type": "application/json" },
             });
          }
 
-         return newSlider;
+         if (removeSliderImages.length) {
+            for await (const id of removeSliderImages) {
+               await privateRequest.delete(`${SLIDER_URL}/images/${id}`);
+            }
+         }
+
+         return sliderDataToReturn;
       } catch (error) {
          console.log({ message: error });
          throw new Error("error");
@@ -116,23 +158,27 @@ function SliderGroup({ initSlider, isExist, color_ascii }: SliderGroupProps, ref
       <>
          <div className="col col-9">
             <div className="row">
-               {images.map((image, index) => (
+               {sliderImages.map((sI, index) => (
                   <div key={index} className="col col-2">
-                     <div
-                        className="relative border rounded-[8px] overflow-hidden group"
-                        onClick={() => handleRemoveSliderImage(image.image_url)}
-                     >
-                        <img src={image.image_url} alt="" />
-                        <div className="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center">
-                           <button className="rounded-[99px] text-white hover:text-red-700">
-                              <i className="material-icons  text-[40px]">close</i>
-                           </button>
-                        </div>
-                     </div>
+                     <Empty>
+                        <Image classNames="" src={sI.image_url} />
+                        <OverlayCTA
+                           data={[
+                              {
+                                 cb: () => handleRemoveSliderImage(sI.image_url),
+                                 icon: "delete",
+                              },
+                              {
+                                 cb: () => handleOpenModal("change", index),
+                                 icon: "sync",
+                              },
+                           ]}
+                        />
+                     </Empty>
                   </div>
                ))}
                <div className="col col-2">
-                  <Empty isError={error} onClick={() => setIsOpenModal(true)} />
+                  <Empty className={`${error ? "bg-red-200" : ""}`} onClick={() => handleOpenModal("add")} />
                </div>
             </div>
          </div>

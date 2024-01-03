@@ -1,16 +1,24 @@
-import { useApp } from "@/store/AppContext";
+import { useMemo } from "react";
+import Skeleton from "../Skeleton";
 
-export default function Label({ category, count, loading }: { count: number; category: string; loading: boolean }) {
-   const { categories } = useApp();
+export default function Label({
+   categoryName,
+   count,
+   loading,
+}: {
+   count: number;
+   categoryName: string | undefined;
+   loading: boolean;
+}) {
+   const labelSkeleton = useMemo(() => {
+      return <Skeleton className="w-[180px] h-[24px] rounded-[4px] mb-[15px]" />;
+   }, []);
 
-   const getCatName = (category_id: string) => {
-      const curCatData = categories.find((item) => item.category_name_ascii === category_id);
-      return curCatData?.category_name;
-   };
+   if (loading) return labelSkeleton;
 
    return (
-      <h1 className="mb-15">
-         {getCatName(category)} {`( `}
+      <h1 className="mb-[15px] text-3xl">
+         {categoryName} {`( `}
          <span style={{ color: "#cd1818" }}>{!loading ? count : "- -"}</span>
          {` )`} sản phẩm
       </h1>
