@@ -1,14 +1,14 @@
 // import classNames from "classnames/bind";
 // import styles from "../Product/Products.module.scss";
-import { Button, ProductItem } from "../../components";
+import { Button, ProductItem } from "@/components";
 import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectedAllProduct, selectedAllFilter } from "../../store";
+import { selectedAllProduct, selectedAllFilter } from "@/store";
 
 import { Sort } from "@/components";
-import NoProduct from "../Product/NoProduct";
+import NoProduct from "./Product/NoProduct";
 import ProductSkeleton from "@/components/Skeleton/ProductSkeleton";
 import { AppDispatch } from "@/store/store";
 import { searchProducts } from "@/store/productsSlice";
@@ -57,9 +57,7 @@ function SearchResultPage() {
    useEffect(() => {
       if (initLoading) return;
       if (key) {
-         console.log("run search check sort", sort);
-
-         dispatch(searchProducts({ sort, filters, page, key, category_id: undefined }));
+         dispatch(searchProducts({ sort, filters, page, key, category_id: undefined, replace: true }));
       }
    }, [key, initLoading]);
 

@@ -3,7 +3,6 @@ import DashboardSideBar from "./SideBar";
 import classNames from "classnames/bind";
 import styles from "./DashboardLayout.module.scss";
 import { ReactNode } from "react";
-import ToastPortal from "@/components/ToastPortal";
 import UploadImagePortal from "@/components/UploadImagePortal";
 import UploadImageProvider from "@/store/ImageContext";
 
@@ -17,7 +16,6 @@ function DashboardLayout({ children }: { children: ReactNode }) {
             <DashboardSideBar />
             <div className={cx("dashboard_wrapper", "bg-[#f1f1f1]")}>{children}</div>
 
-            <ToastPortal autoClose />
             <UploadImagePortal />
          </div>
       </UploadImageProvider>

@@ -28,7 +28,7 @@ function Sidebar() {
                Brand
             </Link>
 
-            <Link className={cx("sidebar__item")} to='#'>
+            <Link className={cx("sidebar__item")} to='/dashboard/banner'>
                <i className="material-icons">collections</i>
                Banner
             </Link>

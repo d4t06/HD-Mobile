@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { moneyFormat } from "../../utils/appHelper";
 import classNames from "classnames/bind";
@@ -12,7 +12,7 @@ const cx = classNames.bind(styles);
 // const  = classNames.bind(PopupStyles);
 
 type Props = {
-   setShowModal: Dispatch<SetStateAction<boolean>>;
+   setShowModal?: Dispatch<SetStateAction<boolean>>;
 };
 
 function Search({ setShowModal }: Props) {
@@ -20,6 +20,7 @@ function Search({ setShowModal }: Props) {
    const [query, setQuery] = useState("");
    const [searchResult, setSearchResult] = useState<{ products: Product[] }>();
    const [show, setShow] = useState(false);
+   const [someThingToAbortApi, setSomeThingToAbortApi] = useState(0);
 
    // use hooks
    let debounceValue = useDebounce(query, 1000);
@@ -27,6 +28,7 @@ function Search({ setShowModal }: Props) {
 
    const handleSearchText = (e: any) => {
       handleShow(true);
+      setSomeThingToAbortApi(0)
       setQuery(e.target.value);
       if (!query) setSearchResult(undefined);
    };
@@ -40,7 +42,7 @@ function Search({ setShowModal }: Props) {
 
    const handleShow = (value: any) => {
       setShow(value);
-      setShowModal(value);
+      setShowModal && setShowModal(value);
    };
 
    const handleDetailPage = (item: any) => {
@@ -48,7 +50,11 @@ function Search({ setShowModal }: Props) {
       navigate(`/${item.category_name}/${item.product_id}`);
    };
 
-   const handleSubmit = () => {
+   const handleSubmit = (e: FormEvent) => {
+      e.preventDefault();
+
+      if (!query) return;
+      setSomeThingToAbortApi(Math.random());
       handleShow(false);
       navigate(`/search/${query}`);
    };
@@ -57,12 +63,13 @@ function Search({ setShowModal }: Props) {
 
    useEffect(() => {
       if (!debounceValue.trim()) return;
+      const controller = new AbortController();
 
       const fetchApi = async () => {
          try {
             console.log("get data");
             setLoading(true);
-            const result = await searchService({ q: debounceValue });
+            const result = await searchService({ q: debounceValue, category_id: undefined }, controller.signal);
 
             if (result) {
                setSearchResult(result);
@@ -74,8 +81,15 @@ function Search({ setShowModal }: Props) {
          }
       };
 
-      fetchApi();
-   }, [debounceValue]);
+      if (!someThingToAbortApi) fetchApi();
+
+      return () => {
+         console.log("abort");
+
+         controller.abort();
+         setLoading(false);
+      };
+   }, [debounceValue, someThingToAbortApi]);
 
    // return;
    return (
@@ -116,9 +130,9 @@ function Search({ setShowModal }: Props) {
                   value={query}
                   onChange={(e) => handleSearchText(e)}
                   onFocus={() => handleShow(true)}
-                  onKeyDown={(e) => {
-                     e.key === "Enter" && handleSubmit();
-                  }}
+                  // onKeyDown={(e) => {
+                  //    e.key === "Enter" && handleSubmit();
+                  // }}
                />
                {loading && query && (
                   <button className={cx("loading-btn", "btn")}>
@@ -126,11 +140,11 @@ function Search({ setShowModal }: Props) {
                   </button>
                )}
                {!loading && query && (
-                  <button className={cx("clear-btn", "btn")} onClick={(e) => handleClear(e)}>
+                  <button type="button" className={cx("clear-btn", "btn")} onClick={(e) => handleClear(e)}>
                      <i className="material-icons">clear</i>
                   </button>
                )}
-               <button onClick={handleSubmit} className={cx("search-btn", "btn")}>
+               <button type="submit" className={cx("search-btn", "btn")}>
                   <i className="material-icons">search</i>
                </button>
             </form>

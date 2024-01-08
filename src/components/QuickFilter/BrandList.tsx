@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import styles from "./BrandSort.module.scss";
 
-import { useState } from "react";
+// import { useState } from "react";
 import { FilterType } from "@/store/filtersSlice";
 import { Brand } from "@/types";
 // import useStore from '../../hooks/useStore';

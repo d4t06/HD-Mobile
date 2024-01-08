@@ -7,6 +7,7 @@ import store from "./store/store";
 import "./index.css";
 import AppProvider from "./store/AppContext";
 import ToastProvider from "./store/ToastContext";
+import ToastPortal from "./components/ToastPortal";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -16,6 +17,7 @@ root.render(
             <AuthProvider>
                <ToastProvider>
                   <App />
+                  <ToastPortal autoClose />
                </ToastProvider>
             </AuthProvider>
          </Provider>

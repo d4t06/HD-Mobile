@@ -32,10 +32,10 @@ const initialState: StateType = {
 };
 
 export type Param = {
-   filters: FilterType;
+   filters?: FilterType;
    category_id: number | undefined;
-   page: number;
-   sort: SortType;
+   page?: number;
+   sort?: SortType;
    admin?: boolean;
    search?: boolean;
    replace?: boolean;
@@ -84,10 +84,10 @@ export const getMoreProducts = createAsyncThunk("/products/getMoreProducts", asy
 });
 
 export const searchProducts = createAsyncThunk("/search", async (param: Param & { key: string }) => {
-   const { key, category_id, replace, ...rest } = param;
+   const { key, replace, ...rest } = param;
    const response = await searchService({
       q: key,
-      rest,
+      ...rest,
    });
 
    return { productState: response, ...rest, replace };
@@ -179,7 +179,7 @@ const productsSlice = createSlice({
             state.productState.products.push(...payload.productState.products);
 
             state.status = "successful";
-            state.page = payload.page;
+            state.page = payload.page || 0;
             state.category_id = payload.category_id || 0;
          })
          .addCase(getMoreProducts.rejected, (state) => {
@@ -204,7 +204,7 @@ const productsSlice = createSlice({
             else state.productState.products.push(...mergedProducts);
 
             state.status = "successful";
-            state.page = payload.page;
+            state.page = payload.page || 0;
          })
 
          .addCase(searchProducts.rejected, (state) => {

@@ -1,35 +1,47 @@
-import { Brand, Category } from "@/types";
+import { Brand, Category, CategorySlider } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { usePrivateRequest } from ".";
 import { sleep } from "@/utils/appHelper";
 import { useApp } from "@/store/AppContext";
 
 const CAT_URL = "/app/categories";
+const CAT_SLIDER_URL = "/slider-management/category_sliders";
 const BRAND_URL = "/app/brands";
 
 type Props = {
    curCategory?: Category;
    autoRun?: boolean;
+   includeSlider?: boolean;
 };
 
-export default function useAppConfig({ curCategory, autoRun = false }: Props) {
-   const { setCategories, categories, brands, setBrands, setInitLoading, initLoading } = useApp();
-   const [status, setStatus] = useState<"loading" | "success" | "error" | "">("");
+export default function useAppConfig({ curCategory, autoRun = false, includeSlider = false }: Props) {
+   const { setCategories, categories, brands, setBrands, setInitLoading, initLoading, setSliders, sliders } = useApp();
+   const [status, setStatus] = useState<"loading" | "success" | "error" | "">("loading");
    const ranUseEffect = useRef(false);
 
    // hooks
    const privateRequest = usePrivateRequest();
 
-   const getBrands = async () => {
+   const getBrandsAndSlider = async () => {
       try {
          if (!curCategory?.id || !curCategory.category_ascii) throw new Error("Cur category data error");
+
          setStatus("loading");
-         const brandsRes = await privateRequest.get(BRAND_URL + "?category_id=" + curCategory?.id);
-         const brandsData = brandsRes.data as (Brand & { id: number })[];
+         await sleep(300);
 
-         setBrands((brands) => ({ ...brands, [curCategory.category_ascii]: brandsData }));
+         if (!brands[curCategory.category_ascii]) {
+            const brandsRes = await privateRequest.get(BRAND_URL + "?category_id=" + curCategory?.id);
+            const brandsData = brandsRes.data as (Brand & { id: number })[];
+            setBrands((brands) => ({ ...brands, [curCategory.category_ascii]: brandsData }));
+         }
 
-         if (import.meta.env.DEV) await sleep(300);
+         // when in category edit, don't not slider
+         if (includeSlider && !sliders[curCategory.category_ascii]) {
+            const sliderRes = await privateRequest.get(`${CAT_SLIDER_URL}/${curCategory.category_ascii}`);
+            const sliderData = sliderRes.data as CategorySlider;
+            setSliders((sliders) => ({ ...sliders, [curCategory.category_ascii]: sliderData.slider_data.images }));
+         }
+
          setStatus("success");
       } catch (error) {
          console.log({ message: error });
@@ -39,16 +51,47 @@ export default function useAppConfig({ curCategory, autoRun = false }: Props) {
    const getCategories = async () => {
       try {
          console.log("run getCategories");
-         if (import.meta.env.DEV) await sleep(1100);
+         if (import.meta.env.DEV) await sleep(300);
          const categoriesRes = await privateRequest.get(CAT_URL);
 
          setCategories(categoriesRes.data || []);
-         setStatus("success");
       } catch (error) {
          console.log({ message: error });
          setStatus("error");
       } finally {
          setInitLoading(false);
+      }
+   };
+
+   const getHomeSlider = async () => {
+      try {
+         setStatus("loading");
+         if (import.meta.env.DEV) await sleep(300);
+
+         if (!sliders["home"]) {
+            const sliderRes = await privateRequest.get(`${CAT_SLIDER_URL}/home`);
+            if (!sliderRes.data) throw new Error("Slider not found");
+
+            const sliderData = sliderRes.data as CategorySlider;
+            setSliders((sliders) => ({ ...sliders, ["home"]: sliderData.slider_data.images }));
+         }
+         setStatus("success");
+      } catch (error) {
+         setStatus("error");
+      }
+   };
+
+   const getCategoriesSlider = async () => {
+      try {
+         console.log("run getCategories");
+         if (import.meta.env.DEV) await sleep(300);
+         const categorySlidersRes = await privateRequest.get(CAT_SLIDER_URL);
+
+         setStatus("success");
+         return categorySlidersRes.data as CategorySlider[];
+      } catch (error) {
+         console.log({ message: error });
+         setStatus("error");
       }
    };
 
@@ -69,10 +112,8 @@ export default function useAppConfig({ curCategory, autoRun = false }: Props) {
 
       if (curCategory === undefined) return;
 
-      if (!brands[curCategory.category_ascii]) {
-         getBrands();
-      }
+      getBrandsAndSlider();
    }, [curCategory, initLoading]);
 
-   return { status, getCategories };
+   return { status, getCategories, getCategoriesSlider, getHomeSlider };
 }

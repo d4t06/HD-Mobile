@@ -5,43 +5,45 @@ type StateType = {
    auth: {
       token: string;
    } | null;
+   loading: boolean;
    persist: boolean;
 };
 
-const initialState: StateType = {
-   auth: null,
-   persist: false,
-};
+// const initialState: StateType = {
+//    auth: { token: "" },
+//    persist: false,
+//    loading: false,
+// };
 
 type ContextType = {
    state: StateType;
    setAuth: Dispatch<SetStateAction<StateType["auth"]>>;
    setPersist: Dispatch<SetStateAction<boolean>>;
+   setLoading: Dispatch<SetStateAction<boolean>>;
 };
 
-const initialContext = {
-   state: initialState,
-   setAuth: () => {},
-   setPersist: () => {},
-};
-
-const AuthContext = createContext<ContextType>(initialContext);
+const AuthContext = createContext<ContextType | undefined>(undefined);
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
    const [auth, setAuth] = useState<StateType["auth"] | null>(null);
+   const [loading, setLoading] = useState(true);
    const [persist, setPersist] = useLocalStorage("persist", false);
 
    return (
-      <AuthContext.Provider value={{ state: { auth, persist }, setAuth, setPersist }}>{children}</AuthContext.Provider>
+      <AuthContext.Provider value={{ state: { auth, persist, loading }, setAuth, setLoading, setPersist }}>
+         {children}
+      </AuthContext.Provider>
    );
 };
 const useAuth = () => {
+   const context = useContext(AuthContext);
+   if (!context) throw new Error("Auth Context not found");
+
    const {
-      state: { auth, persist },
-      setPersist,
-      setAuth,
-   } = useContext(AuthContext);
-   return { auth, setAuth, persist, setPersist };
+      state: { ...restState },
+      ...restSetState
+   } = context;
+   return { ...restState, ...restSetState };
 };
 
 export default AuthProvider;

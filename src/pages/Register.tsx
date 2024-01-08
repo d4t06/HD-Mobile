@@ -1,9 +1,11 @@
-import { useState, useRef, useEffect, FormEvent } from "react";
+import { useState, useRef, useEffect, FormEvent, useMemo } from "react";
 import classNames from "classnames/bind";
 import { Link, useNavigate } from "react-router-dom";
-import styles from "../Login/Login.module.scss";
+import styles from "./Login/Login.module.scss";
 import { publicRequest } from "@/utils/request";
 import { checkIcon, xIcon } from "@/assets/icons";
+import { Button } from "@/components";
+import { useToast } from "@/store/ToastContext";
 
 const REGISTER_URL = "/auth/register";
 const cx = classNames.bind(styles);
@@ -30,6 +32,13 @@ function Register() {
 
    const [errMsg, setErrorMsg] = useState("");
 
+   const {setSuccessToast} = useToast()
+
+   const ableToSubmit = useMemo(
+      () => validName && validPwd && validMatchPwg && prevUser.current !== user,
+      [validName, validPwd, validMatchPwg, user]
+   );
+
    useEffect(() => {
       userInputRef.current?.focus();
    }, []);
@@ -38,23 +47,6 @@ function Register() {
       setUser("");
       setPassword("");
    };
-
-   // validate username
-   useEffect(() => {
-      const result = USER_REGEX.test(user);
-
-      setValidName(result);
-   }, [user]);
-
-   // validate password
-   useEffect(() => {
-      const result = PWD_REGEX.test(password);
-      setValidPwd(result);
-      let match = password === matchPwg;
-
-      if (!password) match = false;
-      setValidMatchPwg(match);
-   }, [password, matchPwg]);
 
    const handleSubmit = async (e: FormEvent) => {
       e.preventDefault();
@@ -74,6 +66,7 @@ function Register() {
             headers: { "Content-Type": "application/json" },
          });
 
+         setSuccessToast("Đăng ký thành công")
          handleClear();
          navigate("/login");
       } catch (error: any) {
@@ -90,6 +83,28 @@ function Register() {
       }
    };
 
+   // validate username
+   useEffect(() => {
+      const result = USER_REGEX.test(user);
+
+      setValidName(result);
+   }, [user]);
+
+   // validate password
+   useEffect(() => {
+      const result = PWD_REGEX.test(password);
+      setValidPwd(result);
+      let match = password === matchPwg;
+
+      if (!password) match = false;
+      setValidMatchPwg(match);
+   }, [password, matchPwg]);
+
+   
+   const classes = {
+      constructor: 'bg-[#333] p-[6px] rounded-[6px] text-[1.4rem] text-white origin-top duration-[.3s] transition-all'
+   }
+
    // console.log(prevUser.current === user);
    return (
       <div className={cx("page")}>
@@ -97,11 +112,10 @@ function Register() {
             {errMsg && <h2 className={cx("error-msg")}>{errMsg}</h2>}
             <h1 className={cx("title")}>Đăng ký</h1>
             <div className={cx("form-group")}>
-               <label htmlFor="username">
-                  Tên tài khoản
-                  <span className={validName ? "" : "hide"}>{checkIcon}</span>
-                  <span className={validName || !user ? "hide" : ""}>{xIcon}</span>
-               </label>
+               <div className="flex items-center">
+                  <label htmlFor="username">Tên tài khoản</label> {user && <span>{validName ? checkIcon : xIcon}</span>}
+               </div>
+
                <input
                   id="username"
                   ref={userInputRef}
@@ -113,18 +127,23 @@ function Register() {
                   onBlur={() => setUserFocus(false)}
                   onChange={(e) => setUser(e.target.value.trim() && e.target.value)}
                />
-               <p id="note" className={cx(userFocus && user && !validName ? "instruction" : "hide")}>
+
+               <div
+                  id="note"
+                  className={`${classes.constructor} ${
+                     userFocus && user && !validName ? "max-h-[200px] opacity-100" : "max-h-0 my-[-6px] opacity-0"
+                  }`}
+               >
                   4 - 24 ký tự <br />
                   Phải bắt đầu bằng chữ cái <br />
                   Cho phép chữ Hoa, gạch chân, số
-               </p>
+               </div>
             </div>
             <div className={cx("form-group")}>
-               <label htmlFor="password">
-                  Mật khẩu
-                  <span className={validPwd ? "" : "hide"}>{checkIcon}</span>
-                  <span className={validPwd || !password ? "hide" : ""}>{xIcon}</span>
-               </label>
+               <div className="flex items-center">
+                  <label htmlFor="password">Mật khẩu</label>
+                  {password && <span>{validPwd ? checkIcon : xIcon}</span>}
+               </div>
                <input
                   type="text"
                   id="password"
@@ -135,17 +154,24 @@ function Register() {
                   onBlur={() => setPasswordFocus(false)}
                   onChange={(e) => setPassword(e.target.value.trim() && e.target.value)}
                />
-               <p id="note" className={cx(passwordFocus && password && !validPwd ? "instruction" : "hide")}>
+               <p
+                  id="note"
+                  className={`${classes.constructor} ${
+                     passwordFocus && password && !validPwd ? "max-h-[200px] opacity-100" : "max-h-0 my-[-6px] opacity-0"
+                  }`}
+               >
                   6 - 24 ký tự <br />
                   Phải có chứa chữ hoa, chữ thường, số và ký tự đặc biệt
                </p>
             </div>
             <div className={cx("form-group")}>
-               <label htmlFor="password-confirm">
-                  Nhập lại mật khẩu
-                  <span className={validMatchPwg && validPwd ? "" : "hide"}>{checkIcon}</span>
-                  <span className={(validMatchPwg && validPwd) || !matchPwg ? "hide" : ""}>{xIcon}</span>
-               </label>
+               <div className="flex items-center">
+                  <label htmlFor="password-confirm">Nhập lại mật khẩu</label>
+                 {password && <span className={validMatchPwg && validPwd ? "" : "hide"}>
+                     {validMatchPwg && validPwd ? checkIcon : xIcon}
+                  </span>}
+               </div>
+
                <input
                   type="text"
                   id="password-confirm"
@@ -155,15 +181,9 @@ function Register() {
                />
             </div>
             <span className={cx("messgae-container")}></span>
-            <button
-               className={cx(
-                  "submit-btn",
-                  !validName || !validPwd || !validMatchPwg || prevUser.current === user ? "disable" : ""
-               )}
-               type="submit"
-            >
+            <Button isLoading={loading} disable={loading || !ableToSubmit} primary className={`h-[40px]`} type="submit">
                Đăng ký
-            </button>
+            </Button>
             <span className={cx("register-text")}>
                Đã có tài khoản?
                <Link className={cx("switch")} to="/login">

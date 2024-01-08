@@ -1,18 +1,18 @@
-import {publicRequest} from "../utils/request";
-import {useAuth} from "@/store/AuthContext";
+import { publicRequest } from "../utils/request";
+import { useAuth } from "@/store/AuthContext";
 
 const useLogout = () => {
-    const {setAuth} = useAuth()
+   const { setAuth } = useAuth();
 
-    const logout = async () => {
-        try {
-            setAuth({token: ''})
-            await publicRequest.get("/auth/logout")
-        } catch (error) {
-            console.log({messgae: error})
-        }
-    }
-    return logout
-}
+   const logout = async () => {
+      try {
+         await publicRequest.get("/auth/logout");
+         setAuth(null);
+      } catch (error) {
+         console.log({ messgae: error });
+      }
+   };
+   return logout;
+};
 
-export default useLogout
+export default useLogout;

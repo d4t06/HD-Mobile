@@ -1,20 +1,34 @@
 // import usePrivateRequest from "../../hooks/usePrivateRequest"
-import { useNavigate } from 'react-router-dom';
-import useLogout from '../../hooks/useLogout';
+import { useNavigate } from "react-router-dom";
+import useLogout from "../../hooks/useLogout";
+import { Button } from "@/components";
+import { useEffect } from "react";
+import { useAuth } from "@/store/AuthContext";
 
 function AccountPage() {
+   const { auth, loading } = useAuth();
    const navigate = useNavigate();
    const logout = useLogout();
 
    const singOut = async () => {
       await logout();
-      navigate('/');
+      navigate("/");
    };
 
+   useEffect(() => {
+      if (loading) return
+      
+      if (!auth) navigate("/login");
+   }, [loading]);
+
+   if (loading) return
+
    return (
-      <div>
-         <h1>Account Page</h1>
-         <button onClick={() => singOut()}>Logout</button>
+      <div className="mt-[30px]">
+         <h1 className="text-[24px]">Account Page</h1>
+         <Button primary onClick={() => singOut()}>
+            Logout
+         </Button>
       </div>
    );
 }

@@ -4,7 +4,7 @@ import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useStat
 // 1 initial state
 type StateType = {
    status: "" | "uploading" | "finish" | "error";
-   addedImageIds: number[];
+   addedImageIds: string[];
    tempImages: ImageType[];
    currentImages: ImageType[];
 };
@@ -20,7 +20,7 @@ type ContextType = {
    state: StateType;
    setTempImages: Dispatch<SetStateAction<ImageType[]>>;
    setCurrentImages: Dispatch<SetStateAction<ImageType[]>>;
-   setAddedImageIds: Dispatch<SetStateAction<number[]>>;
+   setAddedImageIds: Dispatch<SetStateAction<string[]>>;
    setStatus: Dispatch<SetStateAction<StateType["status"]>>;
 };
 

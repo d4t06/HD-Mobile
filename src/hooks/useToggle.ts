@@ -6,7 +6,7 @@ const useToggle = (key: string, initValue: boolean) => {
 
    const toggle: ChangeEventHandler<HTMLInputElement> = () => {
       setValue((prev) => {
-         return typeof value === "boolean" ? value : !prev;
+         return typeof value === "boolean" ? !prev : value;
       });
    };
    return {value, toggle};

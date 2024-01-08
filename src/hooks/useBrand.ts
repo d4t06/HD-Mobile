@@ -1,4 +1,4 @@
-import { Brand, Category } from "@/types";
+import { Brand, Category, CategorySliderSchema, SliderSchema } from "@/types";
 import { Dispatch, SetStateAction, useState } from "react";
 import { usePrivateRequest } from ".";
 import { useToast } from "@/store/ToastContext";
@@ -13,6 +13,8 @@ type Props = {
 
 const CAT_URL = "/app/categories";
 const BRAND_URL = "/app/brands";
+const SLIDER_URL = "/slider-management/sliders";
+const CAT_SLIDER_URL = "/slider-management/category_sliders";
 
 export default function useBrandAction({ brands, categories, setBrands, setCategories, setIsOpenModal }: Props) {
    const [apiLoading, setApiLoading] = useState(false);
@@ -45,9 +47,29 @@ export default function useBrandAction({ brands, categories, setBrands, setCateg
          switch (type) {
             case "Add":
                setApiLoading(true);
-               const catRes = await privateRequest.post(CAT_URL, category);
 
-               const newCategoryData = catRes.data;
+               // add category
+               const catRes = await privateRequest.post(CAT_URL, category);
+               const newCategoryData = catRes.data as Category & { id: number };
+
+               // add slider
+               const sliderData: SliderSchema = {
+                  slider_name: `Slider for category ${newCategoryData.category_name}`,
+               };
+               const sliderRes = await privateRequest.post(SLIDER_URL, sliderData, {
+                  headers: { "Content-Type": "application/json" },
+               });
+               const newSliderData = sliderRes.data as SliderSchema & { id: number };
+
+               // add category slider
+               const categorySliderData: CategorySliderSchema = {
+                  category_id: newCategoryData.id,
+                  slider_id: newSliderData.id,
+               };
+               await privateRequest.post(CAT_SLIDER_URL, categorySliderData, {
+                  headers: { "Content-Type": "application/json" },
+               });
+
                setCategories((prev) => [...prev, newCategoryData]);
                break;
             case "Edit":

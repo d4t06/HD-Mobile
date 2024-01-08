@@ -56,8 +56,8 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
       setProductData({ ...productData, [field]: value });
    };
 
-   const handleChoseProductImage = (image_url: string) => {
-      handleInput("image_url", image_url);
+   const handleChoseProductImage = (image_url: string[]) => {
+      handleInput("image_url", image_url[0]);
    };
 
    const handleSubmit = async () => {

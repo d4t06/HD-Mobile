@@ -1,7 +1,6 @@
 import classNames from "classnames/bind";
 
 import styles from "@/pages/Login/Login.module.scss";
-import stylesMain from "@/pages/AddProduct/AddProduct.module.scss";
 import { Ref, forwardRef, useImperativeHandle, useRef } from "react";
 import { initCombineData } from "@/utils/appHelper";
 import {
@@ -17,7 +16,6 @@ import { useProductContext } from "@/store/ProductDataContext";
 import SliderGroup, { SliderRef } from "./child/SliderGroup";
 import InputGroup, { CombineRef } from "./child/CombineGroup";
 
-const cy = classNames.bind(stylesMain);
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -158,15 +156,17 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
                   const { existSlider, isExits } = getExistSlider(sliders, item, product_name);
                   return (
                      <div key={index} className="row items-center">
-                        <div key={index} className="col col-3">
+                        <div key={index} className="col col-2">
                            <div className={cx("label", "text-center")}>{item.color}</div>
                         </div>
-                        <SliderGroup
-                           color_ascii={item.color_ascii}
-                           ref={(ref) => (sliderRefs.current[index] = ref!)}
-                           initSlider={existSlider}
-                           isExist={isExits}
-                        />
+                        <div className="col col-10">
+                           <SliderGroup
+                              color_ascii={item.color_ascii}
+                              ref={(ref) => (sliderRefs.current[index] = ref!)}
+                              initSlider={existSlider}
+                              isExist={isExits}
+                           />
+                        </div>
                      </div>
                   );
                })}
@@ -192,7 +192,7 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
 
                         return (
                            <div key={key} className="row items-center w-full">
-                              <div className={`${cx("col col-6", "label", "min", "center")} ${cy("config-item")}`}>
+                              <div className={`${cx("col col-6", "label", "min", "center")} ${("config-item")}`}>
                                  {storageItem.storage} / {colorItem.color}
                                  {/* {existCombine.default && "(default)"} */}
                               </div>

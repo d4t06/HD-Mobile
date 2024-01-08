@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./ProductItem.module.scss";
 import { moneyFormat } from "../../utils/appHelper";
@@ -21,7 +21,7 @@ const findActiveVar = (storages: ProductStorage[] | undefined, combines: Product
 export default function ProductItem({ data, preview }: Props) {
    const [activeVar, setActiveVar] = useState(findActiveVar(data.storages_data, data.combines_data));
 
-   const { category_ascii } = useParams<{ category_ascii: string }>();
+   // const { category_ascii } = useParams<{ category_ascii: string }>();
 
    // console.log('check data', data);
    

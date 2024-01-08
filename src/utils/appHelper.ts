@@ -1,4 +1,13 @@
-import { Brand, ImageType, ProductColor, ProductCombine, ProductSchema, ProductSlider, ProductStorage } from "@/types";
+import {
+   Brand,
+   ImageType,
+   Product,
+   ProductColor,
+   ProductCombine,
+   ProductSchema,
+   ProductSlider,
+   ProductStorage,
+} from "@/types";
 
 export const sleep = (time: number) =>
    new Promise<void>((rs) => {
@@ -34,6 +43,21 @@ export const initProductObject = (data: Partial<ProductSchema>) => {
       product_name: "",
       brand_id: 0,
       category_id: 0,
+      ...data,
+   };
+
+   return newProduct;
+};
+
+export const initProductDetailObject = (data: Partial<Product>) => {
+   const newProduct: Product = {
+      ...initProductObject({}),
+      brand_data: { brand_ascii: "", brand_name: "" },
+      category_data: { category_ascii: "", category_name: "" },
+      colors_data: [],
+      combines_data: [],
+      sliders_data: [],
+      storages_data: [],
       ...data,
    };
 

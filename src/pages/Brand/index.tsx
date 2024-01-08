@@ -65,8 +65,8 @@ export default function CategoryBrand() {
    };
 
    const handleAddCategory = async (value: Record<string, string>, type: "Add" | "Edit") => {
-      if (!value[generateId("Name")].trim() || curCatIndex.current === undefined) {
-         setErrorToast();
+      if (!value[generateId("Name")].trim()) {
+         setErrorToast("Must have category name");
          return;
       }
 
@@ -74,8 +74,16 @@ export default function CategoryBrand() {
          category_name: getFieldValue(value, "Name"),
          category_ascii: generateId(getFieldValue(value, "Name")),
          icon: getFieldValue(value, "Icon"),
-         id: type === "Add" ? undefined : (categories[curCatIndex.current].id as number),
+         id: undefined,
       };
+
+      if (type === "Edit") {
+         if (curCatIndex.current === undefined) {
+            setErrorToast("Current index not found");
+            return;
+         }
+         newCategory.id = categories[curCatIndex.current].id;
+      }
 
       await addCategory(newCategory, type, curCatIndex.current);
    };
@@ -105,6 +113,7 @@ export default function CategoryBrand() {
          case "add-category":
             return (
                <AddItemMulti
+                  loading={apiLoading}
                   fields={CAT_FIELDS}
                   title="Add category"
                   cb={(value) => handleAddCategory(value, "Add")}
@@ -128,6 +137,7 @@ export default function CategoryBrand() {
             if (curCatIndex.current === undefined) return "Index not found";
             return (
                <AddItemMulti
+                  loading={apiLoading}
                   fields={CAT_FIELDS}
                   title="Edit category"
                   cb={(value) => handleAddCategory(value, "Edit")}
@@ -164,7 +174,7 @@ export default function CategoryBrand() {
          default:
             return <h1 className="text-3xl">Not thing to show</h1>;
       }
-   }, [isOpenModal]);
+   }, [isOpenModal, apiLoading]);
 
    useEffect(() => {
       const getConfig = async () => {
@@ -244,12 +254,13 @@ export default function CategoryBrand() {
          {/* <div className={cx("divide")}></div> */}
 
          <h1 className={cx("page-title")}>Brand</h1>
-         {status === "success" && curCategoryId && (
+         {status === "success" && curCategoryId !== undefined && (
             <div className="bg-[#fff]  rounded-[8px] p-[20px]">
                <div className="mb-[15px] flex items-center">
                   <p className={cx("input-label", "mr-[10px]")}>Category: </p>
                   <select
-                     className={inputClasses.input}
+                     disabled={!categories.length}
+                     className={`${inputClasses.input} min-w-[100px]`}
                      name="category"
                      value={curCategoryId}
                      onChange={(e) => setCurCategoryId(+e.target.value)}
@@ -263,37 +274,33 @@ export default function CategoryBrand() {
                   </select>
                </div>
                <div className={`row  ${apiLoading && "disable"}`}>
-                  <div className="col col-9">
-                     <div className="row">
-                        {status === "success" &&
-                           !!brands.length &&
-                           brands.map((brand, index) => (
-                              <div key={index} className="col col-2">
-                                 <Empty>
-                                    <div className="">
-                                       <p className="text-[14px] text-center">{brand.brand_name}</p>
-                                       <img src={brand.image_url} alt="" />
-                                    </div>
-                                    <OverlayCTA
-                                       data={[
-                                          {
-                                             cb: () => handleOpenModal("delete-brand", index),
-                                             icon: "delete",
-                                          },
-                                          {
-                                             cb: () => handleOpenModal("edit-brand", index),
-                                             icon: "edit",
-                                          },
-                                       ]}
-                                    />
-                                 </Empty>
+                  {!!brands.length &&
+                     status === "success" &&
+                     brands.map((brand, index) => (
+                        <div key={index} className="col col-2">
+                           <Empty>
+                              <div className="">
+                                 <p className="text-[14px] text-center">{brand.brand_name}</p>
+                                 <img src={brand.image_url} alt="" />
                               </div>
-                           ))}
-
-                        <div className="col col-2">
-                           <Empty onClick={() => handleOpenModal("add-brand")} />
+                              <OverlayCTA
+                                 data={[
+                                    {
+                                       cb: () => handleOpenModal("delete-brand", index),
+                                       icon: "delete",
+                                    },
+                                    {
+                                       cb: () => handleOpenModal("edit-brand", index),
+                                       icon: "edit",
+                                    },
+                                 ]}
+                              />
+                           </Empty>
                         </div>
-                     </div>
+                     ))}
+
+                  <div className="col col-2">
+                     <Empty onClick={() => handleOpenModal("add-brand")} />
                   </div>
                </div>
             </div>

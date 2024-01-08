@@ -66,8 +66,9 @@ function SliderGroup({ initSlider, isExist, color_ascii }: SliderGroupProps, ref
       }
    };
 
-   const handleRemoveSliderImage = (imageUrl: string) => {
-      const newImages = sliderImages.filter((item) => item.image_url != imageUrl);
+   const handleRemoveSliderImage = (index: number) => {
+      const newImages = [...sliderImages];
+      newImages.splice(index, 1);
       setSlideImages(newImages);
    };
 
@@ -84,7 +85,7 @@ function SliderGroup({ initSlider, isExist, color_ascii }: SliderGroupProps, ref
       if (initSlider.images.length) {
          // slider image alway include id when have init sliderI images
          initSlider.images.forEach((existImage) => {
-            const exist = sliderImages.find((UKImage) => existImage.image_url === UKImage.image_url);
+            const exist = sliderImages.find((UKImage) => existImage.id === UKImage.id);
             if (!exist) removeSliderImages.push(existImage.id as number);
          });
       }
@@ -93,7 +94,7 @@ function SliderGroup({ initSlider, isExist, color_ascii }: SliderGroupProps, ref
    };
 
    const validate = () => {
-      if (!sliderImages.length) {
+      if (!sliderImages.length || !color_ascii) {
          setError(true);
          return true;
       } else return false;
@@ -113,11 +114,11 @@ function SliderGroup({ initSlider, isExist, color_ascii }: SliderGroupProps, ref
             });
 
             const sliderRes = res.data as SliderSchema & { id: number };
-            sliderDataToReturn = { ...sliderData, id: sliderRes.id, color_ascii: color_ascii };
+            sliderDataToReturn = { ...sliderData, id: sliderRes.id, color_ascii };
          }
 
          const { newSliderImages, removeSliderImages } = trackingSliderImages();
-         // console.log("check image new =", newSliderImages, "remove =", removeSliderImages);
+         console.log("check image new =", newSliderImages, "remove =", removeSliderImages);
 
          if (newSliderImages.length) {
             const slider_id = isExist ? initSlider?.id : sliderDataToReturn?.id;
@@ -156,36 +157,34 @@ function SliderGroup({ initSlider, isExist, color_ascii }: SliderGroupProps, ref
 
    return (
       <>
-         <div className="col col-9">
-            <div className="row">
-               {sliderImages.map((sI, index) => (
-                  <div key={index} className="col col-2">
-                     <Empty>
-                        <Image classNames="" src={sI.image_url} />
-                        <OverlayCTA
-                           data={[
-                              {
-                                 cb: () => handleRemoveSliderImage(sI.image_url),
-                                 icon: "delete",
-                              },
-                              {
-                                 cb: () => handleOpenModal("change", index),
-                                 icon: "sync",
-                              },
-                           ]}
-                        />
-                     </Empty>
-                  </div>
-               ))}
-               <div className="col col-2">
-                  <Empty className={`${error ? "bg-red-200" : ""}`} onClick={() => handleOpenModal("add")} />
+         <div className="row">
+            {sliderImages.map((sI, index) => (
+               <div key={index} className="col col-2">
+                  <Empty>
+                     <Image classNames="" src={sI.image_url} />
+                     <OverlayCTA
+                        data={[
+                           {
+                              cb: () => handleRemoveSliderImage(index),
+                              icon: "delete",
+                           },
+                           {
+                              cb: () => handleOpenModal("change", index),
+                              icon: "sync",
+                           },
+                        ]}
+                     />
+                  </Empty>
                </div>
+            ))}
+            <div className="col col-2">
+               <Empty className={`${error ? "bg-red-200" : ""}`} onClick={() => handleOpenModal("add")} />
             </div>
          </div>
 
          {isOpenModal && (
             <Modal setShowModal={setIsOpenModal}>
-               <Gallery setImageUrl={handleAddSliderImage} setIsOpenModal={setIsOpenModal} />
+               <Gallery multiple setImageUrl={handleAddSliderImage} setIsOpenModal={setIsOpenModal} />
             </Modal>
          )}
       </>

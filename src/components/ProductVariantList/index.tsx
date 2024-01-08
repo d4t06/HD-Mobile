@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import styles from "./ProductVariantList.module.scss";
 import classNames from "classnames/bind";
 import { moneyFormat } from "@/utils/appHelper";
-import { ProductColor, ProductCombine, ProductSlider, ProductStorage } from "@/types";
+import { ProductColor, ProductCombine, ProductSlider, ProductStorage, SliderImage } from "@/types";
 
 const cx = classNames.bind(styles);
 
@@ -12,7 +12,7 @@ type Props = {
    storages: ProductStorage[];
    combines: ProductCombine[];
    sliders: ProductSlider[];
-   setSliderImages: Dispatch<SetStateAction<string[]>>;
+   setSliderImages: Dispatch<SetStateAction<SliderImage[]>>;
    query: string | undefined;
 };
 
@@ -28,7 +28,7 @@ const getCurrentCombine = (curVar: CurVar, combines: ProductCombine[]) => {
    return combines.find((combine) => combine.color_id === curVar.color_id && combine.storage_id === curVar.storage_id);
 };
 
-export default function ProductVariantList({ colors, storages, combines, setSliderImages, sliders, query }: Props) {
+export default function ProductVariantList({ colors, storages, combines, setSliderImages, sliders }: Props) {
    const [curVar, setCurVar] = useState<CurVar | undefined>(findDefaultCombine(combines));
 
    const curCombineData = useMemo(() => (curVar ? getCurrentCombine(curVar, combines) : undefined), [curVar]);
@@ -43,7 +43,7 @@ export default function ProductVariantList({ colors, storages, combines, setSlid
       if (curVar) {
          const slider = sliders.find((sd) => sd.color_id === curVar.color_id);
          if (slider && slider.slider_data) {
-            setSliderImages(slider.slider_data?.images.map((item) => item.image_url));
+            setSliderImages(slider.slider_data?.images);
          }
       }
    }, [curVar?.color_id]);
@@ -53,7 +53,7 @@ export default function ProductVariantList({ colors, storages, combines, setSlid
    return (
       <>
          <div className={cx("option")}>
-            <h5 className={cx("label")}>Storages</h5>
+            <h5 className={cx("label")}>Bộ nhớ:</h5>
             <ul className={cx("list")}>
                {storages.map((storage, index) => (
                   <li
@@ -69,7 +69,7 @@ export default function ProductVariantList({ colors, storages, combines, setSlid
                ))}
             </ul>
 
-            <h5 className={cx("label", "mt-15")}>Colors</h5>
+            <h5 className={cx("label", "mt-[14px]")}>Màu: </h5>
             <ul className={cx("list")}>
                {colors.map((color, index) => (
                   <li
@@ -87,7 +87,7 @@ export default function ProductVariantList({ colors, storages, combines, setSlid
          </div>
 
          <div className={cx("price")}>
-            <span className={cx("label")}>Giá bán</span>
+            <p className={cx("label", 'mt-[14px]')}>Giá bán</p>
             <p className={cx("cur-price")}>{moneyFormat(curCombineData.price)}₫</p>
             {/* {data.old_price && <span className={cx("old-price")}>{moneyFormat(data?.old_price)}</span>} */}
             <span className={cx("vat-tag")}>Đã bao gồm 10% VAT</span>

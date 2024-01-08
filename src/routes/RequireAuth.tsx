@@ -1,29 +1,28 @@
-import { useLocation, Navigate, Outlet } from "react-router-dom"
+import { Navigate, Outlet } from "react-router-dom";
 import jwt_decode from "jwt-decode";
+import loadingGif from "@/assets/images/loading.gif";
 
-import {useAuth} from "@/store/AuthContext"
+import { useAuth } from "@/store/AuthContext";
 
+function RequireAuth({ allowedRole }: { allowedRole: string[] }) {
+   const { auth, loading } = useAuth();
 
-function RequireAuth ({allowedRole}: {allowedRole: string[]}) {
-    const {auth} = useAuth();
-    const location = useLocation()
+   const decode: { username: ""; role: "" } = auth ? jwt_decode(auth.token) : { username: "", role: "" };
 
-    // decode token from auth context
-    const decode : any = jwt_decode(auth.token)
+   if (loading)
+      return (
+         <div className="h-screen flex items-center">
+            <img className="mx-auto w-[200px]" src={loadingGif} alt="" />
+         </div>
+      );
 
-     let userRole = decode?.role_code
-
-    //  userRole = "R1";
-    
-
-    return (
-        !!allowedRole?.find(role => userRole === role)
-        ? <Outlet/>
-        : Object.keys(auth).length !== 0
-            ? <Navigate to="/unauthorized" />
-            : <Navigate to="/login" />
-       )
-    
+   return !!allowedRole?.find((role) => decode.role === role) ? (
+      <Outlet />
+   ) : auth?.token ? (
+      <Navigate to="/unauthorized" />
+   ) : (
+      <Navigate to="/login" />
+   );
 }
 
-export default RequireAuth
+export default RequireAuth;

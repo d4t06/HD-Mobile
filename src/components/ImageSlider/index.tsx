@@ -1,17 +1,18 @@
 import classNames from "classnames/bind";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRef } from "react";
 import styles from "./ImageSlider.module.scss";
 import useSlider from "@/hooks/useSlider";
 import Image from "../Image";
+import { SliderImage } from "@/types";
 
 const cx = classNames.bind(styles);
 
 type Props = {
-   banner?: boolean;
-   data: string[];
+   data: SliderImage[];
+   className?: string;
 };
 
-function ImageSlider({ banner, data }: Props) {
+function ImageSlider({ data, className = "pt-[25%]" }: Props) {
    const imageSliderRef = useRef<HTMLDivElement>(null);
 
    // use hooks
@@ -20,38 +21,32 @@ function ImageSlider({ banner, data }: Props) {
       data,
    });
 
-   const classes = cx("image-slider", {
-      banner,
-   });
+   const classes = cx("image-slider");
 
    return (
-      <div className={cx("image-slider-frame")} {...attributeObj}>
-         <div className={classes} ref={imageSliderRef}>
-            <div
-               className={cx("left-arrow", "slider-control")}
-               onMouseDown={(e) => e.stopPropagation()}
-               onClick={previous}
-            >
-               <i className="material-icons">arrow_back</i>
-            </div>
-            <div
-               className={cx("right-arrow", "slider-control")}
-               onMouseDown={(e) => e.stopPropagation()}
-               onClick={next}
-            >
-               <i className="material-icons">arrow_forward</i>
-            </div>
-            <div className={cx("slider-index")}>
-               <span>{curIndex}</span> / <span>{data.length}</span>
-            </div>
+      <div className={`${className} relative`}>
+         <div className={`${classes} `} {...attributeObj} ref={imageSliderRef}>
             {!!data.length &&
-               data.map((src, index) => {
+               data.map((sliderImage, index) => {
                   return (
                      <div key={index} style={{ width: imageWidth }} className={cx("slider-item")}>
-                        <Image src={src} />
+                        <Image src={sliderImage.image_url} />
                      </div>
                   );
                })}
+         </div>
+         <div
+            className={cx("left-arrow", "slider-control")}
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={previous}
+         >
+            <i className="material-icons">arrow_back</i>
+         </div>
+         <div className={cx("right-arrow", "slider-control")} onMouseDown={(e) => e.stopPropagation()} onClick={next}>
+            <i className="material-icons">arrow_forward</i>
+         </div>
+         <div className={cx("slider-index")}>
+            <span>{data.length ? curIndex : 0}</span> / <span>{data.length}</span>
          </div>
       </div>
    );

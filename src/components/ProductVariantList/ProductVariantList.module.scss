@@ -9,13 +9,14 @@ $shadow: 2px 2px 5px 0
 .label {
    font-size: 1.6rem;
    margin-bottom: 4px;
+   font-weight:  500;
 }
 .price {
    font-weight: 500;
    line-height: 1.2;
    .cur-price {
       font-size: 3.5rem;
-      font-weight: 500;
+      font-weight: bold;
       color: #cd1818;
    }
    .old-price {
@@ -41,7 +42,6 @@ $shadow: 2px 2px 5px 0
       font-size: 1.6rem;
       color: #99a2aa;
    }
-   margin-bottom: 20px;
 }
 
 @mixin itemActive {
@@ -50,10 +50,6 @@ $shadow: 2px 2px 5px 0
       color: $activeCl;
       font-weight: bold;
    }
-}
-
-.option {
-   margin-bottom: 20px;
 }
 .list {
    // margin-top: 10px;

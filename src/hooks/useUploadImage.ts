@@ -8,7 +8,7 @@ import { useToast } from "@/store/ToastContext";
 const IMAGE_URL = "/image-management/images";
 
 export default function useUploadImage() {
-   const { setCurrentImages, setAddedImageIds, setStatus, setTempImages, tempImages } = useUploadContext();
+   const { setCurrentImages, setAddedImageIds, setStatus, setTempImages } = useUploadContext();
    const privateRequest = usePrivateRequest();
    const { setErrorToast, setSuccessToast } = useToast();
 
@@ -57,7 +57,7 @@ export default function useUploadImage() {
 
             const controller = new AbortController();
 
-            if (import.meta.env.DEV) await sleep(300);
+            if (import.meta.env.DEV) await sleep(3000);
 
             const res = await privateRequest.post(IMAGE_URL, formData, {
                headers: { "Content-Type": "multipart/form-data" },
@@ -69,9 +69,10 @@ export default function useUploadImage() {
             processImageList[file.for_image_index] = newImage;
 
             setTempImages(processImageList);
-            setAddedImageIds((prev) => [...prev, file.for_image_index]);
+            setAddedImageIds((prev) => [...prev, newImage.public_id]);
          }
 
+         setTempImages([]);
          setCurrentImages((prev) => [...processImageList, ...prev]);
          setSuccessToast("Upload images successful");
       } catch (error) {
@@ -79,7 +80,6 @@ export default function useUploadImage() {
          setErrorToast("Upload images failed");
          setStatus("error");
       } finally {
-         setTempImages([]);
          setStatus("finish");
       }
    };

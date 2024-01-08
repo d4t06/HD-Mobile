@@ -7,7 +7,7 @@ import classNames from "classnames/bind";
 import styles from "./ProductFilter.module.scss";
 
 import Checkbox from "./child/Checkbox";
-import Radiobox from "./child/Radiobox";
+// import Radiobox from "./child/Radiobox";
 
 import { AppDispatch } from "@/store/store";
 import { useMemo } from "react";
@@ -42,9 +42,9 @@ function ProductFilter({ categoryAscii, loading }: Props) {
       return [...Array(5).keys()].map((index) => <Skeleton key={index} className="filter-brand-skeleton" />);
    }, []);
 
-   const PriceSkeleton = useMemo(() => {
-      return [...Array(5).keys()].map((index) => <Skeleton key={index} className="filter-price-skeleton" />);
-   }, []);
+   // const PriceSkeleton = useMemo(() => {
+   //    return [...Array(5).keys()].map((index) => <Skeleton key={index} className="filter-price-skeleton" />);
+   // }, []);
 
    return (
       <div className={cx("col", "col-3")}>

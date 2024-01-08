@@ -1,24 +1,23 @@
 import { ReactNode, createContext, useContext, useState } from "react";
-import { Product, ProductSchema } from "@/types";
-import { initProductObject } from "@/utils/appHelper";
+import { Product } from "@/types";
 
 type StateType = {
-   productData: ProductSchema;
+   productData: Product;
 };
 
-const initialState: StateType = {
-   productData: initProductObject({}),
-};
+// const initialState: StateType = {
+//    productData: initProductObject({}),
+// };
 
 type ContextType = {
    state: StateType;
 };
 
-const initialContext = {
-   state: initialState,
-};
+// const initialContext = {
+//    state: initialState,
+// };
 
-const ProductDataContext = createContext<ContextType>(initialContext);
+const ProductDataContext = createContext<ContextType | undefined>(undefined);
 
 const ProductDataProvider = ({ children, initialState }: { children: ReactNode; initialState: Product }) => {
    const [productData, _setProductData] = useState(initialState);
@@ -26,9 +25,12 @@ const ProductDataProvider = ({ children, initialState }: { children: ReactNode; 
    return <ProductDataContext.Provider value={{ state: { productData } }}>{children}</ProductDataContext.Provider>;
 };
 const useProductContext = () => {
+   const context = useContext(ProductDataContext);
+
+   if (!context) throw new Error("Context not found");
    const {
       state: { productData },
-   } = useContext(ProductDataContext);
+   } = context;
    return { ...productData };
 };
 

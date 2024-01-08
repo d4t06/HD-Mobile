@@ -35,7 +35,7 @@ function Dashboard() {
    } = useSelector(selectedAllProduct);
    const { filters, sort } = useSelector(selectedAllFilter);
    const { categories, brands } = useApp();
-   const { status: appConfigStatus } = useAppConfig({ curCategory });
+   const { status: appConfigStatus } = useAppConfig({ curCategory, autoRun: true });
    const { deleteProduct, apiLoading } = useProductAction({ setIsOpenModal });
 
    const remaining = useMemo(() => count - products.length, [products]);
@@ -249,12 +249,12 @@ function Dashboard() {
             {status !== "loading" && !!products.length && (
                <p className="text-center my-[15px]">
                   <Button
-                     disable={remaining === 0 || status === "more-loading"}
+                     disable={remaining <= 0 || status === "more-loading"}
                      primary
                      isLoading={status === "more-loading"}
                      onClick={() => handleGetMore()}
                   >
-                     Xem thêm {remaining} sản phẩm
+                     Xem thêm {remaining <= 0 ? 0 : remaining} sản phẩm
                   </Button>
                </p>
             )}

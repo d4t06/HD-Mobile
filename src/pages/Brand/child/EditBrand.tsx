@@ -1,6 +1,5 @@
 import { Button, Gallery, Modal } from "@/components";
 import AddItem from "@/components/Modal/AddItem";
-import AddItemMulti from "@/components/Modal/AddItemMulti";
 import { Brand } from "@/types";
 import { generateId, initBrandObject } from "@/utils/appHelper";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -24,8 +23,8 @@ export default function EditBrand({ setIsOpenModalParent, addBrand, apiLoading, 
    const [brandData, setBrandData] = useState<Brand>(curBrand || initBrandObject({}));
    const [isOpenModal, setIsOpenModal] = useState(false);
 
-   const handleChoseBrandImage = (image_url: string) => {
-      const newBrandData: Brand = { ...brandData, image_url };
+   const handleChoseBrandImage = (imageUrls: string[]) => {
+      const newBrandData: Brand = { ...brandData, image_url: imageUrls[0] };
       setBrandData(newBrandData);
    };
 
@@ -59,14 +58,14 @@ export default function EditBrand({ setIsOpenModalParent, addBrand, apiLoading, 
                {brandData.image_url && (
                   <div className={cx("brand-image")}>
                      <img src={brandData.image_url} />
-                     <Button onClick={() => handleChoseBrandImage("")} className="ml-[8px]">
+                     <Button onClick={() => handleChoseBrandImage([''])} className="ml-[8px]">
                         <i className="material-icons text-[20px]">close</i>
                      </Button>
                   </div>
                )}
 
                {!brandData.image_url && (
-                  <Button onClick={() => setIsOpenModal(true)} primary>
+                  <Button isLoading={apiLoading} onClick={() => setIsOpenModal(true)} primary>
                      Choose image
                   </Button>
                )}
@@ -76,7 +75,7 @@ export default function EditBrand({ setIsOpenModalParent, addBrand, apiLoading, 
                <Modal child setShowModal={setIsOpenModal}>
                   <Gallery
                      setIsOpenModal={setIsOpenModal}
-                     setImageUrl={(image_url) => handleChoseBrandImage(image_url)}
+                     setImageUrl={(imageUrls) => handleChoseBrandImage(imageUrls)}
                   />
                </Modal>
             )}

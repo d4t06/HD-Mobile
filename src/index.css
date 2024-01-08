@@ -1,10 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,600;0,700;1,400&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
-   font-family: "Open Sans", Helvetica, sans-serif;
+   font-family: "Montserrat", sans-serif;
    font-size: 62.5%;
 }
 button.disable {
@@ -18,9 +18,9 @@ button.disable {
 }
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-   -ms-overflow-style: none;  /* IE and Edge */
-   scrollbar-width: none;  /* Firefox */
- }
+   -ms-overflow-style: none; /* IE and Edge */
+   scrollbar-width: none; /* Firefox */
+}
 .container {
    min-width: 900px;
    max-width: 1100px;
@@ -55,8 +55,8 @@ button.disable {
    flex: 0 0 50%;
 }
 .col-2 {
-   max-width: 20%;
-   flex: 0 0 20%;
+   max-width: 16.666%;
+   flex: 0 0 16.666%;
 }
 .col-3 {
    max-width: 25%;

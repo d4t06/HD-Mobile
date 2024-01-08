@@ -1,23 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import classNames from "classnames/bind";
-import styles from "../Login/Login.module.scss";
+// import classNames from "classnames/bind";
 
-import { generateId, initColorObject, initStorageObject, moneyFormat, sleep } from "@/utils/appHelper";
+import { generateId, initColorObject, initStorageObject, sleep } from "@/utils/appHelper";
 import usePrivateRequest from "@/hooks/usePrivateRequest";
 import ProductConfig, { ConfigRef } from "@/components/ProductConfig";
 import { Product, ProductColor, ProductCombine, ProductCombineSchema, ProductStorage } from "@/types";
 import Empty from "@/components/ui/Empty";
 import { Button, Modal } from "@/components";
 import ProductDataProvider from "@/store/ProductDataContext";
-import {
-   findMinCombineOfStorage,
-   initCombinesForInsert,
-   initProductSlidersForInsert,
-   trackingColors,
-   trackingStorages,
-} from "@/utils/productHelper";
+import { findMinCombineOfStorage, initCombinesForInsert, initProductSlidersForInsert } from "@/utils/productHelper";
 import { useToast } from "@/store/ToastContext";
 import AddItem from "@/components/Modal/AddItem";
 import OverlayCTA from "@/components/ui/OverlayCTA";
@@ -26,11 +19,9 @@ import ConfirmModal from "@/components/Modal/Confirm";
 
 type ModelTarget = "add-storage" | "edit-storage" | "add-color" | "edit-color" | "delete-storage" | "delete-color";
 
-const cx = classNames.bind(styles);
 const MAX_VAL = 999999999;
 const STORAGE_URL = "/storage-management/storages";
-// const COLOR_URL = "/color-management/colors";
-const PRODUCT_SLIDER_URL = "/product-slider-management/product-sliders";
+const PRODUCT_SLIDER_URL = "/slider-management/product-sliders";
 const COMBINE_URL = "/combine-management/combines";
 const PRODUCT_URL = "/product-management/products";
 
@@ -43,6 +34,7 @@ function EditProduct() {
    const addItemModalTarget = useRef<ModelTarget | "">("");
 
    const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+   const [apiProductLoading, setProductApiLoading] = useState(false);
 
    const ranUseEffect = useRef(false);
    const ProductConfigRef = useRef<ConfigRef>(null);
@@ -254,6 +246,8 @@ function EditProduct() {
 
          ProductConfigRef.current?.validate();
 
+         setProductApiLoading(true)
+
          // const { newStorages, removedStorages } = trackingStorages(stockStorages.current, storages);
          // const { newColors, removedColorIds } = trackingColors(stockColors.current, colors);
 
@@ -287,6 +281,8 @@ function EditProduct() {
       } catch (error) {
          console.log({ message: error });
          setErrorToast("Error when edit product");
+      } finally {
+         setProductApiLoading(false)
       }
    };
 
@@ -409,7 +405,7 @@ function EditProduct() {
          <div className="pb-[30px]">
             <div className="row mb-[30px]">
                <div className="col col-6 ">
-                  <h5 className={cx("label")}>Storage</h5>
+                  <h5 className={''}>Storage</h5>
                   <div className="flex bg-[#fff] rounded-[8px] p-[20px]">
                      {!!storages.length &&
                         storages.map((item, index) => {
@@ -433,7 +429,7 @@ function EditProduct() {
                   </div>
                </div>
                <div className="col col-6">
-                  <h5 className={cx("label")}>Color</h5>
+                  <h5 className={''}>Color</h5>
                   <div className="row bg-[#fff] rounded-[8px] p-[20px]">
                      {!!colors.length &&
                         colors.map((item, index) => (
@@ -468,7 +464,7 @@ function EditProduct() {
             )}
 
             <p className="text-center">
-               <Button onClick={handleSubmit} primary className={cx("mt-15")}>
+               <Button isLoading={apiProductLoading} onClick={handleSubmit} primary className={("mt-[15px]")}>
                   <i className="material-icons">save</i> Save
                </Button>
             </p>

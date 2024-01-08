@@ -3,26 +3,24 @@
 }
 .header-banner {
    height: 44px;
-   background-color: rgb(110, 199, 212);
    text-align: center;
+   background-color: #cd1818;
    img {
       height: 100%;
+      margin: 0 auto;
    }
 }
 .header {
    position: relative;
    z-index: 100;
    &-top {
-      height: 50px;
-      background-color: #333;
+      margin-top: 14px;
 
       .image-frame {
-         margin-left: 5px;
          width: 40px;
          height: 40px;
       }
       .user-name {
-         color: #fff;
          font-size: 1.6rem;
          font-weight: 500;
          margin-right: 8px;
@@ -44,8 +42,13 @@
       }
    }
    &-nav {
-      height: 36px;
-      background: linear-gradient(to right, #6c0a0a, #cd1818, #6c0a0a);
+      margin-top: 14px;
+      height: 44px;
+      &-wrap {
+         padding: 0 10px;
+         background: #cd1818;
+         border-radius: 6px;
+      }
    }
 }
 .header-top-wrap,
@@ -57,15 +60,15 @@
 }
 .brand {
    font-size: 2.5rem;
-   color: #f1f1f1;
+   font-weight: bold;
 }
 .user-cta {
    display: flex;
    align-items: center;
+   justify-content: flex-end;
 }
 
 .nav-list {
-   height: 100%;
    display: flex;
    gap: 20px;
 }
@@ -75,27 +78,24 @@
 .nav-item {
    color: #fff;
    font-size: 1.6rem;
-   padding: 0 8px;
-   border-radius: 8px 8px 0 0;
-   position: relative;
+   transition: scale linear 0.1s;
+
+   &:hover {
+      color: #efd63d;
+      scale: 1.05;
+   }
 
    &.active {
-      &::after {
-         content: "";
+      color: #efd63d;
+      font-weight: bold;
+   }
+
+   a {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      .nav-text {
+         margin-left: 5px;
       }
-      background-color: #fff;
-      color: #333;
    }
-}
-.nav-item a {
-   height: 100%;
-   display: flex;
-   align-items: center;
-   font-weight: 500;
-   .nav-text {
-      margin-left: 5px;
-   }
-}
-.nav-item:hover {
-   color: #666;
 }

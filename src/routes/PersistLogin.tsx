@@ -1,45 +1,39 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
+// import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useLocalStorage, useRefreshToken } from "@/hooks";
 import { useAuth } from "@/store/AuthContext";
 
 const PersistLogin = () => {
-   const { auth } = useAuth();
+   const { auth, setLoading } = useAuth();
    const refresh = useRefreshToken();
-   const [isLoading, setIsLoading] = useState(true);
    const [persist] = useLocalStorage("persist", false); //[persist, setPersist]
+   const ranEffect = useRef(false);
+   const runCB = useRef(false);
 
    useEffect(() => {
-      let isMounted = true;
-
       const verifyRefreshToken = async () => {
          try {
+            runCB.current = true;
             await refresh();
          } catch (error) {
             console.error(error);
          } finally {
-            isMounted && setIsLoading(false);
+            setLoading(false);
          }
       };
 
-      if (!auth) {
-         setIsLoading(false);
-         return;
-      }
-      if (auth.token && persist) verifyRefreshToken();
+      if (!ranEffect.current && !auth && persist) verifyRefreshToken();
+      else if (!runCB.current) setLoading(false);
 
       return () => {
-         isMounted = false;
+         // isMounted = false;
+         ranEffect.current = true;
       };
    }, []);
 
-   useEffect(() => {
-      console.log(`isLoading = ${isLoading}`);
-      console.log("auth =", auth);
-   }, [isLoading]);
-
-   return <>{!persist ? <Outlet /> : isLoading ? "" : <Outlet />}</>;
+   // return <>{!persist ? <Outlet /> : isLoading ? "" : <Outlet />}</>;
+   return <Outlet />;
 };
 
 export default PersistLogin;

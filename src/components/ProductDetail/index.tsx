@@ -5,8 +5,9 @@ import { ImageSlider, Cart, Modal, Button } from "../../components";
 import ProductVariantList from "@/components/ProductVariantList";
 
 import { useEffect, useState } from "react";
-import { Detail, Product } from "@/types";
+import { Detail, Product, SliderImage } from "@/types";
 import { useParams } from "react-router-dom";
+// import Skeleton from "../Skeleton";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -15,9 +16,9 @@ type Props = {
 
 function DetailProductItem({ data }: Props) {
    const [showModal, setShowModal] = useState(false);
-   const [sliderImages, setSliderImages] = useState<string[]>([]);
+   const [sliderImages, setSliderImages] = useState<SliderImage[]>([]);
 
-   const {st} = useParams()
+   const { st } = useParams();
 
    useEffect(() => {
       window?.scroll({
@@ -26,16 +27,14 @@ function DetailProductItem({ data }: Props) {
       });
    }, []);
 
-
-   console.log('check params', st);
-   
+   console.log("check params", sliderImages);
 
    return (
       <>
          <div className={cx("row", "main-contain")}>
             <div className={cx("col-large col-6", "box_left")}>
-               {!!sliderImages.length && <ImageSlider data={sliderImages} />}
-            </div>   
+               {!!sliderImages.length && <ImageSlider className="pt-[75%]" data={sliderImages} />}
+            </div>
             <div className={cx("col-large col-6", "box_right")}>
                <h1 className={cx("product-name")}>{data.product_name}</h1>
 
@@ -48,7 +47,7 @@ function DetailProductItem({ data }: Props) {
                   query={st as string}
                />
                <div className={cx("product-cta")}>
-                  <Button className="w-[100%]" onClick={() => setShowModal(true)}>
+                  <Button primary className="w-[100%] py-[10px] text-[18px]" onClick={() => setShowModal(true)}>
                      Mua Ngay
                   </Button>
                </div>

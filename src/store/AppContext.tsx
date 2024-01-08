@@ -1,16 +1,16 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
-import { Brand, Category, ImageType } from "@/types";
+import { Brand, Category, SliderImage } from "@/types";
 
 type StateType = {
    categories: Category[];
    brands: Record<string, Brand[]>;
-   banners: Record<string, ImageType[]>;
+   sliders: Record<string, SliderImage[]>;
    initLoading: boolean;
 };
 
 const initialState: StateType = {
    categories: [],
-   banners: {},
+   sliders: {},
    brands: {},
    initLoading: true,
 };
@@ -19,33 +19,25 @@ type ContextType = {
    state: StateType;
    setCategories: Dispatch<SetStateAction<StateType["categories"]>>;
    setBrands: Dispatch<SetStateAction<StateType["brands"]>>;
-   setBanners: Dispatch<SetStateAction<StateType["banners"]>>;
+   setSliders: Dispatch<SetStateAction<StateType["sliders"]>>;
    setInitLoading: Dispatch<SetStateAction<StateType["initLoading"]>>;
 };
 
-const initialContext = {
-   state: initialState,
-   setCategories: () => {},
-   setBrands: () => {},
-   setBanners: () => {},
-   setInitLoading: () => {},
-};
-
-const AppContext = createContext<ContextType>(initialContext);
+const AppContext = createContext<ContextType | undefined>(undefined);
 
 const AppProvider = ({ children }: { children: ReactNode }) => {
    const [categories, setCategories] = useState<StateType["categories"]>([]);
    const [brands, setBrands] = useState<StateType["brands"]>({});
-   const [banners, setBanners] = useState<StateType["banners"]>({});
+   const [sliders, setSliders] = useState<StateType["sliders"]>({});
 
    const [initLoading, setInitLoading] = useState(initialState["initLoading"]);
 
    return (
       <AppContext.Provider
          value={{
-            state: { banners, brands, categories, initLoading },
+            state: { sliders, brands, categories, initLoading },
             setInitLoading,
-            setBanners,
+            setSliders,
             setBrands,
             setCategories,
          }}
@@ -55,14 +47,15 @@ const AppProvider = ({ children }: { children: ReactNode }) => {
    );
 };
 const useApp = () => {
+   const context = useContext(AppContext);
+
+   if (context == undefined) throw new Error("Context not found");
+
    const {
-      state: { ...rest },
-      setBanners,
-      setBrands,
-      setCategories,
-      setInitLoading
-   } = useContext(AppContext);
-   return { ...rest, setBanners, setBrands, setCategories, setInitLoading };
+      state: { ...restState },
+      ...restSetState
+   } = context;
+   return { ...restState, ...restSetState };
 };
 
 export default AppProvider;

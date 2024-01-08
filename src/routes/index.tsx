@@ -1,20 +1,19 @@
 import {
    Product,
-   AddProduct,
-   Dashboard,
-   EditProduct,
    Home,
    Login,
-   Register,
-   Search,
-   // Unauthorize,
-   ProductDetail,
-   // Account,
    Brand,
+   Banner,
+   Account,
+   Register,
+   ProductDetail,
+   Dashboard,
+   EditProduct,
 } from "../pages";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
+import { Search } from "@/components";
 
 const routes = {
    HOME: "",
@@ -47,10 +46,10 @@ const publicRoutes = [
       component: Register,
       layout: null,
    },
-   // {
-   //    path: routes.ACCOUNT,
-   //    component: AccountPage,
-   // },
+   {
+      path: routes.ACCOUNT,
+      component: Account,
+   },
    {
       path: routes.CATEGORY,
       component: Product,
@@ -68,25 +67,25 @@ const publicRoutes = [
 const privateRoutes = [
    {
       path: "/dashboard",
-      role: ["R1"],
+      role: ["ADMIN"],
       component: Dashboard,
       layout: DashboardLayout,
    },
    {
-      path: "/dashboard/add-product",
-      role: ["R1"],
-      component: AddProduct,
-      layout: DashboardLayout,
-   },
-   {
       path: "/dashboard/brand",
-      role: ["R1"],
+      role: ["ADMIN"],
       component: Brand,
       layout: DashboardLayout,
    },
    {
+      path: "/dashboard/banner",
+      role: ["ADMIN"],
+      component: Banner,
+      layout: DashboardLayout,
+   },
+   {
       path: "/dashboard/product/edit/:id",
-      role: ["R1"],
+      role: ["ADMIN"],
       component: EditProduct,
       layout: DashboardLayout,
    },

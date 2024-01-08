@@ -6,55 +6,55 @@ import PersistLogin from "./routes/PersistLogin";
 
 function App() {
    return (
-      <Router basename="HD-Shop">
+      <Router basename="HD-Mobile">
          <Routes>
-            {/* <Route element={<PersistLogin />}> */}
-            {publicRoutes.map((route, index) => {
-               const Page = route.component;
-               let Layout = DefaultLayout;
-               if (route.layout) Layout = route.layout;
+            <Route element={<PersistLogin />}>
+               {publicRoutes.map((route, index) => {
+                  const Page = route.component;
+                  let Layout = DefaultLayout;
+                  if (route.layout) Layout = route.layout;
 
-               return (
-                  <Route
-                     key={index}
-                     path={route.path}
-                     element={
-                        route.layout === null ? (
-                           <Page />
-                        ) : (
-                           <Layout>
+                  return (
+                     <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                           route.layout === null ? (
                               <Page />
-                           </Layout>
-                        )
-                     }
-                  />
-               );
-            })}
+                           ) : (
+                              <Layout>
+                                 <Page />
+                              </Layout>
+                           )
+                        }
+                     />
+                  );
+               })}
 
-            {privateRoutes.map((route, index) => {
-               const Page = route.component;
-               let Layout = DefaultLayout;
-               if (route.layout) Layout = route.layout;
+               {privateRoutes.map((route, index) => {
+                  const Page = route.component;
+                  let Layout = DefaultLayout;
+                  if (route.layout) Layout = route.layout;
 
-               return (
-                  // <Route key={index} element={<RequireAuth allowedRole={route.role} />}>
-                  <Route
-                     key={index}
-                     path={route.path}
-                     element={
-                        route.layout === null ? (
-                           <Page />
-                        ) : (
-                           <Layout>
-                              <Page />
-                           </Layout>
-                        )
-                     }
-                  />
-                  // </Route>
-               );
-            })}
-            {/* </Route> */}
+                  return (
+                     <Route key={index} element={<RequireAuth allowedRole={route.role} />}>
+                        <Route
+                           key={index}
+                           path={route.path}
+                           element={
+                              route.layout === null ? (
+                                 <Page />
+                              ) : (
+                                 <Layout>
+                                    <Page />
+                                 </Layout>
+                              )
+                           }
+                        />
+                     </Route>
+                  );
+               })}
+            </Route>
          </Routes>
       </Router>
    );

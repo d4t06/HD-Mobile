@@ -47,9 +47,16 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
    };
 
    const handleSubmit = () => {
-      if (!choseList.length) return;
+      switch (multiple) {
+         case true:
+            if (!choseList.length) return;
 
-      setImageUrl(choseList);
+            setImageUrl(choseList);
+            break;
+         case false:
+            if (!active) return;
+            setImageUrl([active.image_url]);
+      }
       setIsOpenModal(false);
    };
 
@@ -110,6 +117,8 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
       []
    );
 
+   const ableToChosenImage = useMemo(() => (multiple ? !!choseList.length : !!active), [active, choseList]);
+
    const renderImages = useMemo(() => {
       return currentImages?.map((item, index) => {
          const indexOf = choseList.indexOf(item.image_url);
@@ -126,18 +135,16 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                   >
                      <img src={item.image_url} alt="img" />
                   </div>
+                  {multiple && (
                      <Button
                         onClick={() => handleSelect(item)}
                         className={`${
                            isInChoseList ? "bg-[#cd1818] " : "bg-[#ccc] hover:bg-[#cd1818]"
-                        } z-10 h-[24px] w-[24px] absolute rounded-[4px] text-[white]  left-[10px] bottom-[10px]`}
+                        } z-10 h-[24px] w-[24px] absolute rounded-[6px] text-[white]  left-[10px] bottom-[10px]`}
                      >
-                        {isInChoseList ? (
-                           <span className="text-[18px] font-semibold">{indexOf + 1}</span>
-                        ) : (
-                           <i className="material-icons text-[20px]">check_box_outline_blank</i>
-                        )}
+                        {isInChoseList && <span className="text-[18px] font-semibold leading-[1]">{indexOf + 1}</span>}
                      </Button>
+                  )}
                </div>
             </div>
          );
@@ -147,7 +154,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
    const renderTempImages = useMemo(
       () =>
          tempImages?.map((item, index) => {
-            const added = addedImageIds.includes(index);
+            const added = addedImageIds.includes(item.public_id);
             return (
                <div key={index} className={cx("col col-3")}>
                   <div className={cx("image-container")}>
@@ -192,7 +199,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                </div>
             </div>
 
-            <Button className={cx("choose-image-btn")} disable={!choseList.length} primary onClick={handleSubmit}>
+            <Button className={cx("choose-image-btn")} disable={!ableToChosenImage} primary onClick={handleSubmit}>
                Chọn
             </Button>
          </div>

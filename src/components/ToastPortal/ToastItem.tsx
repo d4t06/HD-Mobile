@@ -12,11 +12,11 @@ type Props = {
 const cx = classNames.bind(styles);
 
 export default function ToastItem({ toast, onClick }: Props) {
-   const classes = {
-      icon: `w-[30px] max-[549px]:w-[25px]`,
-      container: `text-white px-[12px] py-[6px] rounded-[4px] flex items-center  border `,
-      text: `font-[500] text-[14px] max-[549px]:text-[14px] text-[#333]`,
-   };
+   // const classes = {
+   //    icon: `w-[30px] max-[549px]:w-[25px]`,
+   //    container: `text-white px-[12px] py-[6px] rounded-[4px] flex items-center  border `,
+   //    text: `font-[500] text-[14px] max-[549px]:text-[14px] text-[#333]`,
+   // };
 
    return (
       <div

@@ -41,6 +41,7 @@ export type ProductSliderSchema = Omit<ProductSlider, "color_data" | "slider_dat
 
 export type SliderImage = {
    image_url: string;
+   link_to: string;
    id?: number;
 };
 export type SliderImageSchema = {
@@ -103,7 +104,6 @@ export type ProductSchema = Omit<
 export type Detail = {
    item_id: string;
    product_id: string;
-   gallery: string[];
 };
 
 export type Category = {
@@ -111,6 +111,16 @@ export type Category = {
    category_ascii: string;
    category_name: string;
    icon: string;
+};
+
+export type CategorySlider = {
+   category_data: Category;
+   slider_data: Slider;
+};
+
+export type CategorySliderSchema = {
+   category_id: number;
+   slider_id: number;
 };
 
 export type Brand = {

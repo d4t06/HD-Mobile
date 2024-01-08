@@ -7,38 +7,6 @@ import {
    SliderSchema,
 } from "@/types";
 
-export const trackingColors = (stockColors: ProductColor[], currentColors: ProductColor[]) => {
-   const newColors: ProductColor[] = [];
-   currentColors.forEach((item) => {
-      const existingItem = stockColors.find((stockItem) => stockItem.color_ascii === item.color_ascii);
-      if (!existingItem) return newColors.push(item);
-   });
-
-   const removedColorIds: number[] = [];
-   stockColors.forEach((stockItem) => {
-      const existingItem = currentColors.find((item) => item.color_ascii === stockItem.color_ascii);
-      if (!existingItem) return removedColorIds.push(stockItem.id as number);
-   });
-
-   return { newColors, removedColorIds };
-};
-
-export const trackingStorages = (stockStorages: ProductStorage[], currentStorages: ProductStorage[]) => {
-   const newStorages: ProductStorage[] = [];
-   currentStorages.forEach((item) => {
-      const existingItem = stockStorages.find((stockItem) => stockItem.storage_ascii === item.storage_ascii);
-      if (!existingItem) return newStorages.push(item);
-   });
-
-   const removedStorages: ProductStorage[] = [];
-   stockStorages.forEach((stockItem) => {
-      const existingItem = currentStorages.find((item) => item.storage_ascii === stockItem.storage_ascii);
-      if (!existingItem) return removedStorages.push(stockItem);
-   });
-
-   return { newStorages, removedStorages };
-};
-
 const haveLowerPrice = (storage: ProductStorage, cb: ProductCombine, minPrice: number) => {
    if (!minPrice) return true;
    if (cb.storage_id === storage.id && minPrice > cb.price) return true;

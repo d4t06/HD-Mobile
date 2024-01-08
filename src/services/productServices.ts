@@ -9,13 +9,13 @@ export const getProducts = async (props: Param) => {
 
    const { filters, sort, category_id, page } = props;
    try {
-      if (category_id === undefined) throw new Error("missing category")
-      const params: Record<string, string | string[] | number[] | number> = { page: page, category_id };
+      if (category_id === undefined) throw new Error("missing category");
+      const params: Record<string, string | string[] | number[] | number> = { page: page || 1, category_id };
 
-      if (filters.brands.length) params["brand_id"] = filters.brands.map((b) => b.id) as number[];
-      if (sort.column && sort.type) {
-         params['column'] = sort.column 
-         params['type'] = sort.type 
+      if (filters && filters.brands.length) params["brand_id"] = filters.brands.map((b) => b.id) as number[];
+      if (sort && sort.column && sort.type) {
+         params["column"] = sort.column;
+         params["type"] = sort.type;
       }
 
       const response = await publicRequest.get(`/products`, {
@@ -28,21 +28,25 @@ export const getProducts = async (props: Param) => {
    }
 };
 
-export const getProductsAdmin = async (params: Param) => {
-   const { filters, sort, category_id, page } = params;
-   const brand_id = filters.brands.map((b) => b.id);
+export const getProductsAdmin = async (props: Param) => {
+   const { filters, category_id, page } = props;
+   if (category_id === undefined) throw new Error("missing category");
+
+   const params: Record<string, string | string[] | number[] | number> = { page: page || 1, category_id };
+   if (filters && filters.brands.length) params["brand_id"] = filters.brands.map((b) => b.id) as number[];
+   // if (sort && sort.column && sort.type) {
+   //    params["column"] = sort.column;
+   //    params["type"] = sort.type;
+   // }
 
    try {
       const response = await publicRequest.get(`/product-management/products`, {
-         params: {
-            page,
-            category_id,
-            brand_id,
-         },
+         params,
       });
       return response.data;
    } catch (error) {
       console.log("loi getProducts services", error);
+      throw new Error('')
    }
 };
 

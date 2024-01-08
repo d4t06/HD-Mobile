@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./BrandSort.module.scss";
-import { price } from "@/assets/data";
+// import { price } from "@/assets/data";
 import { useMemo } from "react";
 import { FilterType } from "@/store/filtersSlice";
 import { Brand } from "@/types";

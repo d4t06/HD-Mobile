@@ -12,6 +12,7 @@ type Props = {
    fields: string[];
    intiFieldData?: Record<string, string>;
    children?: ReactNode;
+   loading: boolean;
 };
 
 const initState = (fields: string[]) => {
@@ -27,7 +28,7 @@ const intiFieldDataState = (inputFields: ReturnType<typeof initState>) => {
    return data;
 };
 
-export default function AddItemMulti({ setIsOpenModal, cb, title, fields, intiFieldData, children }: Props) {
+export default function AddItemMulti({ setIsOpenModal, cb, title, fields, loading, intiFieldData, children }: Props) {
    const inputFields = useMemo(() => {
       return initState(fields);
    }, [fields]);
@@ -79,7 +80,7 @@ export default function AddItemMulti({ setIsOpenModal, cb, title, fields, intiFi
             {children}
 
             <p className="text-right mt-[20px]">
-               <Button type="submit" primary>
+               <Button isLoading={loading} type="submit" primary>
                   Save
                </Button>
             </p>
