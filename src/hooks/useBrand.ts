@@ -1,14 +1,17 @@
 import { Brand, Category, CategorySliderSchema, SliderSchema } from "@/types";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { usePrivateRequest } from ".";
 import { useToast } from "@/store/ToastContext";
+import { useApp } from "@/store/AppContext";
+// import useAppConfig from "./useAppConfig";
 
 type Props = {
-   setBrands: Dispatch<SetStateAction<Brand[]>>;
-   setCategories: Dispatch<SetStateAction<Category[]>>;
+   // setBrands: Dispatch<SetStateAction<Brand[]>>;
+   // setCategories: Dispatch<SetStateAction<Category[]>>;
    setIsOpenModal: Dispatch<SetStateAction<boolean>>;
-   categories: Category[];
-   brands: Brand[];
+   curCategory: Category | undefined;
+   // categories: Category[];
+   curBrands: Brand[] | undefined;
 };
 
 const CAT_URL = "/app/categories";
@@ -16,8 +19,10 @@ const BRAND_URL = "/app/brands";
 const SLIDER_URL = "/slider-management/sliders";
 const CAT_SLIDER_URL = "/slider-management/category_sliders";
 
-export default function useBrandAction({ brands, categories, setBrands, setCategories, setIsOpenModal }: Props) {
+export default function useBrandAction({ setIsOpenModal, curCategory, curBrands }: Props) {
+   const { categories, setCategories, setBrands, initLoading } = useApp();
    const [apiLoading, setApiLoading] = useState(false);
+   const ranUseEffect = useRef(false)
 
    const privateRequest = usePrivateRequest();
    const { setSuccessToast, setErrorToast } = useToast();
@@ -96,23 +101,26 @@ export default function useBrandAction({ brands, categories, setBrands, setCateg
       try {
          switch (type) {
             case "Add":
+               if (curCategory === undefined || curBrands === undefined) throw new Error("Current not found");
                setApiLoading(true);
 
                const brandRes = await privateRequest.post(BRAND_URL, brand);
 
                const newBrandData = brandRes.data.data as Brand;
-               setBrands((prev) => [...prev, newBrandData]);
+               const newBrands = [...curBrands, newBrandData];
+               setBrands((prev) => ({ ...prev, [curCategory.category_ascii]: newBrands }));
                break;
 
             case "Edit":
+               if (curCategory === undefined || curBrands === undefined) throw new Error("Current not found");
                if (curIndex === undefined || !brand.id) throw new Error("missing current index");
                setApiLoading(true);
 
                await privateRequest.put(`${BRAND_URL}/${brand.id}`, brand);
 
-               const newBrands = [...brands];
-               newBrands[curIndex] = brand;
-               setBrands(newBrands);
+               const _newBrands = [...curBrands];
+               _newBrands[curIndex] = brand;
+               setBrands((prev) => ({ ...prev, [curCategory.category_ascii]: _newBrands }));
          }
          setSuccessToast(`${type} brand successful`);
       } catch (error) {
@@ -126,14 +134,15 @@ export default function useBrandAction({ brands, categories, setBrands, setCateg
 
    const deleteBrand = async (curIndex?: number) => {
       try {
-         if (curIndex === undefined) throw new Error("no have id");
-         const targetBrand = brands[curIndex];
+         if (curIndex === undefined || curBrands === undefined || curCategory === undefined)
+            throw new Error("no have id");
+         const targetBrand = curBrands[curIndex];
 
          setApiLoading(true);
          await privateRequest.delete(`${BRAND_URL}/${targetBrand.id}`);
 
-         const newBrands = brands.filter((b) => b.id !== targetBrand.id);
-         setBrands(newBrands);
+         const newBrands = curBrands.filter((b) => b.id !== targetBrand.id);
+         setBrands((prev) => ({ ...prev, [curCategory.category_ascii]: newBrands }));
          setSuccessToast(`Delete brand '${targetBrand.brand_name}' successful`);
       } catch (error) {
          console.log({ message: error });
@@ -143,6 +152,7 @@ export default function useBrandAction({ brands, categories, setBrands, setCateg
          setIsOpenModal(false);
       }
    };
+
 
    return { deleteBrand, deleteCategory, addCategory, addBrand, apiLoading };
 }

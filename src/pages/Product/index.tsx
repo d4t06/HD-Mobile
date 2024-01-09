@@ -49,7 +49,7 @@ export default function Product() {
 
    const renderProducts = () => {
       return products.map((product, index) => (
-         <div key={index} className={cx("col col-4")}>
+         <div key={index} className={cx("col w-1/2 md:w-1/3")}>
             <ProductItem data={product} />
          </div>
       ));
@@ -64,7 +64,7 @@ export default function Product() {
    const ProductsSkeletons = () => {
       return [...Array(6).keys()].map((index) => {
          return (
-            <div key={index} className={cx("col col-4")}>
+            <div key={index} className={cx("col w-1/2 md:w-1/3")}>
                <ProductSkeleton />
             </div>
          );
@@ -90,13 +90,18 @@ export default function Product() {
 
    return (
       <div className={cx("product-container")}>
+         {/* mobile category */}
+         
+
+
+
          {brandApiStatus === "loading" && sliderSkeleton}
          {brandApiStatus === "success" && canRenderSlider && (
             <ImageSlider data={sliders[curCategory!.category_ascii]} />
          )}
 
          <div className={cx("product-body", "row")}>
-            <div className="col col-9">
+            <div className="col w-full lg:w-9/12 ">
                <Label categoryName={curCategory?.category_name} count={count} loading={status === "loading"} />
                <QuickFilter loading={brandApiStatus === "loading"} brands={curBrands} curCategory={curCategory} />
                <Sort loading={status === "loading"} category_id={curCategory?.id} />
@@ -123,7 +128,9 @@ export default function Product() {
                </div>
             </div>
 
-            {<Filter loading={brandApiStatus === "loading"} categoryAscii={curCategory?.category_ascii} />}
+            <div className="col col-3 max-[768px]:hidden">
+               {<Filter loading={brandApiStatus === "loading"} categoryAscii={curCategory?.category_ascii} />}
+            </div>
          </div>
       </div>
    );

@@ -71,11 +71,11 @@ function DetailPage() {
    return (
       <>
          <div className="row pt-[30px]">
-            <div className="col col-6">
+            <div className="col w-full md:w-1/2">
                {status === "loading" && SliderSkeleton}
-               {status === "success" && <ImageSlider className="pt-[75%]" data={sliderImages} />}
+               {status === "success" && <ImageSlider className="pt-[100%]" data={sliderImages} />}
             </div>
-            <div className={"col col-6"}>
+            <div className={"col  w-full md:w-1/2"}>
                {status === "loading" && ProductInfoSkeleton}
 
                {isHaveProduct && (
@@ -91,16 +91,11 @@ function DetailPage() {
                      />
                   </>
                )}
-               <div className={"product-cta"}>
-                  <Button
-                     disable={status === "loading"}
-                     primary
-                     className="w-[100%] my-[20px] py-[10px] text-[18px]"
-                     onClick={() => {}}
-                  >
+               {/* <div className={"product-cta"}> */}
+                  <Button  disable={status === "loading"} primary className="w-[100%] mt-[14px] text-[18px]" onClick={() => {}}>
                      Mua Ngay
                   </Button>
-               </div>
+               {/* </div> */}
                {/* <div className={("product-policy")}>
                   <h1 className={("policy-title")}>Chính Sách Bảo Hành</h1>
                   <ul>
@@ -129,10 +124,10 @@ function DetailPage() {
          </div>
 
          <div className="row mt-[30px]">
-            <div className="col col-8">
+            <div className="col w-full md:w-2/3">
                <div className="h-[500px] border">Review</div>
             </div>
-            <div className="col col-4">
+            <div className="col  w-full md:w-1/3">
                <div className="h-[500px] border">Spec</div>
             </div>
          </div>

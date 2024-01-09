@@ -65,26 +65,24 @@ function InputGroup({ initCombine, isExist }: InputGroupProps, ref: Ref<CombineR
    }));
 
    return (
-      <div className="col col-6">
-         <div className="row">
-            <div className="col col-6">
-               <Input
-                  type="number"
-                  placeholder="Quantity"
-                  value={combineData.quantity}
-                  cb={(value) => handleInput("quantity", value)}
-               />
-            </div>
+      <div className="row">
+         <div className="col col-6">
+            <Input
+               type="number"
+               placeholder="Quantity"
+               value={combineData.quantity}
+               cb={(value) => handleInput("quantity", value)}
+            />
+         </div>
 
-            <div className="col col-6">
-               <Input
-                  type="text"
-                  className={error ? "bg-red-200" : ""}
-                  placeholder="Price"
-                  value={moneyFormat(combineData.price || "")}
-                  cb={(value) => handleInput("price", value)}
-               />
-            </div>
+         <div className="col col-6">
+            <Input
+               type="text"
+               className={error ? "bg-red-200" : ""}
+               placeholder="Price"
+               value={moneyFormat(combineData.price || "")}
+               cb={(value) => handleInput("price", value)}
+            />
          </div>
       </div>
    );

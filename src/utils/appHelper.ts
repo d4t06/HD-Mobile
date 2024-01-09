@@ -41,8 +41,8 @@ export const initProductObject = (data: Partial<ProductSchema>) => {
       image_url: "",
       installment: false,
       product_name: "",
-      brand_id: 0,
-      category_id: 0,
+      brand_id: undefined,
+      category_id: undefined,
       ...data,
    };
 

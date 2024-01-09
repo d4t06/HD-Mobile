@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { redirect, useParams } from "react-router-dom";
 
 // import classNames from "classnames/bind";
 
@@ -16,8 +16,16 @@ import AddItem from "@/components/Modal/AddItem";
 import OverlayCTA from "@/components/ui/OverlayCTA";
 import useVariantAction from "@/hooks/useVariantAction";
 import ConfirmModal from "@/components/Modal/Confirm";
+import useProductAction from "@/hooks/useProductAction";
 
-type ModelTarget = "add-storage" | "edit-storage" | "add-color" | "edit-color" | "delete-storage" | "delete-color";
+type ModelTarget =
+   | "add-storage"
+   | "edit-storage"
+   | "add-color"
+   | "edit-color"
+   | "delete-storage"
+   | "delete-color"
+   | "delete-product";
 
 const MAX_VAL = 999999999;
 const STORAGE_URL = "/storage-management/storages";
@@ -45,6 +53,7 @@ function EditProduct() {
    const { id } = useParams();
    const { setSuccessToast, setErrorToast } = useToast();
    const privateRequest = usePrivateRequest();
+   const { deleteProduct } = useProductAction({ setIsOpenModal });
    const { addColor, addStorage, apiLoading, deleteColor, deleteStorage } = useVariantAction({
       colors,
       setColors,
@@ -97,6 +106,7 @@ function EditProduct() {
 
    const handleDeleteStorage = async () => {
       await deleteStorage(curStorageIndex.current);
+      redirect('/dashboard/products');
    };
 
    const initStockProductData = (
@@ -246,7 +256,7 @@ function EditProduct() {
 
          ProductConfigRef.current?.validate();
 
-         setProductApiLoading(true)
+         setProductApiLoading(true);
 
          // const { newStorages, removedStorages } = trackingStorages(stockStorages.current, storages);
          // const { newColors, removedColorIds } = trackingColors(stockColors.current, colors);
@@ -282,8 +292,13 @@ function EditProduct() {
          console.log({ message: error });
          setErrorToast("Error when edit product");
       } finally {
-         setProductApiLoading(false)
+         setProductApiLoading(false);
       }
+   };
+
+   const handleDeleteProduct = async () => {
+      await deleteProduct(productData);
+
    };
 
    const renderModal = useMemo(() => {
@@ -356,6 +371,16 @@ function EditProduct() {
                   setOpenModal={setIsOpenModal}
                />
             );
+         case "delete-product":
+            if (!productData) return <h1 className="text-2xl">Product not found</h1>;
+            return (
+               <ConfirmModal
+                  label={`Delete '${productData.product_name}'`}
+                  loading={apiLoading}
+                  setOpenModal={setIsOpenModal}
+                  callback={handleDeleteProduct}
+               />
+            );
       }
    }, [isOpenModal, apiLoading]);
 
@@ -400,12 +425,12 @@ function EditProduct() {
 
    return (
       <>
-         <h1 className="text-[30px] font-[900] mb-[30px]">{productData?.product_name}</h1>
+         <h1 className="text-[22px] font-[600] mb-[30px]">{productData?.product_name}</h1>
 
          <div className="pb-[30px]">
             <div className="row mb-[30px]">
                <div className="col col-6 ">
-                  <h5 className={''}>Storage</h5>
+                  <h5 className={"text-[16px] font-[500]"}>Storage</h5>
                   <div className="flex bg-[#fff] rounded-[8px] p-[20px]">
                      {!!storages.length &&
                         storages.map((item, index) => {
@@ -429,7 +454,7 @@ function EditProduct() {
                   </div>
                </div>
                <div className="col col-6">
-                  <h5 className={''}>Color</h5>
+                  <h5 className={"text-[16px] font-[500]"}>Color</h5>
                   <div className="row bg-[#fff] rounded-[8px] p-[20px]">
                      {!!colors.length &&
                         colors.map((item, index) => (
@@ -464,10 +489,17 @@ function EditProduct() {
             )}
 
             <p className="text-center">
-               <Button isLoading={apiProductLoading} onClick={handleSubmit} primary className={("mt-[15px]")}>
-                  <i className="material-icons">save</i> Save
+               <Button isLoading={apiProductLoading} onClick={handleSubmit} primary className={"mt-[15px]"}>
+                  <i className="material-icons mr-[8px]">save</i> Save
                </Button>
             </p>
+
+            <h5 className="text-[18px] text-red-500 font-semibold mt-[30px]">DANGER ZONE</h5>
+            <div className="border-red-500 border rounded-[16px] p-[14px]">
+               <Button onClick={() => handleOpenModal("delete-product")} primary>
+                  Delete Product
+               </Button>
+            </div>
          </div>
 
          {isOpenModal && <Modal setShowModal={setIsOpenModal}>{renderModal}</Modal>}

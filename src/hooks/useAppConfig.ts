@@ -1,5 +1,5 @@
 import { Brand, Category, CategorySlider } from "@/types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePrivateRequest } from ".";
 import { sleep } from "@/utils/appHelper";
 import { useApp } from "@/store/AppContext";
@@ -22,14 +22,26 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
    // hooks
    const privateRequest = usePrivateRequest();
 
+   const curBrands = useMemo(() => {
+      if (curCategory === undefined) return undefined;
+      return brands[curCategory.category_ascii];
+   }, [curCategory, brands]);
+
+   const curSlider = useMemo(() => {
+      if (curCategory === undefined) return undefined;
+      return sliders[curCategory.category_ascii];
+   }, [curCategory, sliders]);
+
    const getBrandsAndSlider = async () => {
+      console.log("ren here");
+
       try {
          if (!curCategory?.id || !curCategory.category_ascii) throw new Error("Cur category data error");
 
-         setStatus("loading");
+         setStatus('loading');
          await sleep(300);
 
-         if (!brands[curCategory.category_ascii]) {
+         if (!curBrands) {
             const brandsRes = await privateRequest.get(BRAND_URL + "?category_id=" + curCategory?.id);
             const brandsData = brandsRes.data as (Brand & { id: number })[];
             setBrands((brands) => ({ ...brands, [curCategory.category_ascii]: brandsData }));
@@ -110,10 +122,13 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
          return;
       }
 
-      if (curCategory === undefined) return;
+      if (curCategory === undefined) {
+         setStatus("success");
+         return;
+      }
 
       getBrandsAndSlider();
    }, [curCategory, initLoading]);
 
-   return { status, getCategories, getCategoriesSlider, getHomeSlider };
+   return { status, getCategories, getCategoriesSlider, getHomeSlider, curBrands, curSlider };
 }

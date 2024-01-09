@@ -11,29 +11,26 @@ function Sidebar() {
    // const [showModal, setShowModal] = useState(false);
    return (
       <div className={cx("sidebar")}>
-         <h1 className={cx("logo")}>HD Dashboard</h1>
+         <h1 className={cx("logo")}>
+            HD <span className="text-[#cd1818]">Dashboard</span>
+         </h1>
          <div>
             <Link to="/dashboard" className={cx("sidebar__item")}>
                <i className="material-icons">phonelink</i>
                Products
             </Link>
 
-            {/* <Link className={cx("sidebar__item")} to="/dashboard/add-product">
-               <i className="material-icons">add</i>
-               Add product
-            </Link> */}
-
             <Link className={cx("sidebar__item")} to="/dashboard/brand">
                <i className="material-icons">store</i>
                Brand
             </Link>
 
-            <Link className={cx("sidebar__item")} to='/dashboard/banner'>
+            <Link className={cx("sidebar__item")} to="/dashboard/banner">
                <i className="material-icons">collections</i>
                Banner
             </Link>
 
-            <Link className={cx("sidebar__item")} to='#'>
+            <Link className={cx("sidebar__item")} to="#">
                <i className="material-icons">redeem</i>
                Order
             </Link>

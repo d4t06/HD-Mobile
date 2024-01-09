@@ -8,13 +8,11 @@ import { fetchProducts, getMoreProducts, selectedAllFilter, selectedAllProduct, 
 import { AppDispatch } from "@/store/store";
 import Table from "@/components/Table";
 import { Category, Product } from "@/types";
-import ConfirmModal from "@/components/Modal/Confirm";
 import AddProductModal from "@/components/Modal/AddProductModal";
 import { useApp } from "@/store/AppContext";
 import useAppConfig from "@/hooks/useAppConfig";
-import useProductAction from "@/hooks/useProductAction";
 
-type ModelTarget = "Delete" | "Add" | "Edit";
+type ModelTarget = "Add" | "Edit";
 
 function Dashboard() {
    const dispatch = useDispatch<AppDispatch>();
@@ -35,18 +33,15 @@ function Dashboard() {
    } = useSelector(selectedAllProduct);
    const { filters, sort } = useSelector(selectedAllFilter);
    const { categories, brands } = useApp();
-   const { status: appConfigStatus } = useAppConfig({ curCategory, autoRun: true });
-   const { deleteProduct, apiLoading } = useProductAction({ setIsOpenModal });
+   const { status: appConfigStatus, curBrands } = useAppConfig({ curCategory, autoRun: true });
+
+   const ranEffect = useRef(false);
 
    const remaining = useMemo(() => count - products.length, [products]);
 
    const handleGetMore = () => {
       // if (!curCategory) return;
       dispatch(getMoreProducts({ category_id, sort, filters, page: page + 1, admin: true }));
-   };
-
-   const handleDeleteProduct = async () => {
-      await deleteProduct(curPro.current);
    };
 
    const handleOpenModal = (type: ModelTarget, product?: Product & { curIndex: number }) => {
@@ -56,7 +51,7 @@ function Dashboard() {
    };
 
    const renderProducts = (
-      <Table colList={["Name", "Storage", "Color", "Price", "Quantity", "Installment", ""]}>
+      <Table colList={["Tên", "Bộ nhớ", "Màu sắc", "Giá", "Kho", "Trả góp", ""]}>
          {status !== "loading" && (
             <>
                {!!products.length ? (
@@ -114,13 +109,6 @@ function Dashboard() {
                                           <i className="material-icons">settings</i>
                                        </Button>
                                     </Link>
-                                    <Button
-                                       onClick={() => handleOpenModal("Delete", { ...productItem, curIndex: index })}
-                                       circle
-                                       className="bg-black/10 hover:bg-[#cd1818] hover:text-white"
-                                    >
-                                       <i className="material-icons">delete</i>
-                                    </Button>
                                  </div>
                               </td>
                            </tr>
@@ -153,25 +141,18 @@ function Dashboard() {
                   setIsOpenModalParent={setIsOpenModal}
                />
             );
-         case "Delete":
-            return (
-               <ConfirmModal
-                  label={`Delete '${curPro.current?.product_name}'`}
-                  loading={apiLoading}
-                  setOpenModal={setIsOpenModal}
-                  callback={handleDeleteProduct}
-               />
-            );
          default:
             return <h1 className="text-2xl">Noting to show</h1>;
       }
-   }, [isOpenModal]);
+   }, [isOpenModal, curCategory]);
 
    useEffect(() => {
-      dispatch(fetchProducts({ category_id: curCategory?.id || undefined, filters, page: 1, sort, admin: true }));
+      if (!ranEffect.current)
+         dispatch(fetchProducts({ category_id: curCategory?.id || undefined, filters, page: 1, sort, admin: true }));
 
       return () => {
          dispatch(storingFilters());
+         ranEffect.current = true;
       };
    }, [curCategory]);
 
@@ -189,6 +170,10 @@ function Dashboard() {
       disableButton: "border-transparent text-[20px] hover:border-[#cd1818]",
       activeButton: "border-[#cd1818] text-[30px]",
    };
+
+
+   console.log('check cur brands', curBrands, appConfigStatus);
+   
 
    if (status === "error") return <h1 className="text-2xl">Some thing went wrong</h1>;
 
@@ -219,27 +204,25 @@ function Dashboard() {
          </div>
 
          {curCategory && (
-            <>
-               <QuickFilter
-                  curCategory={curCategory}
-                  admin
-                  loading={appConfigStatus === "loading"}
-                  brands={brands[curCategory.category_ascii]}
-               />
-            </>
+            <QuickFilter
+               curCategory={curCategory}
+               admin
+               loading={appConfigStatus === "loading"}
+               brands={curBrands}
+            />
          )}
 
-         <div className="flex justify-between mt-[10px]">
-            <div className="flex">
+         <div className="flex items-center justify-between mt-[10px]">
+            <div className="flex items-end">
                <Input placeholder="Product..." cb={(key) => console.log(key)} />
                <Button primary className="ml-[8px]">
-                  Search
+                  Tìm
                </Button>
             </div>
 
             <Button onClick={() => handleOpenModal("Add")} primary>
                <i className="material-icons mr-[4px]">add</i>
-               Add product
+               Thêm sản phẩm
             </Button>
          </div>
 

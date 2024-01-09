@@ -11,6 +11,7 @@ type Props = {
 };
 
 const PRODUCT_URL = "/product-management/products";
+const SLIDER_URL = "/slider-management/sliders";
 
 export default function useProductAction({ setIsOpenModal }: Props) {
    const dispatch = useDispatch();
@@ -51,7 +52,7 @@ export default function useProductAction({ setIsOpenModal }: Props) {
                setApiLoading(true);
                const { curIndex, id, ...productProps } = product;
 
-               await privateRequest.put(`${PRODUCT_URL}/:${id}`, productProps, {
+               await privateRequest.put(`${PRODUCT_URL}/${id}`, productProps, {
                   headers: { "Content-Type": "application/json" },
                });
 
@@ -75,7 +76,11 @@ export default function useProductAction({ setIsOpenModal }: Props) {
       try {
          if (!product || product.id === undefined) throw new Error("Product data error");
          setApiLoading(true);
+
          await privateRequest.delete(`/product-management/products/${product.id}`);
+         // for await (const slider of product.sliders_data) {
+         //    await privateRequest.delete(`${SLIDER_URL}/${slider.slider_data.id}`);
+         // }
 
          const newProducts = products.filter((p) => p.product_name_ascii !== product?.product_name_ascii);
          dispatch(setProducts({ products: newProducts }));

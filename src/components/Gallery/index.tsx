@@ -159,7 +159,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                <div key={index} className={cx("col col-3")}>
                   <div className={cx("image-container")}>
                      <div className={cx("image-frame", "relative")}>
-                        <img className="opacity-[.6]" src={item.image_url} alt="img" />
+                        <img className="opacity-[.4]" src={item.image_url} alt="img" />
                         {!added && <i className="material-icons animate-spin absolute text-[30px]">sync</i>}
                      </div>
                   </div>

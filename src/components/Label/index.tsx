@@ -11,13 +11,13 @@ export default function Label({
    loading: boolean;
 }) {
    const labelSkeleton = useMemo(() => {
-      return <Skeleton className="w-[180px] h-[24px] rounded-[4px] mb-[15px]" />;
+      return <Skeleton className="w-[180px] h-[24px] rounded-[4px] mb-[6px]" />;
    }, []);
 
    if (loading) return labelSkeleton;
 
    return (
-      <h1 className="mb-[15px] text-3xl">
+      <h1 className="mb-[6px] text-[18px]">
          {categoryName} {`( `}
          <span style={{ color: "#cd1818" }}>{!loading ? count : "- -"}</span>
          {` )`} sản phẩm

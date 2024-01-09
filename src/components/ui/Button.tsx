@@ -21,10 +21,18 @@ export default function Button({
    className,
 }: Props) {
    const classes = {
-      button: "text-[14px] inline-flex items-center justify-center font-[500]",
-      primary: " hover:brightness-[90%]  rounded-[6px] px-[16px] py-[4px] bg-[#cd1818] text-[white]",
+      button: `text-[14px] ${!primary ? "inline-flex items-center justify-center" : "p-0 group border-0"} font-[600]`,
+      primary: "rounded-[8px] bg-[#8f1313] text-[white]",
       circle: "rounded-[50%] p-[6px]",
+      font: "bg-[#cd1818] transition-transform flex items-center justify-center rounded-[8px] px-[16px] py-[6px] translate-y-[-4px] group-active:translate-y-[-2px] group-hover:translate-y-[-6px]",
    };
+
+   const content = (
+      <>
+         {isLoading && <i className="material-icons animate-spin">sync</i>}
+         {!isLoading && children}
+      </>
+   );
 
    return (
       <button
@@ -35,8 +43,7 @@ export default function Button({
             primary ? classes.primary : ""
          } ${circle ? classes.circle : ""} ${className}`}
       >
-         {isLoading && <i className="material-icons animate-spin">sync</i>}
-         {!isLoading && children}
+         {primary ? <span className={classes.font}>{content}</span> : content}
       </button>
    );
 }

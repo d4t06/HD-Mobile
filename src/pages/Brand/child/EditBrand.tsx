@@ -2,7 +2,7 @@ import { Button, Gallery, Modal } from "@/components";
 import AddItem from "@/components/Modal/AddItem";
 import { Brand } from "@/types";
 import { generateId, initBrandObject } from "@/utils/appHelper";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 import styles from "../Brand.module.scss";
 import classNames from "classnames/bind";
@@ -17,18 +17,20 @@ type Props = {
    addBrand: (brand: Brand, type: OpenType, curIndex?: number) => Promise<void>;
    type: OpenType;
    curBrand?: Brand & { curIndex: number };
-   catId: number;
+   catId: number | undefined;
 };
 export default function EditBrand({ setIsOpenModalParent, addBrand, apiLoading, type, curBrand, catId }: Props) {
    const [brandData, setBrandData] = useState<Brand>(curBrand || initBrandObject({}));
    const [isOpenModal, setIsOpenModal] = useState(false);
+
 
    const handleChoseBrandImage = (imageUrls: string[]) => {
       const newBrandData: Brand = { ...brandData, image_url: imageUrls[0] };
       setBrandData(newBrandData);
    };
 
-   const handleAddBrand = async (value: string, type: "Add" | "Edit", curCategoryId: number) => {
+   const handleAddBrand = async (value: string, type: "Add" | "Edit", curCategoryId?: number) => {
+      if (curCategoryId === undefined) throw new Error("Invalid category id");
       const newBrandData: Brand = {
          ...brandData,
          brand_name: value,
@@ -45,6 +47,9 @@ export default function EditBrand({ setIsOpenModalParent, addBrand, apiLoading, 
 
    // console.log('check curBrand', curBrand);
 
+
+
+
    return (
       <AddItem
          title={tileMap[type]}
@@ -58,14 +63,14 @@ export default function EditBrand({ setIsOpenModalParent, addBrand, apiLoading, 
                {brandData.image_url && (
                   <div className={cx("brand-image")}>
                      <img src={brandData.image_url} />
-                     <Button onClick={() => handleChoseBrandImage([''])} className="ml-[8px]">
+                     <Button onClick={() => handleChoseBrandImage([""])} className="ml-[8px]">
                         <i className="material-icons text-[20px]">close</i>
                      </Button>
                   </div>
                )}
 
                {!brandData.image_url && (
-                  <Button isLoading={apiLoading} onClick={() => setIsOpenModal(true)} primary>
+                  <Button onClick={() => setIsOpenModal(true)} primary>
                      Choose image
                   </Button>
                )}

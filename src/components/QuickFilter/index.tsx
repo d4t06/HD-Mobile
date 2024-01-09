@@ -66,7 +66,7 @@ export default function QuickFilter({ brands, admin, loading, curCategory }: Pro
             {!loading && brands && (
                <>
                   {!admin && (
-                     <div className={cx("brand-list")}>
+                     <div className={cx("brand-list", "no-scrollbar")}>
                         {isFiltered ? (
                            <SelectedSort
                               // curCategory_id={curCategory_id

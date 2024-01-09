@@ -22,7 +22,6 @@ button.disable {
    scrollbar-width: none; /* Firefox */
 }
 .container {
-   min-width: 900px;
    max-width: 1100px;
    margin: 0 auto;
 }
@@ -99,4 +98,10 @@ button.disable {
 .disable {
    opacity: 0.6;
    pointer-events: none;
+}
+
+@media screen and (max-width: 768px) {
+   .container {
+      padding: 0 10px;
+   }
 }

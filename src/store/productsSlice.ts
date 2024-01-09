@@ -4,6 +4,8 @@ import searchService from "../services/searchService";
 import { Product, ProductStorage } from "@/types";
 import { FilterType, SortType } from "./filtersSlice";
 import { sleep } from "@/utils/appHelper";
+import { AxiosInstance } from "axios";
+import { usePrivateRequest } from "@/hooks";
 
 export type ProductState = {
    products: Product[];

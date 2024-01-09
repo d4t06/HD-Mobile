@@ -17,6 +17,7 @@ const cx = classNames.bind(styles);
 
 function Header() {
    const { auth, loading } = useAuth();
+   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
    const [showModal, setShowModal] = useState(false);
 
    // use hooks
@@ -39,7 +40,37 @@ function Header() {
       ));
    }, [categories, location, showModal]);
 
-   console.log("chekc decode", decode);
+   const userCta = (
+      <div className={cx("user-cta")}>
+         {loading && (
+            <>
+               <Skeleton className="h-[24px] w-[100px] rounded-[4px] mr-[8px]" />
+               <Skeleton className="h-[40px] w-[40px] rounded-full" />
+            </>
+         )}
+         {!loading && (
+            <>
+               <div className={cx("image-frame")}>
+                  {decode.username ? (
+                     <Link to="/account">
+                        <div className={cx("avatar-placeholder")}>{decode.username.charAt(0) || ""}</div>
+                     </Link>
+                  ) : (
+                     <Image classNames="rounded-full" src={defaultUser} />
+                  )}
+               </div>
+
+               {decode.username ? (
+                  <h5 className={cx("user-name")}>{decode.username}</h5>
+               ) : (
+                  <Link to={routes.LOGIN}>
+                     <Button className="hover:text-[#cd1818] mr-[8px]">Đăng nhập</Button>
+                  </Link>
+               )}
+            </>
+         )}
+      </div>
+   );
 
    return (
       <>
@@ -51,48 +82,26 @@ function Header() {
                />
             </div>
             <div className="container">
+               {/* mobile  */}
+               <div className="relative justify-center items-center h-[50px] hidden max-[768px]:flex">
+                  <Button onClick={() => setIsOpenSidebar(true)} className="absolute left-0">
+                     <i className="material-icons text-[30px]">menu</i>
+                  </Button>
+                  <Link className={cx("brand")} to={"/"}>
+                     HD <span className="text-[#cd1818]">Mobile</span>
+                  </Link>
+               </div>
+
                <div className={cx("header-top")}>
                   <div className={cx("header-top-wrap")}>
-                     <div className="left w-1/4">
+                     <div className="left w-1/4 max-[768px]:hidden">
                         <Link className={cx("brand")} to={"/"}>
                            HD <span className="text-[#cd1818]">Mobile</span>
                         </Link>
                      </div>
                      <Search setShowModal={setShowModal} />
 
-                     <div className="w-1/4">
-                        <div className={cx("user-cta")}>
-                           {loading && (
-                              <>
-                                 <Skeleton className="h-[24px] w-[100px] rounded-[4px] mr-[8px]" />
-                                 <Skeleton className="h-[40px] w-[40px] rounded-full" />
-                              </>
-                           )}
-                           {!loading && (
-                              <>
-                                 {decode.username ? (
-                                    <h5 className={cx("user-name")}>{decode.username}</h5>
-                                 ) : (
-                                    <Link to={routes.LOGIN}>
-                                       <Button className="hover:text-[#cd1818] mr-[8px]">Đăng nhập</Button>
-                                    </Link>
-                                 )}
-
-                                 <div className={cx("image-frame")}>
-                                    {decode.username ? (
-                                       <Link to="/account">
-                                          <div className={cx("avatar-placeholder")}>
-                                             {decode.username.charAt(0) || ""}
-                                          </div>
-                                       </Link>
-                                    ) : (
-                                       <Image classNames="rounded-full" src={defaultUser} />
-                                    )}
-                                 </div>
-                              </>
-                           )}
-                        </div>
-                     </div>
+                     <div className="w-1/4 max-[768px]:hidden">{userCta}</div>
                   </div>
                </div>
                <div className={cx("header-nav")}>
@@ -113,6 +122,34 @@ function Header() {
                </div>
             </div>
          </div>
+
+         <div
+            className={`hidden max-[768px]:block transition-[transform, opacity] duration-[.3s] fixed ${
+               isOpenSidebar ? "translate-x-0 opacity-[1]" : "translate-x-[-100%] opacity-[.5]"
+            } min-w-[60vw] top-0 left-0 bottom-0 bg-[#f1f1f1] z-[199]`}
+         >
+            <div className="text-white relative p-[14px] bg-[#cd1818]">
+               {userCta}
+               <Button onClick={() => setIsOpenSidebar(false)} className="absolute right-[10px] top-[10px]">
+                  <i className="material-icons text-[30px] mr-[8px]">close</i>
+               </Button>
+            </div>
+            <ul className="py-[14px] px-[10px]">
+               {categories.map((c, index) => (
+                  <Link
+                     onClick={() => setIsOpenSidebar(false)}
+                     key={index}
+                     to={`/${c.category_ascii}`}
+                     className="flex items-center py-[6px] text-[#333]"
+                  >
+                     <i className="material-icons text-[30px] mr-[8px]">{c.icon}</i>
+                     <span className="text-[18px]">{c.category_name}</span>
+                  </Link>
+               ))}
+            </ul>
+         </div>
+
+         {isOpenSidebar && <Modal child setShowModal={setIsOpenSidebar}></Modal>}
          {showModal && <Modal setShowModal={setShowModal}></Modal>}
       </>
    );

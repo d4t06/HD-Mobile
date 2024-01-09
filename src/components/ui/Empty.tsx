@@ -18,7 +18,7 @@ export default function Empty ({onClick, children, className}:Props) {
    return (
       <div onClick={onClick} className={`${classes.container} ${className}`}>
          <div className="absolute inset-0 flex items-center justify-center">
-            {children || <i className="material-icons transition-transform group-hover:scale-[1.2]">add</i>}
+            {children || <i className="material-icons transition-transform group-hover:scale-[1.2] select-none">add</i>}
          </div>
       </div>
    )

@@ -9,11 +9,12 @@ import {
    ProductDetail,
    Dashboard,
    EditProduct,
+   Unauthorized,
+   Search,
 } from "../pages";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import { Search } from "@/components";
 
 const routes = {
    HOME: "",
@@ -32,10 +33,10 @@ const publicRoutes = [
       component: Home,
       layout: DefaultLayout,
    },
-   // {
-   //    path: routes.UNAUTHORIZED,
-   //    component: UnauthorizedPage,
-   // },
+   {
+      path: routes.UNAUTHORIZED,
+      component: Unauthorized,
+   },
    {
       path: routes.LOGIN,
       component: Login,

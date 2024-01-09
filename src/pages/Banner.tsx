@@ -4,7 +4,7 @@ import useAppConfig from "@/hooks/useAppConfig";
 import { useToast } from "@/store/ToastContext";
 import { CategorySlider } from "@/types";
 import { sleep } from "@/utils/appHelper";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function Banner() {
    const { getCategoriesSlider } = useAppConfig({});
@@ -47,6 +47,26 @@ export default function Banner() {
       }
    };
 
+   const content = useMemo(
+      () =>
+         !!categorySliders.length ? (
+            categorySliders.map((item, index) => (
+               <div key={index} className="p-[16px] bg-white rounded-[16px] mb-[30px]">
+                  <h5 className="text-[18px] font-[500] mb-[10px]">{item.category_data.category_name}</h5>
+                  <SliderGroup
+                     ref={(ref) => (sliderGroupRefs.current[index] = ref!)}
+                     color_ascii=""
+                     isExist
+                     initSlider={item.slider_data}
+                  />
+               </div>
+            ))
+         ) : (
+            <h1 className="text-[18px]">Category not found</h1>
+         ),
+      [categorySliders]
+   );
+
    useEffect(() => {
       if (!ranEffect.current) {
          ranEffect.current = true;
@@ -59,26 +79,17 @@ export default function Banner() {
          <div className="text-[28px] font-bold mb-[20px]">Banner</div>
          {status === "loading" && <i className="material-icons animate-spin">sync</i>}
 
-         {status === "success" &&
-            categorySliders.map((item, index) => (
-               <div className="p-[16px] bg-white rounded-[16px] mb-[30px]">
-                  <h1 className="text-[18px] font-bold mb-[10px]">{item.category_data.category_name}</h1>
-                  <SliderGroup
-                     ref={(ref) => (sliderGroupRefs.current[index] = ref!)}
-                     color_ascii=""
-                     isExist
-                     initSlider={item.slider_data}
-                  />
-               </div>
-            ))}
+         {status === "success" && content}
 
          {status === "error" && <h1 className="text-[22px]">Some thing went wrong</h1>}
 
-         <p className="text-center">
-            <Button isLoading={apiLoading} onClick={handleSubmit} primary className={""}>
-               <i className="material-icons">save</i> Save
-            </Button>
-         </p>
+         {status === "success" && !!categorySliders.length && (
+            <p className="text-center">
+               <Button isLoading={apiLoading} onClick={handleSubmit} primary className={""}>
+                  <i className="material-icons">save</i> Save
+               </Button>
+            </p>
+         )}
       </div>
    );
 }

@@ -8,46 +8,46 @@ export const getProducts = async (props: Param) => {
    }
 
    const { filters, sort, category_id, page } = props;
-   try {
-      if (category_id === undefined) throw new Error("missing category");
-      const params: Record<string, string | string[] | number[] | number> = { page: page || 1, category_id };
+   if (category_id === undefined) {
+      console.log("missing category_id");
 
-      if (filters && filters.brands.length) params["brand_id"] = filters.brands.map((b) => b.id) as number[];
-      if (sort && sort.column && sort.type) {
-         params["column"] = sort.column;
-         params["type"] = sort.type;
-      }
-
-      const response = await publicRequest.get(`/products`, {
-         params,
-      });
-      return response.data;
-   } catch (error) {
-      console.log({ message: error });
-      throw new Error("loi getProducts services");
+      throw new Error("missing category");
    }
+   const params: Record<string, string | string[] | number[] | number> = { page: page || 1, category_id };
+
+   if (filters && filters.brands.length) params["brand_id"] = filters.brands.map((b) => b.id) as number[];
+   if (sort && sort.column && sort.type) {
+      params["column"] = sort.column;
+      params["type"] = sort.type;
+   }
+
+   const response = await publicRequest.get(`/products`, {
+      params,
+   });
+   return response.data;
 };
 
+type AdminParams = Record<string, string | string[] | number[] | number>;
 export const getProductsAdmin = async (props: Param) => {
    const { filters, category_id, page } = props;
-   if (category_id === undefined) throw new Error("missing category");
 
-   const params: Record<string, string | string[] | number[] | number> = { page: page || 1, category_id };
+   const params: AdminParams = { page: page || 1 };
    if (filters && filters.brands.length) params["brand_id"] = filters.brands.map((b) => b.id) as number[];
+   if (category_id) params["category_id"] = category_id;
    // if (sort && sort.column && sort.type) {
    //    params["column"] = sort.column;
    //    params["type"] = sort.type;
    // }
 
-   try {
-      const response = await publicRequest.get(`/product-management/products`, {
-         params,
-      });
-      return response.data;
-   } catch (error) {
-      console.log("loi getProducts services", error);
-      throw new Error('')
-   }
+   // try {
+   const response = await publicRequest.get(`/product-management/products`, {
+      params,
+   });
+   return response.data;
+   // } catch (error) {
+   //    console.log("loi getProducts services", error);
+   //    throw new Error("loi getProducts services");
+   // }
 };
 
 export const getProductDetail = async (params: { id: string }) => {

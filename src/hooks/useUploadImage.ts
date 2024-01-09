@@ -49,7 +49,7 @@ export default function useUploadImage() {
 
          setTempImages(processImageList);
 
-         for (const index of fileNeedToUploadIndexes) {
+         for (const index of fileNeedToUploadIndexes.reverse()) {
             const file = fileLists[index] as File & { for_image_index: number };
 
             const formData = new FormData();
@@ -65,18 +65,23 @@ export default function useUploadImage() {
             });
 
             const newImage = res.data.data as ImageType;
+            processImageList.pop();
 
-            processImageList[file.for_image_index] = newImage;
+            // processImageList[file.for_image_index] = newImage;
+            setCurrentImages((prev) => [newImage, ...prev]);
+            setTempImages([...processImageList]);
 
-            setTempImages(processImageList);
-            setAddedImageIds((prev) => [...prev, newImage.public_id]);
+            // setTempImages(processImageList);
+            // setAddedImageIds((prev) => [...prev, newImage.public_id]);
          }
 
-         setTempImages([]);
-         setCurrentImages((prev) => [...processImageList, ...prev]);
+         // setTempImages
+         // setCurrentImages((prev) => [...processImageList, ...prev]);
          setSuccessToast("Upload images successful");
       } catch (error) {
          console.log({ message: error });
+
+         // setTempImages([]);
          setErrorToast("Upload images failed");
          setStatus("error");
       } finally {

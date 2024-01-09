@@ -1,22 +1,9 @@
-import classNames from "classnames/bind";
-
-import styles from "@/pages/Login/Login.module.scss";
 import { Ref, forwardRef, useImperativeHandle, useRef } from "react";
 import { initCombineData } from "@/utils/appHelper";
-import {
-   ProductColor,
-   ProductCombine,
-   ProductSlider,
-   ProductStorage,
-   Slider,
-   // SliderRaw,
-   SliderSchema,
-} from "@/types";
+import { ProductColor, ProductCombine, ProductSlider, ProductStorage, Slider, SliderSchema } from "@/types";
 import { useProductContext } from "@/store/ProductDataContext";
 import SliderGroup, { SliderRef } from "./child/SliderGroup";
 import InputGroup, { CombineRef } from "./child/CombineGroup";
-
-const cx = classNames.bind(styles);
 
 type Props = {
    colors: (ProductColor & { id?: number })[];
@@ -149,7 +136,7 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
 
    return (
       <>
-         <div className={cx("label")}>Product Slider</div>
+         <div className={"text-[16px] font-[500]"}>Product Slider</div>
          {!!colors.length && (
             <div className="mb-[30px] bg-[#fff] rounded-[8px] p-[20px] flex flex-col gap-[40px]">
                {colors.map((item, index) => {
@@ -157,7 +144,7 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
                   return (
                      <div key={index} className="row items-center">
                         <div key={index} className="col col-2">
-                           <div className={cx("label", "text-center")}>{item.color}</div>
+                           <div className={"text-[16px] text-center font-[500]"}>{item.color}</div>
                         </div>
                         <div className="col col-10">
                            <SliderGroup
@@ -174,7 +161,7 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
          )}
 
          <div className="mb-[30px]">
-            <div className={cx("label")}>Quantity & Price</div>
+            <div className={"text-[16px] font-[500]"}>Quantity & Price</div>
             {!!storages.length && (
                <div className={`bg-[#fff] rounded-[8px] p-[20px]`}>
                   {storages.map((storageItem, i) =>
@@ -192,9 +179,10 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
 
                         return (
                            <div key={key} className="row items-center w-full">
-                              <div className={`${cx("col col-6", "label", "min", "center")} ${("config-item")}`}>
-                                 {storageItem.storage} / {colorItem.color}
-                                 {/* {existCombine.default && "(default)"} */}
+                              <div className="col col-2">
+                                 <h5 className={`text-[16px] text-center font-[500]`}>
+                                    {storageItem.storage} / {colorItem.color}
+                                 </h5>
                               </div>
                               <InputGroup
                                  ref={(ref) => (combineRefs.current[index] = ref!)}

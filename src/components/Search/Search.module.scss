@@ -5,8 +5,15 @@
    border-radius: 10px;
    position: relative;
    overflow: hidden;
+   z-index: 200;
    box-shadow: 2px 2px 8px rgba($color: #000000, $alpha: 0.15);
    border: 1px solid rgba($color: #000000, $alpha: .1);
+
+   @media screen and (max-width: 768px) {
+      max-width: unset;
+      width: 100%;
+      height: 44px;
+   }
 }
 .form {
    height: 100%;

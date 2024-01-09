@@ -32,7 +32,7 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
    // use hook
    const { addProduct, apiLoading } = useProductAction({ setIsOpenModal: setIsOpenModalParent });
    const { brands, categories } = useApp();
-   const { status: appStatus } = useAppConfig({ curCategory: selectedCat, autoRun: true });
+   const { status: appStatus } = useAppConfig({ curCategory: selectedCat });
    const { setErrorToast } = useToast();
 
    const brandsByCategory = useMemo(() => {
@@ -60,9 +60,16 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
       handleInput("image_url", image_url[0]);
    };
 
-   const handleSubmit = async () => {
-      console.log("check product data", productData);
+   const ableToCreateProduct = useMemo(
+      () => !!productData.product_name && productData.category_id !== undefined && productData.brand_id !== undefined,
+      [productData]
+   );
 
+   const handleSubmit = async () => {
+      if (!ableToCreateProduct) {
+         setErrorToast();
+         return;
+      }
       switch (openType) {
          case "Add":
             await addProduct("Add", productData);
@@ -78,11 +85,9 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
    if (appStatus === "error") return <h1>Some thing went wrong</h1>;
 
    const tileMap: Record<OpenType, string> = {
-      Add: "Add new product",
-      Edit: `Edit product '${curProduct?.product_name}'`,
+      Add: "Thêm sản phẩm mới",
+      Edit: `Chỉnh sửa sản phẩm '${curProduct?.product_name}'`,
    };
-
-   console.log("check brands", brands);
 
    return (
       <div className="w-[700px] max-w-[90vw]">
@@ -131,7 +136,7 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
                            onChange={(e) => handleInput("category_id", +e.target.value)}
                            className={inputClasses.input}
                         >
-                           <option value="">- - -</option>
+                           <option value={undefined}>- - -</option>
                            {!!categories.length &&
                               categories.map((category, index) => (
                                  <option key={index} value={category.id}>
@@ -151,7 +156,7 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
                            onChange={(e) => handleInput("brand_id", +e.target.value)}
                            className={inputClasses.input}
                         >
-                           <option value="">- - -</option>
+                           <option value={undefined}>- - -</option>
                            {brandsByCategory.map((brand, index) => (
                               <option key={index} value={brand.id}>
                                  {brand.brand_name}
@@ -164,7 +169,13 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
             </div>
 
             <p className="text-center">
-               <Button isLoading={apiLoading} className="font-[600]" onClick={handleSubmit} primary>
+               <Button
+                  disable={!ableToCreateProduct}
+                  isLoading={apiLoading}
+                  className="font-[600]"
+                  onClick={handleSubmit}
+                  primary
+               >
                   <i className="material-icons mr-[6px]">save</i> Save
                </Button>
             </p>

@@ -78,8 +78,8 @@ export interface Product {
    id?: number;
    product_name: string;
    product_name_ascii: string;
-   category_id: number;
-   brand_id: number;
+   category_id?: number;
+   brand_id?: number;
    image_url: string;
    installment: boolean;
    category_data: {
@@ -111,6 +111,7 @@ export type Category = {
    category_ascii: string;
    category_name: string;
    icon: string;
+   default?: boolean;
 };
 
 export type CategorySlider = {

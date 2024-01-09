@@ -47,7 +47,6 @@ function ProductFilter({ categoryAscii, loading }: Props) {
    // }, []);
 
    return (
-      <div className={cx("col", "col-3")}>
          <div className={cx("product-filter", { disable: status === "loading" })}>
             <div className={cx("filter-section")}>
                <h1 className={cx("filter-title")}>Hãng sản xuất</h1>
@@ -84,7 +83,6 @@ function ProductFilter({ categoryAscii, loading }: Props) {
                </div>
             </div>
          </div>
-      </div>
    );
 }
 
