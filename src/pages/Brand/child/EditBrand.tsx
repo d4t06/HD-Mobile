@@ -2,7 +2,7 @@ import { Button, Gallery, Modal } from "@/components";
 import AddItem from "@/components/Modal/AddItem";
 import { Brand } from "@/types";
 import { generateId, initBrandObject } from "@/utils/appHelper";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import styles from "../Brand.module.scss";
 import classNames from "classnames/bind";

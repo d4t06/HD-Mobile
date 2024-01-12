@@ -94,7 +94,7 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
          <ModalHeader setIsOpenModal={setIsOpenModalParent} title={`${tileMap[openType]}`} />
          <div className={appStatus === "loading" || apiLoading ? "opacity-60 pointer-events-none" : ""}>
             <div className="row mb-[30px]">
-               <div className="col col-4">
+               <div className="col w-1/3">
                   <div className="">
                      {!productData.image_url && (
                         <Empty onClick={() => setIsOpenModal(true)}>
@@ -111,7 +111,7 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
                      )}
                   </div>
                </div>
-               <div className="col col-8">
+               <div className="col w-2/3">
                   <div className="">
                      <div className="flex flex-col">
                         <label className={"text-[18px] mb-[4px]"} htmlFor="">

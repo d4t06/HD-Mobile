@@ -33,7 +33,7 @@ function SearchResultPage() {
    const renderProducts = () => {
       return products.map((product, index) => {
          return (
-            <div key={index} className={"col col-3"}>
+            <div key={index} className={"col w-1/4"}>
                <ProductItem key={index} data={product} />
             </div>
          );
@@ -43,7 +43,7 @@ function SearchResultPage() {
    const renderSkeletons = () => {
       return [...Array(8).keys()].map((index) => {
          return (
-            <div key={index} className={"col col-3"}>
+            <div key={index} className={"col w-1/4"}>
                <ProductSkeleton />
             </div>
          );
@@ -64,7 +64,7 @@ function SearchResultPage() {
    return (
       <div className={"pt-[30px]"}>
          <div className={"row"}>
-            <div className="col col-full">
+            <div className="col w-full">
                <h1 className="text-[18px] font-semibold  ">
                   {status !== "loading" ? (
                      <>

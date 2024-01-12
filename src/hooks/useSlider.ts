@@ -1,5 +1,5 @@
 import { SliderImage } from "@/types";
-import { useEffect, useRef, useState, MouseEvent, RefObject, DOMAttributes } from "react";
+import { useEffect, useRef, useState, MouseEvent, RefObject, DOMAttributes, TouchEvent } from "react";
 
 export default function useSlider({
    data,
@@ -22,17 +22,14 @@ export default function useSlider({
    const scrollRef = useRef(0);
    const timerId = useRef<any>();
 
-   const handleStartDrag = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
-      e.preventDefault();
-
-      if (!data.length || data.length === 1) return;
-
+   const startDrag = (pageX: number) => {
+      if (pageX === undefined) return console.log("pageX is undefined");
       const isFinish = checkIsScrollFinish(curIndex);
       if (!isFinish) return;
 
       setIsDrag(true);
 
-      prevPageXRef.current = e.pageX;
+      prevPageXRef.current = pageX;
       const imageSliderEle = imageSliderRef.current;
 
       if (!imageSliderEle) return;
@@ -40,12 +37,26 @@ export default function useSlider({
       imageSliderEle.style.scrollBehavior = "auto";
    };
 
+   const handleTouchStart = (e: TouchEvent<HTMLElement>) => {
+      // console.log("check touch event", e.changedTouches[0].pageX);
+      const pageX = e.changedTouches[0].pageX;
+      if (!data.length || data.length === 1) return;
+      startDrag(pageX);
+   };
+
+   const handleStartDrag = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
+      e.preventDefault();
+
+      if (!data.length || data.length === 1) return;
+      startDrag(e.pageX);
+   };
+
    const getNewIndex = () => {
       let newIndex = curIndex;
       const distance = scrollRef.current - prevScrollRef.current;
       const minimum = imageWidth / 4;
 
-      console.log("check distance", distance);
+      // console.log("check distance", distance);
 
       if (distance > 0) {
          if (newIndex === data.length) newIndex -= 1;
@@ -63,11 +74,8 @@ export default function useSlider({
       if (isDrag) handleStopDrag();
    };
 
-   const handleDrag = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
-      if (!isDrag) return;
-      setIsDrag(true);
-
-      const distance = e.pageX - prevPageXRef.current;
+   const drag = (pageX: number) => {
+      const distance = pageX - prevPageXRef.current;
       const newScrollLeft = prevScrollRef.current - distance;
 
       const isValid = newScrollLeft > 0 && newScrollLeft < maxScroll;
@@ -81,10 +89,23 @@ export default function useSlider({
       scrollRef.current = newScrollLeft;
    };
 
-   const handleStopDrag = () => {
+   const handleDrag = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
       if (!isDrag) return;
-      setIsDrag(false);
+      setIsDrag(true);
 
+      drag(e.pageX);
+   };
+
+   const handleTouchMove = (e: TouchEvent<HTMLElement>) => {
+      if (!isDrag) return;
+      setIsDrag(true);
+
+      const pageX = e.changedTouches[0].pageX;
+
+      drag(pageX);
+   };
+
+   const stopDrag = () => {
       if (scrollRef.current === prevScrollRef.current) return;
       if (scrollRef.current === 0 || scrollRef.current === maxScroll) return;
 
@@ -103,6 +124,12 @@ export default function useSlider({
       scrollRef.current = 0;
    };
 
+   const handleStopDrag = () => {
+      if (!isDrag) return;
+      setIsDrag(false);
+
+      stopDrag();
+   };
    // important function
    const checkIsScrollFinish = (curIndex: number) => {
       const sliderEle = imageSliderRef.current;
@@ -197,8 +224,14 @@ export default function useSlider({
 
    const attributeObj: DOMAttributes<HTMLElement> = {
       onMouseDown: (e) => handleStartDrag(e),
-      onMouseUp: () => handleStopDrag(),
+      onTouchStart: (e) => handleTouchStart(e),
+
       onMouseMove: (e) => handleDrag(e),
+      onTouchMove: (e) => handleTouchMove(e),
+
+      onMouseUp: () => handleStopDrag(),
+      onTouchEnd: () => handleStopDrag(),
+
       onMouseEnter: () => setIsEnter(true),
       onMouseLeave: () => handleMouseLeave(),
    };

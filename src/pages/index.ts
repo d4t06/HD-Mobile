@@ -11,3 +11,4 @@ export { default as Dashboard } from "./Dashboard";
 export { default as EditProduct } from "./EditProduct";
 export { default as Brand } from "./Brand";
 export { default as Register } from "./Register";
+export { default as Order } from "./Order";

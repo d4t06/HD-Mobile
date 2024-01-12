@@ -11,7 +11,7 @@ type Props = {
 };
 
 const PRODUCT_URL = "/product-management/products";
-const SLIDER_URL = "/slider-management/sliders";
+// const SLIDER_URL = "/slider-management/sliders";
 
 export default function useProductAction({ setIsOpenModal }: Props) {
    const dispatch = useDispatch();

@@ -10,7 +10,6 @@ const cx = classNames.bind(styles);
 
 type Props = {
    data: Product;
-   preview?: boolean;
 };
 
 const findActiveVar = (storages: ProductStorage[] | undefined, combines: ProductCombine[] | undefined) => {
@@ -18,29 +17,18 @@ const findActiveVar = (storages: ProductStorage[] | undefined, combines: Product
    return storages.find((s) => s.id === combines[0].storage_id);
 };
 
-export default function ProductItem({ data, preview }: Props) {
+export default function ProductItem({ data }: Props) {
    const [activeVar, setActiveVar] = useState(findActiveVar(data.storages_data, data.combines_data));
-
-   // const { category_ascii } = useParams<{ category_ascii: string }>();
-
-   // console.log('check data', data);
-   
 
    return (
       <div className={cx("product-item")}>
-         {/* preview in dashboard */}
-         {preview ? (
-            <div className={cx("product-item-frame")}>
-               <img className={cx("product-item-image")} src={data.image_url || "https://placehold.co/300X400"} />
-            </div>
-         ) : (
-            <Link
-               to={`/${data.category_data.category_ascii}/${data.product_name_ascii}?${activeVar?.storage_ascii || ""}`}
-               className={cx("product-item-frame")}
-            >
-               <img className={cx("product-item-image")} src={data.image_url || "https://placehold.co/300X400"} />
-            </Link>
-         )}
+         <Link
+            to={`/${data.category_data.category_ascii}/${data.product_name_ascii}?${activeVar?.storage_ascii || ""}`}
+            className={cx("product-item-frame")}
+         >
+            <img className={cx("product-item-image")} src={data.image_url || "https://placehold.co/300X400"} />
+         </Link>
+
          {data.installment && (
             <div className={cx("product-item-installment")}>
                <span>Trả góp 0%</span>
@@ -76,7 +64,7 @@ export default function ProductItem({ data, preview }: Props) {
                   )}
                </div> */}
 
-                     <h1 className={cx("product-item_price--current")}>{moneyFormat(activeVar!.base_price)} đ</h1>
+                     <h1 className={cx("product-item_price--current")}>{moneyFormat(activeVar!.base_price)}đ</h1>
                   </div>
                </>
             ) : (

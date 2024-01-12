@@ -32,7 +32,7 @@ function Dashboard() {
       category_id,
    } = useSelector(selectedAllProduct);
    const { filters, sort } = useSelector(selectedAllFilter);
-   const { categories, brands } = useApp();
+   const { categories } = useApp();
    const { status: appConfigStatus, curBrands } = useAppConfig({ curCategory, autoRun: true });
 
    const ranEffect = useRef(false);

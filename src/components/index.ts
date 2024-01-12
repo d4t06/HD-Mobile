@@ -16,3 +16,4 @@ export { default as Sort } from "./Sort";
 export { default as ProductDetailItem } from "./ProductDetail";
 export { default as Gallery } from "./Gallery";
 export { default as Label } from "./Label";
+export { default as Avatar } from "./Avatar";

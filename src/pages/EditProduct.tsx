@@ -17,6 +17,7 @@ import OverlayCTA from "@/components/ui/OverlayCTA";
 import useVariantAction from "@/hooks/useVariantAction";
 import ConfirmModal from "@/components/Modal/Confirm";
 import useProductAction from "@/hooks/useProductAction";
+import MyEditor from "@/components/MyEditor";
 
 type ModelTarget =
    | "add-storage"
@@ -106,7 +107,7 @@ function EditProduct() {
 
    const handleDeleteStorage = async () => {
       await deleteStorage(curStorageIndex.current);
-      redirect('/dashboard/products');
+      redirect("/dashboard/products");
    };
 
    const initStockProductData = (
@@ -298,7 +299,6 @@ function EditProduct() {
 
    const handleDeleteProduct = async () => {
       await deleteProduct(productData);
-
    };
 
    const renderModal = useMemo(() => {
@@ -429,13 +429,13 @@ function EditProduct() {
 
          <div className="pb-[30px]">
             <div className="row mb-[30px]">
-               <div className="col col-6 ">
+               <div className="col w-1/2 ">
                   <h5 className={"text-[16px] font-[500]"}>Storage</h5>
                   <div className="flex bg-[#fff] rounded-[8px] p-[20px]">
                      {!!storages.length &&
                         storages.map((item, index) => {
                            return (
-                              <div key={index} className="col col-3">
+                              <div key={index} className="col w-1/4">
                                  <Empty className="group">
                                     <span className="text-center font-semibold text-[16px]">{item.storage}</span>
                                     <OverlayCTA
@@ -448,17 +448,17 @@ function EditProduct() {
                               </div>
                            );
                         })}
-                     <div className="col col-3">
+                     <div className="col w-1/4">
                         <Empty onClick={() => handleOpenModal("add-storage")} />
                      </div>
                   </div>
                </div>
-               <div className="col col-6">
+               <div className="col w-1/2">
                   <h5 className={"text-[16px] font-[500]"}>Color</h5>
                   <div className="row bg-[#fff] rounded-[8px] p-[20px]">
                      {!!colors.length &&
                         colors.map((item, index) => (
-                           <div key={index} className="col col-3">
+                           <div key={index} className="col w-1/4">
                               <Empty>
                                  <span className="font-semibold text-[16px]">{item.color}</span>
                                  <OverlayCTA
@@ -470,7 +470,7 @@ function EditProduct() {
                               </Empty>
                            </div>
                         ))}
-                     <div className="col col-3">
+                     <div className="col w-1/4">
                         <Empty onClick={() => handleOpenModal("add-color")} />
                      </div>
                   </div>
@@ -487,6 +487,9 @@ function EditProduct() {
                   />
                </ProductDataProvider>
             )}
+
+            <h5 className="text-[16px] font-[500]">Description</h5>
+            <MyEditor />
 
             <p className="text-center">
                <Button isLoading={apiProductLoading} onClick={handleSubmit} primary className={"mt-[15px]"}>

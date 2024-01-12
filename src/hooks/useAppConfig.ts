@@ -33,12 +33,10 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
    }, [curCategory, sliders]);
 
    const getBrandsAndSlider = async () => {
-      console.log("ren here");
-
       try {
          if (!curCategory?.id || !curCategory.category_ascii) throw new Error("Cur category data error");
 
-         setStatus('loading');
+         setStatus("loading");
          await sleep(300);
 
          if (!curBrands) {
@@ -62,7 +60,7 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
 
    const getCategories = async () => {
       try {
-         console.log("run getCategories");
+         console.log(">>> api get categories");
          if (import.meta.env.DEV) await sleep(300);
          const categoriesRes = await privateRequest.get(CAT_URL);
 

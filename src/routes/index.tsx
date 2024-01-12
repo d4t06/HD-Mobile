@@ -11,6 +11,7 @@ import {
    EditProduct,
    Unauthorized,
    Search,
+   Order
 } from "../pages";
 
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -88,6 +89,12 @@ const privateRoutes = [
       path: "/dashboard/product/edit/:id",
       role: ["ADMIN"],
       component: EditProduct,
+      layout: DashboardLayout,
+   },
+   {
+      path: "/dashboard/order",
+      role: ["ADMIN"],
+      component: Order,
       layout: DashboardLayout,
    },
 ];

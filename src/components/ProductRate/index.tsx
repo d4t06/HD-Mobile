@@ -5,11 +5,11 @@ const cx = classNames.bind(styles);
 
 function ProductRate() {
    return (
-      <div className={cx('col-full', 'product-rate')}>
+      <div className={cx('w-full', 'product-rate')}>
                <div className={cx('rate-container')}>
                   <h1>Đánh giá</h1>
                   <div className={cx('rate-body')}>
-                     <div className={cx('rate-left', 'col-5')}>
+                     <div className={cx('rate-left', 'w-1/2')}>
                         <div className={cx('header-box', 'rate-top')}>
                            <p className={cx('star', 'point')}>4.4</p>
                            <span>
@@ -82,9 +82,9 @@ function ProductRate() {
                            </li>
                         </ul>
                      </div>
-                     <div className={cx('rate-rigth', 'col-half')}>
+                     <div className={cx('rate-rigth', 'w-1/2')}>
                         <div className="row">
-                           <div className={cx('col-full', 'rate-images')}>
+                           <div className={cx('w-full', 'rate-images')}>
                               <div className={cx('rate-image-frame')}>
                                  <img
                                     src="https://cdn.tgdd.vn/comment/52456871/received_440062338145774WW3X7.jpeg"

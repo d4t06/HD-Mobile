@@ -159,7 +159,7 @@ function SliderGroup({ initSlider, isExist, color_ascii }: SliderGroupProps, ref
       <>
          <div className="row">
             {sliderImages.map((sI, index) => (
-               <div key={index} className="col col-2">
+               <div key={index} className="col w-2/12">
                   <Empty>
                      <Image classNames="" src={sI.image_url} />
                      <OverlayCTA
@@ -177,7 +177,7 @@ function SliderGroup({ initSlider, isExist, color_ascii }: SliderGroupProps, ref
                   </Empty>
                </div>
             ))}
-            <div className="col col-2">
+            <div className="col w-2/12">
                <Empty className={`${error ? "bg-red-200" : ""}`} onClick={() => handleOpenModal("add")} />
             </div>
          </div>

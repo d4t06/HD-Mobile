@@ -1,0 +1,38 @@
+.tiptap {
+   > * + * {
+      margin-top: 0.75em;
+   }
+   p {
+      font-size: 16px;
+      color: #495057;
+   }
+   h5 {
+      line-height: 1.1;
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
+   }
+
+   img {
+      margin: 0 auto;
+      &.ProseMirror-selectednode {
+         outline: 3px solid #68cef8;
+      }
+   }
+
+   ul,
+   ol {
+      padding: 0 1rem;
+   }
+}
+
+.my-editor {
+   button {
+      padding: 3px 6px;
+      border-radius: 4px;
+      &.active {
+         background-color: white;
+         color: #cd1818;
+      }
+   }
+}

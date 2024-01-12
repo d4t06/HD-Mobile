@@ -38,7 +38,6 @@
       right: 0;
       height: 105px;
       z-index: 199;
-      // border-bottom: 1px solid rgba($color: #000000, $alpha: 0.1);
 
       &-nav {
          display: none;
@@ -59,48 +58,8 @@
 
 .brand {
    font-size: 2.5rem;
-   font-weight: bold;
+   font-weight: 600;
    line-height: 1;
-}
-
-.user-cta {
-   display: flex;
-   align-items: center;
-   justify-content: flex-end;
-
-   .image-frame {
-      width: 40px;
-      height: 40px;
-      margin-right: 8px;
-   }
-   .user-name {
-      font-size: 1.6rem;
-      font-weight: 500;
-   }
-   .user-image {
-      width: 100%;
-      border-radius: 50%;
-      object-fit: contain;
-      object-position: center;
-   }
-   .avatar-placeholder {
-      height: 100%;
-      width: 100%;
-      background-color: #ccc;
-      color: #fff;
-      font-size: 25px;
-      text-align: center;
-      border-radius: 99px;
-      line-height: 46px;
-   }
-
-   @media screen and (max-width: 768px) {
-      justify-content: flex-start;
-      .image-frame {
-         height: 46px;
-         width: 46px;
-      }
-   }
 }
 
 .nav-list {

@@ -1,8 +1,8 @@
 import classNames from "classnames/bind";
 import styles from "./Brand.module.scss";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Brand, Category, GetArrayType } from "@/types";
-import { usePrivateRequest } from "@/hooks";
+import { useMemo, useRef, useState } from "react";
+import { Category, GetArrayType } from "@/types";
+// import { usePrivateRequest } from "@/hooks";
 import { Modal, Empty } from "@/components";
 import { inputClasses } from "@/components/ui/Input";
 import { generateId } from "@/utils/appHelper";
@@ -16,8 +16,8 @@ import useAppConfig from "@/hooks/useAppConfig";
 import { useApp } from "@/store/AppContext";
 const cx = classNames.bind(styles);
 
-const CAT_URL = "/app/categories";
-const BRAND_URL = "/app/brands";
+// const CAT_URL = "/app/categories";
+// const BRAND_URL = "/app/brands";
 const CAT_FIELDS: ["Name", "Icon"] = ["Name", "Icon"];
 
 type ModalTarget = "add-brand" | "add-category" | "edit-category" | "delete-category" | "delete-brand" | "edit-brand";
@@ -32,7 +32,7 @@ export default function CategoryBrand() {
    // const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
 
    const openModalTarget = useRef<ModalTarget | "">("");
-   const ranUseEffect = useRef(false);
+   // const ranUseEffect = useRef(false);
    const curCatIndex = useRef<number>();
    const curBrandIndex = useRef<number>();
 
@@ -235,7 +235,7 @@ export default function CategoryBrand() {
             <div className={`row  ${appConfigStatus === "loading" || apiLoading ? "disable" : ""}`}>
                {curBrands &&
                   curBrands.map((brand, index) => (
-                     <div key={index} className="col col-2">
+                     <div key={index} className="col w-2/12">
                         <Empty>
                            <div className="">
                               <p className="text-[14px] text-center">{brand.brand_name}</p>
@@ -257,7 +257,7 @@ export default function CategoryBrand() {
                      </div>
                   ))}
 
-               <div className="col col-2">
+               <div className="col w-2/12">
                   <Empty onClick={() => handleOpenModal("add-brand")} />
                </div>
             </div>

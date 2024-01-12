@@ -61,13 +61,13 @@ function LoginPage() {
    useEffect(() => {
       if (loading) return;
 
-      if (auth) navigate('/');
+      if (auth) navigate("/");
       else setRunCheckAuth(true);
    }, [loading]);
 
    useEffect(() => {
       userInputRef.current?.focus();
-   }, []);
+   }, [runCheckAuth]);
 
    if (!runCheckAuth || loading) return;
 

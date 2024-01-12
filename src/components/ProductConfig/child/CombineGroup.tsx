@@ -66,7 +66,7 @@ function InputGroup({ initCombine, isExist }: InputGroupProps, ref: Ref<CombineR
 
    return (
       <div className="row">
-         <div className="col col-6">
+         <div className="col w-1/2">
             <Input
                type="number"
                placeholder="Quantity"
@@ -75,7 +75,7 @@ function InputGroup({ initCombine, isExist }: InputGroupProps, ref: Ref<CombineR
             />
          </div>
 
-         <div className="col col-6">
+         <div className="col w-1/2">
             <Input
                type="text"
                className={error ? "bg-red-200" : ""}

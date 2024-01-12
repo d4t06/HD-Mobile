@@ -6,7 +6,6 @@
    box-shadow: 0 4px 15px 0px rgba(0, 0, 0, 0.15);
    text-decoration: none;
    border: 1px solid transparent;
-   margin-top: 15px;
    padding: 5px;
    padding-top: 10px;
    border-radius: 8px;
@@ -39,14 +38,16 @@
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
       overflow: hidden;
+
+      @media screen and (max-width: 768px) {
+         font-size: 1.6rem;
+      }
    }
 
    &_price {
       font-size: 1.9rem;
       font-weight: 500;
       height: 5rem;
-      margin-bottom: 5px;
-      color: #99a2aa;
       text-align: left;
 
       &--old {
@@ -105,14 +106,17 @@
    font-size: 2.3rem;
    line-height: 2.3rem;
    color: #cd1818;
-   font-style: bold;
+   font-weight: 600;
+
+   @media screen and (max-width: 768px) {
+      font-size: 2rem;
+   }
 }
 
 @mixin active-variant {
    border-color: #cd1818;
    background-color: #cd1818;
    color: #fff !important;
-   font-weight: bold;
 }
 .variant-box {
    display: flex;
@@ -131,13 +135,16 @@
       border: 1px solid rgba($color: #000000, $alpha: 0.1);
       cursor: pointer;
 
+      @media screen and (max-width: 768px) {
+         width: 50%;
+      }
+
       &.active {
          @include active-variant();
       }
       &:hover {
          color: #cd1818;
          border-color: #cd1818;
-         font-weight: bold;
       }
    }
 }

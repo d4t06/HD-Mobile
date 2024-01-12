@@ -19,15 +19,12 @@ function Home() {
       }
    }, []);
 
-
-   console.log('check status', status);
-   
-
    return (
       <div className="">
          {status === "loading" && sliderSkeleton}
          {status === "success" && sliders["home"] && <ImageSlider data={sliders["home"]} />}
 
+         {/* mobile categories */}
          {!initLoading && (
             <div className="hidden max-[768px]:block mt-[16px]">
                <h5 className="text-[18px] mb-[6px]">Danh mục sản phẩm</h5>

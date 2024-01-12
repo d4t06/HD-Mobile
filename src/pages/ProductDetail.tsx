@@ -24,7 +24,7 @@ function DetailPage() {
             <Skeleton className="w-[50px] h-[20px] rounded-[6px] mb-[4px]" />
             <div className="row">
                {[...Array(2).keys()].map((item) => (
-                  <div key={item} className="col col-4">
+                  <div key={item} className="col w-1/3">
                      <Skeleton className="h-[6rem] rounded-[6px]" />
                   </div>
                ))}
@@ -33,7 +33,7 @@ function DetailPage() {
             <Skeleton className="w-[50px] h-[20px] rounded-[6px] mt-[14px] mb-[4px]" />
             <div className="row">
                {[...Array(2).keys()].map((item) => (
-                  <div key={item} className="col col-4">
+                  <div key={item} className="col w-1/3">
                      <Skeleton className="h-[6rem] rounded-[6px]" />
                   </div>
                ))}
@@ -71,11 +71,11 @@ function DetailPage() {
    return (
       <>
          <div className="row pt-[30px]">
-            <div className="col w-full md:w-1/2">
+            <div className="col w-full md:w-7/12">
                {status === "loading" && SliderSkeleton}
-               {status === "success" && <ImageSlider className="pt-[100%]" data={sliderImages} />}
+               {status === "success" && <ImageSlider className="pt-[5   0%]" data={sliderImages} />}
             </div>
-            <div className={"col  w-full md:w-1/2"}>
+            <div className={"col  w-full md:w-5/12"}>
                {status === "loading" && ProductInfoSkeleton}
 
                {isHaveProduct && (

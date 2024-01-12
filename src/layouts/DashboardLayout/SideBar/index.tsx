@@ -30,7 +30,7 @@ function Sidebar() {
                Banner
             </Link>
 
-            <Link className={cx("sidebar__item")} to="#">
+            <Link className={cx("sidebar__item")} to="/dashboard/order">
                <i className="material-icons">redeem</i>
                Order
             </Link>

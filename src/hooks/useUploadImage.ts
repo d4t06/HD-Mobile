@@ -8,7 +8,7 @@ import { useToast } from "@/store/ToastContext";
 const IMAGE_URL = "/image-management/images";
 
 export default function useUploadImage() {
-   const { setCurrentImages, setAddedImageIds, setStatus, setTempImages } = useUploadContext();
+   const { setCurrentImages, setStatus, setTempImages } = useUploadContext();
    const privateRequest = usePrivateRequest();
    const { setErrorToast, setSuccessToast } = useToast();
 

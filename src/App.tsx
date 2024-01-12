@@ -6,7 +6,7 @@ import PersistLogin from "./routes/PersistLogin";
 
 function App() {
    return (
-      <Router basename="HD-Mobile">
+      <Router basename="/HD-Mobile">
          <Routes>
             <Route element={<PersistLogin />}>
                {publicRoutes.map((route, index) => {

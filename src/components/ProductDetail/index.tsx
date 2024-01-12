@@ -32,10 +32,10 @@ function DetailProductItem({ data }: Props) {
    return (
       <>
          <div className={cx("row", "main-contain")}>
-            <div className={cx("col-large col-6", "box_left")}>
+            <div className={cx("col w-1/2", "box_left")}>
                {!!sliderImages.length && <ImageSlider className="pt-[75%]" data={sliderImages} />}
             </div>
-            <div className={cx("col-large col-6", "box_right")}>
+            <div className={cx("col w-1/2", "box_right")}>
                <h1 className={cx("product-name")}>{data.product_name}</h1>
 
                <ProductVariantList

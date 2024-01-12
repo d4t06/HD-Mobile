@@ -110,7 +110,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
    const imageSkeleton = useMemo(
       () =>
          [...Array(8).keys()].map((item) => (
-            <div key={item} className={cx("col col-3", "gallery-item")}>
+            <div key={item} className={cx("col w-1/4", "gallery-item")}>
                <Skeleton className="pt-[100%] w-[100% rounded-[6px]" />
             </div>
          )),
@@ -125,7 +125,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
          const isInChoseList = indexOf !== -1;
 
          return (
-            <div key={index} className={cx("col col-3")}>
+            <div key={index} className={cx("col w-1/4")}>
                <div className={cx("image-container", "group")}>
                   <div
                      onClick={() => setActive(item)}
@@ -156,7 +156,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
          tempImages?.map((item, index) => {
             const added = addedImageIds.includes(item.public_id);
             return (
-               <div key={index} className={cx("col col-3")}>
+               <div key={index} className={cx("col w-1/4")}>
                   <div className={cx("image-container")}>
                      <div className={cx("image-frame", "relative")}>
                         <img className="opacity-[.4]" src={item.image_url} alt="img" />
@@ -204,8 +204,8 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
             </Button>
          </div>
          <div className={cx("gallery__body")}>
-            <div className={cx("row large", "container")}>
-               <div className={cx("col-large col-8 no-scrollbar", "left")}>
+            <div className={cx("row", "container")}>
+               <div className={cx("w-2/3 no-scrollbar", "left")}>
                   <div className="row">
                      {status === "loading" && imageSkeleton}
 
@@ -222,7 +222,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                      )}
                   </div>
                </div>
-               <div className={cx("col-large col-4 overflow-hidden border-l-[2px]")}>
+               <div className={cx("col w-1/3 overflow-hidden border-l-[2px]")}>
                   {active && (
                      <div className={cx("image-info")}>
                         <h2 className="break-words">{active.name}</h2>

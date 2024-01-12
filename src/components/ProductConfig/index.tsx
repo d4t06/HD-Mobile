@@ -143,10 +143,10 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
                   const { existSlider, isExits } = getExistSlider(sliders, item, product_name);
                   return (
                      <div key={index} className="row items-center">
-                        <div key={index} className="col col-2">
+                        <div key={index} className="col w-2/12">
                            <div className={"text-[16px] text-center font-[500]"}>{item.color}</div>
                         </div>
-                        <div className="col col-10">
+                        <div className="col w-10/12">
                            <SliderGroup
                               color_ascii={item.color_ascii}
                               ref={(ref) => (sliderRefs.current[index] = ref!)}
@@ -179,7 +179,7 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
 
                         return (
                            <div key={key} className="row items-center w-full">
-                              <div className="col col-2">
+                              <div className="col w-2/12">
                                  <h5 className={`text-[16px] text-center font-[500]`}>
                                     {storageItem.storage} / {colorItem.color}
                                  </h5>

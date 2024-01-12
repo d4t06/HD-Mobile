@@ -8,14 +8,15 @@ type Props = {
    children?: ReactNode;
    setShowModal: Dispatch<SetStateAction<boolean>>;
    child?:boolean
+   z?: string
 };
 
-function Modal({ children, setShowModal, child }: Props) {
+function Modal({ children, setShowModal, child, z }: Props) {
    return (
       <>
          {createPortal(
             <>
-               <div className={cx("overlay", {child})} onClick={() => setShowModal(false)}></div>
+               <div className={cx("overlay", {child}, `${z ?? ''}`)} onClick={() => setShowModal(false)}></div>
                {children && (
                   <div className={cx("modal")}>
                      {children}

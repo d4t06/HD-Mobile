@@ -49,7 +49,7 @@ export default function Product() {
 
    const renderProducts = () => {
       return products.map((product, index) => (
-         <div key={index} className={cx("col w-1/2 md:w-1/3")}>
+         <div key={index} className={cx("col w-1/2 lg:w-1/3")}>
             <ProductItem data={product} />
          </div>
       ));
@@ -61,15 +61,15 @@ export default function Product() {
       [sliders, curCategory]
    );
 
-   const ProductsSkeletons = () => {
-      return [...Array(6).keys()].map((index) => {
-         return (
+   const ProductsSkeletons = useMemo(
+      () =>
+         [...Array(6).keys()].map((index) => (
             <div key={index} className={cx("col w-1/2 md:w-1/3")}>
                <ProductSkeleton />
             </div>
-         );
-      });
-   };
+         )),
+      []
+   );
 
    useEffect(() => {
       if (!category_ascii || !curCategory) return;
@@ -91,9 +91,6 @@ export default function Product() {
    return (
       <div className={cx("product-container")}>
          {/* mobile category */}
-         
-
-
 
          {brandApiStatus === "loading" && sliderSkeleton}
          {brandApiStatus === "success" && canRenderSlider && (
@@ -101,14 +98,14 @@ export default function Product() {
          )}
 
          <div className={cx("product-body", "row")}>
-            <div className="col w-full lg:w-9/12 ">
+            <div className="col w-full md:w-3/4 ">
                <Label categoryName={curCategory?.category_name} count={count} loading={status === "loading"} />
                <QuickFilter loading={brandApiStatus === "loading"} brands={curBrands} curCategory={curCategory} />
                <Sort loading={status === "loading"} category_id={curCategory?.id} />
 
-               <div className={cx("product-container")}>
+               <div className={"mt-[15px]"}>
                   <div className="row">
-                     {(status === "loading" || initLoading || status === "more-loading") && ProductsSkeletons()}
+                     {(status === "loading" || initLoading || status === "more-loading") && ProductsSkeletons}
                      {status !== "loading" && (
                         <>{!products.length || status === "error" ? <NoProduct /> : renderProducts()}</>
                      )}
@@ -128,7 +125,7 @@ export default function Product() {
                </div>
             </div>
 
-            <div className="col col-3 max-[768px]:hidden">
+            <div className="col w-1/4 max-[768px]:hidden">
                {<Filter loading={brandApiStatus === "loading"} categoryAscii={curCategory?.category_ascii} />}
             </div>
          </div>

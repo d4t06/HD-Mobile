@@ -1,5 +1,5 @@
 import { Brand, Category, CategorySliderSchema, SliderSchema } from "@/types";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { usePrivateRequest } from ".";
 import { useToast } from "@/store/ToastContext";
 import { useApp } from "@/store/AppContext";
@@ -20,9 +20,9 @@ const SLIDER_URL = "/slider-management/sliders";
 const CAT_SLIDER_URL = "/slider-management/category_sliders";
 
 export default function useBrandAction({ setIsOpenModal, curCategory, curBrands }: Props) {
-   const { categories, setCategories, setBrands, initLoading } = useApp();
+   const { categories, setCategories, setBrands } = useApp();
    const [apiLoading, setApiLoading] = useState(false);
-   const ranUseEffect = useRef(false)
+   // const ranUseEffect = useRef(false)
 
    const privateRequest = usePrivateRequest();
    const { setSuccessToast, setErrorToast } = useToast();
