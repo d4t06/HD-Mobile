@@ -73,7 +73,7 @@ function DetailPage() {
          <div className="row pt-[30px]">
             <div className="col w-full md:w-7/12">
                {status === "loading" && SliderSkeleton}
-               {status === "success" && <ImageSlider className="pt-[5   0%]" data={sliderImages} />}
+               {status === "success" && <ImageSlider className="pt-[50%]" data={sliderImages} />}
             </div>
             <div className={"col  w-full md:w-5/12"}>
                {status === "loading" && ProductInfoSkeleton}
@@ -125,7 +125,9 @@ function DetailPage() {
 
          <div className="row mt-[30px]">
             <div className="col w-full md:w-2/3">
-               <div className="h-[500px] border">Review</div>
+               <div className="h-[500px] border">
+                  
+               </div>
             </div>
             <div className="col  w-full md:w-1/3">
                <div className="h-[500px] border">Spec</div>

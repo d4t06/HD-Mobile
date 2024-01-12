@@ -1,153 +1,168 @@
 import {
-   Brand,
-   ImageType,
-   Product,
-   ProductColor,
-   ProductCombine,
-   ProductSchema,
-   ProductSlider,
-   ProductStorage,
+  Brand,
+  ImageType,
+  Product,
+  ProductColor,
+  ProductCombine,
+  ProductSchema,
+  ProductSlider,
+  ProductStorage,
 } from "@/types";
 
 export const sleep = (time: number) =>
-   new Promise<void>((rs) => {
-      setTimeout(() => {
-         rs();
-      }, time);
-   });
+  new Promise<void>((rs) => {
+    setTimeout(() => {
+      rs();
+    }, time);
+  });
 
 export const moneyFormat = (money: string | number) => {
-   const formatter = new Intl.NumberFormat("en-US");
-   if (!money) return "";
-   return formatter.format(+money);
+  const formatter = new Intl.NumberFormat("en-US");
+  if (!money) return "";
+  return formatter.format(+money);
+};
+
+export const countDayDiff = (dateString: string) => {
+  const mysqlDate = new Date(dateString);
+  const currentDate = new Date();
+
+  const daysDiff = Math.floor(
+    Math.abs(currentDate.getTime() - mysqlDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  return daysDiff;
 };
 
 export const initImageObject = (data: Partial<ImageType>) => {
-   const newImage: ImageType = {
-      public_id: "",
-      image_url: "",
-      link_to: "",
-      name: "",
-      size: 0,
-      ...data,
-   };
+  const newImage: ImageType = {
+    public_id: "",
+    image_url: "",
+    link_to: "",
+    name: "",
+    size: 0,
+    ...data,
+  };
 
-   return newImage;
+  return newImage;
 };
 
 export const initProductObject = (data: Partial<ProductSchema>) => {
-   const newProduct: ProductSchema = {
-      product_name_ascii: "",
-      image_url: "",
-      installment: false,
-      product_name: "",
-      brand_id: undefined,
-      category_id: undefined,
-      ...data,
-   };
+  const newProduct: ProductSchema = {
+    product_name_ascii: "",
+    image_url: "",
+    installment: false,
+    product_name: "",
+    brand_id: undefined,
+    category_id: undefined,
+    ...data,
+  };
 
-   return newProduct;
+  return newProduct;
 };
 
 export const initProductDetailObject = (data: Partial<Product>) => {
-   const newProduct: Product = {
-      ...initProductObject({}),
-      brand_data: { brand_ascii: "", brand_name: "" },
-      category_data: { category_ascii: "", category_name: "" },
-      colors_data: [],
-      combines_data: [],
-      sliders_data: [],
-      storages_data: [],
-      ...data,
-   };
+  const newProduct: Product = {
+    ...initProductObject({}),
+    brand_data: { brand_ascii: "", brand_name: "" },
+    category_data: { category_ascii: "", category_name: "" },
+    colors_data: [],
+    combines_data: [],
+    sliders_data: [],
+    storages_data: [],
+    ...data,
+  };
 
-   return newProduct;
+  return newProduct;
 };
 
 export const initStorageObject = (data: Partial<ProductStorage>) => {
-   const initStorage: ProductStorage = {
-      id: undefined,
-      base_price: 0,
-      product_name_ascii: "",
-      default: false,
-      storage: "",
-      storage_ascii: "",
-      ...data,
-   };
+  const initStorage: ProductStorage = {
+    id: undefined,
+    base_price: 0,
+    product_name_ascii: "",
+    default: false,
+    storage: "",
+    storage_ascii: "",
+    ...data,
+  };
 
-   return initStorage;
+  return initStorage;
 };
 
 export const initColorObject = (data: Partial<ProductColor>) => {
-   const newColor: ProductColor = {
-      color: "",
-      id: undefined,
-      product_name_ascii: "",
-      color_ascii: "",
-      default: false,
-      ...data,
-   };
+  const newColor: ProductColor = {
+    color: "",
+    id: undefined,
+    product_name_ascii: "",
+    color_ascii: "",
+    default: false,
+    ...data,
+  };
 
-   return newColor;
+  return newColor;
 };
 
-export function initCombineData(data: Partial<ProductCombine>, color: string, storage: string) {
-   // eliminate in order to prevent replace data
-   const { storage_data, color_data, ...rest } = data;
-   const combineData: ProductCombine = {
-      id: undefined,
-      default: false,
-      price: 0,
-      color_id: 0,
-      storage_id: 0,
-      product_name_ascii: "",
-      quantity: 0,
-      color_data: { color, color_ascii: generateId(color) },
-      storage_data: { storage, storage_ascii: generateId(storage) },
-      ...rest,
-   };
+export function initCombineData(
+  data: Partial<ProductCombine>,
+  color: string,
+  storage: string
+) {
+  // eliminate in order to prevent replace data
+  const { storage_data, color_data, ...rest } = data;
+  const combineData: ProductCombine = {
+    id: undefined,
+    default: false,
+    price: 0,
+    color_id: 0,
+    storage_id: 0,
+    product_name_ascii: "",
+    quantity: 0,
+    color_data: { color, color_ascii: generateId(color) },
+    storage_data: { storage, storage_ascii: generateId(storage) },
+    ...rest,
+  };
 
-   return combineData;
+  return combineData;
 }
 
 export const initProductSlider = (data: Partial<ProductSlider>) => {
-   const productSlider: ProductSlider = {
-      color_id: 0,
-      id: 0,
-      product_name_ascii: "",
-      slider_id: 0,
-      color_data: { color: "", color_ascii: "" },
-      slider_data: { images: [], slider_name: "", id: 0 },
-      ...data,
-   };
+  const productSlider: ProductSlider = {
+    color_id: 0,
+    id: 0,
+    product_name_ascii: "",
+    slider_id: 0,
+    color_data: { color: "", color_ascii: "" },
+    slider_data: { images: [], slider_name: "", id: 0 },
+    ...data,
+  };
 
-   return productSlider;
+  return productSlider;
 };
 
 export const generateId = (name: string): string => {
-   const convertToEn = (str: string) => {
-      const newString = str
-         .toLocaleLowerCase()
-         .replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ắ|ằ|ẳ|ẵ|ặ/g, "a")
-         .replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e")
-         .replace(/ì|í|ị|ỉ|ĩ/g, "i")
-         .replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ/g, "o")
-         .replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u")
-         .replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y")
-         .replace(/đ/g, "d");
-      return newString;
-   };
-   return convertToEn(name).replaceAll(/[\W_]/g, "-");
+  const convertToEn = (str: string) => {
+    const newString = str
+      .toLocaleLowerCase()
+      .replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ắ|ằ|ẳ|ẵ|ặ/g, "a")
+      .replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e")
+      .replace(/ì|í|ị|ỉ|ĩ/g, "i")
+      .replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ/g, "o")
+      .replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u")
+      .replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y")
+      .replace(/đ/g, "d");
+    return newString;
+  };
+  return convertToEn(name).replaceAll(/[\W_]/g, "-");
 };
 
 export const initBrandObject = (data: Partial<Brand>) => {
-   const object: Brand = {
-      brand_name: "",
-      brand_ascii: "",
-      image_url: "",
-      category_id: 0,
-      ...data,
-   };
+  const object: Brand = {
+    brand_name: "",
+    brand_ascii: "",
+    image_url: "",
+    category_id: 0,
+    ...data,
+  };
 
-   return object;
+  return object;
 };
