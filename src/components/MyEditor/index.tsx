@@ -1,18 +1,28 @@
-import { EditorContent, useEditor } from "@tiptap/react";
+import { Editor, EditorContent, EditorOptions, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./Toolbar";
 import Image from "@tiptap/extension-image";
 import "./style.scss";
+import { Ref, forwardRef, useImperativeHandle } from "react";
 
-export default function MyEditor() {
+export type EditorRef = {
+   getContent: () => string | undefined;
+};
+
+interface Props extends Partial<EditorOptions> {}
+
+function MyEditor({ extensions, ...props }: Props, ref: Ref<EditorRef>) {
    const editor = useEditor({
       extensions: [StarterKit, Image],
-      content: "",
-      onUpdate: ({editor}) => {
-         console.log('check editor content', editor.getHTML());
-         
-      }
+      ...props,
    });
+
+   const getContent = () => {
+      if (editor === null) throw new Error("edit is undefined");
+      return editor.getHTML();
+   };
+
+   useImperativeHandle(ref, () => ({ getContent }));
 
    const classes = {
       wrapper: "border border-black/10 bg-white my-editor",
@@ -31,3 +41,5 @@ export default function MyEditor() {
       </div>
    );
 }
+
+export default forwardRef(MyEditor);

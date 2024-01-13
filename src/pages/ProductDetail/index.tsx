@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, ImageSlider } from "@/components";
-import * as productServices from "../services/productServices";
+import * as productServices from "@/services/productServices";
 import { Product, SliderImage } from "@/types";
 import Skeleton from "@/components/Skeleton";
 import ProductVariantList from "@/components/ProductVariantList";
 import { initProductDetailObject } from "@/utils/appHelper";
+import HTMLReactParser from "html-react-parser/lib/index";
+import "./styles.scss";
+import SpecTable from "./child/SpecTable";
 
 function DetailPage() {
    const [product, setProduct] = useState<Product>(initProductDetailObject({}));
@@ -66,6 +69,8 @@ function DetailPage() {
       }
    }, [key]);
 
+   console.log("check ", product.detail.content);
+
    if (status === "error" || (status === "success" && !product)) return <h1>Some thing went wrong</h1>;
 
    return (
@@ -92,9 +97,14 @@ function DetailPage() {
                   </>
                )}
                {/* <div className={"product-cta"}> */}
-                  <Button  disable={status === "loading"} primary className="w-[100%] mt-[14px] text-[18px]" onClick={() => {}}>
-                     Mua Ngay
-                  </Button>
+               <Button
+                  disable={status === "loading"}
+                  primary
+                  className="w-[100%] mt-[14px] text-[18px]"
+                  onClick={() => {}}
+               >
+                  Mua Ngay
+               </Button>
                {/* </div> */}
                {/* <div className={("product-policy")}>
                   <h1 className={("policy-title")}>Chính Sách Bảo Hành</h1>
@@ -124,17 +134,13 @@ function DetailPage() {
          </div>
 
          <div className="row mt-[30px]">
-            <div className="col w-full md:w-2/3">
-               <div className="h-[500px] border">
-                  
-               </div>
+            <div className={"content-container col w-full md:w-2/3"}>
+               {HTMLReactParser(product.detail.content || "")}
             </div>
             <div className="col  w-full md:w-1/3">
-               <div className="h-[500px] border">Spec</div>
+               <SpecTable attrs={product.attributes_data} />
             </div>
          </div>
-
-         <div className="mt-[30px] h-[500px] border">review</div>
       </>
    );
 }

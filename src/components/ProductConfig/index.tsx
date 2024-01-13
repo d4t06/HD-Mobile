@@ -1,70 +1,37 @@
 import { Ref, forwardRef, useImperativeHandle, useRef } from "react";
-import { initCombineData } from "@/utils/appHelper";
-import { ProductColor, ProductCombine, ProductSlider, ProductStorage, Slider, SliderSchema } from "@/types";
+import {
+   CategoryAttribute,
+   ProductAttributeSchema,
+   ProductColor,
+   ProductCombine,
+   ProductStorage,
+   SliderSchema,
+} from "@/types";
 import { useProductContext } from "@/store/ProductDataContext";
 import SliderGroup, { SliderRef } from "./child/SliderGroup";
 import InputGroup, { CombineRef } from "./child/CombineGroup";
+import { getExistCombine, getExistSlider } from "./child/helper";
+import AttributeGroup, { AttributeRef } from "./child/AttributeGroup";
 
 type Props = {
    colors: (ProductColor & { id?: number })[];
    storages: (ProductStorage & { id?: number })[];
-   sliders: ProductSlider[];
+   attrList: CategoryAttribute[];
 };
 
 export type ConfigRef = {
    submitSliders: () => Promise<(SliderSchema & { id: number; color_ascii: string })[]>;
    trackingCombine: () => { newCombines: ProductCombine[]; updateCombines: ProductCombine[] };
+   submitAttributes: () => Promise<ProductAttributeSchema[]>;
    validate: () => void;
 };
 
-const getExistCombine = (
-   combines: ProductCombine[],
-   colorItem: ProductColor & { id?: number },
-   storageItem: ProductStorage & { id?: number },
-   product_name_ascii: string
-) => {
-   let isExits = true;
-   let existCombine = combines.find((item) => item.color_id === colorItem.id && item.storage_id === storageItem.id);
-
-   if (!existCombine) {
-      isExits = false;
-      existCombine = initCombineData(
-         {
-            product_name_ascii,
-         },
-         colorItem.color,
-         storageItem.storage
-      );
-   }
-
-   return { existCombine, isExits };
-};
-
-const getExistSlider = (
-   sliders: ProductSlider[] | undefined,
-   colorItem: ProductColor & { id?: number },
-   product_name: string
-) => {
-   const initSlider: Slider = {
-      images: [],
-      id: 0,
-      slider_name: `slider for ${product_name} ${colorItem.color_ascii}`,
-   };
-   if (!sliders) {
-      return { existSlider: initSlider, isExits: false };
-   } else {
-      const productSlider = sliders.find((sliderItem) => sliderItem.color_id === colorItem.id);
-      if (!productSlider?.slider_data) return { existSlider: initSlider, isExits: false };
-
-      return { existSlider: productSlider.slider_data, isExits: true };
-   }
-};
-
-function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>) {
-   const { combines_data, product_name_ascii, product_name } = useProductContext();
+function ProductConfig({ colors, storages, attrList }: Props, ref: Ref<ConfigRef>) {
+   const { combines_data, product_name_ascii, product_name, sliders_data } = useProductContext();
 
    const sliderRefs = useRef<(SliderRef | undefined)[]>([]);
    const combineRefs = useRef<(CombineRef | undefined)[]>([]);
+   const attributeRefs = useRef<(AttributeRef | undefined)[]>([]);
 
    // const submitSliderList = sliderRefs.current.map((item) => item.submit);
    // const submitCombines = useMemo(() => combineRefs.current.map((item) => item.submit), [colors, storages]);
@@ -128,19 +95,44 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
       return { newCombines, updateCombines };
    };
 
-   useImperativeHandle(ref, () => ({
-      trackingCombine,
-      submitSliders,
-      validate,
-   }));
+   const submitAttributes = async () => {
+      const newProductAttrs: ProductAttributeSchema[] = [];
+      for await (const attributeItem of attributeRefs!.current) {
+         if (typeof attributeItem?.submit === "function") {
+            // attributeItem only update data
+            const data = await attributeItem.submit();
+            if (data) {
+               newProductAttrs.push(data);
+            }
+         }
+      }
+
+      return newProductAttrs;
+   };
+
+   useImperativeHandle(
+      ref,
+      () =>
+         ({
+            submitAttributes,
+            trackingCombine,
+            submitSliders,
+            validate,
+         } as ConfigRef)
+   );
+
+   const classes = {
+      label: "text-[20px] font-[500] mb-[8px] uppercase",
+   };
 
    return (
       <>
-         <div className={"text-[16px] font-[500]"}>Product Slider</div>
+         {/* slider */}
+         <div className={classes.label}>Product Slider</div>
          {!!colors.length && (
             <div className="mb-[30px] bg-[#fff] rounded-[8px] p-[20px] flex flex-col gap-[40px]">
                {colors.map((item, index) => {
-                  const { existSlider, isExits } = getExistSlider(sliders, item, product_name);
+                  const { existSlider, isExits } = getExistSlider(sliders_data, item, product_name);
                   return (
                      <div key={index} className="row items-center">
                         <div key={index} className="col w-2/12">
@@ -148,6 +140,8 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
                         </div>
                         <div className="col w-10/12">
                            <SliderGroup
+                              width="w-1/2"
+                              paddingRatio="pt-[55%]"
                               color_ascii={item.color_ascii}
                               ref={(ref) => (sliderRefs.current[index] = ref!)}
                               initSlider={existSlider}
@@ -160,8 +154,9 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
             </div>
          )}
 
+         {/* combine */}
          <div className="mb-[30px]">
-            <div className={"text-[16px] font-[500]"}>Quantity & Price</div>
+            <div className={classes.label}>Quantity & Price</div>
             {!!storages.length && (
                <div className={`bg-[#fff] rounded-[8px] p-[20px]`}>
                   {storages.map((storageItem, i) =>
@@ -193,6 +188,24 @@ function ProductConfig({ colors, storages, sliders }: Props, ref: Ref<ConfigRef>
                         );
                      })
                   )}
+               </div>
+            )}
+         </div>
+
+         {/* attribute */}
+         <div className="mb-[30px]">
+            <div className={classes.label}>Specification</div>
+            {!!storages.length && (
+               <div className={`bg-[#fff] rounded-[8px] p-[20px]`}>
+                  {attrList.map((attr, index) => {
+                     return (
+                        <AttributeGroup
+                           ref={(ref) => (attributeRefs.current[index] = ref!)}
+                           catAttr={attr}
+                           key={index}
+                        />
+                     );
+                  })}
                </div>
             )}
          </div>

@@ -6,7 +6,15 @@ import { redirect, useParams } from "react-router-dom";
 import { generateId, initColorObject, initStorageObject, sleep } from "@/utils/appHelper";
 import usePrivateRequest from "@/hooks/usePrivateRequest";
 import ProductConfig, { ConfigRef } from "@/components/ProductConfig";
-import { Product, ProductColor, ProductCombine, ProductCombineSchema, ProductStorage } from "@/types";
+import {
+   CategoryAttribute,
+   Product,
+   ProductColor,
+   ProductCombine,
+   ProductCombineSchema,
+   ProductDetail,
+   ProductStorage,
+} from "@/types";
 import Empty from "@/components/ui/Empty";
 import { Button, Modal } from "@/components";
 import ProductDataProvider from "@/store/ProductDataContext";
@@ -17,7 +25,7 @@ import OverlayCTA from "@/components/ui/OverlayCTA";
 import useVariantAction from "@/hooks/useVariantAction";
 import ConfirmModal from "@/components/Modal/Confirm";
 import useProductAction from "@/hooks/useProductAction";
-import MyEditor from "@/components/MyEditor";
+import MyEditor, { EditorRef } from "@/components/MyEditor";
 
 type ModelTarget =
    | "add-storage"
@@ -30,12 +38,16 @@ type ModelTarget =
 
 const MAX_VAL = 999999999;
 const STORAGE_URL = "/storage-management/storages";
+const PRODUCT_DETAIL_URL = "/product-detail-management";
 const PRODUCT_SLIDER_URL = "/slider-management/product-sliders";
 const COMBINE_URL = "/combine-management/combines";
 const PRODUCT_URL = "/product-management/products";
+const CAT_ATTR_URL = "/app/category-attributes";
+const PRODUCT_ATTRIBUTE_URL = "/product-attribute-management";
 
 function EditProduct() {
    const [productData, setProductData] = useState<Product>();
+   const [attrList, setAttrList] = useState<CategoryAttribute[]>([]);
 
    const [storages, setStorages] = useState<ProductStorage[]>([]);
    const [colors, setColors] = useState<ProductColor[]>([]);
@@ -49,6 +61,7 @@ function EditProduct() {
    const ProductConfigRef = useRef<ConfigRef>(null);
    const curColorIndex = useRef<number | undefined>();
    const curStorageIndex = useRef<number | undefined>();
+   const editorRef = useRef<EditorRef>();
 
    // use hook
    const { id } = useParams();
@@ -144,6 +157,33 @@ function EditProduct() {
             });
          }
       }
+   };
+
+   const submitAttributes = async () => {
+      if (ProductConfigRef.current === null) throw new Error("ProductConfigRef.current is undefined");
+      const newProductAttrs = await ProductConfigRef.current.submitAttributes();
+
+      console.log('check new attribute', newProductAttrs);
+      
+      if (newProductAttrs.length) {
+         
+         await privateRequest.post(PRODUCT_ATTRIBUTE_URL, newProductAttrs);
+      }
+   };
+
+   const submitDetail = async () => {
+      const content = editorRef.current?.getContent();
+      if (!content || !productData?.product_name_ascii) return console.log("content or product name is undefined");
+
+      const data: ProductDetail = {
+         content,
+         product_name_ascii: productData?.product_name_ascii,
+      };
+
+      // case add new
+      if (!productData.detail) return await privateRequest.post(PRODUCT_DETAIL_URL, data);
+      else if (productData.detail.id)
+         return await privateRequest.put(`${PRODUCT_DETAIL_URL}/${productData.detail.id}`, data);
    };
 
    const submitCombines = async (newCombines: ProductCombine[], updateCombines: ProductCombine[]) => {
@@ -259,14 +299,7 @@ function EditProduct() {
 
          setProductApiLoading(true);
 
-         // const { newStorages, removedStorages } = trackingStorages(stockStorages.current, storages);
-         // const { newColors, removedColorIds } = trackingColors(stockColors.current, colors);
-
-         // >>> submit storage
-         // const { storagesRes, removedStoragesAscii } = await submitStorage();
-         // >>> submit color and slider
          await submitSlider();
-
          const { newCombines, updateCombines } = ProductConfigRef.current!.trackingCombine();
 
          // >>> submit combine
@@ -287,6 +320,12 @@ function EditProduct() {
             // >>> submit update default combine
             await updateDefaultCombine(minCB, prevDefaultCb);
          }
+
+         // >>> submit attribute
+         await submitAttributes();
+
+         // >>> submit detail
+         await submitDetail();
 
          setSuccessToast("Edit product successful");
       } catch (error) {
@@ -393,6 +432,14 @@ function EditProduct() {
             const res = await privateRequest.get(`${PRODUCT_URL}/${id}`);
             const data = res.data as Product;
 
+            const categoryId = data.category_id;
+            if (categoryId === undefined) throw new Error("missing category id");
+
+            const catAttrsRes = await privateRequest.get(`${CAT_ATTR_URL}/${categoryId}`);
+
+            const catAttrsData = catAttrsRes.data.data as CategoryAttribute[];
+            setAttrList(catAttrsData);
+
             setProductData(data);
             const storagesData = data.storages_data as ProductStorage[];
             const colorsData = data.colors_data as ProductColor[];
@@ -410,6 +457,8 @@ function EditProduct() {
 
             setStatus("success");
          } catch (error) {
+            console.log(error);
+
             setStatus("error");
          }
       };
@@ -419,6 +468,12 @@ function EditProduct() {
          ranUseEffect.current = true;
       }
    }, []);
+
+   const classes = {
+      label: "text-[20px] font-[500] mb-[8px] uppercase",
+   };
+
+   console.log("chekc status", status);
 
    if (status === "loading") return <i className="material-icons animate-spin">sync</i>;
    if ((!productData && status === "success") || status === "error") return <h1>Some thing went wrong</h1>;
@@ -430,7 +485,7 @@ function EditProduct() {
          <div className="pb-[30px]">
             <div className="row mb-[30px]">
                <div className="col w-1/2 ">
-                  <h5 className={"text-[16px] font-[500]"}>Storage</h5>
+                  <h5 className={classes.label}>Storage</h5>
                   <div className="flex bg-[#fff] rounded-[8px] p-[20px]">
                      {!!storages.length &&
                         storages.map((item, index) => {
@@ -454,7 +509,7 @@ function EditProduct() {
                   </div>
                </div>
                <div className="col w-1/2">
-                  <h5 className={"text-[16px] font-[500]"}>Color</h5>
+                  <h5 className={classes.label}>Color</h5>
                   <div className="row bg-[#fff] rounded-[8px] p-[20px]">
                      {!!colors.length &&
                         colors.map((item, index) => (
@@ -477,19 +532,17 @@ function EditProduct() {
                </div>
             </div>
 
-            {productData && (
+            {productData && attrList && (
                <ProductDataProvider initialState={productData}>
-                  <ProductConfig
-                     ref={ProductConfigRef}
-                     sliders={productData.sliders_data}
-                     colors={colors}
-                     storages={storages}
-                  />
+                  <ProductConfig attrList={attrList} ref={ProductConfigRef} colors={colors} storages={storages} />
                </ProductDataProvider>
             )}
 
-            <h5 className="text-[16px] font-[500]">Description</h5>
-            <MyEditor />
+            <h5 className={classes.label}>Description</h5>
+            <MyEditor
+               content={productData?.detail ? productData.detail.content : ""}
+               ref={(ref) => (editorRef.current = ref!)}
+            />
 
             <p className="text-center">
                <Button isLoading={apiProductLoading} onClick={handleSubmit} primary className={"mt-[15px]"}>
@@ -497,7 +550,7 @@ function EditProduct() {
                </Button>
             </p>
 
-            <h5 className="text-[18px] text-red-500 font-semibold mt-[30px]">DANGER ZONE</h5>
+            <h5 className={` text-red-500 mt-[30px] ${classes.label} font-semibold`}>DANGER ZONE</h5>
             <div className="border-red-500 border rounded-[16px] p-[14px]">
                <Button onClick={() => handleOpenModal("delete-product")} primary>
                   Delete Product

@@ -8,14 +8,12 @@ export const inputClasses = {
    input: "p-[6px] bg-[#fff] rounded-[6px] border border-black/15 text-[16px]",
 };
 
-function Input({ cb, className, placeholder, type, value, ...props }: Props, ref: Ref<any>) {
+function Input({ cb, className, type, ...props }: Props, ref: Ref<any>) {
    return (
       <input
          ref={ref}
-         placeholder={placeholder}
          onChange={(e) => cb(e.target.value)}
-         type={type || 'text'}
-         value={value}
+         type={type || "text"}
          className={`${inputClasses.input} ${className}`}
          {...props}
       />

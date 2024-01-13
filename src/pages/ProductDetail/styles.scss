@@ -1,0 +1,38 @@
+.content-container {
+   * + * {
+      margin-top: 14px;
+   }
+   p {
+      font-size: 16px;
+      color: #808080;
+   }
+   h5 {
+      font-size: 18px;
+      font-weight: 600;
+   }
+   img {
+      width: auto;
+      margin-left: auto;
+      margin-right: auto;
+      height: 100%;
+   }
+}
+
+
+.spec-table {
+   width: 100%;
+   border: 1px solid rgba($color: #000000, $alpha: .1);
+   tr {
+      td {
+         font-size: 14px;
+         padding: 6px 10px;
+         + td {
+            border-left: 1px solid rgba($color: #000000, $alpha: .1);
+         }
+      }
+
+      &:nth-child(even) {
+         background-color: #f1f1f1;
+      }
+   }
+}

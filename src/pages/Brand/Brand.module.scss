@@ -39,7 +39,6 @@ $alpha: rgba(
    i {
       font-size: 40px;
    }
-
 }
 .brand-image {
    display: flex;
@@ -57,4 +56,33 @@ $alpha: rgba(
    display: flex;
    align-items: center;
    justify-content: center;
+}
+
+.attr-item {
+   display: flex;
+   align-items: center;
+   padding: 8px 16px;
+   span {
+      font-size: 1.4rem;
+   }
+
+   background-color: #f1f1f1;
+   border-radius: 8px;
+
+   .cta {
+      border-left: 1px solid $alpha;
+      margin-left: 10px;
+      padding-left: 6px;
+      button {
+         padding: 4px;
+         transition: scale linear 0.1s;
+         &:hover {
+            color: #cd1818;
+            scale: 1.1;
+         }
+         & + button {
+            margin-left: 8px;
+         }
+      }
+   }
 }
