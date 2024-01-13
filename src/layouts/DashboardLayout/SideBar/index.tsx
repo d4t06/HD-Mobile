@@ -21,18 +21,25 @@ function Sidebar() {
             </Link>
 
             <Link className={cx("sidebar__item")} to="/dashboard/brand">
-               <i className="material-icons">store</i>
+               <i className="material-icons">class</i>
                Brand
             </Link>
 
             <Link className={cx("sidebar__item")} to="/dashboard/banner">
-               <i className="material-icons">collections</i>
+               <i className="material-icons">slideshow</i>
                Banner
             </Link>
 
             <Link className={cx("sidebar__item")} to="/dashboard/order">
                <i className="material-icons">redeem</i>
                Order
+            </Link>
+
+            <div className="m-[10px] border-t border-black/10"></div>
+
+            <Link target="blank" className={cx("sidebar__item")} to="/">
+               <i className="material-icons">store</i>
+               My shop
             </Link>
          </div>
       </div>

@@ -4,3 +4,9 @@ input.error-input {
       color: red;
    }
 }
+
+.attr-item {
+   +* {
+      margin-top: 8px;
+   }
+}

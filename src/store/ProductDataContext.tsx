@@ -1,8 +1,16 @@
-import { ReactNode, createContext, useContext, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useContext,
+  useState,
+} from "react";
 import { Product } from "@/types";
 
 type StateType = {
-   productData: Product;
+  productData: Product;
+  setIsChange: Dispatch<SetStateAction<boolean>>;
 };
 
 // const initialState: StateType = {
@@ -10,7 +18,7 @@ type StateType = {
 // };
 
 type ContextType = {
-   state: StateType;
+  state: StateType;
 };
 
 // const initialContext = {
@@ -19,19 +27,29 @@ type ContextType = {
 
 const ProductDataContext = createContext<ContextType | undefined>(undefined);
 
-const ProductDataProvider = ({ children, initialState }: { children: ReactNode; initialState: Product }) => {
-   const [productData, _setProductData] = useState(initialState);
+type Props = {
+  children: ReactNode;
+  initialState: Product;
+  setIsChange: Dispatch<SetStateAction<boolean>>;
+};
 
-   return <ProductDataContext.Provider value={{ state: { productData } }}>{children}</ProductDataContext.Provider>;
+const ProductDataProvider = ({ children, initialState, setIsChange }: Props) => {
+  const [productData, _setProductData] = useState(initialState);
+
+  return (
+    <ProductDataContext.Provider value={{ state: { productData, setIsChange } }}>
+      {children}
+    </ProductDataContext.Provider>
+  );
 };
 const useProductContext = () => {
-   const context = useContext(ProductDataContext);
+  const context = useContext(ProductDataContext);
 
-   if (!context) throw new Error("Context not found");
-   const {
-      state: { productData },
-   } = context;
-   return { ...productData };
+  if (!context) throw new Error("Context not found");
+  const {
+    state: { productData, setIsChange },
+  } = context;
+  return { ...productData, setIsChange };
 };
 
 export default ProductDataProvider;

@@ -1,4 +1,12 @@
-import { Ref, forwardRef, useImperativeHandle, useRef, useState } from "react";
+import {
+  Dispatch,
+  Ref,
+  SetStateAction,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 
 import Empty from "@/components/ui/Empty";
 import { Slider, SliderImage, SliderImageSchema, SliderSchema } from "@/types";
@@ -21,6 +29,7 @@ type SliderGroupProps = {
   color_ascii: string;
   paddingRatio?: string;
   width?: string;
+  setIsChange?: Dispatch<SetStateAction<boolean>>;
 };
 
 export type SliderRef = {
@@ -29,7 +38,14 @@ export type SliderRef = {
 };
 
 function SliderGroup(
-  { initSlider, isExist, color_ascii, paddingRatio, width }: SliderGroupProps,
+  {
+    initSlider,
+    isExist,
+    color_ascii,
+    paddingRatio,
+    width,
+    setIsChange,
+  }: SliderGroupProps,
   ref: Ref<SliderRef>
 ) {
   const [sliderImages, setSlideImages] = useState<SliderImage[]>(initSlider.images || []);
@@ -56,6 +72,9 @@ function SliderGroup(
 
   const handleAddSliderImage = (imageUrlList: string[]) => {
     const filteredImageUrls = filterImages(imageUrlList);
+    if (!filterImages.length) return;
+
+    setIsChange && setIsChange(true);
     switch (openGalleryType.current) {
       case "add":
         const initSliderImageArray = filteredImageUrls.map(
@@ -75,6 +94,7 @@ function SliderGroup(
     const newImages = [...sliderImages];
     newImages.splice(index, 1);
     setSlideImages(newImages);
+    if (setIsChange) setIsChange(true);
   };
 
   const trackingSliderImages = () => {

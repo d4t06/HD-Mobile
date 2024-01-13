@@ -1,5 +1,5 @@
 import { Button } from "@/components";
-import SliderGroup, { SliderRef } from "@/components/ProductConfig/child/SliderGroup";
+import SliderGroup, { SliderRef } from "@/components/SliderGroup";
 import useAppConfig from "@/hooks/useAppConfig";
 import { useToast } from "@/store/ToastContext";
 import { CategorySlider } from "@/types";
