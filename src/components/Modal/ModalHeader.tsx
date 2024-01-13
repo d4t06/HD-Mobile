@@ -9,7 +9,7 @@ export default function ModalHeader({
 }) {
    return (
       <div className="flex justify-between mb-[15px]">
-         <h1 className="text-[26px] font-semibold">{title}</h1>
+         <h1 className="text-[22px] text-[#333] font-semibold">{title}</h1>
          <button onClick={() => setIsOpenModal(false)}>
             <i className="material-icons">close</i>
          </button>

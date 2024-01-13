@@ -98,7 +98,7 @@ export interface Product {
   combines_data: ProductCombine[];
   sliders_data: ProductSlider[];
   attributes_data: ProductAttribute[];
-  comment_data: Comment[]
+  comments_data: ProductComment[]
 }
 
 export type ProductSchema = Omit<
@@ -183,7 +183,7 @@ export type Toast = {
   id: string;
 };
 
-export type Comment = {
+export type ProductComment = {
   id?: number;
   product_name_ascii: string;
   cus_name: string;

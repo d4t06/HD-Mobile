@@ -10,6 +10,7 @@ import HTMLReactParser from "html-react-parser/lib/index";
 import "./styles.scss";
 import SpecTable from "./child/SpecTable";
 import AddCommentModal from "@/components/Modal/AddComment";
+import CommentList from "./child/CommentList";
 
 type ModalTarget = "add-comment" | "";
 
@@ -71,7 +72,13 @@ function DetailPage() {
     if (!isOpenModal) return;
     switch (openModalTarget.current) {
       case "add-comment":
-        return <AddCommentModal product={product} />;
+        return (
+          <AddCommentModal
+            target="Add"
+            setIsOpenModal={setIsOpenModal}
+            product={product}
+          />
+        );
     }
   }, [isOpenModal]);
 
@@ -81,6 +88,9 @@ function DetailPage() {
         if (!category || !key) return;
         const data = await productServices.getProductDetail({ id: key });
         setProduct(data);
+
+        console.log("check data", data.comments_data);
+
         setStatus("success");
       } catch (error) {
         setStatus("error");
@@ -93,10 +103,8 @@ function DetailPage() {
     }
   }, [key]);
 
-  console.log("check ", product.detail.content);
-
   const classes = {
-    proName: "leading-[1] text-[22px] font-bold mb-[14px] text-[#333]",
+    proName: "leading-[1] text-[22px] font-bold text-[#333]",
   };
 
   if (status === "error" || (status === "success" && !product))
@@ -178,13 +186,15 @@ function DetailPage() {
       </div>
 
       <div className="mt-[60px]">
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center mb-[30px]">
           <h1 className={classes.proName}>Hỏi đáp về {product.product_name}</h1>
           <Button onClick={() => handleOpemModal("add-comment")} primary>
             <i className="material-icons mr-[8px]">add</i>
             Thêm câu hỏi
           </Button>
         </div>
+
+        {isHaveProduct && <CommentList product={product} />}
       </div>
 
       {isOpenModal && <Modal setShowModal={setIsOpenModal}>{renderModal}</Modal>}

@@ -1,37 +1,32 @@
-import { Input } from "@/components";
-import { Comment, Product } from "@/types";
-import { useState } from "react";
+import { AvatarPlaceholder } from "@/components/Avatar";
+import { Product } from "@/types";
 
 type Props = {
   product: Product;
 };
 
-const initComment: Comment = {
-  content: "",
-  cus_name: "",
-  product_name_ascii: "",
-  phone_number: "",
-  total_like: 0,
-};
+export default function CommentList({ product }: Props) {
+  const classes = {
+    userName: "text-[18px] font-[500]",
+  };
 
-export default function CommentList({}: Props) {
-  const [commentData, setCommetData] = useState<Comment>(initComment);
-
-  const handleCommentData = (field: keyof typeof commentData, value: string) => {};
-
+  if (!product.comments_data.length)
+    return <h1 className="text-[16px]">Chưa có bình luận</h1>;
   return (
-    <div className="">
-      <div className="row">
-        <Input
-          placeholder="Họ và tên *"
-          cb={(val) => handleCommentData("cus_name", val)}
-        />
-        <Input
-          placeholder="Điện thoại"
-          cb={(val) => handleCommentData("phone_number", val)}
-        />
-      </div>
-      <Input placeholder="Nội dung" cb={(val) => handleCommentData("content", val)} />
-    </div>
+    <>
+      {product.comments_data.map((item, index) => {
+        const stringList = item.cus_name.split(" ");
+        const firstName = stringList[stringList.length - 1];
+        return (
+          <div key={index} className="flex">
+            <AvatarPlaceholder firstChar={firstName.charAt(0)} />
+            <div className="ml-[10px]">
+              <h5 className={classes.userName}>{item.cus_name}</h5>
+              <p className="text-[#495057] text-[16px]">{item.content}</p>
+            </div>
+          </div>
+        );
+      })}
+    </>
   );
 }

@@ -1,34 +1,36 @@
 .user-cta {
-   display: flex;
-   align-items: center;
-   gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
-   &.revert {
-      flex-direction: row-reverse;
-   }
+  &.revert {
+    flex-direction: row-reverse;
+  }
+  .user-name {
+    font-size: 1.6rem;
+    font-weight: 500;
+  }
+  .user-image {
+    width: 100%;
+    border-radius: 50%;
+    object-fit: contain;
+    object-position: center;
+  }
+}
 
-   .image-frame {
-      width: 44px;
-      height: 44px;
-   }
-   .user-name {
-      font-size: 1.6rem;
-      font-weight: 500;
-   }
-   .user-image {
-      width: 100%;
-      border-radius: 50%;
-      object-fit: contain;
-      object-position: center;
-   }
-   .avatar-placeholder {
-      height: 100%;
-      width: 100%;
-      background-color: #ccc;
-      color: #fff;
-      font-size: 25px;
-      text-align: center;
-      border-radius: 99px;
-      line-height: 46px;
-   }
+.image-frame {
+  width: 44px;
+  height: 44px;
+}
+.avatar-placeholder {
+  height: 100%;
+  width: 100%;
+  background-color: #ccc;
+  color: #fff;
+  text-align: center;
+  border-radius: 99px;
+  p {
+    font-size: 25px;
+    line-height: 44px;
+  }
 }
