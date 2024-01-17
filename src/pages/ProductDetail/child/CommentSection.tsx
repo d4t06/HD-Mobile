@@ -4,6 +4,8 @@ import useComment from "@/hooks/useComment";
 import { ProductComment } from "@/types";
 import { useMemo } from "react";
 import logo from "@/assets/images/logo.jpg";
+import rateImage from '@/assets/images/rate.png'
+import NoComment from "./NoComment";
 
 export default function CommentSection({ product_name_ascii }: { product_name_ascii: string }) {
    const {
@@ -68,6 +70,12 @@ export default function CommentSection({ product_name_ascii }: { product_name_as
    };
 
    if (status === "loading") return renderSkeleton;
+
+   if (status === "success" && comments.length === 0)
+   return (
+     <NoComment title="Chưa có câu hỏi" />
+   );
+
 
    return (
       <div className="">

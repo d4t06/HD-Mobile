@@ -17,7 +17,7 @@ import { useApp } from "@/store/AppContext";
 import AttributeGroup from "./child/AttributeGroup";
 const cx = classNames.bind(styles);
 
-const CAT_FIELDS: ["Name", "Icon"] = ["Name", "Icon"];
+const    CAT_FIELDS: ["Name", "Icon"] = ["Name", "Icon"];
 
 type ModalTarget = "add-brand" | "add-category" | "edit-category" | "delete-category" | "delete-brand" | "edit-brand";
 

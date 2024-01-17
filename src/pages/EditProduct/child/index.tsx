@@ -75,7 +75,7 @@ function ProductConfig({ colors, storages, attrList }: Props, ref: Ref<ConfigRef
   };
 
   const trackingCombine: ConfigRef["trackingCombine"] = () => {
-    console.log(">>> tracking combine");
+    // console.log(">>> tracking combine");
 
     let newCombines: ProductCombine[] = [];
     let updateCombines: ProductCombine[] = [];
@@ -126,7 +126,7 @@ function ProductConfig({ colors, storages, attrList }: Props, ref: Ref<ConfigRef
   );
 
   const classes = {
-    label: "text-[20px] font-[500] mb-[8px] uppercase",
+    label: "text-[20px] font-semibold text-[#333] mb-[8px]",
     container: "flex bg-[#fff] rounded-[12px] p-[20px]",
   };
 

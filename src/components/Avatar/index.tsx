@@ -34,7 +34,7 @@ export default function Avatar({ revert }: { revert?: boolean }) {
                <div className={cx("image-frame")}>
                   {decode.username ? (
                      <Link to="/account">
-                        <div className={cx("avatar-placeholder")}>{decode.username.charAt(0) || ""}</div>
+                        <div className={cx("avatar-placeholder")}><p>{decode.username.charAt(0).toUpperCase() || ""}</p></div>
                      </Link>
                   ) : (
                      <Image classNames="rounded-full" src={defaultUser} />

@@ -5,182 +5,202 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { usePrivateRequest } from ".";
 
 type Props = {
-   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
-   product_name_ascii?: string;
-   admin?: boolean;
+  setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+  product_name_ascii?: string;
+  admin?: boolean;
 };
 
 type StateType = {
-   page: number;
-   product_name_ascii: string;
-   reviews: ProductReview[];
-   status: "loading" | "error" | "success";
-   count: number;
-   page_size: number;
-   average: number;
+  page: number;
+  product_name_ascii: string;
+  reviews: ProductReview[];
+  status: "loading" | "error" | "success";
+  count: number;
+  page_size: number;
+  average: number;
 };
 const REVIEW_URL = "/product-review-management";
 const REVIEW_URL_CLIENT = "/product-reviews";
 
 export default function useReview({ setIsOpenModal, product_name_ascii, admin }: Props) {
-   const [state, setState] = useState<StateType>({
-      status: "loading",
-      reviews: [],
-      page: 1,
-      product_name_ascii: "",
-      count: 0,
-      page_size: 0,
-      average: 0,
-   });
-   const [apiLoading, setApiLoading] = useState(false);
-   const { setSuccessToast, setErrorToast } = useToast();
+  const [state, setState] = useState<StateType>({
+    status: "loading",
+    reviews: [],
+    page: 1,
+    product_name_ascii: "",
+    count: 0,
+    page_size: 0,
+    average: 0,
+  });
+  const [apiLoading, setApiLoading] = useState(false);
+  const { setSuccessToast, setErrorToast } = useToast();
 
-   const ranEffect = useRef(false);
+  const ranEffect = useRef(false);
 
-   const privateRequest = usePrivateRequest();
+  const privateRequest = usePrivateRequest();
 
-   const addReview = async (reviewData: ProductReview) => {
-      try {
-         setApiLoading(true);
+  const addReview = async (
+    reviewData: ProductReview,
+    setShowConfirm: Dispatch<SetStateAction<boolean>>
+  ) => {
+    try {
+      setApiLoading(true);
 
-         await publicRequest.post(`${REVIEW_URL_CLIENT}`, reviewData);
+      await publicRequest.post(`${REVIEW_URL_CLIENT}`, reviewData);
 
-         setSuccessToast("Add review successful");
-      } catch (error) {
-         setErrorToast("Add review fail");
-      } finally {
-         setApiLoading(false);
-         setIsOpenModal(false);
+      setSuccessToast("Add review successful");
+    } catch (error) {
+      setErrorToast("Add review fail");
+    } finally {
+      setApiLoading(false);
+      setShowConfirm(true);
+    }
+  };
+
+  const getReviews = async (_page: number = 1) => {
+    console.log("run get review");
+
+    try {
+      setState((prev) => ({ ...prev, status: "loading" }));
+      let res;
+
+      if (admin) {
+        res = await privateRequest.get(`${REVIEW_URL}`, {
+          params: { page: _page },
+        });
+      } else {
+        res = await publicRequest.get(`${REVIEW_URL_CLIENT}/${product_name_ascii}`, {
+          params: { page: _page },
+        });
       }
-   };
 
-   const getReviews = async (_page: number = 1) => {
-      console.log("run get review");
+      const { reviews, ...restData } = res.data as StateType;
 
-      try {
-         setState((prev) => ({ ...prev, status: "loading" }));
-         let res;
+      const averageRes = await publicRequest.get(
+        `${REVIEW_URL_CLIENT}/avg/${product_name_ascii}`
+      );
+      const averageNumber = +averageRes.data.average;
 
-         if (admin) {
-            res = await privateRequest.get(`${REVIEW_URL}`, {
-               params: { page: _page },
-            });
-         } else {
-            res = await publicRequest.get(`${REVIEW_URL_CLIENT}/${product_name_ascii}`, {
-               params: { page: _page },
-            });
-         }
+      console.log("check average", averageNumber);
 
-         const { reviews, ...restData } = res.data as StateType;
+      setState((prev) => ({
+        ...restData,
+        status: "success",
+        average: averageNumber || 0,
+        reviews: [...prev.reviews, ...reviews],
+      }));
+    } catch (error) {
+      console.log(error);
+      setState((prev) => ({ ...prev, status: "error" }));
+    }
+  };
 
-         const averageRes = await publicRequest.get(`${REVIEW_URL_CLIENT}/avg/${product_name_ascii}`);
-         const averageNumber = +averageRes.data.average;
+  const replyReview = async (replyData: Reply) => {
+    try {
+      setApiLoading(true);
+      if (replyData.q_id === undefined) throw new Error("q_id is undefined");
 
-         console.log("check average", averageNumber);
+      await privateRequest.post(`${REVIEW_URL}/replies`, replyData);
+    } catch (error) {
+      console.log(error);
+      setErrorToast("Reply comment fail");
+    } finally {
+      setApiLoading(false);
+      setIsOpenModal(false);
+    }
+  };
 
-         setState((prev) => ({
-            ...restData,
-            status: "success",
-            average: averageNumber || 0,
-            reviews: [...prev.reviews, ...reviews],
-         }));
-      } catch (error) {
-         console.log(error);
-         setState((prev) => ({ ...prev, status: "error" }));
-      }
-   };
+  const deleteReview = async (comment: ProductComment) => {
+    try {
+      setApiLoading(true);
+      if (comment.id === undefined) throw new Error("id is undefined");
 
-   const replyReview = async (replyData: Reply) => {
-      try {
-         setApiLoading(true);
-         if (replyData.q_id === undefined) throw new Error("q_id is undefined");
+      await privateRequest.delete(`${REVIEW_URL}/${comment.id}`);
+      setSuccessToast("Delete comment successful");
+    } catch (error) {
+      console.log(error);
+      setErrorToast("Reply comment fail");
+    } finally {
+      setApiLoading(false);
+      setIsOpenModal(false);
+    }
+  };
 
-         await privateRequest.post(`${REVIEW_URL}/replies`, replyData);
-      } catch (error) {
-         console.log(error);
-         setErrorToast("Reply comment fail");
-      } finally {
-         setApiLoading(false);
-         setIsOpenModal(false);
-      }
-   };
+  const editReply = async (id: number, content: string) => {
+    try {
+      setApiLoading(true);
 
-   const deleteReview = async (comment: ProductComment) => {
-      try {
-         setApiLoading(true);
-         if (comment.id === undefined) throw new Error("id is undefined");
+      await privateRequest.put(`${REVIEW_URL}/replies/${id}`, { content });
+      setSuccessToast("Edit reply successful");
+    } catch (error) {
+      console.log(error);
+      setErrorToast("Edit reply comment fail");
+    } finally {
+      setApiLoading(false);
+      setIsOpenModal(false);
+    }
+  };
 
-         await privateRequest.delete(`${REVIEW_URL}/${comment.id}`);
-         setSuccessToast("Delete comment successful");
-      } catch (error) {
-         console.log(error);
-         setErrorToast("Reply comment fail");
-      } finally {
-         setApiLoading(false);
-         setIsOpenModal(false);
-      }
-   };
+  const likeReview = async (id: number, type: "REVIEW" | "REPLY") => {
+    try {
+      setApiLoading(true);
 
-   const editReply = async (id: number, content: string) => {
-      try {
-         setApiLoading(true);
+      await publicRequest.post(`${REVIEW_URL_CLIENT}/like`, { id, type });
+      // setSuccessToast("Comment liked");
+    } catch (error) {
+      console.log(error);
+      // setErrorToast("Edit reply comment fail");
+    } finally {
+      setApiLoading(false);
+      // setIsOpenModal(false);
+    }
+  };
 
-         await privateRequest.put(`${REVIEW_URL}/replies/${id}`, { content });
-         setSuccessToast("Edit reply successful");
-      } catch (error) {
-         console.log(error);
-         setErrorToast("Edit reply comment fail");
-      } finally {
-         setApiLoading(false);
-         setIsOpenModal(false);
-      }
-   };
+  const approveReview = async (
+    index: number,
+    state: StateType,
+    setState: Dispatch<SetStateAction<StateType>>
+  ) => {
+    try {
+      setApiLoading(true);
+      const newReviews = [...state.reviews];
+      const target = newReviews[index];
 
-   const likeReview = async (id: number, type: "REVIEW" | "REPLY") => {
-      try {
-         setApiLoading(true);
+      await privateRequest.post(`${REVIEW_URL}/approve`, { id: target.id });
 
-         await publicRequest.post(`${REVIEW_URL_CLIENT}/like`, { id, type });
-         // setSuccessToast("Comment liked");
-      } catch (error) {
-         console.log(error);
-         // setErrorToast("Edit reply comment fail");
-      } finally {
-         setApiLoading(false);
-         // setIsOpenModal(false);
-      }
-   };
+      target.approve = "1";
+      newReviews[index] = target;
+      setState((prev) => ({ ...prev, reviews: newReviews }));
 
-   const approveReview = async (index: number, state: StateType, setState: Dispatch<SetStateAction<StateType>>) => {
-      try {
-         setApiLoading(true);
-         const newReviews = [...state.reviews];
-         const target = newReviews[index];
+      setSuccessToast("Review approved");
+    } catch (error) {
+      console.log(error);
+      setErrorToast("Approve fail");
+    } finally {
+      setApiLoading(false);
+      // setIsOpenModal(false);
+    }
+  };
 
-         await privateRequest.post(`${REVIEW_URL}/approve`, { id: target.id });
+  //  run initial
+  useEffect(() => {
+    if (!ranEffect.current) {
+      ranEffect.current = true;
 
-         target.approve = "1";
-         newReviews[index] = target;
-         setState((prev) => ({ ...prev, reviews: newReviews }));
+      if (product_name_ascii || admin) getReviews(1);
+    }
+  }, []);
 
-         setSuccessToast("Review approved");
-      } catch (error) {
-         console.log(error);
-         setErrorToast("Approve fail");
-      } finally {
-         setApiLoading(false);
-         // setIsOpenModal(false);
-      }
-   };
-
-   //  run initial
-   useEffect(() => {
-      if (!ranEffect.current) {
-         ranEffect.current = true;
-
-         if (product_name_ascii || admin) getReviews(1);
-      }
-   }, []);
-
-   return { apiLoading, getReviews, addReview, approveReview, replyReview, deleteReview, editReply, likeReview, state, setState };
+  return {
+    apiLoading,
+    getReviews,
+    addReview,
+    approveReview,
+    replyReview,
+    deleteReview,
+    editReply,
+    likeReview,
+    state,
+    setState,
+  };
 }

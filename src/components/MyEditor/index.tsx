@@ -3,7 +3,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./Toolbar";
 import Image from "@tiptap/extension-image";
 import "./style.scss";
-import { Ref, forwardRef, useImperativeHandle } from "react";
+import { Ref, forwardRef, useImperativeHandle, useRef } from "react";
 
 export type EditorRef = {
   getContent: () => string | undefined;
@@ -28,7 +28,7 @@ function MyEditor({ extensions, ...props }: Props, ref: Ref<EditorRef>) {
     wrapper: "border border-black/10 bg-white my-editor",
     controlContainer:
       "bg-[#cd1818] text-white flex gap-[12px] items-center h-[50px] px-[10px]",
-    editContainer: "p-[10px] max-h-[80vh] overflow-auto",
+    editContainer: "p-[14px] max-h-[80vh] overflow-auto no-scrollbar",
   };
 
   return (

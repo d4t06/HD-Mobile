@@ -18,7 +18,7 @@ function Modal({ children, setShowModal, child, z }: Props) {
             <>
                <div className={cx("overlay", {child}, `${z ?? ''}`)} onClick={() => setShowModal(false)}></div>
                {children && (
-                  <div className={cx("modal")}>
+                  <div className={cx("modal", z ?? '')}>
                      {children}
                   </div>
                )}

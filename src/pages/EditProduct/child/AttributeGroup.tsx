@@ -1,10 +1,10 @@
-import { Input } from "@/components";
 import { usePrivateRequest } from "@/hooks";
 import { useProductContext } from "@/store/ProductDataContext";
 import { CategoryAttribute, ProductAttribute, ProductAttributeSchema } from "@/types";
 import { Ref, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { initProductAttributeSchema } from "./helper";
-import '../style.scss'
+import "../style.scss";
+import { inputClasses } from "@/components/ui/Input";
 
 export type AttributeRef = {
   submit: () => Promise<ProductAttributeSchema | undefined>;
@@ -37,9 +37,6 @@ function AttributeGroup({ catAttr }: Props, ref: Ref<AttributeRef>) {
   const submit = async () => {
     if (catAttr.id === undefined || product_name_ascii === undefined)
       throw new Error("category attribute id is undefined");
-
-    // add new
-    // console.log('>>> check', catAttr.attribute, stock.current);
 
     if (stock.current === undefined && !!value) {
       const data = initProductAttributeSchema({
@@ -87,7 +84,14 @@ function AttributeGroup({ catAttr }: Props, ref: Ref<AttributeRef>) {
       </div>
 
       <div className="col w-8/12">
-        <Input value={value} className="w-full" cb={handleOnChange} />
+        <textarea
+          value={value}
+          onChange={(e) => handleOnChange(e.target.value)}
+          className={`${inputClasses.input} min-h-[50px] h-[50px] no-scrollbar`}
+          id=""
+          cols={10}
+        />
+        {/* <Input value={value} className="w-full" cb={handleOnChange} /> */}
       </div>
     </div>
   );

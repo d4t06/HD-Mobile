@@ -2,39 +2,41 @@ import { useEffect, useState } from "react";
 import { Button } from "..";
 
 export default function ScrollTop() {
-   const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false);
 
-   const scrollToTop = () => {
+  const scrollToTop = () => {
+    setTimeout(() => {
       window?.scroll({
-         behavior: "smooth",
-         top: 0,
+        behavior: "smooth",
+        top: 0,
       });
-   };
+    }, 150);
+  };
 
-   const handleShow = () => {
-      if (window.scrollY > 100) setShow(true);
-      else setShow(false);
-   };
+  const handleShow = () => {
+    if (window.scrollY > 100) setShow(true);
+    else setShow(false);
+  };
 
-   useEffect(() => {
-      window.addEventListener("scroll", handleShow);
+  useEffect(() => {
+    window.addEventListener("scroll", handleShow);
 
-      return () => window.removeEventListener("scroll", handleShow);
-   }, []);
+    return () => window.removeEventListener("scroll", handleShow);
+  }, []);
 
-   const classes = {
-      button: "fixed bottom-[30px] p-[8px] right-[30px] bg-[#f1f1f1] hover:bg-[#cd1818] hover:text-white shadow-xl",
-      hide: "opacity-0 translate-y-[-100px]",
-      show: "translate-y-[0] opacity-[1]",
-   };
+  const classes = {
+    container:
+      "fixed bottom-[30px] transition-[padding,opacity,transform] right-[30px] bg-[#cd1818]  rounded-[6px] p-[2px] pb-[4px] hover:pb-[6px] active:pb-[2px] ",
+    button: "p-[5px] rounded-[3px] bg-[#fff]",
+    hide: "opacity-0 translate-y-[30px]",
+    show: "translate-y-[0] opacity-[1]",
+  };
 
-   return (
-      <Button
-         onClick={show ? scrollToTop : () => {}}
-         circle
-         className={`${classes.button} ${show ? classes.show : classes.hide}`}
-      >
-         <i className="material-icons text-[20px]">arrow_upward</i>
+  return (
+    <div className={`${classes.container} ${show ? classes.show : classes.hide}`}>
+      <Button onClick={show ? scrollToTop : () => {}} className={`${classes.button}`}>
+        <i className="material-icons text-[20px] text-[#333]">arrow_upward</i>
       </Button>
-   );
+    </div>
+  );
 }

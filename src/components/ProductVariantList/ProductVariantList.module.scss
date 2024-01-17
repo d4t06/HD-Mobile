@@ -1,117 +1,129 @@
 $getter: 8px;
 $activeCl: #cd1818;
 $shadow: 2px 2px 5px 0
-   rgba(
-      $color: #000000,
-      $alpha: 0.15,
-   );
+  rgba(
+    $color: #000000,
+    $alpha: 0.15,
+  );
 
 .label {
-   font-size: 1.6rem;
-   margin-bottom: 4px;
-   font-weight:  500;
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: #333;
 }
 .price {
-   font-weight: 500;
-   line-height: 1.2;
-   .cur-price {
-      font-size: 3.5rem;
-      font-weight: bold;
-      color: #cd1818;
-   }
-   .old-price {
-      font-size: 2rem;
-      margin-right: 10px;
-      color: #99a2aa;
-      position: relative;
-      text-decoration: underline;
-      text-decoration-skip-ink: none;
-      text-underline-offset: -5px;
-      &::after {
-         content: "";
-         position: absolute;
-         width: 1px;
-         right: -6px;
-         top: 4px;
-         bottom: 2px;
-         background-color: #99a2aa;
-      }
-   }
-   .vat-tag {
-      // margin-left: 12px;
-      font-size: 1.6rem;
-      color: #99a2aa;
-   }
+  font-weight: 500;
+  line-height: 1.2;
+  .cur-price {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #cd1818;
+  }
+  .old-price {
+    font-size: 2rem;
+    margin-right: 10px;
+    color: #99a2aa;
+    position: relative;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    text-underline-offset: -5px;
+    &::after {
+      content: "";
+      position: absolute;
+      width: 1px;
+      right: -6px;
+      top: 4px;
+      bottom: 2px;
+      background-color: #99a2aa;
+    }
+  }
+  .vat-tag {
+    // margin-left: 12px;
+    font-size: 1.6rem;
+    color: #99a2aa;
+  }
 }
 
 @mixin itemActive {
-   .box {
-      border-color: $activeCl;
-      color: $activeCl;
-      font-weight: bold;
-   }
+  .box {
+    color: $activeCl;
+    font-weight: bold;
+    transform: translateY(-2px);
+  }
 }
 .list {
-   // margin-top: 10px;
-   display: flex;
-   flex-wrap: wrap;
-   margin-left: -$getter;
-   margin-right: -$getter;
-   .item {
-      width: 33.33%;
-      padding: 0 $getter;
+  // margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -$getter;
+  margin-right: -$getter;
+  .item {
+    width: 33.33%;
+    padding: 0 $getter;
+    transform: translateY(3px);
+
+    .wrap {
+      background: #ccc;
+      border-radius: $getter;
+    }
+
+    .box {
+      min-height: 6rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      border: 1px solid rgba($color: #ccc, $alpha: 1);
+      box-shadow: $shadow;
+      border-radius: $getter;
+      font-weight: 400;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background-color: #fff;
+      transition: transform linear 0.1s;
+
+      transform: translateY(-6px);
+
+      &:after {
+        border: 12px solid transparent;
+        border-right-color: $activeCl;
+        border-top-color: $activeCl;
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+      .min-price {
+        font-size: 1.4rem;
+      }
+
+      &:hover {
+        transform: translateY(-8px);
+      }
+    }
+
+    &.main {
+      .box {
+        min-height: 6rem;
+      }
+    }
+
+    &.active {
+      @include itemActive();
 
       .box {
-         min-height: 6rem;
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-         justify-content: center;
-         width: 100%;
-         border: 1px solid rgba($color: #000000, $alpha: 0.1);
-         box-shadow: $shadow;
-         border-radius: $getter;
-         font-weight: 400;
-         position: relative;
-         overflow: hidden;
-         cursor: pointer;
-
-         &:after {
-            border: 12px solid transparent;
-            border-right-color: $activeCl;
-            border-top-color: $activeCl;
-            position: absolute;
-            top: 0;
-            right: 0;
-         }
-         .min-price {
-            font-size: 1.4rem;
-         }
+        &::after {
+          content: "";
+        }
       }
-
-      &.main {
-         .box {
-            min-height: 6rem;
-         }
-      }
-      &:hover {
-         @include itemActive();
-      }
-
-      &.active {
-         @include itemActive();
-
-         .box {
-            &::after {
-               content: "";
-            }
-         }
-      }
-   }
+    }
+  }
 }
 
 .var-opt-label {
-   font-size: 1.6rem;
-   font-weight: 500;
-   margin-top: 10px;
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin-top: 10px;
 }

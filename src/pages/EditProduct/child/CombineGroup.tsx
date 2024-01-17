@@ -60,7 +60,7 @@ function InputGroup({ initCombine, isExist }: InputGroupProps, ref: Ref<CombineR
       case "update":
         return { data: combineData, type: "update" };
       case "unChange":
-        console.log("unChange combine");
+        // console.log("unChange combine");
         return;
     }
   };
