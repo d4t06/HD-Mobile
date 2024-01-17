@@ -5,7 +5,7 @@ import { sleep } from "@/utils/appHelper";
 import { useApp } from "@/store/AppContext";
 
 const CAT_URL = "/app/categories";
-const CAT_SLIDER_URL = "/slider-management/category_sliders";
+const CAT_SLIDER_MANAGE_URL = "/slider-management/category_sliders";
 const BRAND_URL = "/app/brands";
 
 type Props = {
@@ -66,7 +66,7 @@ export default function useAppConfig({
       // when in category edit, don't not slider
       if (includeSlider && !sliders[curCategory.category_ascii]) {
         const sliderRes = await privateRequest.get(
-          `${CAT_SLIDER_URL}/${curCategory.category_ascii}`
+          `${CAT_SLIDER_MANAGE_URL}/${curCategory.category_ascii}`
         );
         const sliderData = sliderRes.data as CategorySlider;
         setSliders((sliders) => ({
@@ -103,7 +103,7 @@ export default function useAppConfig({
       if (import.meta.env.DEV) await sleep(300);
 
       if (!sliders["home"]) {
-        const sliderRes = await privateRequest.get(`${CAT_SLIDER_URL}/home`);
+        const sliderRes = await privateRequest.get(`${CAT_SLIDER_MANAGE_URL}/home`);
         if (!sliderRes.data) throw new Error("Slider not found");
 
         const sliderData = sliderRes.data as CategorySlider;
@@ -122,7 +122,7 @@ export default function useAppConfig({
     try {
       console.log(">>> api run get category sliders");
       if (import.meta.env.DEV) await sleep(300);
-      const categorySlidersRes = await privateRequest.get(CAT_SLIDER_URL);
+      const categorySlidersRes = await privateRequest.get(CAT_SLIDER_MANAGE_URL);
 
       setStatus("success");
       return categorySlidersRes.data as CategorySlider[];

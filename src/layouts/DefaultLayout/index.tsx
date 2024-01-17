@@ -24,12 +24,11 @@ function DefaultLayout({ children }: Props) {
    }, []);
 
    return (
-      <div className={cx("app")}>   
+      <div className={cx("app")}>
          <Header />
          <div className={cx("page-wrapper", "container")}>
             {status === "error" ? <h1 className="text-2xl">Something went wrong</h1> : children}
          </div>
-
          <ScrollTop />
          <Footer />
       </div>

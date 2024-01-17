@@ -189,7 +189,8 @@ export default function CategoryBrand() {
          <div className={`row bg-white p-[20px] rounded-[8px] mb-[30px] ${apiLoading && "disable"}`}>
             {categories.map((item, index) => (
                <div key={index} className="col w-2/12">
-                  <Empty className="group">
+                  <Empty fontClassName="bg-[#f1f1f1] text-[#333]">
+                     <i className="material-icons mr-[8px]">{item.icon}</i>
                      <span className="text-[16px] font-semibold">{item.category_name}</span>
                      <OverlayCTA
                         data={[
@@ -207,7 +208,7 @@ export default function CategoryBrand() {
                </div>
             ))}
             <div className="col w-2/12">
-               <Empty onClick={() => handleOpenModal("add-category")} />
+               <Empty fontClassName="bg-[#f1f1f1]" onClick={() => handleOpenModal("add-category")} />
             </div>
          </div>
 
@@ -219,26 +220,28 @@ export default function CategoryBrand() {
          <div className="bg-[#fff] rounded-[8px] p-[20px]">
             <div className="mb-[15px] flex items-center">
                <p className={cx("input-label", "mr-[10px]")}>Category: </p>
-               <select
-                  disabled={!categories.length}
-                  className={`${inputClasses.input} min-w-[100px]`}
-                  name="category"
-                  onChange={(e) => setCurCategory(categories[+e.target.value as number])}
-               >
-                  <option value={undefined}>---</option>
-                  {!!categories.length &&
-                     categories.map((category, index) => (
-                        <option key={index} value={index}>
-                           {category.category_name}
-                        </option>
-                     ))}
-               </select>
+               <div className="bg-[#808080] rounded-[12px]">
+                  <select
+                     disabled={!categories.length}
+                     className={`${inputClasses.input} min-w-[100px]`}
+                     name="category"
+                     onChange={(e) => setCurCategory(categories[+e.target.value as number])}
+                  >
+                     <option value={undefined}>---</option>
+                     {!!categories.length &&
+                        categories.map((category, index) => (
+                           <option key={index} value={index}>
+                              {category.category_name}
+                           </option>
+                        ))}
+                  </select>
+               </div>
             </div>
             <div className={`row  ${appConfigStatus === "loading" || apiLoading ? "disable" : ""}`}>
                {curBrands &&
                   curBrands.map((brand, index) => (
                      <div key={index} className="col w-2/12">
-                        <Empty>
+                        <Empty fontClassName="bg-[#f1f1f1]">
                            <div className="">
                               <p className="text-[14px] text-center">{brand.brand_name}</p>
                               <img src={brand.image_url} alt="" />
@@ -260,7 +263,7 @@ export default function CategoryBrand() {
                   ))}
 
                <div className="col w-2/12">
-                  <Empty onClick={() => handleOpenModal("add-brand")} />
+                  <Empty fontClassName="bg-[#f1f1f1]" onClick={() => handleOpenModal("add-brand")} />
                </div>
             </div>
          </div>

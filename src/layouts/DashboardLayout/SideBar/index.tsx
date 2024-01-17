@@ -37,6 +37,16 @@ function Sidebar() {
 
             <div className="m-[10px] border-t border-black/10"></div>
 
+            <Link className={cx("sidebar__item")} to="/dashboard/message">
+               <i className="material-icons">message</i>
+               Message
+            </Link>
+
+            <Link className={cx("sidebar__item")} to="/dashboard/review">
+               <i className="material-icons">star</i>
+               Review
+            </Link>
+
             <Link target="blank" className={cx("sidebar__item")} to="/">
                <i className="material-icons">store</i>
                My shop

@@ -1,0 +1,147 @@
+import { Button, Input } from "@/components";
+import { ProductComment, Product, Reply, ProductReview } from "@/types";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import ModalHeader from "./ModalHeader";
+import { inputClasses } from "../ui/Input";
+import useReview from "@/hooks/useReview";
+
+type Props = {
+   product?: Product;
+   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+   target: "Add-Review" | "Add-Reply" | "Edit-Reply";
+   comment?: ProductComment;
+};
+
+const initReview = (product?: Product) => {
+   const data: ProductReview = {
+      content: "",
+      cus_name: "",
+      approve: "",
+      product_name_ascii: product?.product_name_ascii || "",
+      phone_number: "",
+      total_like: 0,
+      rate: 5,
+   };
+   return data;
+};
+
+export default function AddReviewModal({ product, setIsOpenModal, target, comment }: Props) {
+   const [reviewData, setReviewData] = useState<ProductReview>(initReview(product));
+   const [replyContent, setReplyContent] = useState(comment?.reply_data ? comment.reply_data.content : "");
+
+   // hooks
+   const { addReview, apiLoading, replyReview, editReply } = useReview({ setIsOpenModal });
+
+   const handleReviewData = (field: keyof typeof reviewData, value: string | number) => {
+      setReviewData((prev) => ({ ...prev, [field]: value }));
+   };
+
+   const intiValue = useMemo(
+      () => (target === "Add-Review" ? reviewData.content : replyContent),
+      [reviewData, replyContent]
+   );
+
+   const handleChangeContent = (value: string) => {
+      switch (target) {
+         case "Add-Review":
+            return handleReviewData("content", value);
+         case "Add-Reply":
+         case "Edit-Reply":
+            return setReplyContent(value);
+      }
+   };
+
+   const handleSubmit = async () => {
+      switch (target) {
+         case "Add-Review":
+            return await addReview(reviewData);
+         case "Add-Reply":
+            if (comment?.id === undefined) return;
+            const replyData: Reply = {
+               q_id: comment.id,
+               product_name_ascii: comment.product_name_ascii,
+               content: replyContent,
+               total_like: 0,
+               date_convert: "",
+            };
+
+            await replyReview(replyData);
+            break;
+         case "Edit-Reply":
+            if (!comment?.reply_data || comment.reply_data.id === undefined) return;
+            await editReply(comment.reply_data.id, replyContent);
+      }
+   };
+
+   const titleMap: Record<typeof target, string> = {
+      "Add-Review": `Review '${product?.product_name}'`,
+      "Add-Reply": `Reply review '${comment?.cus_name ?? undefined}'`,
+      "Edit-Reply": `Edit reply '${comment?.cus_name ?? undefined}'`,
+   };
+
+   const classes = {
+      activeStar: "#efb140",
+      star: "material-icons text-[40px]",
+   };
+
+   const satisfactionMap: Record<number, string> = {
+      1: "Very bad",
+      2: "Bad",
+      3: "Good",
+      4: "Very good",
+      5: "Excellent",
+   };
+
+   return (
+      <div className="w-[700px] max-w-[90vw]">
+         <ModalHeader title={titleMap[target]} setIsOpenModal={setIsOpenModal} />
+         {target === "Add-Review" && (
+            <div className="">
+               <div className="mb-[20px]">
+                  <div className="flex justify-center gap-[8px]">
+                     {[...Array(5).keys()].map((index) => {
+                        const isActive = index + 1 <= reviewData.rate;
+                        return (
+                           <Button onClick={() => handleReviewData("rate", index + 1)} key={index}>
+                              <i className={`${classes.star} ${isActive ? "text-[#efb140]" : "text-[#808080]"}`}>
+                                 star
+                              </i>
+                           </Button>
+                        );
+                     })}
+                  </div>
+                  <p className="text-[20px] leading-[26px] mt-[10px] text-center">{satisfactionMap[reviewData.rate]}</p>
+               </div>
+
+               <div className="flex gap-[20px] mb-[20px]">
+                  <Input
+                     className="w-full"
+                     placeholder="Họ và tên *"
+                     value={reviewData.cus_name}
+                     cb={(val) => handleReviewData("cus_name", val)}
+                  />
+                  <Input
+                     className="w-full"
+                     value={reviewData.phone_number}
+                     placeholder="Điện thoại"
+                     cb={(val) => handleReviewData("phone_number", val)}
+                  />
+               </div>
+            </div>
+         )}
+        <div className="bg-[#808080] rounded-[12px]">
+        <textarea
+            placeholder="Nội dung"
+            value={intiValue}
+            className={`${inputClasses.input} w-full min-h-[100px]`}
+            onChange={(e) => handleChangeContent(e.target.value)}
+         ></textarea>
+        </div>
+         <div className="text-right mt-[30px]">
+            <Button isLoading={apiLoading} onClick={handleSubmit} primary>
+               Post
+            </Button>
+         </div>
+      </div>
+   );
+}

@@ -30,7 +30,7 @@ export default function ConfirmModal({
          {desc && <p className=" text-[16px] font-semibold text-red-500">{desc}</p>}
 
          <div className="flex gap-[10px] mt-[20px]">
-            <Button primary className="bg-gray-500" onClick={() => setOpenModal(false)}>
+            <Button primary onClick={() => setOpenModal(false)}>
                Close
             </Button>
             <Button isLoading={loading} primary onClick={callback}>

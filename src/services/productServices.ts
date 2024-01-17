@@ -1,5 +1,5 @@
 import { Param } from "@/store/productsSlice";
-import { publicRequest } from "@/utils/request";
+import { privateRequest, publicRequest } from "@/utils/request";
 
 export const getProducts = async (props: Param) => {
    if (!props) {
@@ -40,7 +40,7 @@ export const getProductsAdmin = async (props: Param) => {
    // }
 
    // try {
-   const response = await publicRequest.get(`/product-management/products`, {
+   const response = await privateRequest.get(`/product-management/products`, {
       params,
    });
    return response.data;

@@ -171,9 +171,7 @@ function Dashboard() {
       activeButton: "border-[#cd1818] text-[30px]",
    };
 
-
-   console.log('check cur brands', curBrands, appConfigStatus);
-   
+   // console.log('check cur brands', curBrands, appConfigStatus);
 
    if (status === "error") return <h1 className="text-2xl">Some thing went wrong</h1>;
 
@@ -204,20 +202,15 @@ function Dashboard() {
          </div>
 
          {curCategory && (
-            <QuickFilter
-               curCategory={curCategory}
-               admin
-               loading={appConfigStatus === "loading"}
-               brands={curBrands}
-            />
+            <QuickFilter curCategory={curCategory} admin loading={appConfigStatus === "loading"} brands={curBrands} />
          )}
 
          <div className="flex items-center justify-between mt-[10px]">
-            <div className="flex items-end">
+            <div className="flex items-start">
                <Input placeholder="Product..." cb={(key) => console.log(key)} />
-               <Button primary className="ml-[8px]">
-                  Tìm
-               </Button>
+               <p className="ml-[8px]">
+                  <Button primary>Tìm</Button>
+               </p>
             </div>
 
             <Button onClick={() => handleOpenModal("Add")} primary>
@@ -237,7 +230,7 @@ function Dashboard() {
                      isLoading={status === "more-loading"}
                      onClick={() => handleGetMore()}
                   >
-                     Xem thêm {remaining <= 0 ? 0 : remaining} sản phẩm
+                     Xem thêm ({remaining <= 0 ? 0 : remaining}) sản phẩm
                   </Button>
                </p>
             )}

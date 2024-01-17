@@ -81,7 +81,7 @@ function AttributeGroup({ catAttr }: Props, ref: Ref<AttributeRef>) {
   };
 
   return (
-    <div className="row items-center w-full attr-item">
+    <div className="flex items-center w-2/3 mx-[auto] attr-item">
       <div className="col w-4/12">
         <h5 className={`text-[16px] text-center font-[500]`}>{catAttr.attribute}</h5>
       </div>

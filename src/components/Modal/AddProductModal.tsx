@@ -21,7 +21,7 @@ type Props = {
    curCategory?: Category;
 };
 
-export default function AddProductModal({ curProduct, openType, setIsOpenModalParent, curCategory }: Props) {
+export default function    AddProductModal({ curProduct, openType, setIsOpenModalParent, curCategory }: Props) {
    const [productData, setProductData] = useState<ProductSchema>(
       curProduct || initProductObject({ category_id: curCategory?.id })
    );
@@ -97,7 +97,7 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
                <div className="col w-1/3">
                   <div className="">
                      {!productData.image_url && (
-                        <Empty onClick={() => setIsOpenModal(true)}>
+                        <Empty fontClassName="bg-[#f1f1f1]" onClick={() => setIsOpenModal(true)}>
                            <i className="material-icons">add</i>
                         </Empty>
                      )}

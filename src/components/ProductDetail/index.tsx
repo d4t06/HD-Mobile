@@ -5,13 +5,13 @@ import { ImageSlider, Cart, Modal, Button } from "../../components";
 import ProductVariantList from "@/components/ProductVariantList";
 
 import { useEffect, useState } from "react";
-import { Detail, Product, SliderImage } from "@/types";
+import { ProductDetail, Product, SliderImage } from "@/types";
 import { useParams } from "react-router-dom";
 // import Skeleton from "../Skeleton";
 const cx = classNames.bind(styles);
 
 type Props = {
-   data: Product & Detail;
+   data: Product & ProductDetail;
 };
 
 function DetailProductItem({ data }: Props) {
@@ -74,6 +74,7 @@ function DetailProductItem({ data }: Props) {
                      </li>
                   </ul>
                </div>
+               
             </div>
          </div>
          {showModal && (

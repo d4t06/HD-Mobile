@@ -183,8 +183,8 @@ function ProductConfig({ colors, storages, attrList }: Props, ref: Ref<ConfigRef
                 // 0 1 2
 
                 return (
-                  <div key={key} className="row items-center w-full">
-                    <div className="col w-2/12">
+                  <div key={key} className="flex justify-center items-center">
+                    <div className="col w-3/12">
                       <h5 className={`text-[16px] text-center font-[500]`}>
                         {storageItem.storage} / {colorItem.color}
                       </h5>

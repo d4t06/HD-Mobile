@@ -57,7 +57,7 @@ export default function Banner() {
             </h5>
             <SliderGroup
               paddingRatio="pt-[25%]"
-              width="w-full"
+              width="w-1/2"
               ref={(ref) => (sliderGroupRefs.current[index] = ref!)}
               color_ascii=""
               isExist

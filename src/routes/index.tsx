@@ -16,6 +16,8 @@ import {
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
+import Message from "@/pages/Message";
+import Review from "@/pages/Review";
 
 const routes = {
    HOME: "",
@@ -95,6 +97,18 @@ const privateRoutes = [
       path: "/dashboard/order",
       role: ["ADMIN"],
       component: Order,
+      layout: DashboardLayout,
+   },
+   {
+      path: "/dashboard/message",
+      role: ["ADMIN"],
+      component: Message,
+      layout: DashboardLayout,
+   },
+   {
+      path: "/dashboard/review",
+      role: ["ADMIN"],
+      component: Review,
       layout: DashboardLayout,
    },
 ];

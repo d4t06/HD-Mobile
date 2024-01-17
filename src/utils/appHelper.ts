@@ -63,12 +63,14 @@ export const initProductDetailObject = (data: Partial<Product>) => {
    const newProduct: Product = {
       ...initProductObject({}),
       brand_data: { brand_ascii: "", brand_name: "" },
-      category_data: { category_ascii: "", category_name: "" },
+      category_data: { category_ascii: "", category_name: "", attributes: [] },
       detail: { content: "", product_name_ascii: "" },
       colors_data: [],
       combines_data: [],
       sliders_data: [],
       storages_data: [],
+      attributes_data: [],
+      comments_data: [],
       ...data,
    };
 

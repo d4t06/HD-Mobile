@@ -119,30 +119,32 @@ function AttributeGroup({ categories }: Props) {
             <div className="flex items-center justify-between">
                <div className="flex items-center">
                   <p className={cx("input-label", "mr-[10px]")}>Category: </p>
-                  <select
-                     disabled={!categories.length}
-                     className={`${inputClasses.input} min-w-[100px]`}
-                     name="category"
-                     onChange={(e) => setCurCategoryIndex(+e.target.value)}
-                  >
-                     <option value={undefined}>---</option>
-                     {!!categories.length &&
-                        categories.map((category, index) => (
-                           <option key={index} value={index}>
-                              {category.category_name}
-                           </option>
-                        ))}
-                  </select>
+                  <div className="bg-[#808080] rounded-[12px]">
+                     <select
+                        disabled={!categories.length}
+                        className={`${inputClasses.input} min-w-[100px]`}
+                        name="category"
+                        onChange={(e) => setCurCategoryIndex(+e.target.value)}
+                     >
+                        <option value={undefined}>---</option>
+                        {!!categories.length &&
+                           categories.map((category, index) => (
+                              <option key={index} value={index}>
+                                 {category.category_name}
+                              </option>
+                           ))}
+                     </select>
+                  </div>
                </div>
 
-               <Button onClick={() => handleOpenModal("add-attr")} primary>
+               <Button disable={!curCategory} onClick={() => handleOpenModal("add-attr")} primary>
                   <i className="material-icons mr-[8px]">add</i> Add attribute
                </Button>
             </div>
 
-            <div className={`mt-[14px] row gap-[10px] ${apiLoading ? "disable" : ""}`}>
-               {curCategory?.attributes &&
-                  curCategory.attributes.map((attr, index) => (
+            {curCategory?.attributes && (
+               <div className={`mt-[14px] row gap-[10px] ${apiLoading ? "disable" : ""}`}>
+                  {curCategory.attributes.map((attr, index) => (
                      <div key={index} className={cx("attr-item")}>
                         <span>{attr.attribute}</span>
 
@@ -156,7 +158,8 @@ function AttributeGroup({ categories }: Props) {
                         </div>
                      </div>
                   ))}
-            </div>
+               </div>
+            )}
          </div>
 
          {isOpenModal && <Modal setShowModal={setIsOpenModal}>{renderModal}</Modal>}

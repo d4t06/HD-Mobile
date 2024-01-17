@@ -1,104 +1,119 @@
 import { Button, Input } from "@/components";
 import { ProductComment, Product, Reply } from "@/types";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useRef, useState } from "react";
 import ModalHeader from "./ModalHeader";
 import { inputClasses } from "../ui/Input";
-import useComment from "@/hooks/useComment";
+import useComment, { CommentStateType } from "@/hooks/useComment";
 
 type Props = {
-  product: Product;
-  setIsOpenModal: Dispatch<SetStateAction<boolean>>;
-  target: "Add" | "Reply";
-  comment?: ProductComment;
+   product?: Product;
+   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+   target: "Add-Comment" | "Add-Reply" | "Edit-Reply" | "Edit-Reply";
+   comment?: ProductComment;
+   index?: number;
+   state: CommentStateType,
+   setState: Dispatch<SetStateAction<CommentStateType>>
 };
 
-const initComment = (product_name_ascii: string) => {
-  const data: ProductComment = {
-    content: "",
-    cus_name: "",
-    product_name_ascii,
-    phone_number: "",
-    total_like: 0,
-  };
-  return data;
+const initComment = (product?: Product) => {
+   const data: ProductComment = {
+      content: "",
+      cus_name: "",
+      approve: "",
+      product_name_ascii: product?.product_name_ascii || "",
+      phone_number: "",
+      total_like: 0,
+   };
+   return data;
 };
 
-export default function AddCommentModal({
-  product,
-  setIsOpenModal,
-  target,
-  comment,
-}: Props) {
-  const [commentData, setCommentData] = useState<ProductComment>(
-    initComment(product.product_name_ascii)
-  );
-  const [replyContent, setReplyContent] = useState("");
+export default function AddCommentModal({ product, setIsOpenModal, target, comment, index, setState, state }: Props) {
+   const [commentData, setCommentData] = useState<ProductComment>(initComment(product));
+   const [replyContent, setReplyContent] = useState(comment?.reply_data ? comment.reply_data.content : "");
 
-  // hooks
-  const { addComment, apiLoading, replyComment } = useComment({ setIsOpenModal });
+   // hooks
+   const { addComment, apiLoading, replyComment, editReply } = useComment({ setIsOpenModal });
 
-  const handleCommentData = (field: keyof typeof commentData, value: string) => {
-    setCommentData((prev) => ({ ...prev, [field]: value }));
-  };
+   const handleCommentData = (field: keyof typeof commentData, value: string) => {
+      setCommentData((prev) => ({ ...prev, [field]: value }));
+   };
 
-  const handleChangeConent = (value: string) => {
-    switch (target) {
-      case "Add":
-        return handleCommentData("content", value);
-      case "Reply":
-        return setReplyContent(value);
-    }
-  };
+   const intiValue = useMemo(
+      () => (target === "Add-Comment" ? commentData.content : replyContent),
+      [commentData, replyContent]
+   );
 
-  const handleSubmit = async () => {
-    switch (target) {
-      case "Add":
-        return await addComment(commentData);
-      case "Reply":
-        if (comment?.id === undefined) return;
-        const replyData: Reply = {
-          comment_id: comment?.id,
-          content: replyContent,
-          total_like: 0
-        };
+   const handleChangeContent = (value: string) => {
+      switch (target) {
+         case "Add-Comment":
+            return handleCommentData("content", value);
+         case "Add-Reply":
+         case "Edit-Reply":
+            return setReplyContent(value);
+      }
+   };
 
-        await replyComment(replyData)
-    }
-  };
+   const handleSubmit = async () => {
+      switch (target) {
+         case "Add-Comment":
+            return await addComment(commentData);
+         case "Add-Reply":
+            if (comment?.id === undefined || index === undefined) return;
+            const replyData: Reply = {
+               q_id: comment.id,
+               product_name_ascii: comment.product_name_ascii,
+               content: replyContent,
+               total_like: 0,
+               date_convert: "",
+            };
 
-  const titleMap: Record<typeof target, string> = {
-    Add: "Add new comment",
-    Reply: `Reply commit '${comment?.cus_name ?? undefined}'`,
-  };
+            await replyComment(replyData, index, state, setState);
+            break;
+         case "Edit-Reply":
+            if (!comment?.reply_data || comment.reply_data.id === undefined || index === undefined) return;
+            await editReply(comment.reply_data.id, replyContent, index, state, setState);
+      }
+   };
 
-  return (
-    <div className="">
-      <ModalHeader title={titleMap[target]} setIsOpenModal={setIsOpenModal} />
-      {target === "Add" && (
-        <div className="flex gap-[20px] mb-[20px]">
-          <Input
-            placeholder="Họ và tên *"
-            value={commentData.cus_name}
-            cb={(val) => handleCommentData("cus_name", val)}
-          />
-          <Input
-            value={commentData.phone_number}
-            placeholder="Điện thoại"
-            cb={(val) => handleCommentData("phone_number", val)}
-          />
-        </div>
-      )}
-      <textarea
-        placeholder="Nội dung"
-        value={commentData.content}
-        className={`${inputClasses.input} w-full min-h-[100px]`}
-        onChange={(e) => handleChangeConent(e.target.value)}
-      ></textarea>
-      <div className="text-right mt-[30px]">
-        <Button isLoading={apiLoading} onClick={handleSubmit} primary>
-          Gửi
-        </Button>
+   const titleMap: Record<typeof target, string> = {
+      "Add-Comment": "Add new comment",
+      "Add-Reply": `Reply comment '${comment?.cus_name ?? undefined}'`,
+      "Edit-Reply": `Edit reply '${comment?.cus_name ?? undefined}'`,
+   };
+
+   return (
+      <div className="w-[700px] max-w-[70vw]">
+         <ModalHeader title={titleMap[target]} setIsOpenModal={setIsOpenModal} />
+         {target === "Add-Comment" && (
+            <div className="flex gap-[20px] mb-[20px]">
+               <Input
+                  className="w-full"
+                  placeholder="Họ và tên *"
+                  value={commentData.cus_name}
+                  cb={(val) => handleCommentData("cus_name", val)}
+               />
+               <Input
+                  className="w-full"
+                  value={commentData.phone_number}
+                  placeholder="Điện thoại"
+                  cb={(val) => handleCommentData("phone_number", val)}
+               />
+            </div>
+         )}
+         <div className="bg-[#808080] rounded-[12px]">
+            <textarea
+               placeholder="Nội dung"
+               value={intiValue}
+               className={`${inputClasses.input} w-full min-h-[100px]`}
+               onChange={(e) => handleChangeContent(e.target.value)}
+            />
+         </div>
+
+         <div className="text-right mt-[30px]">
+            <Button isLoading={apiLoading} onClick={handleSubmit} primary>
+               Post
+            </Button>
+         </div>
       </div>
-    </div>
-  );
+   );
 }

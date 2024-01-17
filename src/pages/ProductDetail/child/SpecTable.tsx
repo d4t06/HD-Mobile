@@ -1,20 +1,26 @@
-import { ProductAttribute } from "@/types";
+import { CategoryAttribute, ProductAttribute } from "@/types";
 import "../styles.scss";
 
 type Props = {
-   attrs: ProductAttribute[];
+   proAttrs: ProductAttribute[];
+   catAttrs: CategoryAttribute[];
 };
 
-export default function SpecTable({ attrs }: Props) {
+
+export default function SpecTable({ catAttrs, proAttrs }: Props) {
+
    return (
       <table className="spec-table">
          <tbody>
-            {attrs.map((attr) => (
-               <tr>
-                  <td className="max-w-[50%]">{attr.attribute_data.attribute}</td>
-                  <td>{attr.value}</td>
-               </tr>
-            ))}
+            {catAttrs.map((catAttr, index) => {
+               const founded = proAttrs.find((attr) => attr.id == catAttr.id);
+               return (
+                  <tr key={index}>
+                     <td className="max-w-[50%]">{catAttr.attribute}</td>
+                     <td>{founded?.value || "..."  }</td>
+                  </tr>
+               ); 
+            })}
          </tbody>
       </table>
    );

@@ -1,4 +1,5 @@
 import { ReactNode, useMemo } from "react";
+import { Button } from "..";
 
 type Props = {
    data: {
@@ -9,20 +10,25 @@ type Props = {
    children?: ReactNode;
 };
 
+const classes = {
+   button:
+      "text-[#333] bg-[#ccc] h-[34px] w-[34px] hover:text-white hover:bg-[#cd1818] hover:scale-[1.1] transition-transform",
+};
+
 export default function OverlayCTA({ data }: Props) {
    const CTA = useMemo(() => {
       return data.map((item, index) => {
-         const { cb, icon, className = "text-white hover:text-red-500 hover:scale-[1.2] transition-transform" } = item;
+         const { cb, icon, className } = item;
 
          return (
-            <button key={index} onClick={cb} className={className}>
+            <Button circle key={index} onClick={cb} className={`${classes.button} ${className ? className : ''}`}>
                <i className="material-icons  text-current">{icon}</i>
-            </button>
+            </Button>
          );
       });
    }, [data]);
    return (
-      <div className="absolute inset-0 bg-black/60 hidden group-hover:flex items-center justify-center gap-[12px]">
+      <div className="absolute bottom-0 h-[40%] hidden group-hover:flex items-center justify-center gap-[12px]">
          {CTA}
       </div>
    );
