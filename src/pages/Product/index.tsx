@@ -12,6 +12,7 @@ import { AppDispatch } from "@/store/store";
 import { useApp } from "@/store/AppContext";
 import useAppConfig from "@/hooks/useAppConfig";
 import Skeleton from "@/components/Skeleton";
+import { render } from "react-dom";
 
 const cx = classNames.bind(styles);
 
@@ -60,6 +61,10 @@ export default function Product() {
       () => curCategory?.category_ascii && !!sliders[curCategory?.category_ascii],
       [sliders, curCategory]
    );
+   const isLoading = useMemo(
+      () => initLoading || status === "loading" || status === "more-loading",
+      [status, initLoading]
+   );
 
    const ProductsSkeletons = useMemo(
       () =>
@@ -105,10 +110,15 @@ export default function Product() {
 
                <div className={"mt-[15px]"}>
                   <div className="row">
-                     {(status === "loading" || initLoading || status === "more-loading") && ProductsSkeletons}
-                     {status !== "loading" && (
-                        <>{!products.length || status === "error" ? <NoProduct /> : renderProducts()}</>
+                     {/* init loading is category loading */}
+                     {/* loading is first get product (at page 1) */}
+                     {!initLoading && status !== "loading" && (
+                        <>
+                           {!!products.length && renderProducts()}
+                           {(!products.length && status === "successful") || (status === "error" && <NoProduct />)}
+                        </>
                      )}
+                     {isLoading && ProductsSkeletons}
                   </div>
                   {status !== "loading" && !!products.length && (
                      <div className={cx("pagination", { disable: remaining === 0 })}>

@@ -1,53 +1,57 @@
 .content-container {
-  * + * {
-    margin-top: 14px;
-  }
-  p {
-    font-size: 16px;
-    color: #495057;
-  }
-  h5 {
-    font-size: 18px;
-    font-weight: 600;
-  }
-  img {
-    width: auto;
-    margin-left: auto;
-    margin-right: auto;
-    height: 100%;
-    border-radius: 8px;
-  }
+   * + * {
+      margin-top: 14px;
+   }
+   p {
+      font-size: 16px;
+      color: #495057;
+   }
+   h5 {
+      font-size: 18px;
+      font-weight: 600;
+   }
+   img {
+      width: auto;
+      margin-left: auto;
+      margin-right: auto;
+      height: 100%;
+      border-radius: 8px;
+   }
+}
+
+.blur-block {
+   background: linear-gradient(to top, rgba($color: #fff, $alpha: 1), rgba($color: #fff, $alpha: 0));
 }
 
 .spec-table {
-  width: 100%;
-  tr {
-    td {
-      font-size: 14px;
-      padding: 6px 8px;
-
-      white-space: pre-line;
-
-      &:first-child {
-        border-radius: 8px 0 0 8px;
-        color: #808080;
-      }
-
-      &:last-child {
-        border-radius: 0 8px 8px 0;
-      }
-    }
-
-    &:nth-child(even) {
+   width: 100%;
+   tr {
       td {
-        background-color: #f1f1f1;
+         font-size: 14px;
+         padding: 6px 8px;
+
+         white-space: pre-line;
+
+         &:first-child {
+            border-radius: 8px 0 0 8px;
+            color: #808080;
+         }
+
+         &:last-child {
+            border-radius: 0 8px 8px 0;
+         }
       }
-    }
-  }
+
+      &:nth-child(even) {
+         td {
+            background-color: #f1f1f1;
+         }
+      }
+   }
 }
 
 .comment-item {
-  & + .comment-item {
-    margin-top: 20px;
-  }
+   & + .comment-item {
+      margin-top: 20px;
+   }
 }

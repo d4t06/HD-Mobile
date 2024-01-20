@@ -15,9 +15,10 @@ import EditBrand from "./child/EditBrand";
 import useAppConfig from "@/hooks/useAppConfig";
 import { useApp } from "@/store/AppContext";
 import AttributeGroup from "./child/AttributeGroup";
+import PushFrame from "@/components/ui/PushFrame";
 const cx = classNames.bind(styles);
 
-const    CAT_FIELDS: ["Name", "Icon"] = ["Name", "Icon"];
+const CAT_FIELDS: ["Name", "Icon"] = ["Name", "Icon"];
 
 type ModalTarget = "add-brand" | "add-category" | "edit-category" | "delete-category" | "delete-brand" | "edit-brand";
 
@@ -220,7 +221,7 @@ export default function CategoryBrand() {
          <div className="bg-[#fff] rounded-[8px] p-[20px]">
             <div className="mb-[15px] flex items-center">
                <p className={cx("input-label", "mr-[10px]")}>Category: </p>
-               <div className="bg-[#808080] rounded-[12px]">
+               <div className="bg-[#ccc] rounded-[12px]">
                   <select
                      disabled={!categories.length}
                      className={`${inputClasses.input} min-w-[100px]`}

@@ -9,7 +9,7 @@ type Props = {
 };
 export default function Empty({ onClick, children, className, fontClassName, pushAble = true }: Props) {
    const classes = {
-      container: `group relative pt-[100%] rounded-[12px] overflow-hidden bg-[#ccc] ${
+      container: `group relative pt-[100%] rounded-[12px] border border-[#ccc] overflow-hidden bg-[#ccc] ${
          !children ? "cursor-pointer hover:bg-black/15" : ""
       }`,
       font: "absolute inset-0 flex transition-transform rounded-[12px] items-center justify-center",

@@ -13,6 +13,8 @@ type Props = {
 const classes = {
    button:
       "text-[#333] bg-[#ccc] h-[34px] w-[34px] hover:text-white hover:bg-[#cd1818] hover:scale-[1.1] transition-transform",
+   hide: "opacity-0 translate-y-[10px]",
+   show: "group-hover:!translate-y-[0] group-hover:!opacity-[1]",
 };
 
 export default function OverlayCTA({ data }: Props) {
@@ -21,15 +23,11 @@ export default function OverlayCTA({ data }: Props) {
          const { cb, icon, className } = item;
 
          return (
-            <Button circle key={index} onClick={cb} className={`${classes.button} ${className ? className : ''}`}>
+            <Button circle key={index} onClick={cb} className={`${classes.button} ${className ? className : ""}`}>
                <i className="material-icons  text-current">{icon}</i>
             </Button>
          );
       });
    }, [data]);
-   return (
-      <div className="absolute bottom-0 h-[40%] hidden group-hover:flex items-center justify-center gap-[12px]">
-         {CTA}
-      </div>
-   );
+   return <div className={`${classes.hide} ${classes.show} transition-[opacity,transform]  flex absolute bottom-0 h-[40%]  items-center justify-center gap-[12px]`}>{CTA}</div>;
 }

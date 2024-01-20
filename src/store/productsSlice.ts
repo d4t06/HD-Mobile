@@ -103,9 +103,7 @@ const mergeVariantToProduct = (
 
    for (let i = 0; i < products.length; i++) {
       const p = products[i];
-      const filteredStorages_data = variants_data.filter(
-         (v) => !v.default && v.product_name_ascii === p.product_name_ascii
-      );
+      const filteredStorages_data = variants_data.filter((v) => v.product_name_ascii === p.product_name_ascii);
 
       if (filteredStorages_data.length) {
          const newP = { ...p, storages_data: filteredStorages_data } as Product;
@@ -154,13 +152,12 @@ const productsSlice = createSlice({
             if (!payload.admin) {
                if (!!productState.variants_data.length) {
                   const mergedProducts = mergeVariantToProduct(productState.products, productState.variants_data);
+
                   state.productState.products = mergedProducts;
-
-                  return;
                }
+            } else {
+               state.productState.products = productState.products;
             }
-
-            state.productState.products = productState.products;
          })
          .addCase(fetchProducts.rejected, (state) => {
             console.log("rejecrt case");
@@ -175,10 +172,19 @@ const productsSlice = createSlice({
          .addCase(getMoreProducts.fulfilled, (state, action) => {
             console.log("getMoreProducts =", action);
             const payload = action.payload;
+            const productState = payload.productState;
             if (!payload) return state;
 
             state.productState.count = payload.productState.count || 0;
-            state.productState.products.push(...payload.productState.products);
+
+            if (!payload.admin) {
+               if (!!productState.variants_data.length) {
+                  const mergedProducts = mergeVariantToProduct(productState.products, productState.variants_data);
+                  state.productState.products.push(...mergedProducts);
+               }
+            } else {
+               state.productState.products.push(...productState.products);
+            }
 
             state.status = "successful";
             state.page = payload.page || 0;

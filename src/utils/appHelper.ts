@@ -1,6 +1,7 @@
 import {
    Brand,
    ImageType,
+   LCStorage,
    Product,
    ProductColor,
    ProductCombine,
@@ -163,4 +164,11 @@ export const initBrandObject = (data: Partial<Brand>) => {
    };
 
    return object;
+};
+
+
+export const initLocalStorage: LCStorage = {
+   like_comment_ids: [],
+   like_review_ids: [],
+   product_history_ids: [],
 };

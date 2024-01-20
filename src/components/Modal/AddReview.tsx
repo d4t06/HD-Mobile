@@ -16,7 +16,7 @@ const initReview = (product?: Product) => {
   const data: ProductReview = {
     content: "",
     cus_name: "",
-    approve: "",
+    approve: 0,
     product_name_ascii: product?.product_name_ascii || "",
     phone_number: "",
     date_convert: "",

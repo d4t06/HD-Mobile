@@ -4,6 +4,7 @@ import styles from "./ProductItem.module.scss";
 import { moneyFormat } from "../../utils/appHelper";
 import { Product, ProductCombine, ProductStorage } from "@/types";
 import { useState } from "react";
+import PushFrame from "../ui/PushFrame";
 //
 
 const cx = classNames.bind(styles);
@@ -34,36 +35,24 @@ export default function ProductItem({ data }: Props) {
                <span>Trả góp 0%</span>
             </div>
          )}
-         <div className={cx("product-item-body")}>
+         <div className={cx("product-item-body", "space-y-[14px]")}>
             <h4 className={cx("product-item_name")}>{data.product_name || "Example"}</h4>
 
             {data.storages_data ? (
                <>
                   <ul className={cx("variant-box")}>
-                     {data.storages_data.map((v, index) => (
-                        <li
-                           key={index}
-                           className={cx({ active: activeVar?.storage_ascii === v.storage_ascii })}
-                           onClick={() => setActiveVar(v)}
-                        >
-                           {v.storage}
-                        </li>
-                     ))}
+                     {data.storages_data.map((v, index) => {
+                        const isActive = activeVar?.storage_ascii === v.storage_ascii;
+                        return (
+                           <li className={cx("item", { active: isActive })} key={index} onClick={() => setActiveVar(v)}>
+                              <PushFrame active={isActive} type="translate">
+                                 <p>{v.storage}</p>
+                              </PushFrame>
+                           </li>
+                        );
+                     })}
                   </ul>
                   <div className={cx("product-item_price")}>
-                     {/* <div className={cx("price-top")}>
-                  {data.old_price && data.old_price > data.cur_price && (
-                     <>
-                        <span className={cx("product-item_price--old")}>
-                           {data.old_price && moneyFormat(data.old_price) + "₫"}
-                        </span>
-                        <span className={cx("discount-percent")}>
-                           -{(((data.old_price - data.cur_price) / data.old_price) * 100).toFixed(0)}%
-                        </span>
-                     </>
-                  )}
-               </div> */}
-
                      <h1 className={cx("product-item_price--current")}>{moneyFormat(activeVar!.base_price)}đ</h1>
                   </div>
                </>

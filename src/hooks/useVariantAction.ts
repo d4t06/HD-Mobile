@@ -1,20 +1,22 @@
-import { ProductColor, ProductStorage } from "@/types";
+import { Product, ProductColor, ProductStorage } from "@/types";
 import { Dispatch, SetStateAction, useState } from "react";
 import { usePrivateRequest } from ".";
 import { useToast } from "@/store/ToastContext";
 import { sleep } from "@/utils/appHelper";
+import { useProductContext } from "@/store/ProductDataContext";
 
 type Props = {
-   setColors: Dispatch<SetStateAction<ProductColor[]>>;
-   setStorages: Dispatch<SetStateAction<ProductStorage[]>>;
+   // setColors: Dispatch<SetStateAction<ProductColor[]>>;
+   // setStorages: Dispatch<SetStateAction<ProductStorage[]>>;
    setIsOpenModal: Dispatch<SetStateAction<boolean>>;
-   storages: ProductStorage[];
-   colors: ProductColor[];
+   // storages_data: ProductStorage[];
+   // colors: ProductColor[];
 };
 const STORAGE_URL = "/storage-management/storages";
 const COLOR_URL = "/color-management/colors";
 
-export default function useVariantAction({ colors, setColors, setIsOpenModal, setStorages, storages }: Props) {
+export default function useVariantAction({ setIsOpenModal }: Props) {
+   const { storages_data, colors_data, setEditorData } = useProductContext();
    const [apiLoading, setApiLoading] = useState(false);
 
    const privateRequest = usePrivateRequest();
@@ -23,14 +25,14 @@ export default function useVariantAction({ colors, setColors, setIsOpenModal, se
    const deleteStorage = async (curIndex?: number) => {
       try {
          if (curIndex === undefined) throw new Error("no have id");
-         const curStorage = storages[curIndex];
+         const curStorage = storages_data[curIndex];
          setApiLoading(true);
 
          if (import.meta.env.DEV) await sleep(300);
          await privateRequest.delete(`${STORAGE_URL}/${curStorage.id}`);
 
-         const newStorages = storages.filter((c) => c.id !== curStorage.id);
-         setStorages(newStorages);
+         const newStorages = storages_data.filter((c) => c.id !== curStorage.id);
+         setEditorData((prev) => ({ ...prev, storages_data: newStorages } as Product));
 
          setSuccessToast(`Delete storage '${curStorage.storage}' successful`);
       } catch (error) {
@@ -50,8 +52,10 @@ export default function useVariantAction({ colors, setColors, setIsOpenModal, se
                if (import.meta.env.DEV) await sleep(300);
                const res = await privateRequest.post(STORAGE_URL, storage);
 
-               const newStorageData = res.data;
-               setStorages((prev) => [...prev, newStorageData]);
+               const newStorageData = res.data as ProductStorage;
+               // setStorages((prev) => [...prev, newStorageData]);
+               setEditorData((prev) => ({ ...prev, storages_data: [...prev.storages_data, newStorageData] }));
+
                break;
             case "Edit":
                if (curIndex === undefined || id === undefined) throw new Error("missing current index");
@@ -60,9 +64,10 @@ export default function useVariantAction({ colors, setColors, setIsOpenModal, se
                if (import.meta.env.DEV) await sleep(300);
                await privateRequest.put(`${STORAGE_URL}/${id}`, storage);
 
-               const newStorages = [...storages];
+               const newStorages = [...storages_data];
                newStorages[curIndex] = storage;
-               setStorages(newStorages);
+               // setStorages(newStorages);
+               setEditorData((prev) => ({ ...prev, storages_data: newStorages }));
          }
          setSuccessToast(`${type} storage successful`);
       } catch (error) {
@@ -84,7 +89,9 @@ export default function useVariantAction({ colors, setColors, setIsOpenModal, se
                const res = await privateRequest.post(COLOR_URL, color);
 
                const newColorData = res.data as ProductColor;
-               setColors((prev) => [...prev, newColorData]);
+               // setColors((prev) => [...prev, newColorData]);
+               setEditorData((prev) => ({ ...prev, colors_data: [...prev.colors_data, newColorData] }));
+
                break;
 
             case "Edit":
@@ -94,9 +101,10 @@ export default function useVariantAction({ colors, setColors, setIsOpenModal, se
                if (import.meta.env.DEV) await sleep(300);
                await privateRequest.put(`${COLOR_URL}/${id}`, color);
 
-               const newColors = [...colors];
+               const newColors = [...colors_data];
                newColors[curIndex] = color;
-               setColors(newColors);
+               // setColors(newColors);
+               setEditorData((prev) => ({ ...prev, colors_data: newColors }));
          }
          setSuccessToast(`${type} Color successful`);
       } catch (error) {
@@ -111,14 +119,17 @@ export default function useVariantAction({ colors, setColors, setIsOpenModal, se
    const deleteColor = async (curIndex?: number) => {
       try {
          if (curIndex === undefined) throw new Error("no have id");
-         const targetColor = colors[curIndex];
+         const targetColor = colors_data[curIndex];
 
          setApiLoading(true);
          if (import.meta.env.DEV) await sleep(300);
          await privateRequest.delete(`${COLOR_URL}/${targetColor.id}`);
 
-         const newColors = colors.filter((c) => c.id !== targetColor.id);
-         setColors(newColors);
+         const newColors = colors_data.filter((c) => c.id !== targetColor.id);
+
+         // setColors(newColors);
+         setEditorData((prev) => ({ ...prev, colors_data: newColors }));
+
          setSuccessToast(`Delete Color '${targetColor.color}' successful`);
       } catch (error) {
          console.log({ message: error });

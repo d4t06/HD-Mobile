@@ -81,9 +81,9 @@ export default function useUploadImage() {
       } catch (error) {
          console.log({ message: error });
 
-         // setTempImages([]);
          setErrorToast("Upload images failed");
          setStatus("error");
+         setTempImages([]);
       } finally {
          setStatus("finish");
       }

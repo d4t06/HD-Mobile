@@ -9,6 +9,7 @@ import AddItem from "@/components/Modal/AddItem";
 import ConfirmModal from "@/components/Modal/Confirm";
 import useBrandAction from "@/hooks/useBrand";
 import { generateId } from "@/utils/appHelper";
+import PushFrame from "@/components/ui/PushFrame";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -74,6 +75,7 @@ function AttributeGroup({ categories }: Props) {
       if (!isOpenModal) return;
       switch (openModalTarget.current) {
          case "add-attr":
+            if (!curCategory) return <p className="text-[16px]">Current category not found</p>;
             return (
                <AddItem
                   loading={apiLoading}
@@ -119,7 +121,7 @@ function AttributeGroup({ categories }: Props) {
             <div className="flex items-center justify-between">
                <div className="flex items-center">
                   <p className={cx("input-label", "mr-[10px]")}>Category: </p>
-                  <div className="bg-[#808080] rounded-[12px]">
+                  <div className="bg-[#ccc] rounded-[12px]">
                      <select
                         disabled={!categories.length}
                         className={`${inputClasses.input} min-w-[100px]`}
@@ -145,18 +147,20 @@ function AttributeGroup({ categories }: Props) {
             {curCategory?.attributes && (
                <div className={`mt-[14px] row gap-[10px] ${apiLoading ? "disable" : ""}`}>
                   {curCategory.attributes.map((attr, index) => (
-                     <div key={index} className={cx("attr-item")}>
-                        <span>{attr.attribute}</span>
+                     <PushFrame type="translate" key={index}>
+                        <div className={cx("attr-item")}>
+                           <span>{attr.attribute}</span>
 
-                        <div className={cx("cta")}>
-                           <Button onClick={() => handleOpenModal("delete-attr", index)}>
-                              <i className="material-icons">delete</i>
-                           </Button>
-                           <Button onClick={() => handleOpenModal("edit-attr", index)}>
-                              <i className="material-icons">edit</i>
-                           </Button>
+                           <div className={cx("cta")}>
+                              <Button onClick={() => handleOpenModal("delete-attr", index)}>
+                                 <i className="material-icons">delete</i>
+                              </Button>
+                              <Button onClick={() => handleOpenModal("edit-attr", index)}>
+                                 <i className="material-icons">edit</i>
+                              </Button>
+                           </div>
                         </div>
-                     </div>
+                     </PushFrame>
                   ))}
                </div>
             )}

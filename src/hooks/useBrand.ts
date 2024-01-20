@@ -51,7 +51,9 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
 
                // add category
                const catRes = await privateRequest.post(CAT_URL, category);
-               const newCategoryData = catRes.data as Category & { id: number };
+
+               // add attributes prop to category to fix error not found when add attribute
+               const newCategoryData = { ...catRes.data, attributes: [] } as Category & { id: number };
 
                // add slider
                const sliderData: SliderSchema = {
@@ -163,8 +165,10 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
       try {
          switch (type) {
             case "Add":
+               console.log("check current category", curCategory);
+
                if (curCategory === undefined || curCategory.attributes === undefined)
-                  throw new Error("Current not found");
+                  throw new Error("Current category is undefined");
                setApiLoading(true);
 
                const res = await privateRequest.post(CAT_ATTR_URL, attribute);
@@ -173,8 +177,6 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
 
                const newCategories = updateCategoryAttrs(categories, newCategoryAttrs, curCategory);
 
-               console.log('check new categories', newCategories);
-               
                setCategories(newCategories);
                break;
 
@@ -193,8 +195,7 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
 
                //  update category list
                const _newCategories = updateCategoryAttrs(categories, curAttrs, curCategory);
-               console.log('check new categories', _newCategories);
-
+               console.log("check new categories", _newCategories);
 
                setCategories(_newCategories);
          }

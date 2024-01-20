@@ -1,16 +1,9 @@
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  createContext,
-  useContext,
-  useState,
-} from "react";
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
 import { Product } from "@/types";
 
 type StateType = {
-  productData: Product;
-  setIsChange: Dispatch<SetStateAction<boolean>>;
+   productData: Product;
+   isChange: boolean;
 };
 
 // const initialState: StateType = {
@@ -18,38 +11,42 @@ type StateType = {
 // };
 
 type ContextType = {
-  state: StateType;
+   state: StateType;
+   setEditorData: Dispatch<SetStateAction<Product>>;
+   setIsChange: Dispatch<SetStateAction<boolean>>;
 };
 
 // const initialContext = {
 //    state: initialState,
 // };
 
-const ProductDataContext = createContext<ContextType | undefined>(undefined);
+const ProductDataContext = createContext<ContextType | null>(null);
 
 type Props = {
-  children: ReactNode;
-  initialState: Product;
-  setIsChange: Dispatch<SetStateAction<boolean>>;
+   children: ReactNode;
 };
 
-const ProductDataProvider = ({ children, initialState, setIsChange }: Props) => {
-  const [productData, _setProductData] = useState(initialState);
+const ProductDataProvider = ({ children }: Props) => {
+   const [editorData, setEditorData] = useState<Product>({} as Product);
+   const [isChange, setIsChange] = useState(false);
 
-  return (
-    <ProductDataContext.Provider value={{ state: { productData, setIsChange } }}>
-      {children}
-    </ProductDataContext.Provider>
-  );
+   return (
+      <ProductDataContext.Provider value={{ state: { productData: editorData, isChange }, setEditorData, setIsChange }}>
+         {children}
+      </ProductDataContext.Provider>
+   );
 };
 const useProductContext = () => {
-  const context = useContext(ProductDataContext);
+   const context = useContext(ProductDataContext);
 
-  if (!context) throw new Error("Context not found");
-  const {
-    state: { productData, setIsChange },
-  } = context;
-  return { ...productData, setIsChange };
+   if (!context) throw new Error("Context not found");
+   const {
+      state: { isChange, productData },
+      setEditorData,
+      setIsChange,
+   } = context;
+
+   return { ...productData, isChange, setIsChange, setEditorData };
 };
 
 export default ProductDataProvider;

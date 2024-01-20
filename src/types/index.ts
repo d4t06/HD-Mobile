@@ -190,7 +190,7 @@ export type ProductComment = {
    product_name_ascii: string;
    cus_name: string;
    content: string;
-   approve: string;
+   approve: number;
    date_convert: string;
    phone_number: string;
    total_like: number;
@@ -206,13 +206,10 @@ export type Reply = Omit<ProductComment, "cus_name" | "phone_number" | "approve"
    q_id: number;
 };
 
-// {
-//    id?: number;
-//    q_id: number;
-//    convert_date: string;
-//    content: string;
-//    total_like: number;
-//    product_name_ascii: string;
-// }
+export type LCStorage = {
+   like_review_ids: number[];
+   like_comment_ids: number[];
+   product_history_ids: number[];
+};
 
 export type GetArrayType<T extends any[]> = T extends (infer U)[] ? U : never;

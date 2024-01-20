@@ -1,35 +1,52 @@
 import { Product } from "@/types";
 import "../styles.scss";
-import Image from "@/components/Image";
+import Image from "@/components/ui/Image";
+import Skeleton from "@/components/Skeleton";
+import PushFrame from "@/components/ui/PushFrame";
 
 type Props = {
-  product: Product;
+   product: Product;
+   loading: boolean;
 };
 
-export default function SpecSection({ product }: Props) {
-  return (
-    <div className="bg-[#e1e1e1] p-[4px] pb-[12px] rounded-[10px] mt-[20px]">
-      <div className="bg-[#fff] rounded-[8px] overflow-hidden p-[10px]">
-        <Image classNames="" src={product.image_url} />
-        <div className="mt-[20px] mb-[10px]">
-          <table className="spec-table">
-            <tbody>
-              {product.category_data.attributes.map((catAttr, index) => {
-                const founded = product.attributes_data.find(
-                  (attr) => attr.attribute_data.attribute_ascii == catAttr.attribute_ascii
-                );
+export default function SpecSection({ product, loading }: Props) {
+   const SpecSkeleton = (
+      <>
+         <Skeleton className="pt-[100%] rounded-[8px] mb-[20px]" />
+         {[...Array(6).keys()].map((item) => (
+            <Skeleton key={item} className="w-full h-[34px] rounded-[4px] mb-[10px]" />
+         ))}
+      </>
+   );
 
-                return (
-                  <tr key={index}>
-                    <td className="w-[40%]">{catAttr.attribute}</td>
-                    <td>{founded?.value || "..."}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
+   const content = (
+      <>
+         <Image classNames="" src={product.image_url} />
+         <div className="mt-[20px] mb-[10px]">
+            <table className="w-full">
+               <tbody>
+                  {product.category_data.attributes.map((catAttr, index) => {
+                     const founded = product.attributes_data.find(
+                        (attr) => attr.attribute_data.attribute_ascii == catAttr.attribute_ascii
+                     );
+
+                     return (
+                        <tr key={index}>
+                           <td className="w-[40%]">{catAttr.attribute}</td>
+                           <td>{founded?.value || "..."}</td>
+                        </tr>
+                     );
+                  })}
+               </tbody>
+            </table>
+         </div>
+      </>
+   );
+
+   return (
+      <PushFrame>
+         {loading && SpecSkeleton}
+         {!loading && product && content}
+      </PushFrame>
+   );
 }

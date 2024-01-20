@@ -1,0 +1,19 @@
+.footer {
+   margin-top: 120px;
+   margin-bottom: 30px;
+
+   h5 {
+      color: #cd1818;
+   }
+   .list {
+      margin-top: 10px;
+      li {
+         font-size: 14px;
+         display: flex;
+         align-items: center;
+         & + li {
+            margin-top: 8px;
+         }
+      }
+   }
+}

@@ -73,6 +73,7 @@
    color: #fff;
    font-size: 1.6rem;
    transition: scale linear 0.1s;
+   font-weight: 500;
 
    &:hover {
       color: #efd63d;
@@ -81,7 +82,7 @@
 
    &.active {
       color: #efd63d;
-      font-weight: bold;
+      font-weight: 600;
    }
 
    a {

@@ -13,11 +13,6 @@ export default function Image({ src, classNames, onError }: Props) {
 
    const handleLoadImage = () => {
       setImageLoaded(true);
-
-      if (!src) return;
-      if (src?.includes("blob")) {
-         URL.revokeObjectURL(src);
-      }
    };
 
    const defaultHandleError = () => {
@@ -34,7 +29,7 @@ export default function Image({ src, classNames, onError }: Props) {
       <>
          {!imageLoaded && (
             <>
-               <Skeleton className="w-full h-0" />
+               <Skeleton className="w-full h-full" />
             </>
          )}
          <img

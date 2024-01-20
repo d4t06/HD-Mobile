@@ -1,8 +1,8 @@
 import classNames from "classnames/bind";
 import styles from "./ImageSlider.module.scss";
 import useSlider from "@/hooks/useSlider";
-import Image from "../Image";
 import { SliderImage } from "@/types";
+import Image from "../ui/Image";
 
 const cx = classNames.bind(styles);
 

@@ -117,7 +117,7 @@ export default function Message() {
       {status === "loading" && renderSkeleton}
 
       {status === "success" &&
-        comments.length &&
+        !!comments.length &&
         comments.map((comment, index) => {
           return (
             <div key={index} className="bg-[#e1e1e1] rounded-[12px]">
