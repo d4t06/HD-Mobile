@@ -195,7 +195,7 @@ export default function useReview({ setIsOpenModal, product_name_ascii, admin }:
 
          await privateRequest.post(`${REVIEW_URL}/approve`, { id: target.id });
 
-         target.approve = "1";
+         target.approve = 1;
          newReviews[index] = target;
          setState((prev) => ({ ...prev, reviews: newReviews }));
 

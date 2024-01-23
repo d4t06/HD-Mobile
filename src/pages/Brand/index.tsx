@@ -15,7 +15,7 @@ import EditBrand from "./child/EditBrand";
 import useAppConfig from "@/hooks/useAppConfig";
 import { useApp } from "@/store/AppContext";
 import AttributeGroup from "./child/AttributeGroup";
-import PushFrame from "@/components/ui/PushFrame";
+// import PushFrame from "@/components/ui/PushFrame";
 const cx = classNames.bind(styles);
 
 const CAT_FIELDS: ["Name", "Icon"] = ["Name", "Icon"];

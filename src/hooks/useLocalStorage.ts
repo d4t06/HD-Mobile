@@ -3,16 +3,9 @@ import { useState } from "react";
 
 const getLocalValue = <T>(key: string, initValue: T): T => {
    //SSR Next.js
-   // if (typeof window === 'undefined') return initValue;
+   if (typeof window === "undefined") return initValue;
 
-   //if value is already stored
-   const localValue = JSON.parse(localStorage.getItem(key) || "{}");
-
-   if (typeof localValue === "object") {
-      if (Object.keys(localValue).length) return localValue;
-   } else if (localValue) return localValue;
-
-   return initValue;
+   return JSON.parse(localStorage.getItem(key) || JSON.stringify(initValue));
 };
 
 const useLocalStorage = <T>(key: string, initValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {

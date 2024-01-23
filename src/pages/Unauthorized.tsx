@@ -1,19 +1,14 @@
-import { useNavigate } from "react-router-dom"
+import { redirect } from "react-router-dom";
 
-function Unauthorized () {
-    const navigate = useNavigate()
+export default function Unauthorized() {
+   const goBack = () => {
+      redirect("/");
+   };
 
-    const goBack = () => {
-        navigate(-1)
-    } 
-
-
-    return (<div>
-        <h1>unauthorized page</h1>
-        <button onClick={() => goBack()}>Go back</button>
-        
-        </div>)
-
+   return (
+      <div>
+         <h1>unauthorized page</h1>
+         <button onClick={() => goBack()}>Go back</button>
+      </div>
+   );
 }
-
-export default Unauthorized

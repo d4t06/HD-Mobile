@@ -5,9 +5,9 @@ import SliderGroup, { SliderRef } from "@/components/SliderGroup";
 import InputGroup, { CombineRef } from "./CombineGroup";
 import { getExistCombine, getExistSlider } from "./helper";
 import AttributeGroup, { AttributeRef } from "./AttributeGroup";
-import PushFrame from "@/components/ui/PushFrame";
+// import PushFrame from "@/components/ui/PushFrame";
 import useCollapse from "@/hooks/useCollapse";
-import { Button } from "@/components";
+// import { Button } from "@/components";
 
 type Props = {
    attrList: CategoryAttribute[];

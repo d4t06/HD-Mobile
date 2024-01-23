@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import { useLocalStorage, useRefreshToken } from "@/hooks";
 import { useAuth } from "@/store/AuthContext";
 
-const PersistLogin = () => {
+export default function PersistLogin() {
    const { auth, setLoading } = useAuth();
    const refresh = useRefreshToken();
    const [persist] = useLocalStorage("persist", false); //[persist, setPersist]
@@ -23,6 +23,8 @@ const PersistLogin = () => {
          }
       };
 
+      console.log("run persit login");
+
       if (!ranEffect.current && !auth && persist) verifyRefreshToken();
       else if (!runCB.current) setLoading(false);
 
@@ -34,6 +36,4 @@ const PersistLogin = () => {
 
    // return <>{!persist ? <Outlet /> : isLoading ? "" : <Outlet />}</>;
    return <Outlet />;
-};
-
-export default PersistLogin;
+}

@@ -3,7 +3,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./Toolbar";
 import Image from "@tiptap/extension-image";
 import "./style.scss";
-import { Ref, forwardRef, useImperativeHandle, useRef } from "react";
+import { Ref, forwardRef, useImperativeHandle } from "react";
 
 export type EditorRef = {
   getContent: () => string | undefined;

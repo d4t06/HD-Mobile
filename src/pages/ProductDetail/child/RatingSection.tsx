@@ -4,7 +4,7 @@ import CommentItem, { CommentSkeleton } from "@/components/CommentItem";
 import { Button } from "@/components";
 import NoComment from "./NoComment";
 import { ProductReview } from "@/types";
-import { useLocalStorage } from "@/hooks";
+// import { useLocalStorage } from "@/hooks";
 import { initLocalStorage } from "@/utils/appHelper";
 
 export default function RatingSection({ product_name_ascii }: { product_name_ascii: string }) {
@@ -17,7 +17,7 @@ export default function RatingSection({ product_name_ascii }: { product_name_asc
 
    const currentCommentIndex = useRef(0);
 
-   const [localVal, _setLocalVal] = useLocalStorage("HD-Mobile", initLocalStorage);
+   // const [_localVal, _setLocalVal] = useLocalStorage("HD-Mobile", initLocalStorage);
 
    const handleGetMore = async () => {
       await getReviews(page + 1);

@@ -187,6 +187,7 @@ export type Toast = {
 
 export type ProductComment = {
    id?: number;
+   q_id?: number
    product_name_ascii: string;
    cus_name: string;
    content: string;
@@ -202,9 +203,7 @@ export type ProductComment = {
 
 export type ProductReview = ProductComment & { rate: number };
 
-export type Reply = Omit<ProductComment, "cus_name" | "phone_number" | "approve"> & {
-   q_id: number;
-};
+export type Reply = Omit<ProductComment, "cus_name" | "phone_number" | "approve">
 
 export type LCStorage = {
    like_review_ids: number[];

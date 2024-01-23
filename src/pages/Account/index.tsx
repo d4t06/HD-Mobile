@@ -5,7 +5,7 @@ import { Button } from "@/components";
 import { useEffect } from "react";
 import { useAuth } from "@/store/AuthContext";
 
-function AccountPage() {
+export default function AccountPage() {
    const { auth, loading } = useAuth();
    const navigate = useNavigate();
    const logout = useLogout();
@@ -16,12 +16,12 @@ function AccountPage() {
    };
 
    useEffect(() => {
-      if (loading) return
-      
+      if (loading) return;
+
       if (!auth) navigate("/login");
    }, [loading]);
 
-   if (loading) return
+   if (loading) return;
 
    return (
       <div className="mt-[30px]">
@@ -32,5 +32,3 @@ function AccountPage() {
       </div>
    );
 }
-
-export default AccountPage;

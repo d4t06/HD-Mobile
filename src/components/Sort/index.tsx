@@ -8,6 +8,7 @@ import styles from "./ProductSort.module.scss";
 // import { getAll, getSearchPage } from '../../store/actions';
 import { fetchProducts, searchProducts } from "../../store/productsSlice";
 import { AppDispatch } from "@/store/store";
+import PushFrame from "../ui/PushFrame";
 const cx = classNames.bind(styles);
 
 const continents = [
@@ -60,7 +61,8 @@ function ProductSort({ category_id, loading, searchKey }: Props) {
          newSort.type = continents[id - 1].type as SortType["type"];
 
          dispatch(storingFilters({ filters, sort: newSort }));
-         if (searchKey) dispatch(searchProducts({ page: 1, category_id, filters, sort: newSort, key: searchKey, replace: true }));
+         if (searchKey)
+            dispatch(searchProducts({ page: 1, category_id, filters, sort: newSort, key: searchKey, replace: true }));
          else dispatch(fetchProducts({ page: 1, category_id, filters, sort: newSort }));
       }
    };
@@ -74,7 +76,7 @@ function ProductSort({ category_id, loading, searchKey }: Props) {
 
    return (
       <div className={cx("product-sort")}>
-         <h1 className="text-[16px]">Xem theo</h1>
+         <p className="text-[16px] font-[500]">Xem theo</p>
          <ul className={cx("btn-group", { disable: loading })}>
             {continents.map((item, index) => {
                return (
@@ -83,7 +85,9 @@ function ProductSort({ category_id, loading, searchKey }: Props) {
                      key={item.id}
                      onClick={() => handleToggle(item.id)}
                   >
-                     {item.value}
+                     <PushFrame active={index + 1 === checked} type="translate">
+                        <span className="leading-[24px] px-[6px]">{item.value}</span>
+                     </PushFrame>
                   </li>
                );
             })}

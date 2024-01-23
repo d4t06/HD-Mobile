@@ -7,3 +7,6 @@ HD SHOP
 - fix không xuống hàng phần cấu hình sản phẩm
 - fix dư thừa product attribute
 - Sửa giao diện
+
+### update thu 2 22/1/2024
+- Trang register bị lỗi dấn đến không load web site trên iphone 7 Plus

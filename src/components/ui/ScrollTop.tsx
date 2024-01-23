@@ -26,7 +26,7 @@ export default function ScrollTop() {
 
   const classes = {
     container:
-      "fixed bottom-[30px] transition-[padding,opacity,transform] right-[30px] bg-[#cd1818]  rounded-[6px] p-[2px] pb-[4px] hover:pb-[6px] active:pb-[2px] ",
+      "fixed z-[99] bottom-[30px] transition-[padding,opacity,transform] right-[30px] bg-[#cd1818]  rounded-[6px] p-[2px] pb-[4px] hover:pb-[6px] active:pb-[2px] ",
     button: "p-[5px] rounded-[3px] bg-[#fff]",
     hide: "opacity-0 translate-y-[30px]",
     show: "translate-y-[0] opacity-[1]",

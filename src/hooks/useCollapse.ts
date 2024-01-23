@@ -4,7 +4,7 @@ export default function useCollapse() {
    const triggerRef = useRef<HTMLButtonElement>(null);
    const containerRef = useRef<HTMLDivElement>(null);
    const [isCollapse, setIsCollapse] = useState(false);
-   const currentHeight = useRef(0);
+   // const currentHeight = useRef(0);
 
    const handleCollapse = () => {
       const newIsCollapse = !isCollapse;

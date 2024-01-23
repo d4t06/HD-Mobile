@@ -6,8 +6,9 @@ import { useMemo, useRef } from "react";
 import logo from "@/assets/images/logo.jpg";
 import NoComment from "./NoComment";
 import "../styles.scss";
-import { useLocalStorage } from "@/hooks";
-import { initLocalStorage } from "@/utils/appHelper";
+// import { useLocalStorage } from "@/hooks";
+// import { initLocalStorage } from "@/utils/appHelper";
+import PushFrame from "@/components/ui/PushFrame";
 
 export default function CommentSection({ product_name_ascii }: { product_name_ascii: string }) {
    const {
@@ -19,8 +20,6 @@ export default function CommentSection({ product_name_ascii }: { product_name_as
 
    // for loading animation
    const currentCommentIndex = useRef(0);
-
-   const [localVal, _setLocalVal] = useLocalStorage("HD-Mobile", initLocalStorage);
 
    const remaining = useMemo(() => count - page * page_size, [comments]);
 
@@ -38,21 +37,14 @@ export default function CommentSection({ product_name_ascii }: { product_name_as
          !!comments.length &&
          comments.map((c, index) => {
             const reply = c.reply_data;
+            if (!reply) return;
             const replyCastToComment = {
                ...reply,
-               cus_name: "HD Mobile",
-               approve: reply?.date_convert,
-               total_like: reply?.total_like,
                image_url: logo,
+               cus_name: "HD Mobile",
             } as ProductComment & { image_url: string };
 
             const isLoading = apiLoading && currentCommentIndex.current === index;
-            const localVal = JSON.parse(localStorage.getItem("HD-Mobile") || JSON.stringify(initLocalStorage));
-
-            const isLiked = localVal.like_comment_ids.includes(c.id!);
-
-            console.log('check , ', localVal.like_comment_ids, c.id, isLiked);
-            
 
             return (
                <div className="comment-item" key={index}>
@@ -66,34 +58,20 @@ export default function CommentSection({ product_name_ascii }: { product_name_as
                         {isLoading ? (
                            <i className="material-icons text-[15px] mr-[4px] animate-spin">sync</i>
                         ) : (
-                           <i
-                              className={`material-icons text-[15px] mr-[4px] transition-transform ${
-                                 isLiked ? "group-hover:rotate-180" : ""
-                              }`}
-                           >
-                              thumb_up
-                           </i>
+                           <i className={`material-icons text-[15px] mr-[4px] transition-transform`}>thumb_up</i>
                         )}
                         {c.total_like}
                      </Button>
                   </CommentItem>
                   <div className="ml-[54px] mt-[14px] bg-[#ccc] rounded-[12px]">
-                     <CommentItem className="p-[10px] bg-[#f3f3f3] translate-y-[-6px]" comment={replyCastToComment}>
-                        {/* <Button
-                           onClick={() => handleLike(replyCastToComment, "ANSWER")}
-                           className="px-[5px] !py-[0px]"
-                           primary
-                        >
-                           <i className="material-icons text-[15px] mr-[4px]">thumb_up</i>
-                           {replyCastToComment.total_like}
-                        </Button> */}
-                        <></>
-                     </CommentItem>
+                     <PushFrame type="translate">
+                        <CommentItem className="p-[10px]" comment={replyCastToComment} />
+                     </PushFrame>
                   </div>
                </div>
             );
          }),
-      [comments, apiLoading, localVal]
+      [comments, apiLoading]
    );
 
    const renderSkeleton = useMemo(

@@ -4,7 +4,7 @@ import loadingGif from "@/assets/images/loading.gif";
 
 import { useAuth } from "@/store/AuthContext";
 
-function RequireAuth({ allowedRole }: { allowedRole: string[] }) {
+export default function RequireAuth({ allowedRole }: { allowedRole: string[] }) {
    const { auth, loading } = useAuth();
 
    const decode: { username: ""; role: "" } = auth ? jwt_decode(auth.token) : { username: "", role: "" };
@@ -24,5 +24,3 @@ function RequireAuth({ allowedRole }: { allowedRole: string[] }) {
       <Navigate to="/login" />
    );
 }
-
-export default RequireAuth;

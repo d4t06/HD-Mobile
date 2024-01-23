@@ -14,7 +14,7 @@ import { AppDispatch } from "@/store/store";
 import { searchProducts } from "@/store/productsSlice";
 import { useApp } from "@/store/AppContext";
 
-function SearchResultPage() {
+export default function SearchResultPage() {
    const dispatch = useDispatch<AppDispatch>();
    const { sort, filters } = useSelector(selectedAllFilter);
    const {
@@ -98,4 +98,3 @@ function SearchResultPage() {
       </div>
    );
 }
-export default SearchResultPage;

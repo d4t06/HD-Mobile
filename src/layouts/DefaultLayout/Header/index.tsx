@@ -36,6 +36,8 @@ function Header() {
       ));
    }, [categories, location, showModal]);
 
+   console.log("run header");
+
    return (
       <>
          <div className={cx("header")}>

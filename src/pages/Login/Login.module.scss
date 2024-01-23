@@ -1,4 +1,7 @@
-$alpha: rgba($color: #000000, $alpha: 0.1);
+$alpha: rgba(
+   $color: #000000,
+   $alpha: 0.1,
+);
 
 .page {
    display: flex;
@@ -10,15 +13,14 @@ $alpha: rgba($color: #000000, $alpha: 0.1);
 .form {
    display: flex;
    flex-direction: column;
-   gap: 20px;
-   flex-grow: 1;
    padding: 20px 30px 15px;
    font-weight: 500;
    border: 1px solid $alpha;
    box-shadow: 0 5px 15px $alpha;
+   width: 400px;
    border-radius: 20px;
    &:not(.full) {
-      max-width: 400px;
+      max-width: calc(100vw - 30px);
    }
    h1 {
       font-size: 26px;
@@ -36,7 +38,7 @@ $alpha: rgba($color: #000000, $alpha: 0.1);
    display: flex;
    flex-direction: column;
    gap: 5px;
-  
+
    input,
    select {
       border: 2px solid $alpha;
@@ -62,7 +64,6 @@ $alpha: rgba($color: #000000, $alpha: 0.1);
       transform: scale(1.4);
    }
 }
-
 
 .messgae-container {
    font-size: 1.6rem;

@@ -2,7 +2,7 @@ import { AvatarPlaceholder } from "@/components/Avatar";
 import { ProductReview, Reply } from "@/types";
 import { ReactNode, useMemo } from "react";
 import Skeleton from "./Skeleton";
-import logo from "@/assets/images/logo.jpg";
+// import logo from "@/assets/images/logo.jpg";
 
 type Props = {
    className?: string;

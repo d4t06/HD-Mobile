@@ -31,7 +31,7 @@ const Label = (icon: string, title: string) => (
    </div>
 );
 
-function DetailPage() {
+export default function DetailPage() {
    const [product, setProduct] = useState<Product>(initProductDetailObject({}));
    const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
    const [sliderImages, setSliderImages] = useState<SliderImage[]>([]);
@@ -83,7 +83,15 @@ function DetailPage() {
       if (!isOpenModal) return;
       switch (openModalTarget.current) {
          case "add-comment":
-            return <AddCommentModal state={{} as CommentStateType} setState={() => {}} target="Add-Comment" setIsOpenModal={setIsOpenModal} product={product} />;
+            return (
+               <AddCommentModal
+                  state={{} as CommentStateType}
+                  setState={() => {}}
+                  target="Add-Comment"
+                  setIsOpenModal={setIsOpenModal}
+                  product={product}
+               />
+            );
          case "add-review":
             return <AddReviewModal target="Add-Review" setIsOpenModal={setIsOpenModal} product={product} />;
       }
@@ -203,4 +211,3 @@ function DetailPage() {
       </>
    );
 }
-export default DetailPage;

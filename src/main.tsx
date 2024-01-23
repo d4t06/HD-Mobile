@@ -10,6 +10,7 @@ import ToastProvider from "./store/ToastContext";
 import ToastPortal from "./components/ToastPortal";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
+
 root.render(
    <React.StrictMode>
       <AppProvider>

@@ -14,7 +14,7 @@ import useAppConfig from "@/hooks/useAppConfig";
 
 type ModelTarget = "Add" | "Edit";
 
-function Dashboard() {
+export default function Dashboard() {
    const dispatch = useDispatch<AppDispatch>();
 
    const [isOpenModal, setIsOpenModal] = useState(false);
@@ -240,4 +240,3 @@ function Dashboard() {
       </>
    );
 }
-export default Dashboard;

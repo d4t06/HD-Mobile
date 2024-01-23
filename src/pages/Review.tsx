@@ -1,6 +1,6 @@
 import { Button, Modal } from "@/components";
 import { useMemo, useRef, useState } from "react";
-import CommentItem, { AdminReply } from "@/components/CommentItem";
+import { AdminReply } from "@/components/CommentItem";
 import ConfirmModal from "@/components/Modal/Confirm";
 import { ProductComment } from "@/types";
 import useReview from "@/hooks/useReview";

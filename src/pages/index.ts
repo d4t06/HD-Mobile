@@ -12,3 +12,5 @@ export { default as EditProduct } from "./EditProduct";
 export { default as Brand } from "./Brand";
 export { default as Register } from "./Register";
 export { default as Order } from "./Order";
+export { default as Review } from "./Review";
+export { default as Message } from "./Message";

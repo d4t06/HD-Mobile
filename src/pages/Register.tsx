@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 const USER_REGEX = /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
 const PWD_REGEX = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
-function Register() {
+export default function Register() {
    const navigate = useNavigate();
    const userInputRef = useRef<HTMLInputElement>(null);
    const prevUser = useRef("");
@@ -32,7 +32,7 @@ function Register() {
 
    const [errMsg, setErrorMsg] = useState("");
 
-   const {setSuccessToast} = useToast()
+   const { setSuccessToast } = useToast();
 
    const ableToSubmit = useMemo(
       () => validName && validPwd && validMatchPwg && prevUser.current !== user,
@@ -66,7 +66,7 @@ function Register() {
             headers: { "Content-Type": "application/json" },
          });
 
-         setSuccessToast("Đăng ký thành công")
+         setSuccessToast("Đăng ký thành công");
          handleClear();
          navigate("/login");
       } catch (error: any) {
@@ -100,15 +100,14 @@ function Register() {
       setValidMatchPwg(match);
    }, [password, matchPwg]);
 
-   
    const classes = {
-      constructor: 'bg-[#333] p-[6px] rounded-[6px] text-[1.4rem] text-white origin-top duration-[.3s] transition-all'
-   }
+      constructor: "bg-[#333] p-[6px] rounded-[6px] text-[1.4rem] text-white origin-top duration-[.3s] transition-all",
+   };
 
    // console.log(prevUser.current === user);
    return (
       <div className={cx("page")}>
-         <form className={cx("form", { disable: loading })} onSubmit={handleSubmit}>
+         <form className={cx("form", 'space-y-[20px]', { disable: loading })} onSubmit={handleSubmit}>
             {errMsg && <h2 className={cx("error-msg")}>{errMsg}</h2>}
             <h1 className={cx("title")}>Đăng ký</h1>
             <div className={cx("form-group")}>
@@ -157,7 +156,9 @@ function Register() {
                <p
                   id="note"
                   className={`${classes.constructor} ${
-                     passwordFocus && password && !validPwd ? "max-h-[200px] opacity-100" : "max-h-0 my-[-6px] opacity-0"
+                     passwordFocus && password && !validPwd
+                        ? "max-h-[200px] opacity-100"
+                        : "max-h-0 my-[-6px] opacity-0"
                   }`}
                >
                   6 - 24 ký tự <br />
@@ -167,9 +168,11 @@ function Register() {
             <div className={cx("form-group")}>
                <div className="flex items-center">
                   <label htmlFor="password-confirm">Nhập lại mật khẩu</label>
-                 {password && <span className={validMatchPwg && validPwd ? "" : "hide"}>
-                     {validMatchPwg && validPwd ? checkIcon : xIcon}
-                  </span>}
+                  {password && (
+                     <span className={validMatchPwg && validPwd ? "" : "hide"}>
+                        {validMatchPwg && validPwd ? checkIcon : xIcon}
+                     </span>
+                  )}
                </div>
 
                <input
@@ -195,4 +198,3 @@ function Register() {
       </div>
    );
 }
-export default Register;

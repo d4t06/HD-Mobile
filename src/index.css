@@ -21,6 +21,11 @@ html {
    -ms-overflow-style: none; /* IE and Edge */
    scrollbar-width: none; /* Firefox */
 }
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+   -ms-overflow-style: none;  /* IE and Edge */
+   scrollbar-width: none;  /* Firefox */
+ }
 .container {
    margin: 0 auto;
 }
@@ -31,12 +36,16 @@ html {
    margin-right: -6px;
    row-gap: 12px;
 }
+.row.large {
+   margin-left: -12px;
+   margin-right: -12px;
+   row-gap: 24px;
+}
 
 .col {
    padding-left: 6px;
    padding-right: 6px;
 }
-
 .disable {
    opacity: 0.6;
    pointer-events: none;

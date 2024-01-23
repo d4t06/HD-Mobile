@@ -4,7 +4,7 @@ import { redirect } from "react-router-dom";
 import { generateId, initColorObject, initStorageObject } from "@/utils/appHelper";
 import usePrivateRequest from "@/hooks/usePrivateRequest";
 import ProductConfig, { ConfigRef } from "./child/Group";
-import { CategoryAttribute, ProductCombine, ProductCombineSchema, ProductDetail } from "@/types";
+import { ProductCombine, ProductCombineSchema, ProductDetail } from "@/types";
 import Empty from "@/components/ui/Empty";
 import { Button, Modal } from "@/components";
 import { useProductContext } from "@/store/ProductDataContext";

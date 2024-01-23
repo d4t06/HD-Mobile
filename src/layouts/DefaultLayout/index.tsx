@@ -11,15 +11,17 @@ type Props = {
    children: ReactNode;
 };
 
-function DefaultLayout({ children }: Props) {
+export default function DefaultLayout({ children }: Props) {
    const { status, getCategories } = useAppConfig({});
 
    const ranUseEffect = useRef(false);
 
    useEffect(() => {
       if (!ranUseEffect.current) {
-         getCategories();
          ranUseEffect.current = true;
+         console.log("default layout run get category");
+
+         getCategories();
       }
    }, []);
 
@@ -34,5 +36,3 @@ function DefaultLayout({ children }: Props) {
       </div>
    );
 }
-
-export default DefaultLayout;

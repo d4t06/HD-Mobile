@@ -12,7 +12,6 @@ import { AppDispatch } from "@/store/store";
 import { useApp } from "@/store/AppContext";
 import useAppConfig from "@/hooks/useAppConfig";
 import Skeleton from "@/components/Skeleton";
-import { render } from "react-dom";
 
 const cx = classNames.bind(styles);
 
