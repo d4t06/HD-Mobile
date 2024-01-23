@@ -21,7 +21,7 @@ export default function SpecSection({ product, loading }: Props) {
 
    const content = (
       <>
-         <Image classNames="" src={product.image_url} />
+         <Image classNames="h-full max-h-[40vh] w-auto mx-auto" src={product.image_url} />
          <div className="mt-[20px] mb-[10px]">
             <table className="w-full">
                <tbody>

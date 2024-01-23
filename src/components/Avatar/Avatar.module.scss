@@ -1,7 +1,9 @@
 .user-cta {
    display: flex;
    align-items: center;
-   gap: 8px;
+   * + * {
+      margin-left: 8px;
+   }
 
    &.revert {
       flex-direction: row-reverse;

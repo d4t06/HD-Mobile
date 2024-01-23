@@ -26,12 +26,7 @@ const initReview = (product?: Product) => {
   return data;
 };
 
-export default function AddReviewModal({
-  product,
-  setIsOpenModal,
-  target,
-  comment,
-}: Props) {
+export default function AddReviewModal({ product, setIsOpenModal, target, comment }: Props) {
   const [reviewData, setReviewData] = useState<ProductReview>(initReview(product));
   const [replyContent, setReplyContent] = useState(
     comment?.reply_data ? comment.reply_data.content : ""
@@ -106,9 +101,7 @@ export default function AddReviewModal({
       {showConfirm && (
         <>
           <ModalHeader title={"Gửi thành công"} setIsOpenModal={setIsOpenModal} />
-          <p className="text-[16px] text-[#333]">
-            Chúng tôi đã nhận được đánh giá của bạn
-          </p>
+          <p className="text-[16px] text-[#333]">Chúng tôi đã nhận được đánh giá của bạn</p>
           <div className="text-center mt-[30px]">
             <Button isLoading={false} onClick={() => setIsOpenModal(false)} primary>
               Cút
@@ -123,14 +116,11 @@ export default function AddReviewModal({
           {target === "Add-Review" && (
             <div className="">
               <div className="mb-[20px]">
-                <div className="flex justify-center gap-[8px]">
+                <div className="flex justify-center space-x-[10px]">
                   {[...Array(5).keys()].map((index) => {
                     const isActive = index + 1 <= reviewData.rate;
                     return (
-                      <Button
-                        onClick={() => handleReviewData("rate", index + 1)}
-                        key={index}
-                      >
+                      <Button onClick={() => handleReviewData("rate", index + 1)} key={index}>
                         <i
                           className={`${classes.star} ${
                             isActive ? "text-[#efb140]" : "text-[#808080]"
@@ -147,19 +137,23 @@ export default function AddReviewModal({
                 </p>
               </div>
 
-              <div className="flex gap-[20px] mb-[20px]">
-                <Input
-                  className="w-full"
-                  placeholder="Họ và tên *"
-                  value={reviewData.cus_name}
-                  cb={(val) => handleReviewData("cus_name", val)}
-                />
-                <Input
-                  className="w-full"
-                  value={reviewData.phone_number}
-                  placeholder="Điện thoại"
-                  cb={(val) => handleReviewData("phone_number", val)}
-                />
+              <div className="flex items-end mb-[20px] mx-[-10px]">
+                <div className="w-1/2 px-[10px]">
+                  <Input
+                    className="w-full"
+                    placeholder="Họ và tên *"
+                    value={reviewData.cus_name}
+                    cb={(val) => handleReviewData("cus_name", val)}
+                  />
+                </div>
+                <div className="w-1/2 px-[10px]">
+                  <Input
+                    className="w-full"
+                    value={reviewData.phone_number}
+                    placeholder="Điện thoại"
+                    cb={(val) => handleReviewData("phone_number", val)}
+                  />
+                </div>
               </div>
             </div>
           )}

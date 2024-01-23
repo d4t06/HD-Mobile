@@ -1,4 +1,4 @@
-$getter: 8px;
+$getter: 4px;
 $activeCl: #cd1818;
 $shadow: 2px 2px 5px 0
   rgba(
@@ -10,14 +10,13 @@ $shadow: 2px 2px 5px 0
   font-size: 1.6rem;
   margin-bottom: 4px;
   font-weight: 600;
-  color: #333;
 }
 .price {
   font-weight: 500;
   line-height: 1.2;
   .cur-price {
     font-size: 3.5rem;
-    font-weight: bold;
+    font-weight: 600;
     color: #cd1818;
   }
   .old-price {
@@ -50,6 +49,10 @@ $shadow: 2px 2px 5px 0
     color: $activeCl;
     font-weight: bold;
     transform: translateY(-2px);
+    color: #cd1818;
+    .min-price {
+      font-weight: 600;
+    }
   }
 }
 .list {
@@ -61,11 +64,21 @@ $shadow: 2px 2px 5px 0
   .item {
     width: 33.33%;
     padding: 0 $getter;
-    transform: translateY(3px);
+    transform: translateY(2px);
+
+    @media screen and (max-width: 756px) {
+      width: 50%;
+      &:nth-child(2n + 1) {
+        margin-top: 12px;
+      }
+      &:first-child {
+        margin-top: 0;
+      }
+    }
 
     .wrap {
       background: #ccc;
-      border-radius: $getter;
+      border-radius: $getter + $getter;
     }
 
     .box {
@@ -77,15 +90,16 @@ $shadow: 2px 2px 5px 0
       width: 100%;
       border: 1px solid rgba($color: #ccc, $alpha: 1);
       box-shadow: $shadow;
-      border-radius: $getter;
-      font-weight: 400;
+      border-radius: $getter + $getter;
       position: relative;
       overflow: hidden;
       cursor: pointer;
+      
       background-color: #fff;
-      transition: transform linear 0.1s;
+      color: #333;
 
-      transform: translateY(-6px);
+      transition: transform linear 0.1s;
+      transform: translateY(-4px);
 
       &:after {
         border: 12px solid transparent;
@@ -97,10 +111,11 @@ $shadow: 2px 2px 5px 0
       }
       .min-price {
         font-size: 1.4rem;
+        font-weight: 500;
       }
 
       &:hover {
-        transform: translateY(-8px);
+        transform: translateY(-6px);
       }
     }
 

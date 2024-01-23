@@ -85,11 +85,13 @@
    }
    .product {
       display: flex;
+      padding: 4px 0 ;
       border-left: 4px solid transparent;
       transition: padding linear 0.15s;
       cursor: pointer;
       &-img {
          width: 75px;
+         flex-shrink: 0;
       }
       &-info {
          margin-left: 6px;

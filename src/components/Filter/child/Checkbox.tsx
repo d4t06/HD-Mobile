@@ -8,7 +8,7 @@ import { Brand } from "@/types";
 const cx = classNames.bind(styles);
 
 type Props = {
-   handleFilter: (brand: any) => void;
+   handleFilter: (brand: FilterType['brands']) => void;
    filters: FilterType;
    categoryAscii: string | undefined;
 };

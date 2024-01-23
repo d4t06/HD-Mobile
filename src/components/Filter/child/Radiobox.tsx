@@ -1,50 +1,56 @@
-// import { useMemo } from "react";
-// import classNames from "classnames/bind";
-// import styles from "../ProductFilter.module.scss";
 import { FilterType } from "@/store/filtersSlice";
-// const cx = classNames.bind(styles);
+import { PriceRange } from "@/types";
 
-// import { price } from "@/assets/data";
+import style from "../ProductFilter.module.scss";
+import classNames from "classnames/bind";
 
 type Props = {
-   handleFilter: (sort: any) => void;
-   // data: T[];
-   category: string;
-   filters: FilterType;
-   // render: (item: T) => ReactNode;
+  handleFilter: (sort: PriceRange | undefined) => void;
+  data: PriceRange[];
+  filters: FilterType;
 };
 
-export default function Radiobox({}: Props) {
-   // const priceList = useMemo(() => price[category], [category]);
+const cx = classNames.bind(style);
 
-   // const handleToggle = (array: number[]) => {
-   //    if (JSON.stringify(array) === JSON.stringify(filters.price)) return;
-   //    handleFilter(array);
-   // };
+export default function Radiobox({ data, filters, handleFilter }: Props) {
+  const handleToggle = (item: PriceRange | "clear") => {
+    if (item === "clear") {
+      handleFilter(undefined);
+    } else if (item) {
+      handleFilter(item);
+    }
+  };
 
-   // if (!priceList) return "Data is not array";
+  return (
+    <>
+      <div className={"filter-item"}>
+        <input
+          type="radio"
+          id={"all-price"}
+          checked={filters.price === undefined}
+          onChange={() => handleToggle("clear")}
+        />
+        <label className={cx("label")} htmlFor={"all-price"}>
+          All
+        </label>
+      </div>
+      {data.map((item, index) => {
+        const isChecked = filters.price === undefined ? false : item.id === filters.price.id;
 
-   return (
-      <h1>Price</h1>
-      // <>
-      //    {priceList.map((item, index) => {
-      //       const isChecked = JSON.stringify(filters.price) === JSON.stringify(item.array) ? true : false;
-      //       return (
-      //          <div key={index} className={cx("filter-item")}>
-      //             {/* <a href={"/ddtd"}> */}
-      //             <input
-      //                type="radio"
-      //                id={item.text + index}
-      //                checked={isChecked}
-      //                onChange={() => handleToggle(item.array)}
-      //             />
-      //             <label className={cx("label")} htmlFor={item.text + index}>
-      //                {item.text}
-      //             </label>
-      //             {/* </a> */}
-      //          </div>
-      //       );
-      //    })}
-      // </>
-   );
+        return (
+          <div key={index} className={"filter-item"}>
+            <input
+              type="radio"
+              id={item.id + ""}
+              checked={isChecked}
+              onChange={() => handleToggle(item)}
+            />
+            <label className={cx("label")} htmlFor={item.id + ""}>
+              {item.label}
+            </label>
+          </div>
+        );
+      })}
+    </>
+  );
 }

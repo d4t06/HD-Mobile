@@ -45,9 +45,9 @@ function Search({ setShowModal }: Props) {
       setShowModal && setShowModal(value);
    };
 
-   const handleDetailPage = (item: any) => {
+   const handleDetailPage = (item: Product) => {
       handleShow(false);
-      navigate(`/${item.category_name}/${item.product_id}`);
+      navigate(`/${item.category_data.category_ascii}/${item.product_name_ascii}`);
    };
 
    const handleSubmit = (e: FormEvent) => {

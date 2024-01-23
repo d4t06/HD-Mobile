@@ -25,7 +25,12 @@
 .brand-skeleton {
    height: 34px;
    width: 150px;
+   flex-shrink: 0;
    border-radius: 99px;
+   @media screen and (max-width: 756px) {
+      width: 100px;
+      height: 28px;
+   }
 }
 
 .filter-brand-skeleton {

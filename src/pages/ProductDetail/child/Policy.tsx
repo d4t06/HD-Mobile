@@ -32,7 +32,7 @@ export default function Policy({ loading }: Props) {
 
    return (
       <PushFrame>
-         <ul className="flex flex-col gap-[10px]">
+         <ul className="flex flex-col space-y-[10px]">
             {loading && renderSkeleton}
             {!loading && content}
          </ul>

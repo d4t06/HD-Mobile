@@ -17,12 +17,12 @@ function Sidebar() {
          <div>
             <Link to="/dashboard" className={cx("sidebar__item")}>
                <i className="material-icons">phonelink</i>
-               Products
+               Product
             </Link>
 
             <Link className={cx("sidebar__item")} to="/dashboard/brand">
                <i className="material-icons">class</i>
-               Brand
+               Asset
             </Link>
 
             <Link className={cx("sidebar__item")} to="/dashboard/banner">
