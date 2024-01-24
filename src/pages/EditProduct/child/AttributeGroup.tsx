@@ -14,7 +14,7 @@ type Props = {
   catAttr: CategoryAttribute;
 };
 
-const PRODUCT_ATTRIBUTE_URL = "/product-attribute-management";
+const PRODUCT_ATTRIBUTE_URL = "/product-management/attributes";
 
 const findInitValue = (
   attributes_data: ProductAttribute[],
@@ -70,7 +70,7 @@ function AttributeGroup({ catAttr }: Props, ref: Ref<AttributeRef>) {
       setValue(target.value);
       stock.current = target;
     }
-  }, []);
+  }, [attributes_data, catAttr]);
 
   const handleOnChange = (value: string) => {
     setValue(value);

@@ -10,8 +10,7 @@ type Props = {
    setIsOpenModal: Dispatch<SetStateAction<boolean>>;
 };
 
-const PRODUCT_URL = "/product-management/products";
-// const SLIDER_URL = "/slider-management/sliders";
+const PRODUCT_URL = "/product-management";
 
 export default function useProductAction({ setIsOpenModal }: Props) {
    const dispatch = useDispatch();
@@ -31,14 +30,17 @@ export default function useProductAction({ setIsOpenModal }: Props) {
       return newProducts;
    };
 
-   const addProduct = async (type: "Edit" | "Add", product: ProductSchema & { curIndex?: number; id?: number }) => {
+   const addProduct = async (
+      type: "Edit" | "Add",
+      product: ProductSchema & { curIndex?: number; id?: number }
+   ) => {
       try {
          if (!product) throw new Error("Product data error");
 
          switch (type) {
             case "Add":
                setApiLoading(true);
-               const res = await privateRequest.post(PRODUCT_URL, product, {
+               const res = await privateRequest.post(`${PRODUCT_URL}/products`, product, {
                   headers: { "Content-Type": "application/json" },
                });
 
@@ -51,15 +53,20 @@ export default function useProductAction({ setIsOpenModal }: Props) {
                return dispatch(storingProducts({ products: [newProductData] }));
 
             case "Edit":
-               if (product.curIndex === undefined || product.id === undefined) throw new Error("No have product index");
+               if (product.curIndex === undefined || product.id === undefined)
+                  throw new Error("No have product index");
                setApiLoading(true);
                const { curIndex, id, ...productProps } = product;
 
-               await privateRequest.put(`${PRODUCT_URL}/${id}`, productProps, {
+               await privateRequest.put(`${PRODUCT_URL}/products/${id}`, productProps, {
                   headers: { "Content-Type": "application/json" },
                });
 
-               const newProductsUpdate: Product[] = updateProducts(products, productProps as Product, curIndex);
+               const newProductsUpdate: Product[] = updateProducts(
+                  products,
+                  productProps as Product,
+                  curIndex
+               );
 
                dispatch(setProducts({ products: newProductsUpdate }));
                break;
@@ -80,7 +87,7 @@ export default function useProductAction({ setIsOpenModal }: Props) {
          if (id === undefined) throw new Error("Product data error");
          setApiLoading(true);
 
-         await privateRequest.delete(`/product-management/products/${id}`);
+         await privateRequest.delete(`${PRODUCT_URL}/products/${id}`);
          // for await (const slider of product.sliders_data) {
          //    await privateRequest.delete(`${SLIDER_URL}/${slider.slider_data.id}`);
          // }

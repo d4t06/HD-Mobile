@@ -35,7 +35,7 @@ export default function Image({ src, classNames, onError }: Props) {
          <img
             onLoad={handleLoadImage}
             onError={handleError}
-            className={`${classNames ? classNames : ""} w-full ${!imageLoaded ? "hidden" : ""}`}
+            className={`${classNames ? classNames : ""} ${!imageLoaded ? "hidden" : ""}`}
             src={src}
             ref={imageRef}
          />

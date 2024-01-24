@@ -1,4 +1,11 @@
-import { Brand, Category, CategorySliderSchema, CategoryAttribute, SliderSchema, PriceRange } from "@/types";
+import {
+   Brand,
+   Category,
+   CategorySliderSchema,
+   CategoryAttribute,
+   SliderSchema,
+   PriceRange,
+} from "@/types";
 import { Dispatch, SetStateAction, useState } from "react";
 import { usePrivateRequest } from ".";
 import { useToast } from "@/store/ToastContext";
@@ -11,11 +18,6 @@ type Props = {
 };
 
 const MANAGE_CAT_URL = "/category-management";
-const MANAGE_CAT_ATTR_URL = "/category-attribute-management";
-const MANAGE_CAT_PRICE_URL = "/category-price-management/prices";
-const MANAGE_CAT_SLIDER_URL = "/slider-management/category_sliders";
-
-const MANAGE_BRAND_URL = "/brand-management";
 const MANAGE_SLIDER_URL = "/slider-management/sliders";
 
 export default function useBrandAction({ setIsOpenModal, curCategory, curBrands }: Props) {
@@ -52,10 +54,12 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
                setApiLoading(true);
 
                // add category
-               const catRes = await privateRequest.post(MANAGE_CAT_URL, category);
+               const catRes = await privateRequest.post(`${MANAGE_CAT_URL}/categories`, category);
 
                // add attributes prop to category to fix error not found when add attribute
-               const newCategoryData = { ...catRes.data, attributes: [] } as Category & { id: number };
+               const newCategoryData = { ...catRes.data, attributes: [] } as Category & {
+                  id: number;
+               };
 
                // add slider
                const sliderData: SliderSchema = {
@@ -71,17 +75,18 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
                   category_id: newCategoryData.id,
                   slider_id: newSliderData.id,
                };
-               await privateRequest.post(MANAGE_CAT_SLIDER_URL, categorySliderData, {
+               await privateRequest.post(`${MANAGE_CAT_URL}/category-sliders`, categorySliderData, {
                   headers: { "Content-Type": "application/json" },
                });
 
                setCategories((prev) => [...prev, newCategoryData]);
                break;
             case "Edit":
-               if (curIndex === undefined || !!category.id) throw new Error("missing current index");
+               if (curIndex === undefined || !!category.id)
+                  throw new Error("missing current index");
                setApiLoading(true);
 
-               await privateRequest.put(`${MANAGE_CAT_URL}/${category.id}`, category);
+               await privateRequest.put(`${MANAGE_CAT_URL}/categories/${category.id}`, category);
 
                const newCategories = [...categories];
                newCategories[curIndex] = category;
@@ -101,10 +106,11 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
       try {
          switch (type) {
             case "Add":
-               if (curCategory === undefined || curBrands === undefined) throw new Error("Current not found");
+               if (curCategory === undefined || curBrands === undefined)
+                  throw new Error("Current not found");
                setApiLoading(true);
 
-               const brandRes = await privateRequest.post(MANAGE_BRAND_URL, brand);
+               const brandRes = await privateRequest.post(`${MANAGE_CAT_URL}/brands`, brand);
 
                const newBrandData = brandRes.data.data as Brand;
                const newBrands = [...curBrands, newBrandData];
@@ -112,11 +118,12 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
                break;
 
             case "Edit":
-               if (curCategory === undefined || curBrands === undefined) throw new Error("Current not found");
+               if (curCategory === undefined || curBrands === undefined)
+                  throw new Error("Current not found");
                if (curIndex === undefined || !brand.id) throw new Error("missing current index");
                setApiLoading(true);
 
-               await privateRequest.put(`${MANAGE_BRAND_URL}/${brand.id}`, brand);
+               await privateRequest.put(`${MANAGE_CAT_URL}/brands/${brand.id}`, brand);
 
                const _newBrands = [...curBrands];
                _newBrands[curIndex] = brand;
@@ -139,7 +146,7 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
          const targetBrand = curBrands[curIndex];
 
          setApiLoading(true);
-         await privateRequest.delete(`${MANAGE_BRAND_URL}/${targetBrand.id}`);
+         await privateRequest.delete(`${MANAGE_CAT_URL}/brands/${targetBrand.id}`);
 
          const newBrands = curBrands.filter((b) => b.id !== targetBrand.id);
          setBrands((prev) => ({ ...prev, [curCategory.category_ascii]: newBrands }));
@@ -153,7 +160,11 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
       }
    };
 
-   const updateCategoryAttrs = (categories: Category[], newAttrs: CategoryAttribute[], curCategory: Category) => {
+   const updateCategoryAttrs = (
+      categories: Category[],
+      newAttrs: CategoryAttribute[],
+      curCategory: Category
+   ) => {
       if (curCategory.attributes == undefined) throw new Error("Attributes is undefined");
       const newCategories = [...categories];
 
@@ -163,7 +174,11 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
       return newCategories;
    };
 
-   const updateCategoryPriceRange = (categories: Category[], priceRanges: PriceRange[], curCategory: Category) => {
+   const updateCategoryPriceRange = (
+      categories: Category[],
+      priceRanges: PriceRange[],
+      curCategory: Category
+   ) => {
       if (curCategory.price_ranges == undefined) throw new Error("Price ranges is undefined");
       const newCategories = [...categories];
 
@@ -173,7 +188,11 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
       return newCategories;
    };
 
-   const addAttribute = async (attribute: CategoryAttribute, type: "Add" | "Edit", curIndex?: number) => {
+   const addAttribute = async (
+      attribute: CategoryAttribute,
+      type: "Add" | "Edit",
+      curIndex?: number
+   ) => {
       try {
          switch (type) {
             case "Add":
@@ -183,7 +202,7 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
                   throw new Error("Current category is undefined");
                setApiLoading(true);
 
-               const res = await privateRequest.post(MANAGE_CAT_ATTR_URL, attribute);
+               const res = await privateRequest.post(`${MANAGE_CAT_URL}/attributes`, attribute);
                const newAttrData = res.data.data as CategoryAttribute;
                const newCategoryAttrs = [...curCategory.attributes, newAttrData];
 
@@ -199,7 +218,7 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
 
                setApiLoading(true);
 
-               await privateRequest.put(`${MANAGE_CAT_ATTR_URL}/${attribute.id}`, attribute);
+               await privateRequest.put(`${MANAGE_CAT_URL}/attributes/${attribute.id}`, attribute);
 
                //  update attribute with index
                const curAttrs = [...curCategory.attributes];
@@ -223,14 +242,18 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
 
    const deleteAttribute = async (curIndex?: number) => {
       try {
-         if (curIndex === undefined || curCategory === undefined || curCategory.attributes === undefined)
+         if (
+            curIndex === undefined ||
+            curCategory === undefined ||
+            curCategory.attributes === undefined
+         )
             throw new Error("no have id");
 
          const curAttrs = [...curCategory.attributes];
          const targetAttr = curAttrs[curIndex];
 
          setApiLoading(true);
-         await privateRequest.delete(`${MANAGE_BRAND_URL}/${targetAttr.id}`);
+         await privateRequest.delete(`${MANAGE_CAT_URL}/attributes/${targetAttr.id}`);
 
          const newAttrs = curAttrs.filter((b) => b.id !== targetAttr.id);
          const newCategories = updateCategoryAttrs(categories, newAttrs, curCategory);
@@ -255,30 +278,38 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
 
                setApiLoading(true);
 
-               const res = await privateRequest.post(MANAGE_CAT_PRICE_URL, price);
+               const res = await privateRequest.post(`${MANAGE_CAT_URL}/price-ranges`, price);
                const newPriceRangeData = res.data.data as PriceRange & { id: number };
 
                const newPriceRanges = [...curCategory.price_ranges, newPriceRangeData];
-               const newCategories = updateCategoryPriceRange(categories, newPriceRanges, curCategory);
+               const newCategories = updateCategoryPriceRange(
+                  categories,
+                  newPriceRanges,
+                  curCategory
+               );
 
                setCategories(newCategories);
                break;
             case "Edit":
                if (
+                  price.id === undefined ||
                   curIndex === undefined ||
-                  !!price.id ||
-                  curCategory == undefined ||
-                  curCategory.price_ranges == undefined
+                  curCategory === undefined ||
+                  curCategory.price_ranges === undefined
                )
                   throw new Error("missing current index");
                setApiLoading(true);
 
-               await privateRequest.put(`${MANAGE_CAT_PRICE_URL}/${price.id}`, price);
+               await privateRequest.put(`${MANAGE_CAT_URL}/price-ranges/${price.id}`, price);
 
                const _newPriceRanges = [...curCategory?.price_ranges];
                _newPriceRanges[curIndex] = price;
 
-               const _newCategories = updateCategoryPriceRange(categories, _newPriceRanges, curCategory);
+               const _newCategories = updateCategoryPriceRange(
+                  categories,
+                  _newPriceRanges,
+                  curCategory
+               );
 
                setCategories(_newCategories);
          }
@@ -294,14 +325,18 @@ export default function useBrandAction({ setIsOpenModal, curCategory, curBrands 
 
    const deletePriceRange = async (curIndex?: number) => {
       try {
-         if (curIndex === undefined || curCategory === undefined || curCategory.price_ranges === undefined)
+         if (
+            curIndex === undefined ||
+            curCategory === undefined ||
+            curCategory.price_ranges === undefined
+         )
             throw new Error("no have id");
 
          const curPriceRange = [...curCategory.price_ranges];
          const targetPriceRange = curPriceRange[curIndex];
 
          setApiLoading(true);
-         await privateRequest.delete(`${MANAGE_BRAND_URL}/${targetPriceRange.id}`);
+         await privateRequest.delete(`${MANAGE_CAT_URL}/price-ranges/${targetPriceRange.id}`);
 
          const newPriceRanges = curPriceRange.filter((b) => b.id !== targetPriceRange.id);
          const newCategories = updateCategoryPriceRange(categories, newPriceRanges, curCategory);

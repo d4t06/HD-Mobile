@@ -23,8 +23,6 @@ export default function PersistLogin() {
          }
       };
 
-      console.log("run persit login");
-
       if (!ranEffect.current && !auth && persist) verifyRefreshToken();
       else if (!runCB.current) setLoading(false);
 

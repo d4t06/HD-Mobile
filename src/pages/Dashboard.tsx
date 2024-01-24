@@ -33,7 +33,7 @@ export default function Dashboard() {
    } = useSelector(selectedAllProduct);
    const { filters, sort } = useSelector(selectedAllFilter);
    const { categories } = useApp();
-   const { status: appConfigStatus, curBrands } = useAppConfig({ curCategory, autoRun: true });
+   const { status: appConfigStatus, curBrands } = useAppConfig({ curCategory, autoRun: true, admin: true });
 
    const ranEffect = useRef(false);
 

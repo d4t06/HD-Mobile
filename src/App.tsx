@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { privateRoutes, publicRoutes } from "./routes";
 import DashboardLayout from "./layouts/DashboardLayout";
 import RequireAuth from "./routes/RequireAuth";

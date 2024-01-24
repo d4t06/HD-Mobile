@@ -1,8 +1,39 @@
+$getter: 10px;
+
 .product-filter {
    padding: 10px;
    padding-top: 15px;
    margin-top: 15px;
    margin-left: 30px;
+
+   @media screen and (max-width: 756px) {
+      margin: 0;
+      padding: 0;
+      margin-top: 14px;
+      .filter-section {
+         padding: 0;
+      }
+      .filter-title {
+         padding: 0;
+         margin-bottom: 8px;
+      }
+      .filter-list {
+         gap: 0;
+         &.price {
+            * + * {
+               margin-top: $getter;
+            }
+         }
+         &:not(.price) {
+            margin-top: -$getter;
+            margin-left: -$getter - 6px;
+            > * {
+               margin-top: $getter;
+               margin-left: $getter + 6px;
+            }
+         }
+      }
+   }
 }
 .filter-section {
    margin-bottom: 25px;
@@ -27,7 +58,8 @@
    flex-direction: column;
 }
 
-input[type='checkbox'], input[type='radio'] {
+input[type="checkbox"],
+input[type="radio"] {
    scale: 1.2;
    margin-right: 4px;
 }

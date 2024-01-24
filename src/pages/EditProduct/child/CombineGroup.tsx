@@ -33,7 +33,10 @@ function InputGroup({ initCombine, isExist }: InputGroupProps, ref: Ref<CombineR
    };
 
    const detectChange = () => {
-      if (stockCombine.current.price !== combineData.price || stockCombine.current.quantity !== combineData.quantity)
+      if (
+         stockCombine.current.price !== combineData.price ||
+         stockCombine.current.quantity !== combineData.quantity
+      )
          return true;
       else return false;
    };
@@ -75,7 +78,10 @@ function InputGroup({ initCombine, isExist }: InputGroupProps, ref: Ref<CombineR
          return;
       }
 
-      if (initCombine) setCombineData(initCombine);
+      if (initCombine) {
+         setCombineData(initCombine);
+         stockCombine.current = initCombine;
+      }
    }, [initCombine]);
 
    return (

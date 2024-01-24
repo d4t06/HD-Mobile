@@ -1,11 +1,8 @@
 import classNames from "classnames/bind";
 import styles from "./BrandSort.module.scss";
 
-// import { useState } from "react";
 import { FilterType } from "@/store/filtersSlice";
 import { Brand } from "@/types";
-// import useStore from '../../hooks/useStore';
-// import {getAll} from '../../store/actions'
 
 const cx = classNames.bind(styles);
 
@@ -13,7 +10,7 @@ type Props = {
    data: Brand[];
    filtersInStore?: FilterType;
    admin?: boolean;
-   handleFilter: (filters: Brand[], by: keyof FilterType | "clear") => void;
+   handleFilter: (filters: Brand[], by: "brands" | "clear") => void;
 };
 
 function BrandList({ data, handleFilter, filtersInStore, admin }: Props) {
@@ -38,7 +35,13 @@ function BrandList({ data, handleFilter, filtersInStore, admin }: Props) {
                   className={cx("sort-item", { "no-image": !item.image_url })}
                   onClick={() => handleToggle(item)}
                >
-                  {item.image_url ? <img src={item.image_url} alt="" /> : <p className="text-[16px] md:text-[18px] font-[500]">{item.brand_name}</p>}
+                  {item.image_url ? (
+                     <img src={item.image_url} alt="" />
+                  ) : (
+                     <p className="text-[16px] md:text-[18px] font-[500]">
+                        {item.brand_name}
+                     </p>
+                  )}
                </div>
             );
          })}

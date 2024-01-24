@@ -8,7 +8,11 @@ import { ProductCombine, ProductCombineSchema, ProductDetail } from "@/types";
 import Empty from "@/components/ui/Empty";
 import { Button, Modal } from "@/components";
 import { useProductContext } from "@/store/ProductDataContext";
-import { findMinCombineOfStorage, initCombinesForInsert, initProductSlidersForInsert } from "@/utils/productHelper";
+import {
+   findMinCombineOfStorage,
+   initCombinesForInsert,
+   initProductSlidersForInsert,
+} from "@/utils/productHelper";
 import { useToast } from "@/store/ToastContext";
 import AddItem from "@/components/Modal/AddItem";
 import OverlayCTA from "@/components/ui/OverlayCTA";
@@ -28,11 +32,7 @@ type ModelTarget =
    | "delete-product";
 
 const MAX_VAL = 999999999;
-const STORAGE_URL = "/storage-management/storages";
-const PRODUCT_DETAIL_URL = "/product-detail-management";
-const PRODUCT_SLIDER_URL = "/slider-management/product-sliders";
-const COMBINE_URL = "/combine-management/combines";
-const PRODUCT_ATTRIBUTE_URL = "/product-attribute-management";
+const MANAGE_PRODUCT_URL = "/product-management";
 
 function EditProductMain() {
    const [isOpenModal, setIsOpenModal] = useState(false);
@@ -123,12 +123,16 @@ function EditProductMain() {
       if (colors_data.length) {
          // >>> api add new products sliders
          if (newSlidersSchema.length) {
-            const data = initProductSlidersForInsert(newSlidersSchema, colors_data, product_name_ascii as string);
+            const data = initProductSlidersForInsert(
+               newSlidersSchema,
+               colors_data,
+               product_name_ascii as string
+            );
             if (!data.length) {
                throw new Error("product slider error");
             }
             console.log(">>> api submit product slider");
-            await privateRequest.post(PRODUCT_SLIDER_URL, data, {
+            await privateRequest.post(`${MANAGE_PRODUCT_URL}/product-sliders`, data, {
                headers: { "Content-Type": "application/json" },
             });
          }
@@ -136,18 +140,20 @@ function EditProductMain() {
    };
 
    const submitAttributes = async () => {
-      if (ProductConfigRef.current === null) throw new Error("ProductConfigRef.current is undefined");
+      if (ProductConfigRef.current === null)
+         throw new Error("ProductConfigRef.current is undefined");
       const newProductAttrs = await ProductConfigRef.current.submitAttributes();
 
       if (newProductAttrs.length) {
          console.log(">>> api submit attributes");
-         await privateRequest.post(PRODUCT_ATTRIBUTE_URL, newProductAttrs);
+         await privateRequest.post(`${MANAGE_PRODUCT_URL}/attributes`, newProductAttrs);
       }
    };
 
    const submitDetail = async () => {
       const content = editorRef.current?.getContent();
-      if (!content || !product_name_ascii) return console.log("content or product name is undefined");
+      if (!content || !product_name_ascii)
+         return console.log("content or product name is undefined");
 
       const data: ProductDetail = {
          content,
@@ -158,14 +164,17 @@ function EditProductMain() {
 
       if (detail === undefined) {
          console.log(">>> api add new content");
-         return await privateRequest.post(PRODUCT_DETAIL_URL, data);
+         return await privateRequest.post(`${MANAGE_PRODUCT_URL}/details`, data);
       } else if (detail.id) {
          console.log(">>> api update content");
-         return await privateRequest.put(`${PRODUCT_DETAIL_URL}/${detail.id}`, data);
+         return await privateRequest.put(`${MANAGE_PRODUCT_URL}/details/${detail.id}`, data);
       }
    };
 
-   const submitCombines = async (newCombines: ProductCombine[], updateCombines: ProductCombine[]) => {
+   const submitCombines = async (
+      newCombines: ProductCombine[],
+      updateCombines: ProductCombine[]
+   ) => {
       let newCombinesRes: ProductCombine[] = [];
 
       if (newCombines.length) {
@@ -181,7 +190,7 @@ function EditProductMain() {
 
          console.log(">>> api add new combine");
 
-         const res = await privateRequest.post(COMBINE_URL, combinesSchema, {
+         const res = await privateRequest.post(`${MANAGE_PRODUCT_URL}/combines`, combinesSchema, {
             headers: { "Content-Type": "application/json" },
          });
          const data = res.data as ProductCombine[];
@@ -201,7 +210,7 @@ function EditProductMain() {
          console.log(">>> api update combine");
 
          for await (const item of combinesSchema) {
-            await privateRequest.put(`${COMBINE_URL}/${item.id}`, item, {
+            await privateRequest.put(`${MANAGE_PRODUCT_URL}/combines/${item.id}`, item, {
                headers: { "Content-Type": "application/json" },
             });
          }
@@ -240,19 +249,27 @@ function EditProductMain() {
             // assign base price
             storageItem.base_price = minPrice;
             // >>> api update storage
-            await privateRequest.put(`${STORAGE_URL}/${storageItem.id}`, storageItem, {
-               headers: { "Content-Type": "application/json" },
-            });
+            await privateRequest.put(
+               `${MANAGE_PRODUCT_URL}/storages/${storageItem.id}`,
+               storageItem,
+               {
+                  headers: { "Content-Type": "application/json" },
+               }
+            );
          }
       }
 
       return { minCB, prevDefaultCb };
    };
 
-   const updateDefaultCombine = async (minCB: ProductCombine, prevDefaultCb: ProductCombine | undefined) => {
+   const updateDefaultCombine = async (
+      minCB: ProductCombine,
+      prevDefaultCb: ProductCombine | undefined
+   ) => {
       const updateNewDefaultCB = async () => {
+         console.log(">>> api update new default combine", minCB.id);
          privateRequest.put(
-            `${COMBINE_URL}/${minCB!.id}`,
+            `${MANAGE_PRODUCT_URL}/combines/${minCB!.id}`,
             { default: true },
             {
                headers: { "Content-Type": "application/json" },
@@ -266,8 +283,10 @@ function EditProductMain() {
          if (!prevDefaultCb || !prevDefaultCb?.id) throw new Error("Update default error");
 
          if (prevDefaultCb.id !== minCB.id) {
+            console.log(">>> api remove prev combine", prevDefaultCb.id);
+
             await privateRequest.put(
-               `${COMBINE_URL}/${prevDefaultCb.id}`,
+               `${MANAGE_PRODUCT_URL}/combines/${prevDefaultCb.id}`,
                { default: false },
                { headers: { "Content-Type": "application/json" } }
             );
@@ -388,7 +407,8 @@ function EditProductMain() {
             }
             break;
          case "delete-color":
-            if (curColorIndex.current === undefined) return <h1 className="text-2xl">Cur index not found</h1>;
+            if (curColorIndex.current === undefined)
+               return <h1 className="text-2xl">Cur index not found</h1>;
             return (
                <ConfirmModal
                   label={`Delete color '${colors_data[curColorIndex.current].color} ?'`}
@@ -398,7 +418,8 @@ function EditProductMain() {
                />
             );
          case "delete-storage":
-            if (curStorageIndex.current === undefined) return <h1 className="text-2xl">Cur index not found</h1>;
+            if (curStorageIndex.current === undefined)
+               return <h1 className="text-2xl">Cur index not found</h1>;
             return (
                <ConfirmModal
                   label={`Delete storage '${storages_data[curStorageIndex.current].storage} ?'`}
@@ -425,7 +446,8 @@ function EditProductMain() {
    };
 
    if (status === "loading") return <p className="text-[16px] text-[#333}">Loading...</p>;
-   if (status === "error") return <p className="text-[16px] text-[#333}">Some thing went wrong...</p>;
+   if (status === "error")
+      return <p className="text-[16px] text-[#333}">Some thing went wrong...</p>;
 
    return (
       <>
@@ -444,7 +466,9 @@ function EditProductMain() {
                            return (
                               <div key={index} className="col w-1/4">
                                  <Empty fontClassName="bg-[#f1f1f1]" className="group">
-                                    <span className="text-center font-semibold text-[16px]">{item.storage}</span>
+                                    <span className="text-center font-semibold text-[16px]">
+                                       {item.storage}
+                                    </span>
                                     <OverlayCTA
                                        data={[
                                           {
@@ -462,7 +486,10 @@ function EditProductMain() {
                            );
                         })}
                      <div className="col w-1/4">
-                        <Empty fontClassName="bg-[#f1f1f1]" onClick={() => handleOpenModal("add-storage")} />
+                        <Empty
+                           fontClassName="bg-[#f1f1f1]"
+                           onClick={() => handleOpenModal("add-storage")}
+                        />
                      </div>
                   </div>
                </div>
@@ -490,7 +517,10 @@ function EditProductMain() {
                            </div>
                         ))}
                      <div className="col w-1/4">
-                        <Empty fontClassName="bg-[#f1f1f1]" onClick={() => handleOpenModal("add-color")} />
+                        <Empty
+                           fontClassName="bg-[#f1f1f1]"
+                           onClick={() => handleOpenModal("add-color")}
+                        />
                      </div>
                   </div>
                </div>
@@ -508,12 +538,19 @@ function EditProductMain() {
             </div>
 
             <p className="text-center mt-[30px]">
-               <Button disable={!isChange} isLoading={apiProductLoading} onClick={handleSubmit} primary>
+               <Button
+                  disable={!isChange}
+                  isLoading={apiProductLoading}
+                  onClick={handleSubmit}
+                  primary
+               >
                   <i className="material-icons mr-[8px]">save</i> Save
                </Button>
             </p>
 
-            <h5 className={` text-red-500 mt-[30px] ${classes.label} font-semibold`}>DANGER ZONE</h5>
+            <h5 className={` text-red-500 mt-[30px] ${classes.label} font-semibold`}>
+               DANGER ZONE
+            </h5>
             <div className="border-red-500 border rounded-[16px] p-[14px]">
                <Button onClick={() => handleOpenModal("delete-product")} primary>
                   Delete Product

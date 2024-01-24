@@ -6,9 +6,7 @@ import { useApp } from "@/store/AppContext";
 import { publicRequest } from "@/utils/request";
 
 const APP_URL = "/app";
-const MANAGE_CAT_URL = "/category-management/categories";
-const MANAGE_CAT_SLIDER_URL = "/slider-management/category_sliders";
-const CAT_SLIDER_URL = "/slider/category_sliders";
+const MANAGE_CAT_URL = "/category-management";
 
 type Props = {
    curCategory?: Category;
@@ -17,7 +15,12 @@ type Props = {
    admin?: boolean;
 };
 
-export default function useAppConfig({ curCategory, autoRun = false, includeSlider = false, admin = false }: Props) {
+export default function useAppConfig({
+   curCategory,
+   autoRun = false,
+   includeSlider = false,
+   admin = false,
+}: Props) {
    const {
       setCategories,
       categories,
@@ -30,7 +33,9 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
       setPriceRanges,
       sliders,
    } = useApp();
-   const [status, setStatus] = useState<"loading" | "success" | "error" | "">("loading");
+   const [status, setStatus] = useState<"loading" | "success" | "error" | "">(
+      "loading"
+   );
    const ranUseEffect = useRef(false);
 
    // hooks
@@ -55,24 +60,39 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
       console.log(">>> api get brand and slider");
 
       try {
-         if (!curCategory?.id || !curCategory.category_ascii) throw new Error("Cur category data error");
+         if (!curCategory?.id || !curCategory.category_ascii)
+            throw new Error("Cur category data error");
 
          setStatus("loading");
          await sleep(300);
 
          if (!curBrands || !curPriceRanges) {
-            const brandsRes = await privateRequest.get(`${APP_URL}/brand?category_id=${curCategory?.id}`);
+            const brandsRes = await privateRequest.get(
+               `${APP_URL}/brands?category_id=${curCategory?.id}`
+            );
             const brandsData = brandsRes.data as (Brand & { id: number })[];
-            setBrands((brands) => ({ ...brands, [curCategory.category_ascii]: brandsData }));
+            setBrands((brands) => ({
+               ...brands,
+               [curCategory.category_ascii]: brandsData,
+            }));
 
-            const pricesRes = await privateRequest.get(`${APP_URL}/prices?category_id=${curCategory.id}`);
-            const pricesData = pricesRes.data as (PriceRange & { id: number })[];
-            setPriceRanges((prev) => ({ ...prev, [curCategory.category_ascii]: pricesData }));
+            const pricesRes = await privateRequest.get(
+               `${APP_URL}/category-prices?category_id=${curCategory.id}`
+            );
+            const pricesData = pricesRes.data as (PriceRange & {
+               id: number;
+            })[];
+            setPriceRanges((prev) => ({
+               ...prev,
+               [curCategory.category_ascii]: pricesData,
+            }));
          }
 
          // when in category edit, don't not slider
          if (includeSlider && !sliders[curCategory.category_ascii]) {
-            const sliderRes = await privateRequest.get(`${CAT_SLIDER_URL}/${curCategory.category_ascii}`);
+            const sliderRes = await privateRequest.get(
+               `${APP_URL}/category-sliders?category_ascii=${curCategory.category_ascii}`
+            );
             const sliderData = sliderRes.data as CategorySlider;
             setSliders((sliders) => ({
                ...sliders,
@@ -92,7 +112,10 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
          if (import.meta.env.DEV) await sleep(300);
 
          let categoriesRes;
-         if (admin) categoriesRes = await privateRequest.get(MANAGE_CAT_URL);
+         if (admin)
+            categoriesRes = await privateRequest.get(
+               `${MANAGE_CAT_URL}/categories`
+            );
          else categoriesRes = await publicRequest.get(`${APP_URL}/categories`);
 
          setCategories(categoriesRes.data || []);
@@ -111,7 +134,9 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
          if (import.meta.env.DEV) await sleep(300);
 
          if (!sliders["home"]) {
-            const sliderRes = await privateRequest.get(`${CAT_SLIDER_URL}/home`);
+            const sliderRes = await privateRequest.get(
+               `${APP_URL}/category-sliders?category_ascii=home`
+            );
             if (!sliderRes.data) throw new Error("Slider not found");
 
             const sliderData = sliderRes.data as CategorySlider;
@@ -126,11 +151,14 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
       }
    };
 
+   // for admin only
    const getCategoriesSlider = async () => {
       try {
          console.log(">>> api run get category sliders");
          if (import.meta.env.DEV) await sleep(300);
-         const categorySlidersRes = await privateRequest.get(MANAGE_CAT_SLIDER_URL);
+         const categorySlidersRes = await privateRequest.get(
+            `${MANAGE_CAT_URL}/category-sliders`
+         );
 
          setStatus("success");
          return categorySlidersRes.data as CategorySlider[];
@@ -140,6 +168,7 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
       }
    };
 
+   // run get all categories
    useEffect(() => {
       if (!autoRun || categories.length) return;
 
@@ -149,6 +178,7 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
       }
    }, [initLoading]);
 
+   // run get category child part
    useEffect(() => {
       if (initLoading) return setStatus("loading");
 

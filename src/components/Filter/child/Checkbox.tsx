@@ -1,22 +1,17 @@
 import classNames from "classnames/bind";
 import styles from "../ProductFilter.module.scss";
 import { FilterType } from "@/store/filtersSlice";
-import { useMemo } from "react";
-import { useApp } from "@/store/AppContext";
 import { Brand } from "@/types";
 
 const cx = classNames.bind(styles);
 
 type Props = {
-   handleFilter: (brand: FilterType['brands']) => void;
+   handleFilter: (brand: FilterType["brands"]) => void;
    filters: FilterType;
-   categoryAscii: string | undefined;
+   data: Brand[];
 };
 
-export default function Checkbox({ handleFilter, filters, categoryAscii }: Props) {
-   const { brands } = useApp();
-   const brandList = useMemo(() => (categoryAscii ? brands[categoryAscii] : []), [categoryAscii]);
-
+export default function Checkbox({ handleFilter, filters, data }: Props) {
    const handleToggle = (value: Brand | "clear") => {
       let newBrands = [...filters.brands];
 
@@ -31,7 +26,7 @@ export default function Checkbox({ handleFilter, filters, categoryAscii }: Props
       handleFilter(newBrands);
    };
 
-   if (!brandList) return "Data it not array";
+   if (!data) return "Data it not array";
 
    return (
       <>
@@ -46,7 +41,7 @@ export default function Checkbox({ handleFilter, filters, categoryAscii }: Props
                All
             </label>
          </div>
-         {brandList.map((item, index) => {
+         {data.map((item, index) => {
             const i = filters.brands.findIndex((b) => b.id === item.id);
             const isChecked = i !== -1;
             return (

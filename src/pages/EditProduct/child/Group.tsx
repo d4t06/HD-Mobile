@@ -141,8 +141,8 @@ function ProductConfig({ attrList }: Props, ref: Ref<ConfigRef>) {
                   const { existSlider, isExits } = getExistSlider(sliders_data, item, product_name);
 
                   return (
-                     <div className="bg-[#fff] rounded-[20px] p-[10px]">
-                        <div className="row items-center py-[14px]">
+                     <div key={index} className="bg-[#fff] rounded-[20px] p-[10px]">
+                         <div className="row items-center py-[14px]">
                            <div className="col w-2/12">
                               <div className={"text-[16px] text-center font-[500]"}>{item.color}</div>
                            </div>

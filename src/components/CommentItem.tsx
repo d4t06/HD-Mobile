@@ -82,11 +82,11 @@ export function AdminReply({ reply, cta }: { reply: Reply; cta: ReactNode }) {
 
 export const CommentSkeleton = (
    <div className="flex">
-      <Skeleton className="w-[44px] h-[44px] rounded-full" />
+      <Skeleton className="w-[44px] h-[44px] rounded-full flex-shrink-0" />
       <div className="ml-[10px]">
-         <Skeleton className="h-[20px] w-[200px] rounded-[4px]" />
-         <Skeleton className="h-[24px] mt-[10px] w-[400px] rounded-[4px]" />
-         <Skeleton className="h-[18px] mt-[10px] w-[100px] rounded-[4px]" />
+         <Skeleton className="h-[20px] w-[200px] max-w-[30vw] rounded-[4px]" />
+         <Skeleton className="h-[24px] mt-[10px] w-[400px] max-w-[50vw] rounded-[4px]" />
+         <Skeleton className="h-[18px] mt-[10px] w-[100px] max-w-[30vw] rounded-[4px]" />
       </div>
    </div>
 );

@@ -1,6 +1,5 @@
 import classNames from "classnames/bind";
 import styles from "./BrandSort.module.scss";
-// import { price } from "@/assets/data";
 import { useMemo } from "react";
 import { FilterType } from "@/store/filtersSlice";
 import { Brand } from "@/types";
@@ -8,9 +7,8 @@ import { Brand } from "@/types";
 const cx = classNames.bind(styles);
 
 type Props = {
-   // curCategory_id: number;
    data: FilterType;
-   handleFilter: (filters: Brand[], by: keyof FilterType | "clear") => void;
+   handleFilter: (filters: Brand[], by: "brands" | "clear") => void;
 };
 
 export default function SelectedSort({ data, handleFilter }: Props) {
@@ -21,12 +19,6 @@ export default function SelectedSort({ data, handleFilter }: Props) {
       handleFilter(newBrands, "brands");
    };
 
-   // const priceList = price[(curCategory_id) as keyof typeof price];
-
-   // const priceContent = priceList
-   //    ? priceList.find((item) => JSON.stringify(item.array) === JSON.stringify(data.price))
-   //    : {};
-
    const isShowClear = useMemo(() => data.brands.length >= 2, [data]);
 
    return (
@@ -34,7 +26,11 @@ export default function SelectedSort({ data, handleFilter }: Props) {
          <h2 className="text-[16px]">Bộ lọc:</h2>
          {data.brands.map((item, index) => {
             return (
-               <div onClick={() => handleToggle(item)} className={cx("filter-item")} key={index}>
+               <div
+                  onClick={() => handleToggle(item)}
+                  className={cx("filter-item")}
+                  key={index}
+               >
                   <p>{item.brand_name}</p>
                   <i className="material-icons">delete</i>
                </div>
@@ -47,7 +43,10 @@ export default function SelectedSort({ data, handleFilter }: Props) {
             </span>
          )} */}
          {isShowClear && (
-            <button className={cx("clear-filter")} onClick={() => handleFilter([], "clear")}>
+            <button
+               className={cx("clear-filter")}
+               onClick={() => handleFilter([], "clear")}
+            >
                <i className="material-icons">clear</i>
             </button>
          )}

@@ -12,8 +12,8 @@ type Props = {
    // storages_data: ProductStorage[];
    // colors: ProductColor[];
 };
-const STORAGE_URL = "/storage-management/storages";
-const COLOR_URL = "/color-management/colors";
+
+const MANAGE_PRODUCT_URL = "/product-management";
 
 export default function useVariantAction({ setIsOpenModal }: Props) {
    const { storages_data, colors_data, setEditorData } = useProductContext();
@@ -29,7 +29,7 @@ export default function useVariantAction({ setIsOpenModal }: Props) {
          setApiLoading(true);
 
          if (import.meta.env.DEV) await sleep(300);
-         await privateRequest.delete(`${STORAGE_URL}/${curStorage.id}`);
+         await privateRequest.delete(`${MANAGE_PRODUCT_URL}/storages/${curStorage.id}`);
 
          const newStorages = storages_data.filter((c) => c.id !== curStorage.id);
          setEditorData((prev) => ({ ...prev, storages_data: newStorages } as Product));
@@ -44,25 +44,34 @@ export default function useVariantAction({ setIsOpenModal }: Props) {
       }
    };
 
-   const addStorage = async (storage: ProductStorage, type: "Add" | "Edit", curIndex?: number, id?: number) => {
+   const addStorage = async (
+      storage: ProductStorage,
+      type: "Add" | "Edit",
+      curIndex?: number,
+      id?: number
+   ) => {
       try {
          switch (type) {
             case "Add":
                setApiLoading(true);
                if (import.meta.env.DEV) await sleep(300);
-               const res = await privateRequest.post(STORAGE_URL, storage);
+               const res = await privateRequest.post(`${MANAGE_PRODUCT_URL}/storages`, storage);
 
                const newStorageData = res.data as ProductStorage;
                // setStorages((prev) => [...prev, newStorageData]);
-               setEditorData((prev) => ({ ...prev, storages_data: [...prev.storages_data, newStorageData] }));
+               setEditorData((prev) => ({
+                  ...prev,
+                  storages_data: [...prev.storages_data, newStorageData],
+               }));
 
                break;
             case "Edit":
-               if (curIndex === undefined || id === undefined) throw new Error("missing current index");
+               if (curIndex === undefined || id === undefined)
+                  throw new Error("missing current index");
                setApiLoading(true);
 
                if (import.meta.env.DEV) await sleep(300);
-               await privateRequest.put(`${STORAGE_URL}/${id}`, storage);
+               await privateRequest.put(`${MANAGE_PRODUCT_URL}/storages/${id}`, storage);
 
                const newStorages = [...storages_data];
                newStorages[curIndex] = storage;
@@ -79,27 +88,36 @@ export default function useVariantAction({ setIsOpenModal }: Props) {
       }
    };
 
-   const addColor = async (color: ProductColor, type: "Add" | "Edit", curIndex?: number, id?: number) => {
+   const addColor = async (
+      color: ProductColor,
+      type: "Add" | "Edit",
+      curIndex?: number,
+      id?: number
+   ) => {
       try {
          switch (type) {
             case "Add":
                setApiLoading(true);
 
                if (import.meta.env.DEV) await sleep(300);
-               const res = await privateRequest.post(COLOR_URL, color);
+               const res = await privateRequest.post(`${MANAGE_PRODUCT_URL}/colors`, color);
 
                const newColorData = res.data as ProductColor;
                // setColors((prev) => [...prev, newColorData]);
-               setEditorData((prev) => ({ ...prev, colors_data: [...prev.colors_data, newColorData] }));
+               setEditorData((prev) => ({
+                  ...prev,
+                  colors_data: [...prev.colors_data, newColorData],
+               }));
 
                break;
 
             case "Edit":
-               if (curIndex === undefined || id === undefined) throw new Error("missing current index");
+               if (curIndex === undefined || id === undefined)
+                  throw new Error("missing current index");
                setApiLoading(true);
 
                if (import.meta.env.DEV) await sleep(300);
-               await privateRequest.put(`${COLOR_URL}/${id}`, color);
+               await privateRequest.put(`${MANAGE_PRODUCT_URL}/colors/${id}`, color);
 
                const newColors = [...colors_data];
                newColors[curIndex] = color;
@@ -123,7 +141,7 @@ export default function useVariantAction({ setIsOpenModal }: Props) {
 
          setApiLoading(true);
          if (import.meta.env.DEV) await sleep(300);
-         await privateRequest.delete(`${COLOR_URL}/${targetColor.id}`);
+         await privateRequest.delete(`${MANAGE_PRODUCT_URL}/colors/${targetColor.id}`);
 
          const newColors = colors_data.filter((c) => c.id !== targetColor.id);
 

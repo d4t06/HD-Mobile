@@ -19,8 +19,6 @@ export default function DefaultLayout({ children }: Props) {
    useEffect(() => {
       if (!ranUseEffect.current) {
          ranUseEffect.current = true;
-         console.log("default layout run get category");
-
          getCategories();
       }
    }, []);
