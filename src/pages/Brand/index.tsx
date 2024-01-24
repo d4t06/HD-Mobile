@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import styles from "./Brand.module.scss";
 import { useMemo, useRef, useState } from "react";
-import { Category, GetArrayType } from "@/types";
+import { Category, CategorySchema, GetArrayType } from "@/types";
 // import { usePrivateRequest } from "@/hooks";
 import { Modal, Empty } from "@/components";
 import { inputClasses } from "@/components/ui/Input";
@@ -80,7 +80,7 @@ export default function CategoryBrand() {
       return;
     }
 
-    const newCategory: Category = {
+    const newCategory: CategorySchema = {
       category_name: getFieldValue(value, "Name"),
       category_ascii: generateId(getFieldValue(value, "Name")),
       icon: getFieldValue(value, "Icon"),
@@ -229,10 +229,10 @@ export default function CategoryBrand() {
         </div>
       </div>
 
-      <h1 className={cx("page-title")}>Category Price Range</h1>
+      <h1 className={cx("page-title")}>Price Range</h1>
       <PriceRangeGroup categories={categories} />
 
-      <h1 className={cx("page-title")}>Category Attribute</h1>
+      {/* <h1 className={cx("page-title")}>Category Attribute</h1>
       <AttributeGroup categories={categories} />
 
       <h1 className={cx("page-title")}>Brand</h1>
@@ -286,7 +286,7 @@ export default function CategoryBrand() {
             <Empty fontClassName="bg-[#f1f1f1]" onClick={() => handleOpenModal("add-brand")} />
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 

@@ -144,7 +144,10 @@ export type Category = {
   icon: string;
   default?: boolean;
   attributes?: CategoryAttribute[];
+  price_ranges?: PriceRange[]
 };
+
+export type CategorySchema = Omit<Category, 'attributes' | 'price_range'>
 
 export type CategorySlider = {
   category_data: Category;

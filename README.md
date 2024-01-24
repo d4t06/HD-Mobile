@@ -10,3 +10,7 @@ HD SHOP
 
 ### update thu 2 22/1/2024
 - Trang register bị lỗi dấn đến không load web site trên iphone 7 Plus
+- Lỗi cụ thể lò do regex không hổ trợ
+
+### update thu 4 22/1/2024
+- Thêm bảng Price_Range để filter theo giá

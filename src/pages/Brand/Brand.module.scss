@@ -62,8 +62,9 @@ $alpha: rgba(
    display: flex;
    align-items: center;
    padding: 8px 16px;
-   span {
+   span, p {
       font-size: 1.4rem;
+      text-align: center;
    }
 
    // background-color: #f1f1f1;
