@@ -8,7 +8,7 @@ const cx = classNames.bind(styles);
 
 type Props = {
    data: FilterType;
-   handleFilter: (filters: Brand[], by: "brands" | "clear") => void;
+   handleFilter: (filters: Brand[], by: keyof FilterType | "clear") => void;
 };
 
 export default function SelectedSort({ data, handleFilter }: Props) {
@@ -26,27 +26,20 @@ export default function SelectedSort({ data, handleFilter }: Props) {
          <h2 className="text-[16px]">Bộ lọc:</h2>
          {data.brands.map((item, index) => {
             return (
-               <div
-                  onClick={() => handleToggle(item)}
-                  className={cx("filter-item")}
-                  key={index}
-               >
+               <div onClick={() => handleToggle(item)} className={cx("selected-item")} key={index}>
                   <p>{item.brand_name}</p>
                   <i className="material-icons">delete</i>
                </div>
             );
          })}
-         {/* {priceContent && !!data.price.length && (
-            <span onClick={() => handleFilter([], "price")} className={cx("filter-item")}>
-               {priceContent!.text || ""}
+         {data.price && (
+            <span onClick={() => handleFilter([], "price")} className={cx("selected-item")}>
+               {data.price.label}
                <i className="material-icons">delete</i>
             </span>
-         )} */}
+         )}
          {isShowClear && (
-            <button
-               className={cx("clear-filter")}
-               onClick={() => handleFilter([], "clear")}
-            >
+            <button className={cx("clear-filter")} onClick={() => handleFilter([], "clear")}>
                <i className="material-icons">clear</i>
             </button>
          )}

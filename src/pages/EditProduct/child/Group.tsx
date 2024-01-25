@@ -1,14 +1,10 @@
-import { Ref, forwardRef, useImperativeHandle, useRef } from "react";
+import { Ref, forwardRef, useImperativeHandle, useMemo, useRef } from "react";
 import { CategoryAttribute, ProductAttributeSchema, ProductCombine, SliderSchema } from "@/types";
 import { useProductContext } from "@/store/ProductDataContext";
 import SliderGroup, { SliderRef } from "@/components/SliderGroup";
 import InputGroup, { CombineRef } from "./CombineGroup";
 import { getExistCombine, getExistSlider } from "./helper";
 import AttributeGroup, { AttributeRef } from "./AttributeGroup";
-// import PushFrame from "@/components/ui/PushFrame";
-import useCollapse from "@/hooks/useCollapse";
-// import { Button } from "@/components";
-
 type Props = {
    attrList: CategoryAttribute[];
 };
@@ -30,8 +26,6 @@ function ProductConfig({ attrList }: Props, ref: Ref<ConfigRef>) {
    const sliderRefs = useRef<(SliderRef | undefined)[]>([]);
    const combineRefs = useRef<(CombineRef | undefined)[]>([]);
    const attributeRefs = useRef<(AttributeRef | undefined)[]>([]);
-
-   const { containerRef, triggerRef, isCollapse, triggerProps, containerStyles } = useCollapse();
 
    // const submitSliderList = sliderRefs.current.map((item) => item.submit);
    // const submitCombines = useMemo(() => combineRefs.current.map((item) => item.submit), [colors, storages]);
@@ -129,76 +123,85 @@ function ProductConfig({ attrList }: Props, ref: Ref<ConfigRef>) {
    return (
       <>
          {/* slider */}
-         <div className="flex justify-between">
+         <div className="mb-[30px]">
             <div className={classes.label}>Product Slider</div>
-            <button ref={triggerRef} {...triggerProps}>
-               {isCollapse ? "Expend" : "Collapse"}
-            </button>
-         </div>
-         {!!colors_data.length && (
-            <div className="space-y-[14px] mb-[30px]" ref={containerRef} style={containerStyles}>
-               {colors_data.map((item, index) => {
-                  const { existSlider, isExits } = getExistSlider(sliders_data, item, product_name);
+            {!!colors_data.length && (
+               <div className="space-y-[14px] mb-[30px]">
+                  {useMemo(
+                     () =>
+                        colors_data.map((item, index) => {
+                           const { existSlider, isExits } = getExistSlider(sliders_data, item, product_name);
+                           console.log(">>> run init slider");
 
-                  return (
-                     <div key={index} className="bg-[#fff] rounded-[20px] p-[10px]">
-                         <div className="row items-center py-[14px]">
-                           <div className="col w-2/12">
-                              <div className={"text-[16px] text-center font-[500]"}>{item.color}</div>
-                           </div>
-                           <div className="col w-10/12">
-                              <SliderGroup
-                                 setIsChange={setIsChange}
-                                 width="w-1/2"
-                                 paddingRatio="pt-[55%]"
-                                 color_ascii={item.color_ascii}
-                                 ref={(ref) => (sliderRefs.current[index] = ref!)}
-                                 initSlider={existSlider}
-                                 isExist={isExits}
-                              />
-                           </div>
-                        </div>
-                     </div>
-                  );
-               })}
-            </div>
-         )}
+                           return (
+                              <div key={index} className="bg-[#fff] rounded-[20px] p-[10px]">
+                                 <div className="row items-center py-[14px]">
+                                    <div className="col w-2/12">
+                                       <div className={"text-[16px] text-center font-[500]"}>{item.color}</div>
+                                    </div>
+                                    <div className="col w-10/12">
+                                       <SliderGroup
+                                          setIsChange={setIsChange}
+                                          width="w-1/2"
+                                          paddingRatio="pt-[55%]"
+                                          color_ascii={item.color_ascii}
+                                          ref={(ref) => (sliderRefs.current[index] = ref!)}
+                                          initSlider={existSlider}
+                                          isExist={isExits}
+                                       />
+                                    </div>
+                                 </div>
+                              </div>
+                           );
+                        }),
+                     [colors_data, sliders_data]
+                  )}
+               </div>
+            )}
+         </div>
 
          {/* combine */}
          <div className="mb-[30px]">
             <div className={classes.label}>Quantity & Price</div>
-            {!!storages_data.length && (
-               <div className={`bg-[#fff] rounded-[8px] p-[20px] space-y-[20px]`}>
-                  {storages_data.map((storageItem, i) =>
-                     colors_data.map((colorItem, j) => {
-                        const { existCombine, isExits } = getExistCombine(
-                           combines_data,
-                           colorItem,
-                           storageItem,
-                           product_name_ascii
-                        );
-                        const key = storageItem.storage_ascii + colorItem.color_ascii;
-                        const index = !i ? j : i * (j + colors_data.length);
-                        // 0 1 2 3 4 5
-                        // 0 1 2
+            {useMemo(
+               () =>
+                  !!storages_data.length && (
+                     <div className={`bg-[#fff] rounded-[8px] p-[20px] space-y-[20px]`}>
+                        {storages_data.map((storageItem, i) =>
+                           colors_data.map((colorItem, j) => {
+                              const { existCombine, isExits } = getExistCombine(
+                                 combines_data,
+                                 colorItem,
+                                 storageItem,
+                                 product_name_ascii
+                              );
 
-                        return (
-                           <div key={key} className="flex justify-center items-center">
-                              <div className="col w-3/12">
-                                 <h5 className={`text-[16px] text-center font-[500]`}>
-                                    {storageItem.storage} / {colorItem.color}
-                                 </h5>
-                              </div>
-                              <InputGroup
-                                 ref={(ref) => (combineRefs.current[index] = ref!)}
-                                 initCombine={existCombine}
-                                 isExist={isExits}
-                              />
-                           </div>
-                        );
-                     })
-                  )}
-               </div>
+                              console.log("run init combine");
+
+                              const key = storageItem.storage_ascii + colorItem.color_ascii;
+                              const index = !i ? j : i * (j + colors_data.length);
+                              // 0 1 2 3 4 5
+                              // 0 1 2
+
+                              return (
+                                 <div key={key} className="flex justify-center items-center">
+                                    <div className="col w-3/12">
+                                       <h5 className={`text-[16px] text-center font-[500]`}>
+                                          {storageItem.storage} / {colorItem.color}
+                                       </h5>
+                                    </div>
+                                    <InputGroup
+                                       ref={(ref) => (combineRefs.current[index] = ref!)}
+                                       initCombine={existCombine}
+                                       isExist={isExits}
+                                    />
+                                 </div>
+                              );
+                           })
+                        )}
+                     </div>
+                  ),
+               [combines_data, colors_data, storages_data]
             )}
          </div>
 

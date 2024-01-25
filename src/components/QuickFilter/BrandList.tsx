@@ -32,7 +32,7 @@ function BrandList({ data, handleFilter, filtersInStore, admin }: Props) {
             return (
                <div
                   key={index}
-                  className={cx("sort-item", { "no-image": !item.image_url })}
+                  className={cx("item", { "no-image": !item.image_url })}
                   onClick={() => handleToggle(item)}
                >
                   {item.image_url ? (

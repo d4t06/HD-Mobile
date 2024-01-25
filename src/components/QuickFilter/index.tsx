@@ -7,12 +7,7 @@ import BrandList from "./BrandList";
 import SelectedSort from "./SelectedSort";
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-   selectedAllProduct,
-   selectedAllFilter,
-   fetchProducts,
-   storingFilters,
-} from "../../store";
+import { selectedAllProduct, selectedAllFilter, fetchProducts, storingFilters } from "../../store";
 import { FilterType } from "@/store/filtersSlice";
 import { AppDispatch } from "@/store/store";
 import { Brand, Category } from "@/types";
@@ -27,45 +22,42 @@ type Props = {
    curCategory: Category | undefined;
 };
 
-export default function QuickFilter({
-   brands,
-   admin,
-   loading,
-   curCategory,
-}: Props) {
+export default function QuickFilter({ brands, admin, loading, curCategory }: Props) {
    const dispatchRedux = useDispatch<AppDispatch>();
    const { page, category_id } = useSelector(selectedAllProduct);
    const { filters: filtersInStore, sort } = useSelector(selectedAllFilter);
 
-   const isFiltered = useMemo(
-      () => !!filtersInStore?.brands.length,
-      [filtersInStore]
-   );
+   const isFiltered = useMemo(() => !!filtersInStore?.brands.length || filtersInStore.price, [filtersInStore]);
 
-   const showFilteredResults = (filters: FilterType) => {
-      dispatchRedux(fetchProducts({ page, sort, category_id, filters, admin }));
+   const showFilteredResults = async (filters: FilterType) => {
+      await dispatchRedux(fetchProducts({ page, sort, category_id, filters, admin }));
    };
 
-   const handleFilter = (filters: Brand[], by: "brands" | "clear") => {
+   const handleFilter = (brands: Brand[], by: keyof FilterType | "clear") => {
       let newFilters: FilterType = { ...filtersInStore };
 
-      if (by === "clear") {
-         newFilters.brands = [];
-         // newFilters.price = [];
-      } else {
-         newFilters[by] = filters;
+      switch (by) {
+         case "brands":
+            newFilters["brands"] = brands;
+            break;
+         case "price":
+            newFilters["price"] = undefined;
+            break;
+         case "clear":
+            newFilters.brands = [];
+            newFilters.price = undefined;
+            break;
+         default:
+            throw new Error("case not found");
       }
 
-      // >>> api
-      showFilteredResults(newFilters);
-      // >>> local
       dispatchRedux(storingFilters({ sort, filters: newFilters }));
+
+      showFilteredResults(newFilters);
    };
 
    const BrandSkeleton = useMemo(() => {
-      return [...Array(5).keys()].map((index) => (
-         <Skeleton key={index} className="brand-skeleton" />
-      ));
+      return [...Array(5).keys()].map((index) => <Skeleton key={index} className="brand-skeleton" />);
    }, []);
 
    const BrandsRemaining = useMemo(() => {
@@ -84,27 +76,16 @@ export default function QuickFilter({
    return (
       <>
          <div className={cx("container", { disable: loading, admin })}>
-            {loading && (
-               <div className={cx("brand-list", `${classes.brandList}`)}>
-                  {BrandSkeleton}
-               </div>
-            )}
+            {loading && <div className={cx("brand-list", `${classes.brandList}`)}>{BrandSkeleton}</div>}
 
             {!loading && brands && (
                <>
                   {!admin && (
                      <div className={cx("brand-list", `${classes.brandList}`)}>
                         {isFiltered ? (
-                           <SelectedSort
-                              // curCategory_id={curCategory_id
-                              data={filtersInStore}
-                              handleFilter={handleFilter}
-                           />
+                           <SelectedSort data={filtersInStore} handleFilter={handleFilter} />
                         ) : (
-                           <BrandList
-                              data={BrandsRemaining}
-                              handleFilter={handleFilter}
-                           />
+                           <BrandList data={BrandsRemaining} handleFilter={handleFilter} />
                         )}
                      </div>
                   )}
@@ -112,15 +93,12 @@ export default function QuickFilter({
                   {admin && (
                      <>
                         {isFiltered && (
-                           <div className={cx("brand-list")}>
-                              <SelectedSort
-                                 data={filtersInStore}
-                                 handleFilter={handleFilter}
-                              />
+                           <div className={cx("brand-list", `${classes.brandList}`)}>
+                              <SelectedSort data={filtersInStore} handleFilter={handleFilter} />
                            </div>
                         )}
                         {!!BrandsRemaining.length && (
-                           <div className={cx("brand-list")}>
+                           <div className={cx("brand-list", `${classes.brandList}`)}>
                               <BrandList
                                  admin
                                  filtersInStore={filtersInStore}

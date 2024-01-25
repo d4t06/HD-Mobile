@@ -3,6 +3,7 @@ import { PriceRange } from "@/types";
 
 import style from "../ProductFilter.module.scss";
 import classNames from "classnames/bind";
+import PushFrame from "@/components/ui/PushFrame";
 
 type Props = {
    handleFilter: (sort: PriceRange | undefined) => void;
@@ -21,12 +22,12 @@ export default function Radiobox({ filters, handleFilter, data }: Props) {
       }
    };
 
-   if (!data) return "Data is undefined"
+   if (!data) return "Data is undefined";
 
    return (
       <>
-         <div className={"filter-item"}>
-            <input
+         <div className={cx("filter-item", { active: filters.price === undefined })}>
+            {/* <input
                type="radio"
                id={"all-price"}
                checked={filters.price === undefined}
@@ -34,22 +35,23 @@ export default function Radiobox({ filters, handleFilter, data }: Props) {
             />
             <label className={cx("label")} htmlFor={"all-price"}>
                All
-            </label>
+            </label> */}
+            <PushFrame active={filters.price === undefined} type="translate">
+               <button onClick={() => handleToggle("clear")}>Tất cả</button>
+            </PushFrame>
          </div>
          {data.map((item, index) => {
             const isChecked = filters.price === undefined ? false : item.id === filters.price.id;
 
             return (
-               <div key={index} className={"filter-item"}>
-                  <input
-                     type="radio"
-                     id={item.id + ""}
-                     checked={isChecked}
-                     onChange={() => handleToggle(item)}
-                  />
+               <div key={index} className={cx("filter-item", { active: isChecked })}>
+                  {/* <input type="radio" id={item.id + ""} checked={isChecked} onChange={() => handleToggle(item)} />
                   <label className={cx("label")} htmlFor={item.id + ""}>
                      {item.label}
-                  </label>
+                  </label> */}
+                  <PushFrame active={isChecked} type="translate">
+                     <button onClick={() => handleToggle(item)}>{item.label}</button>
+                  </PushFrame>
                </div>
             );
          })}

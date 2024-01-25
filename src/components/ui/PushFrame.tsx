@@ -23,7 +23,7 @@ export default function PushFrame({
   return (
     <div className={`bg-[#ccc] ${rounded}`}>
       <div
-        className={`bg-[#f6f6f6] transition-transform border border-[#ccc] ${rounded} hover:translate-y-[-6px] translate-y-[-4px] ${
+        className={`bg-[#f6f6f6] active:translate-y-[-2px] transition-transform border border-[#ccc] ${rounded} hover:translate-y-[-6px] translate-y-[-4px] ${
           active ? "!translate-y-[-2px]" : ""
         }`}
       >

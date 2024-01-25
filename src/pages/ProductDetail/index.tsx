@@ -194,7 +194,7 @@ export default function DetailPage() {
          </div>
 
          <div className="mt-[40px] md:mt-[60px]">
-            <div className="md:flex-row md:gap-0 flex flex-col gap-[8px] justify-between items-top mb-[30px]">
+            <div className="md:flex-row md:gap-0 flex flex-col space-y-[8px] justify-between items-top mb-[30px]">
                {Label("star", `Đánh giá về ${product.product_name}`)}
                <Button onClick={() => handleOpenModal("add-review")} primary>
                   <i className="material-icons mr-[8px]">add</i>
@@ -205,7 +205,7 @@ export default function DetailPage() {
          </div>
 
          <div className="mt-[40px] md:mt-[60px]">
-            <div className="flex flex-col gap-[8px] justify-between items-top mb-[30px] md:flex-row md:gap-0">
+            <div className="flex flex-col space-y-[8px] justify-between items-top mb-[30px] md:flex-row md:gap-0">
                {Label("message", `Hỏi đáp về ${product.product_name}`)}
                <Button onClick={() => handleOpenModal("add-comment")} primary>
                   <i className="material-icons mr-[8px]">add</i>

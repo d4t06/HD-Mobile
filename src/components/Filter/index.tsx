@@ -94,15 +94,11 @@ function ProductFilter({ categoryAscii, loading }: Props) {
    };
 
    const BrandSkeleton = useMemo(() => {
-      return [...Array(5).keys()].map((index) => (
-         <Skeleton key={index} className="filter-brand-skeleton" />
-      ));
+      return [...Array(5).keys()].map((index) => <Skeleton key={index} className="filter-brand-skeleton" />);
    }, []);
 
    const PriceSkeleton = useMemo(() => {
-      return [...Array(5).keys()].map((index) => (
-         <Skeleton key={index} className="filter-price-skeleton" />
-      ));
+      return [...Array(5).keys()].map((index) => <Skeleton key={index} className="filter-price-skeleton" />);
    }, []);
 
    return (
@@ -129,7 +125,7 @@ function ProductFilter({ categoryAscii, loading }: Props) {
          </div>
          <div className={cx("filter-section")}>
             <h1 className={cx("filter-title")}>Mức giá</h1>
-            <div className={cx("filter-list", "price")}>
+            <div className={cx("filter-list")}>
                {loading ? (
                   PriceSkeleton
                ) : (

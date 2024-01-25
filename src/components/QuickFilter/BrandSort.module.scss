@@ -25,13 +25,14 @@ $alpha: rgba(
     }
   }
 }
-.sort-item {
+.item {
   width: 150px;
   height: 34px;
   border-radius: 99px;
   border: 1px solid $alpha;
   flex-shrink: 0;
   overflow: hidden;
+  cursor: pointer;
 
   &.no-image {
     display: flex;
@@ -44,9 +45,9 @@ $alpha: rgba(
     object-fit: cover;
     object-position: center;
     user-select: none;
-    &:hover {
-      border-color: #cd1818;
-    }
+  }
+  &:hover {
+    border-color: #cd1818;
   }
 
   @media screen and (max-width: 756px) {
@@ -55,7 +56,7 @@ $alpha: rgba(
   }
 }
 
-.filter-item {
+.selected-item {
   display: flex;
   align-items: center;
 

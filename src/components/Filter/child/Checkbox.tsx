@@ -2,6 +2,7 @@ import classNames from "classnames/bind";
 import styles from "../ProductFilter.module.scss";
 import { FilterType } from "@/store/filtersSlice";
 import { Brand } from "@/types";
+import PushFrame from "@/components/ui/PushFrame";
 
 const cx = classNames.bind(styles);
 
@@ -30,8 +31,8 @@ export default function Checkbox({ handleFilter, filters, data }: Props) {
 
    return (
       <>
-         <div className={cx("filter-item")}>
-            <input
+         <div className={cx("filter-item", { active: !filters.brands.length })}>
+            {/* <input
                id="all-brand"
                type="checkbox"
                checked={!filters.brands.length}
@@ -39,14 +40,17 @@ export default function Checkbox({ handleFilter, filters, data }: Props) {
             />
             <label htmlFor={"all-brand"} className={cx("label")}>
                All
-            </label>
+            </label> */}
+            <PushFrame active={!filters.brands.length} type="translate">
+               <button onClick={() => handleToggle("clear")}>Tất cả</button>
+            </PushFrame>
          </div>
          {data.map((item, index) => {
             const i = filters.brands.findIndex((b) => b.id === item.id);
             const isChecked = i !== -1;
             return (
-               <div key={index} className={cx("filter-item")}>
-                  <input
+               <div key={index} className={cx("filter-item", { active: isChecked })}>
+                  {/* <input
                      id={item.brand_ascii}
                      type="checkbox"
                      checked={isChecked}
@@ -54,7 +58,10 @@ export default function Checkbox({ handleFilter, filters, data }: Props) {
                   />
                   <label htmlFor={item.brand_ascii} className={cx("label")}>
                      {item.brand_name}
-                  </label>
+                  </label> */}
+                  <PushFrame active={isChecked} type="translate">
+                     <button onClick={() => handleToggle(item)}>{item.brand_name}</button>
+                  </PushFrame>
                </div>
             );
          })}

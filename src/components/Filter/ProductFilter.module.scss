@@ -1,10 +1,9 @@
 $getter: 10px;
 
 .product-filter {
-   padding: 10px;
-   padding-top: 15px;
-   margin-top: 15px;
-   margin-left: 30px;
+   // padding: 10px;
+   // padding-top: 15px;
+   margin-top: 30px;
 
    @media screen and (max-width: 756px) {
       margin: 0;
@@ -12,6 +11,7 @@ $getter: 10px;
       margin-top: 14px;
       .filter-section {
          padding: 0;
+         margin-bottom: 14px;
       }
       .filter-title {
          padding: 0;
@@ -19,18 +19,12 @@ $getter: 10px;
       }
       .filter-list {
          gap: 0;
-         &.price {
-            * + * {
-               margin-top: $getter;
-            }
-         }
-         &:not(.price) {
-            margin-top: -$getter;
-            margin-left: -$getter - 6px;
-            > * {
-               margin-top: $getter;
-               margin-left: $getter + 6px;
-            }
+
+         margin-top: -$getter;
+         margin-left: -$getter;
+         > * {
+            margin-top: $getter;
+            margin-left: $getter;
          }
       }
    }
@@ -49,17 +43,30 @@ $getter: 10px;
    flex-wrap: wrap;
    column-gap: 15px;
    row-gap: 17px;
+   .filter-item {
+      button {
+         font-size: 1.4rem;
+         padding: 0 6px;
+         line-height: 2.4rem;
+      }
+      &.active {
+         button {
+            color: #cd1818;
+            font-weight: 600;
+         }
+      }
+   }
 }
-.label {
-   font-size: 1.5rem;
-   padding-left: 5px;
-}
-.price {
-   flex-direction: column;
-}
+// .label {
+//    font-size: 1.5rem;
+//    padding-left: 5px;
+// }
+// .price {
+//    flex-direction: column;
+// }
 
-input[type="checkbox"],
-input[type="radio"] {
-   scale: 1.2;
-   margin-right: 4px;
-}
+// input[type="checkbox"],
+// input[type="radio"] {
+//    scale: 1.2;
+//    margin-right: 4px;
+// }

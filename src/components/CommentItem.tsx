@@ -23,8 +23,7 @@ export default function CommentItem({ className, comment, admin, children }: Pro
 
    const titleContent = {
       defaultComment: comment.cus_name,
-      commentDashboard: comment.date_convert + comment.phone_number,
-      reviewDashboard: comment.date_convert + comment.product_name_ascii + comment.phone_number,
+      commentDashboard: "",
    };
 
    return (
@@ -33,31 +32,21 @@ export default function CommentItem({ className, comment, admin, children }: Pro
 
          <div className="ml-[10px]">
             {admin ? (
-               <div className="flex items-end">
-                  <h5 className={classes.userName}>{comment.cus_name}</h5>
-                  <span className="text-[#808080] text-[16px] ml-[8px]">{titleContent.commentDashboard}</span>
-               </div>
+               <>
+                  <div className="flex items-end">
+                     <h5 className={classes.userName}>{comment.cus_name}</h5>
+                     <span className="text-[#808080] text-[16px] ml-[8px]">{titleContent.commentDashboard}</span>
+                  </div>
+                  <p className={classes.comment}>Đã bình luận '{comment.product_name_ascii}'</p>
+               </>
             ) : (
                <h5 className={classes.userName}>{titleContent.defaultComment}</h5>
             )}
-            {comment.rate && (
-               <>
-                  {admin && <p className={classes.comment}>Đã đánh giá '{comment.product_data?.product_name}'</p>}
 
-                  <div className="flex gap-[2px] mt-[4px]">
-                     {[...Array(comment.rate).keys()].map((index) => (
-                        <span key={index} className="leading-[24px] inline-flex">
-                           <i className="material-icons text-[#efb140]">star</i>
-                        </span>
-                     ))}
-                  </div>
-               </>
-            )}
-
-            <p className={classes.comment}>{comment.content}</p>
+            <p className={`${classes.comment} !mt-[10px]`}>{comment.content}</p>
 
             {children && (
-               <div className="h-[30px] text-[16px] mt-[4px] flex items-center gap-[8px]">
+               <div className="h-[24px] text-[16px] mt-[4px] flex items-center space-x-[8px]">
                   {!admin && <span className="text-[#808080] text-[16px]">{comment.approve}</span>} {children}
                </div>
             )}

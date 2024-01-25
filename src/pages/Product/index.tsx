@@ -3,15 +3,7 @@ import { useParams } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./Products.module.scss";
 import { useSelector, useDispatch } from "react-redux";
-import {
-   ProductItem,
-   QuickFilter,
-   Button,
-   Sort,
-   Filter,
-   Label,
-   ImageSlider,
-} from "../../components";
+import { ProductItem, QuickFilter, Button, Sort, Filter, Label, ImageSlider } from "../../components";
 import NoProduct from "./NoProduct";
 
 import { fetchProducts, selectedAllProduct, getMoreProducts, selectedAllFilter } from "../../store";
@@ -48,10 +40,7 @@ export default function Product() {
    );
    const { status: brandApiStatus } = useAppConfig({ curCategory, includeSlider: true });
 
-   const curBrands = useMemo(
-      () => (curCategory ? brands[curCategory.category_ascii] : []),
-      [curCategory, brands]
-   );
+   const curBrands = useMemo(() => (curCategory ? brands[curCategory.category_ascii] : []), [curCategory, brands]);
 
    const handleGetMore = () => {
       if (!category_id) return;
@@ -66,10 +55,7 @@ export default function Product() {
       ));
    };
 
-   const sliderSkeleton = useMemo(
-      () => <Skeleton className="w-full pt-[25%] rounded-[16px]" />,
-      []
-   );
+   const sliderSkeleton = useMemo(() => <Skeleton className="w-full pt-[25%] rounded-[16px]" />, []);
    const canRenderSlider = useMemo(
       () => curCategory?.category_ascii && !!sliders[curCategory?.category_ascii],
       [sliders, curCategory]
@@ -115,37 +101,25 @@ export default function Product() {
 
          <div className={cx("product-body", "row")}>
             <div className="col w-full md:w-3/4 ">
-               <Label
-                  categoryName={curCategory?.category_name}
-                  count={count}
-                  loading={status === "loading"}
-               />
+               <Label categoryName={curCategory?.category_name} count={count} loading={status === "loading"} />
                <div className="hidden md:block">
-                  <QuickFilter
-                     loading={brandApiStatus === "loading"}
-                     brands={curBrands}
-                     curCategory={curCategory}
-                  />
+                  <QuickFilter loading={brandApiStatus === "loading"} brands={curBrands} curCategory={curCategory} />
                </div>
 
                <div className="block md:hidden">
-                  <Filter
-                     loading={brandApiStatus === "loading"}
-                     categoryAscii={curCategory?.category_ascii}
-                  />
+                  <Filter loading={brandApiStatus === "loading"} categoryAscii={curCategory?.category_ascii} />
                </div>
 
                <Sort loading={status === "loading"} category_id={curCategory?.id} />
 
                <div className={"mt-[15px]"}>
-                  <div className="row">
+                  <div className={cx("row", "product-list")}>
                      {/* init loading is category loading */}
                      {/* loading is first get product (at page 1) */}
                      {!initLoading && status !== "loading" && (
                         <>
                            {!!products.length && renderProducts()}
-                           {((!products.length && status === "successful") ||
-                              status === "error") && <NoProduct />}
+                           {((!products.length && status === "successful") || status === "error") && <NoProduct />}
                         </>
                      )}
                      {isLoading && ProductsSkeletons}
@@ -166,12 +140,7 @@ export default function Product() {
             </div>
 
             <div className="col w-1/4 max-[768px]:hidden">
-               {
-                  <Filter
-                     loading={brandApiStatus === "loading"}
-                     categoryAscii={curCategory?.category_ascii}
-                  />
-               }
+               {<Filter loading={brandApiStatus === "loading"} categoryAscii={curCategory?.category_ascii} />}
             </div>
          </div>
       </div>

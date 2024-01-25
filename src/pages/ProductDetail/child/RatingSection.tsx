@@ -1,11 +1,11 @@
 import useReview from "@/hooks/useReview";
 import { useMemo, useRef } from "react";
-import CommentItem, { CommentSkeleton } from "@/components/CommentItem";
+import { CommentSkeleton } from "@/components/CommentItem";
 import { Button } from "@/components";
 import NoComment from "./NoComment";
 import { ProductReview } from "@/types";
-// import { useLocalStorage } from "@/hooks";
 import { initLocalStorage } from "@/utils/appHelper";
+import ReviewItem from "@/components/ReviewItem";
 
 export default function RatingSection({ product_name_ascii }: { product_name_ascii: string }) {
    const {
@@ -50,7 +50,7 @@ export default function RatingSection({ product_name_ascii }: { product_name_asc
             const isLiked = localVal.like_review_ids.includes(r.id!);
 
             return (
-               <CommentItem key={index} review={true} comment={r}>
+               <ReviewItem key={index} review={r}>
                   <Button
                      disable={isLoading}
                      onClick={() => handleLike(r, index)}
@@ -70,7 +70,7 @@ export default function RatingSection({ product_name_ascii }: { product_name_asc
                      )}
                      {r.total_like}
                   </Button>
-               </CommentItem>
+               </ReviewItem>
             );
          }),
       [reviews, apiLoading]
