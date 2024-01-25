@@ -1,3 +1,4 @@
+import CheckoutLayout from "@/layouts/CheckoutLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import LoginLayout from "@/layouts/LoginLayout";
 import {
@@ -17,7 +18,7 @@ import {
   Register,
   Unauthorized,
 } from "@/pages";
-import Checkout from "@/pages/Checkout";
+import Checkout from "@/pages/Checkout/Checkout";
 
 const routes = {
   HOME: "",
@@ -81,7 +82,7 @@ const publicRoutes = [
   {
     path: routes.CHECKOUT,
     component: Checkout,
-    layout: DefaultLayout,
+    layout: CheckoutLayout,
   },
 ];
 

@@ -1,4 +1,6 @@
 import PushFrame from "@/components/ui/PushFrame";
+import { Bars3Icon} from "@heroicons/react/16/solid";
+import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { Dispatch, SetStateAction } from "react";
 import { Link } from "react-router-dom";
 
@@ -17,20 +19,7 @@ export default function MobileHeader({ setIsOpenSidebar }: Props) {
             <div className="absolute left-0 translate-y-[2px]">
                <PushFrame  type="translate">
                   <button onClick={() => setIsOpenSidebar(true)} className="block text-[#333] p-[2px]">
-                     <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="w-[22px]"
-                     >
-                        <path
-                           strokeLinecap="round"
-                           strokeLinejoin="round"
-                           d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                        />
-                     </svg>
+                     <Bars3Icon className="w-[22px]"/>
                   </button>
                </PushFrame>
             </div>
@@ -40,6 +29,14 @@ export default function MobileHeader({ setIsOpenSidebar }: Props) {
                   HD <span className="text-[#cd1818]">Mobile</span>
                </h1>
             </Link>
+
+            <div className="absolute right-0 translate-y-[2px]">
+               <PushFrame  type="translate">
+                  <Link to={'/check-out'} className="block text-[#333] p-[2px]">
+                     <ShoppingBagIcon className="w-[22px]" />
+                  </Link>
+               </PushFrame>
+            </div>
          </div>
       </>
    );
