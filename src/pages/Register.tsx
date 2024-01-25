@@ -6,13 +6,15 @@ import { publicRequest } from "@/utils/request";
 import { checkIcon, xIcon } from "@/assets/icons";
 import { Button } from "@/components";
 import { useToast } from "@/store/ToastContext";
+import { Cart } from "@/types";
 
 const REGISTER_URL = "/auth/register";
+const CART_URL = "/carts";
 const cx = classNames.bind(styles);
 
 // const USER_REGEX = /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
 const USER_REGEX = /^(?=.{4,20}$)[a-zA-Z].*/;
-const PWD_REGEX = /^(?=.*[0-9])[a-zA-Z0-9]{6,16}$/;
+const PWD_REGEX = /^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
 export default function Register() {
   const userInputRef = useRef<HTMLInputElement>(null);
@@ -72,6 +74,13 @@ export default function Register() {
         }
       );
 
+      const initCart: Cart = {
+        count_item: 0,
+        total_price: 0,
+        username: user,
+      };
+      await publicRequest.post(CART_URL, initCart);
+
       setSuccessToast("Đăng ký thành công");
       handleClear();
       navigate("/login");
@@ -113,7 +122,10 @@ export default function Register() {
 
   return (
     <div className={cx("page")}>
-      <form className={cx("form", "space-y-[14px]", { disable: loading })} onSubmit={handleSubmit}>
+      <form
+        className={cx("form", "space-y-[14px]", { disable: loading })}
+        onSubmit={handleSubmit}
+      >
         {errMsg && <h2 className={cx("error-msg")}>{errMsg}</h2>}
         <h1 className={cx("title")}>Đăng ký</h1>
         <div className={cx("form-group")}>

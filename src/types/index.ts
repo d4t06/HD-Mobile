@@ -93,7 +93,7 @@ export interface Product {
     brand_name: string;
     brand_ascii: string;
   };
-  detail: ProductDetail;
+  detail: ProductDetail | null;
   storages_data: ProductStorage[];
   colors_data: ProductColor[];
   combines_data: ProductCombine[];
@@ -144,10 +144,10 @@ export type Category = {
   icon: string;
   default?: boolean;
   attributes?: CategoryAttribute[];
-  price_ranges?: PriceRange[]
+  price_ranges?: PriceRange[];
 };
 
-export type CategorySchema = Omit<Category, 'attributes' | 'price_range'>
+export type CategorySchema = Omit<Category, "attributes" | "price_range">;
 
 export type CategorySlider = {
   category_data: Category;
@@ -220,6 +220,26 @@ export type PriceRange = {
   from: number;
   to: number;
   label: string;
+};
+
+export type Cart = {
+  id?: number;
+  username: string;
+  count_item: number;
+  total_price: number;
+};
+
+export type Cart_Item = {
+  username: string;
+  product_name_ascii: string;
+  amount: number;
+  color_ascii: string;
+  storage_ascii: string;
+  product_data?: {
+    product_name: string;
+    image_url: string;
+    combines_data: ProductCombine[];
+  };
 };
 
 export type GetArrayType<T extends any[]> = T extends (infer U)[] ? U : never;

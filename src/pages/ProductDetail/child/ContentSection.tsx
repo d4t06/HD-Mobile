@@ -7,7 +7,7 @@ import { Button } from "@/components";
 import Skeleton from "@/components/Skeleton";
 
 type Props = {
-   detail: ProductDetail;
+   detail: ProductDetail | null;
    loading: boolean;
 };
 

@@ -17,6 +17,7 @@ import {
   Register,
   Unauthorized,
 } from "@/pages";
+import Checkout from "@/pages/Checkout";
 
 const routes = {
   HOME: "",
@@ -27,6 +28,7 @@ const routes = {
   DETAIL: "/:category/:key",
   UNAUTHORIZED: "/unauthorized",
   ACCOUNT: "/account",
+  CHECKOUT:'/check-out'
 };
 
 const publicRoutes = [
@@ -74,6 +76,11 @@ const publicRoutes = [
   {
     path: routes.DETAIL,
     component: ProductDetail,
+    layout: DefaultLayout,
+  },
+  {
+    path: routes.CHECKOUT,
+    component: Checkout,
     layout: DefaultLayout,
   },
 ];
