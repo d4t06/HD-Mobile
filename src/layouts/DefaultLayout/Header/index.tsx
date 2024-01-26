@@ -26,8 +26,7 @@ function Header() {
          <li
             key={index}
             className={cx("nav-item", {
-               active:
-                  !showModal && location.pathname === `/${cat.category_ascii}`,
+               active: !showModal && location.pathname === `/${cat.category_ascii}`,
             })}
          >
             <Link to={`/${cat.category_ascii}`}>
@@ -68,21 +67,21 @@ function Header() {
                <div className={cx("header-nav")}>
                   <div className={cx("header-nav-wrap")}>
                      {/* render categories */}
+                     <ul className={cx("nav-list")}>{!initLoading && renderCategories}</ul>
                      <ul className={cx("nav-list")}>
-                        {!initLoading && renderCategories}
-                     </ul>
-                     <ul className={cx("nav-list")}>
-                        <li className={cx("nav-item")}>
-                           <Link to={"/check-out"}>
-                              <span className={cx("nav-text")}>Cart</span>
-                              <ShoppingBagIcon className="w-[24px]" />
-                           </Link>
-                        </li>
+                        {auth?.username && (
+                           <li className={cx("nav-item")}>
+                              <Link to={"/check-out"}>
+                                 <span className={cx("nav-text")}>Cart</span>
+                                 <ShoppingBagIcon className="w-[24px]" />
+                              </Link>
+                           </li>
+                        )}
                         {auth?.role === "ADMIN" && (
                            <li className={cx("nav-item")}>
                               <Link to={"/dashboard"}>
                                  <p className={cx("nav-text")}>Dashboard</p>
-                                 <Cog6ToothIcon  className="w-[24px]"/>
+                                 <Cog6ToothIcon className="w-[24px]" />
                               </Link>
                            </li>
                         )}

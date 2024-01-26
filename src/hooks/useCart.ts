@@ -1,6 +1,6 @@
 import { useAuth } from "@/store/AuthContext";
 import { useToast } from "@/store/ToastContext";
-import { Cart, CartItem, CartItemSchema } from "@/types";
+import { Cart, CartItemSchema } from "@/types";
 import { publicRequest } from "@/utils/request";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,34 +13,30 @@ const CART_URL = "/carts";
 
 export default function useCart({ autoRun = false }: Props) {
    const [cart, setCart] = useState<Cart>();
-   const [apiLoading, setApiLoading] = useState(autoRun ? true : false);
+   const [status, setStatus] = useState<"loading" | "error" | "success">("loading");
+   const [apiLoading, setApiLoading] = useState(false);
 
    const ranEffect = useRef(false);
 
    const { auth } = useAuth();
-   const { setSuccessToast, setErrorToast } = useToast();
+   const { setErrorToast } = useToast();
    const navigate = useNavigate();
    const location = useLocation();
 
    const apiGetDetail = async () => {
-      if (auth?.username) {
-         throw new Error("auth is undefined");
-         return;
-      }
+      if (!auth?.username) throw new Error("auth is undefined");
 
-      const res = await publicRequest.get(
-         `http://localhost:3000/api/carts/test`
-      );
+      const res = await publicRequest.get(`http://localhost:3000/api/carts/${auth.username}`);
 
       return res.data as Cart;
    };
 
-   const handleCartDaa = (data?: Cart) => {
+   const handleCartData = (data?: Cart) => {
       if (data) {
          setCart(data);
 
-         if (data.count_item) {
-            localStorage.setItem("carts", JSON.stringify(data.count_item));
+         if (data.count) {
+            localStorage.setItem("carts", JSON.stringify(data.count));
          }
       }
    };
@@ -49,15 +45,14 @@ export default function useCart({ autoRun = false }: Props) {
       try {
          if (!auth?.username) throw new Error("auth is undefined");
 
-         setApiLoading(true);
-
          const cartData = await apiGetDetail();
-         handleCartDaa(cartData);
+         handleCartData(cartData);
 
-         setApiLoading(false);
+         setStatus("success");
       } catch (error) {
          console.log(error);
          setErrorToast();
+         setStatus("error");
       }
    };
 
@@ -78,7 +73,7 @@ export default function useCart({ autoRun = false }: Props) {
       }
    };
 
-   const deleteCartItem = async (id?: number) => {
+   const deleteCartItem = async (handleCartData: (cart: Cart) => void, id?: number) => {
       try {
          if (id === undefined) throw new Error("id is undefined");
 
@@ -86,7 +81,7 @@ export default function useCart({ autoRun = false }: Props) {
          await publicRequest.delete(`${CART_URL}/cart-items/${id}`);
 
          const cartData = await apiGetDetail();
-         handleCartDaa(cartData);
+         handleCartData(cartData);
       } catch (error) {
          console.log(error);
          setErrorToast();
@@ -95,18 +90,17 @@ export default function useCart({ autoRun = false }: Props) {
       }
    };
 
-   const updateCartItem = async (cartItem: CartItem) => {
+   const updateCartItem = async (handleCartData: (cart: Cart) => void, cartItem: CartItemSchema & { id: number }) => {
       try {
          if (cartItem.id === undefined) throw new Error("item id is undefined");
 
+         const { username, product_name_ascii, ...rest } = cartItem;
+
          setApiLoading(true);
-         await publicRequest.put(
-            `${CART_URL}/cart-items/${cartItem.id}`,
-            cartItem
-         );
+         await publicRequest.put(`${CART_URL}/cart-items/${cartItem.id}`, rest);
 
          const cartData = await apiGetDetail();
-         handleCartDaa(cartData);
+         handleCartData(cartData);
       } catch (error) {
          console.log(error);
          setErrorToast();
@@ -117,10 +111,6 @@ export default function useCart({ autoRun = false }: Props) {
 
    useEffect(() => {
       if (!auth?.username || !autoRun) return;
-
-
-      console.log('check auth', auth,auth.username);
-      
 
       if (!ranEffect.current) {
          ranEffect.current = true;
@@ -134,6 +124,8 @@ export default function useCart({ autoRun = false }: Props) {
       getCartDetail,
       deleteCartItem,
       updateCartItem,
+      handleCartData,
       apiLoading,
+      status,
    };
 }

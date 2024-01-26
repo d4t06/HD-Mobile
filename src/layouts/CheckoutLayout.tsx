@@ -7,7 +7,7 @@ export default function CheckoutLayout({ children }: { children: ReactNode }) {
    const ranUseEffect = useRef(false);
 
    const classes = {
-      container: "container md:max-w-[800px] mx-auto pb-[150px] !mt-[110px] md:pb-[100px] md:!mt-[20px] px-[10px]",
+      container: "container md:max-w-[800px] mx-auto !pb-[150px] !mt-[110px] md:!pb-[100px] md:!mt-[20px] px-[10px]",
    };
 
    useEffect(() => {

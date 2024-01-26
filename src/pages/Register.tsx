@@ -5,14 +5,13 @@ import styles from "./Login/Login.module.scss";
 import { publicRequest } from "@/utils/request";
 import { Button } from "@/components";
 import { useToast } from "@/store/ToastContext";
-import { Cart } from "@/types";
-import { CheckCircleIcon, XMarkIcon } from "@heroicons/react/16/solid";
+// import { Cart } from "@/types";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/16/solid";
 
 const REGISTER_URL = "/auth/register";
-const CART_URL = "/carts";
+// const CART_URL = "/carts";
 const cx = classNames.bind(styles);
 
-// const USER_REGEX = /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
 const USER_REGEX = /^(?=.{4,20}$)[a-zA-Z].*/;
 const PWD_REGEX = /^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
@@ -66,21 +65,17 @@ export default function Register() {
       try {
          setLoading(true);
 
-         await publicRequest.post(
-            REGISTER_URL,
-            JSON.stringify({ username: user, password: password }),
-            {
-               headers: { "Content-Type": "application/json" },
-            }
-         );
+         await publicRequest.post(REGISTER_URL, JSON.stringify({ username: user, password: password }), {
+            headers: { "Content-Type": "application/json" },
+         });
 
-         const initCart: Cart = {
-            count_item: 0,
-            total_price: 0,
-            username: user,
-            items: [],
-         };
-         await publicRequest.post(CART_URL, initCart);
+         // const initCart: Cart = {
+         //    count_: 0,
+         //    total_price: 0,
+         //    username: user,
+         //    items: [],
+         // };
+         // await publicRequest.post(CART_URL, initCart);
 
          setSuccessToast("Đăng ký thành công");
          handleClear();
@@ -117,27 +112,25 @@ export default function Register() {
    }, [password, matchPwg]);
 
    const classes = {
-      constructor:
-         "bg-[#333] p-[6px] rounded-[6px] text-[1.4rem] text-white origin-top duration-[.3s] transition-all",
+      constructor: "bg-[#333] p-[6px] rounded-[6px] text-[1.4rem] text-white origin-top duration-[.3s] transition-all",
+      checkIcon: "text-emerald-500 w-[24px]",
+      xIcon: "text-red-500 w-[24px]",
    };
 
    return (
       <div className={cx("page")}>
-         <form
-            className={cx("form", "space-y-[14px]", { disable: loading })}
-            onSubmit={handleSubmit}
-         >
+         <form className={cx("form", "space-y-[14px]", { disable: loading })} onSubmit={handleSubmit}>
             {errMsg && <h2 className={cx("error-msg")}>{errMsg}</h2>}
             <h1 className={cx("title")}>Đăng ký</h1>
             <div className={cx("form-group")}>
-               <div className="flex items-center">
+               <div className="flex items-center space-x-[4px]">
                   <label htmlFor="username">Tên tài khoản</label>
                   {user && (
                      <span>
                         {validName ? (
-                           <CheckCircleIcon className="w-[22px]" />
+                           <CheckIcon className={`${classes.checkIcon} `} />
                         ) : (
-                           <XMarkIcon className="w-[22px]" />
+                           <XMarkIcon className={`${classes.xIcon} `} />
                         )}
                      </span>
                   )}
@@ -152,17 +145,13 @@ export default function Register() {
                   aria-describedby="note"
                   onFocus={() => setUserFocus(true)}
                   onBlur={() => setUserFocus(false)}
-                  onChange={(e) =>
-                     setUser(e.target.value.trim() && e.target.value)
-                  }
+                  onChange={(e) => setUser(e.target.value.trim() && e.target.value)}
                />
 
                <div
                   id="note"
                   className={`${classes.constructor} ${
-                     userFocus && user && !validName
-                        ? "max-h-[200px] opacity-100"
-                        : "max-h-0 my-[-6px] opacity-0"
+                     userFocus && user && !validName ? "max-h-[200px] opacity-100" : "max-h-0 my-[-6px] opacity-0"
                   }`}
                >
                   4 - 24 ký tự <br />
@@ -171,14 +160,14 @@ export default function Register() {
                </div>
             </div>
             <div className={cx("form-group")}>
-               <div className="flex items-center">
+               <div className="flex items-center space-x-[4px]">
                   <label htmlFor="password">Mật khẩu</label>
                   {password && (
                      <span>
                         {validPwd ? (
-                           <CheckCircleIcon className="w-[22px]" />
+                           <CheckIcon className={`${classes.checkIcon} `} />
                         ) : (
-                           <XMarkIcon className="w-[22px]" />
+                           <XMarkIcon className={`${classes.xIcon} `} />
                         )}
                      </span>
                   )}
@@ -191,9 +180,7 @@ export default function Register() {
                   aria-describedby="note"
                   onFocus={() => setPasswordFocus(true)}
                   onBlur={() => setPasswordFocus(false)}
-                  onChange={(e) =>
-                     setPassword(e.target.value.trim() && e.target.value)
-                  }
+                  onChange={(e) => setPassword(e.target.value.trim() && e.target.value)}
                />
                <p
                   id="note"
@@ -208,14 +195,14 @@ export default function Register() {
                </p>
             </div>
             <div className={cx("form-group")}>
-               <div className="flex items-center">
+               <div className="flex items-center space-x-[4px]">
                   <label htmlFor="password-confirm">Nhập lại mật khẩu</label>
                   {password && (
                      <span className={validMatchPwg && validPwd ? "" : "hide"}>
                         {validMatchPwg && validPwd ? (
-                           <CheckCircleIcon className="w-[22px]" />
+                           <CheckIcon className={`${classes.checkIcon} `} />
                         ) : (
-                           <XMarkIcon className="w-[22px]" />
+                           <XMarkIcon className={`${classes.xIcon} `} />
                         )}
                      </span>
                   )}
@@ -226,9 +213,7 @@ export default function Register() {
                   id="password-confirm"
                   autoComplete="off"
                   value={matchPwg}
-                  onChange={(e) =>
-                     setMatchPwg(e.target.value.trim() && e.target.value)
-                  }
+                  onChange={(e) => setMatchPwg(e.target.value.trim() && e.target.value)}
                />
             </div>
 

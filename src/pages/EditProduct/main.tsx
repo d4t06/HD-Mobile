@@ -152,7 +152,7 @@ function EditProductMain() {
 
       if (!isEditorChange.current) return;
 
-      if (detail === undefined) {
+      if (detail === null) {
          console.log(">>> api add new content");
          return await privateRequest.post(`${MANAGE_PRODUCT_URL}/details`, data);
       } else if (detail.id) {

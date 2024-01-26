@@ -39,10 +39,7 @@ export interface ProductSlider {
    slider_data: Slider;
 }
 
-export type ProductSliderSchema = Omit<
-   ProductSlider,
-   "color_data" | "slider_data"
->;
+export type ProductSliderSchema = Omit<ProductSlider, "color_data" | "slider_data">;
 
 export type SliderImage = {
    image_url: string;
@@ -131,10 +128,7 @@ export type ProductAttribute = {
    attribute_data: CategoryAttribute;
 };
 
-export type ProductAttributeSchema = Omit<
-   ProductAttribute,
-   "attribute_data" | "id"
->;
+export type ProductAttributeSchema = Omit<ProductAttribute, "attribute_data" | "id">;
 
 export type CategoryAttribute = {
    id?: number;
@@ -212,10 +206,7 @@ export type ProductComment = {
 
 export type ProductReview = ProductComment & { rate: number };
 
-export type Reply = Omit<
-   ProductComment,
-   "cus_name" | "phone_number" | "approve"
->;
+export type Reply = Omit<ProductComment, "cus_name" | "phone_number" | "approve">;
 
 export type LCStorage = {
    like_review_ids: number[];
@@ -234,7 +225,7 @@ export type PriceRange = {
 export type Cart = {
    id: number;
    username: string;
-   count_item: number;
+   count: number;
    total_price: number;
    items: CartItem[];
 };
@@ -245,15 +236,19 @@ export type CartItem = {
    username: string;
    product_name_ascii: string;
    amount: number;
-   color_ascii: string;
-   storage_ascii: string;
+   color_id: number;
+   storage_id: number;
    product_data: {
       product_name: string;
       image_url: string;
       combines_data: ProductCombine[];
+      colors_data: { color: string; id: number }[];
+      storages_data: { storage: string; id: number }[];
    };
+   updatedAt: string;
+   createdAt: string;
 };
 
-export type CartItemSchema = Omit<CartItem, "id" | "product_data">;
+export type CartItemSchema = Omit<CartItem, "id" | "product_data" | "updatedAt" | "createdAt">;
 
 export type GetArrayType<T extends any[]> = T extends (infer U)[] ? U : never;

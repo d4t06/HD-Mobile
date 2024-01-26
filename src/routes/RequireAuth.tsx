@@ -16,7 +16,7 @@ export default function RequireAuth({ allowedRole }: { allowedRole: string[] }) 
          </div>
       );
 
-   return !!allowedRole?.find((role) => decode.role === role) ? (
+   return !!allowedRole?.find((role) => decode.role === role) || !allowedRole.length ? (
       <Outlet />
    ) : auth?.token ? (
       <Navigate to="/unauthorized" />
