@@ -19,6 +19,8 @@ import {
    Unauthorized,
 } from "@/pages";
 import Checkout from "@/pages/Checkout/Checkout";
+import UserOrder from "@/pages/UserOrder";
+import UserOrderDetail from "@/pages/UserOrderDetail";
 
 const routes = {
    HOME: "",
@@ -30,6 +32,8 @@ const routes = {
    UNAUTHORIZED: "/unauthorized",
    ACCOUNT: "/account",
    CHECKOUT: "/check-out",
+   USER_ORDER: "/order",
+   USER_ORDER_DETAIL: "/order/:id",
 };
 
 const publicRoutes = [
@@ -85,6 +89,18 @@ const privateRoutes = [
    {
       path: routes.CHECKOUT,
       component: Checkout,
+      role: [],
+      layout: CheckoutLayout,
+   },
+   {
+      path: routes.USER_ORDER,
+      component: UserOrder,
+      role: [],
+      layout: CheckoutLayout,
+   },
+   {
+      path: routes.USER_ORDER_DETAIL,
+      component: UserOrderDetail,
       role: [],
       layout: CheckoutLayout,
    },

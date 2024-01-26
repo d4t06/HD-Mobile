@@ -8,7 +8,7 @@ import { useApp } from "@/store/AppContext";
 import Sidebar from "@/components/Sidebar";
 import MobileHeader from "./MobileHeader";
 import { Cog6ToothIcon } from "@heroicons/react/16/solid";
-import { ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { ArchiveBoxIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 const cx = classNames.bind(styles);
 
 function Header() {
@@ -67,15 +67,26 @@ function Header() {
                <div className={cx("header-nav")}>
                   <div className={cx("header-nav-wrap")}>
                      {/* render categories */}
-                     <ul className={cx("nav-list")}>{!initLoading && renderCategories}</ul>
+                     <ul className={cx("nav-list")}>
+                        {!initLoading && renderCategories}
+                     </ul>
                      <ul className={cx("nav-list")}>
                         {auth?.username && (
-                           <li className={cx("nav-item")}>
-                              <Link to={"/check-out"}>
-                                 <span className={cx("nav-text")}>Cart</span>
-                                 <ShoppingBagIcon className="w-[24px]" />
-                              </Link>
-                           </li>
+                           <>
+                              <li className={cx("nav-item")}>
+                                 <Link to={"/check-out"}>
+                                    <span className={cx("nav-text")}>Cart</span>
+                                    <ShoppingBagIcon className="w-[24px]" />
+                                 </Link>
+                              </li>
+
+                              <li className={cx("nav-item")}>
+                                 <Link to={"/order"}>
+                                    <span className={cx("nav-text")}>Order</span>
+                                    <ArchiveBoxIcon className="w-[24px]" />
+                                 </Link>
+                              </li>
+                           </>
                         )}
                         {auth?.role === "ADMIN" && (
                            <li className={cx("nav-item")}>

@@ -15,7 +15,7 @@ export type AddressGroupRef = {
 };
 function AddressGroup({}, ref: Ref<AddressGroupRef>) {
    const classes = {
-      formLabel: "text-[16px] text-[#333]",
+      formLabel: "text-[16px] text-gray-600 font-[500]",
    };
 
    const [address, setAddress] = useState<OrderAddress>({

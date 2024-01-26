@@ -11,17 +11,31 @@ import PushFrame from "@/components/ui/PushFrame";
 import useCart from "@/hooks/useCart";
 import { moneyFormat } from "@/utils/appHelper";
 import PrimaryLabel from "@/components/ui/PrimaryLabel";
-import { Button } from "@/components";
-import { useRef } from "react";
+import { Button, Modal } from "@/components";
+import { useRef, useState } from "react";
 import AddressGroup, { AddressGroupRef } from "./child/AdressGroup";
 import Skeleton from "@/components/Skeleton";
 import VariantList from "./child/VariantList";
-import { CartItem } from "@/types";
+import { CartItem, OrderItem, OrderSchema } from "@/types";
+import { useToast } from "@/store/ToastContext";
+import ModalHeader from "@/components/Modal/ModalHeader";
+import { usePrivateRequest } from "@/hooks";
+
+const USER_ORDER_URL = "/orders";
 
 export default function Checkout() {
-   const { cart, apiLoading, status, handleCartData, deleteCartItem } = useCart({ autoRun: true });
+   const [submitLoading, setSubmitLoading] = useState(false);
+   const [isOpenModal, setIsOpenModal] = useState(false);
 
    const AddressGroupRef = useRef<AddressGroupRef>(null);
+
+   const discount = 0;
+
+   const { setErrorToast } = useToast();
+   const privateRequest = usePrivateRequest();
+   const { cart, apiLoading, status, handleCartData, deleteCartItem } = useCart({
+      autoRun: true,
+   });
 
    const handleDeleteItem = async (cartItem: CartItem) => {
       await deleteCartItem(handleCartData, cartItem.id);
@@ -31,9 +45,53 @@ export default function Checkout() {
       try {
          const isValidAddress = AddressGroupRef.current?.validate();
 
-         if (!isValidAddress) throw new Error("invalid address");
+         if (!isValidAddress || !cart) throw new Error("invalid address");
+
+         const address = AddressGroupRef.current?.getAddress();
+         if (!address) throw new Error("invalid address");
+
+         setSubmitLoading(true);
+
+         const orderDataForInsert: OrderSchema = {
+            username: cart.username,
+            discount,
+            purchase_price: cart.total_price,
+            purchase_type: "Thanh toán khi nhận hàng",
+            recipient_address: address.address,
+            recipient_name: address.name,
+            recipient_phone_number: address.phoneNumber,
+            status: "processing",
+            total_price: cart.total_price - discount,
+         };
+
+         const res = await privateRequest.post(USER_ORDER_URL, orderDataForInsert);
+         const newOrderData = res.data as OrderSchema & { id: number };
+
+         const orderItems = cart.items.map((item) => {
+            return {
+               amount: item.amount,
+               color: "test",
+               image_url: item.product_data.image_url,
+               order_id: newOrderData.id,
+               product_name: item.product_data.product_name,
+               slug: "dtdd" + "/" + item.product_name_ascii,
+               storage: "test",
+               price: item.product_data.combines_data[0].price,
+            } as OrderItem;
+         });
+
+         await privateRequest.post(`${USER_ORDER_URL}/order-items`, orderItems);
+
+         for await (const item of cart.items) {
+            await deleteCartItem(undefined, item.id);
+         }
+
+         setIsOpenModal(true);
       } catch (error) {
          console.log(error);
+         setErrorToast();
+      } finally {
+         setSubmitLoading(false);
       }
    };
 
@@ -74,14 +132,21 @@ export default function Checkout() {
    }
 
    return (
-      <div className="">
-         <>
+      <>
+         <div className="">
             <div className={classes.container}>
-               <PrimaryLabel className="mb-[12px]" title={`Tất cả sản phẩm (${cart.items.length})`}>
+               <PrimaryLabel
+                  className="mb-[12px]"
+                  title={`Tất cả sản phẩm (${cart.items.length})`}
+               >
                   <ShoppingBagIcon className="w-[22px] md:w-[24px]" />
                </PrimaryLabel>
                <PushFrame>
-                  <div className={`space-y-[20px] ${apiLoading ? "opacity-60 pointer-events-none" : ""}`}>
+                  <div
+                     className={`space-y-[20px] ${
+                        apiLoading ? "opacity-60 pointer-events-none" : ""
+                     }`}
+                  >
                      {cart.items.map((item, index) => (
                         <div key={index} className="flex items-center">
                            <div className="flex flex-grow">
@@ -95,16 +160,26 @@ export default function Checkout() {
                                     <h5 className="text-[16px] font-[600] mb-[10px] md:mb-0">
                                        {item.product_data.product_name}
                                     </h5>
-                                    <VariantList handleCartData={handleCartData} cartItem={item} />
+                                    <VariantList
+                                       handleCartData={handleCartData}
+                                       cartItem={item}
+                                    />
                                  </div>
 
                                  <h4 className="text-[18px] font-[600] text-[#cd1818] ml-auto md:mr-[50px]">
-                                    {moneyFormat(item.product_data.combines_data[0].price)}đ
+                                    {moneyFormat(
+                                       item.product_data.combines_data[0].price
+                                    )}
+                                    đ
                                  </h4>
                               </div>
                            </div>
 
-                           <Button onClick={() => handleDeleteItem(item)} className="px-[4px]" primary>
+                           <Button
+                              onClick={() => handleDeleteItem(item)}
+                              className="px-[4px]"
+                              primary
+                           >
                               <TrashIcon className="w-[20px]" />
                            </Button>
                         </div>
@@ -147,13 +222,19 @@ export default function Checkout() {
                </PrimaryLabel>
                <div className="flex flex-col items-start md:flex-row space-y-[10px] md:space-y-0 md:items-center md:space-x-[10px]">
                   <PushFrame active={false} type="translate">
-                     <button className={`${classes.pushBtn} inline-flex items-center`} onClick={() => {}}>
+                     <button
+                        className={`${classes.pushBtn} inline-flex items-center`}
+                        onClick={() => {}}
+                     >
                         <BanknotesIcon className="w-[22px] md:w-[24px] mr-[6px]" />
                         Thanh toán khi nhận hàng
                      </button>
                   </PushFrame>
                   <PushFrame active={false} type="translate">
-                     <button className={`${classes.pushBtn} inline-flex items-center`} onClick={() => {}}>
+                     <button
+                        className={`${classes.pushBtn} inline-flex items-center`}
+                        onClick={() => {}}
+                     >
                         <CreditCardIcon className="w-[22px] md:w-[24px] mr-[6px]" />
                         Chuyển khoản ngân hàng
                      </button>
@@ -167,7 +248,9 @@ export default function Checkout() {
                      <div className="w-full md:w-1/2 px-[8px]">
                         <div className="flex items-center leading-[30px]">
                            <p className={classes.h5}>Tổng tiền:</p>
-                           <p className={`${classes.h5} ml-auto text-black`}>{moneyFormat(cart.total_price)}đ</p>
+                           <p className={`${classes.h5} ml-auto text-black`}>
+                              {moneyFormat(cart.total_price)}đ
+                           </p>
                         </div>
 
                         <div className="flex items-center leading-[30px]">
@@ -182,14 +265,37 @@ export default function Checkout() {
                               {moneyFormat(cart.total_price)}đ
                            </p>
                         </div>
-                        <Button onClick={handleSubmit} backClass="w-full mt-[10px]" primary>
+                        <Button
+                           onClick={handleSubmit}
+                           backClass="w-full mt-[10px]"
+                           primary
+                        >
                            Thanh toán
                         </Button>
                      </div>
                   </div>
                </div>
             </div>
-         </>
-      </div>
+         </div>
+
+         {isOpenModal && (
+            <Modal setShowModal={setIsOpenModal}>
+               <ModalHeader
+                  title={"Đặt hàng thành công"}
+                  setIsOpenModal={setIsOpenModal}
+               />
+               <p className="text-[16px] text-gray-700 font-[500]">Xong rồi đó</p>
+               <div className="text-center mt-[30px] space-x-[10px]">
+                  <Button
+                     isLoading={false}
+                     // onClick={() => handleNavigateToLogin()}
+                     primary
+                  >
+                     Về trang chủ
+                  </Button>
+               </div>
+            </Modal>
+         )}
+      </>
    );
 }

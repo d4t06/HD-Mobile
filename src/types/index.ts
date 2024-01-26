@@ -249,6 +249,59 @@ export type CartItem = {
    createdAt: string;
 };
 
-export type CartItemSchema = Omit<CartItem, "id" | "product_data" | "updatedAt" | "createdAt">;
+export type Order = {
+   id: number;
+   username: string;
+   status: "successful" | "canceled" | "processing";
+
+   items: OrderItem[];
+
+   discount: number;
+   purchase_price: number;
+   total_price: number;
+
+   purchase_type: string;
+
+   recipient_name: string;
+   recipient_phone_number: string;
+   recipient_address: string;
+
+   deliveredAt: string;
+   canceledAt: string;
+   createdAt: string;
+};
+
+export type OrderSchema = Omit<
+   Order,
+   "createdAt" | "items" | "id" | "deliveredAt" | "canceledAt" | "createdAt"
+>;
+
+export type OrderDetail = Omit<
+   Order,
+   "" & {
+      purchase_type: string;
+      recipient_name: string;
+      recipient_phone_number: string;
+      deliveredAt: string;
+      canceledAt: string;
+   }
+>;
+
+export type OrderItem = {
+   id?: number;
+   order_id: number;
+   product_name: string;
+   amount: number;
+   color: string;
+   storage: string;
+   image_url: string;
+   slug: string;
+   price: number
+};
+
+export type CartItemSchema = Omit<
+   CartItem,
+   "id" | "product_data" | "updatedAt" | "createdAt"
+>;
 
 export type GetArrayType<T extends any[]> = T extends (infer U)[] ? U : never;

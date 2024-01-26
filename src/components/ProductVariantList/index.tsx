@@ -4,10 +4,11 @@ import styles from "./ProductVariantList.module.scss";
 import classNames from "classnames/bind";
 import { moneyFormat } from "@/utils/appHelper";
 import { CartItemSchema, Product, ProductCombine, SliderImage } from "@/types";
-import { Button } from "..";
+import { Button, Modal } from "..";
 import useCart from "@/hooks/useCart";
-// import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/store/AuthContext";
+import ModalHeader from "../Modal/ModalHeader";
 
 const cx = classNames.bind(styles);
 
@@ -29,37 +30,33 @@ const findDefaultCombine = (combines: ProductCombine[]): CurVar | undefined => {
 };
 
 const getCurrentCombine = (curVar: CurVar, combines: ProductCombine[]) => {
-   return combines.find((combine) => combine.color_id === curVar.color_id && combine.storage_id === curVar.storage_id);
+   return combines.find(
+      (combine) =>
+         combine.color_id === curVar.color_id && combine.storage_id === curVar.storage_id
+   );
 };
 
-export default function ProductVariantList({
-   // colors,
-   // storages,
-   // combines,
-   // sliders,
-   productData,
-   setSliderImages,
-}: Props) {
-   const { colors_data, storages_data, product_name_ascii, combines_data, sliders_data } = productData;
-   const [curVar, setCurVar] = useState<CurVar | undefined>(findDefaultCombine(combines_data));
-   const [_isOpenModal, setIsOpenModal] = useState(false);
+export default function ProductVariantList({ productData, setSliderImages }: Props) {
+   const { colors_data, storages_data, product_name_ascii, combines_data, sliders_data } =
+      productData;
+   const [curVar, setCurVar] = useState<CurVar | undefined>(
+      findDefaultCombine(combines_data)
+   );
+   const [isOpenModal, setIsOpenModal] = useState(false);
 
    const { addItemToCart, apiLoading } = useCart({});
    const { auth } = useAuth();
 
-  //  const navigate = useNavigate();
-  //  const location = useLocation();
+   const navigate = useNavigate();
+   const location = useLocation();
 
-   const curCombineData = useMemo(() => (curVar ? getCurrentCombine(curVar, combines_data) : undefined), [curVar]);
+   const curCombineData = useMemo(
+      () => (curVar ? getCurrentCombine(curVar, combines_data) : undefined),
+      [curVar]
+   );
 
    const handleAddProductToCart = async () => {
-      console.log("check auth", auth);
-
-      if (!auth?.username) {
-         setIsOpenModal(true);
-         return;
-      }
-
+      if (!auth || !auth?.username) return setIsOpenModal(true);
       if (curCombineData === undefined) throw new Error("cur combine is undefined");
 
       const cartItem: CartItemSchema = {
@@ -71,8 +68,11 @@ export default function ProductVariantList({
       };
 
       await addItemToCart(cartItem);
+   };
 
-      //  navigate("/login", { state: { from: location.pathname } });
+   const handleNavigateToLogin = () => {
+      setIsOpenModal(false);
+      navigate("/login", { state: { from: location.pathname } });
    };
 
    const handleSetVariant = (type: "color" | "storage", id: number) => {
@@ -81,6 +81,7 @@ export default function ProductVariantList({
       } else setCurVar((prev) => ({ ...prev!, storage_id: id }));
    };
 
+   // set slider image
    useEffect(() => {
       if (curVar) {
          const slider = sliders_data.find((sd) => sd.color_id === curVar.color_id);
@@ -101,12 +102,16 @@ export default function ProductVariantList({
                   <li
                      onClick={() => handleSetVariant("storage", storage.id as number)}
                      key={index}
-                     className={cx(`item`, "main", { active: storage.id === curVar.storage_id })}
+                     className={cx(`item`, "main", {
+                        active: storage.id === curVar.storage_id,
+                     })}
                   >
                      <div className={cx("wrap")}>
                         <div className={cx("box")}>
                            <span className={cx("label")}>{storage.storage}</span>
-                           <span className={cx("min-price")}>{moneyFormat(storage.base_price)}đ</span>
+                           <span className={cx("min-price")}>
+                              {moneyFormat(storage.base_price)}đ
+                           </span>
                         </div>
                      </div>
                   </li>
@@ -119,7 +124,9 @@ export default function ProductVariantList({
                   <li
                      onClick={() => handleSetVariant("color", color.id as number)}
                      key={index}
-                     className={cx(`item`, "main", { active: color.id === curVar.color_id })}
+                     className={cx(`item`, "main", {
+                        active: color.id === curVar.color_id,
+                     })}
                   >
                      <div className={cx("wrap")}>
                         <div className={cx("box")}>
@@ -149,6 +156,28 @@ export default function ProductVariantList({
                Mua Ngay
             </Button>
          </div>
+
+         {isOpenModal && (
+            <Modal setShowModal={setIsOpenModal}>
+               <ModalHeader title={"Đăng nhập dùm cái"} setIsOpenModal={setIsOpenModal} />
+               <p className="text-[16px] text-gray-700 font-[500]">
+                  Không đăng nhập mà mua thì tao lấy cái gì lưu ???
+               </p>
+               <div className="text-center mt-[30px] space-x-[10px]">
+                  <Button isLoading={false} onClick={() => setIsOpenModal(false)} primary>
+                     Cút
+                  </Button>
+
+                  <Button
+                     isLoading={false}
+                     onClick={() => handleNavigateToLogin()}
+                     primary
+                  >
+                     Dạ em đăng nhập
+                  </Button>
+               </div>
+            </Modal>
+         )}
       </>
    );
 }

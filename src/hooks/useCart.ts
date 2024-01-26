@@ -1,9 +1,10 @@
 import { useAuth } from "@/store/AuthContext";
 import { useToast } from "@/store/ToastContext";
 import { Cart, CartItemSchema } from "@/types";
-import { publicRequest } from "@/utils/request";
+import { privateRequest } from "@/utils/request";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { usePrivateRequest } from ".";
 
 type Props = {
    autoRun?: boolean;
@@ -19,6 +20,7 @@ export default function useCart({ autoRun = false }: Props) {
    const ranEffect = useRef(false);
 
    const { auth } = useAuth();
+   const privateRequest = usePrivateRequest()
    const { setErrorToast } = useToast();
    const navigate = useNavigate();
    const location = useLocation();
@@ -26,7 +28,9 @@ export default function useCart({ autoRun = false }: Props) {
    const apiGetDetail = async () => {
       if (!auth?.username) throw new Error("auth is undefined");
 
-      const res = await publicRequest.get(`http://localhost:3000/api/carts/${auth.username}`);
+      const res = await privateRequest.get(
+         `http://localhost:3000/api/carts/${auth.username}`
+      );
 
       return res.data as Cart;
    };
@@ -61,7 +65,7 @@ export default function useCart({ autoRun = false }: Props) {
          if (!auth?.username) throw new Error("auth is undefined");
 
          setApiLoading(true);
-         await publicRequest.post(`${CART_URL}/cart-items`, cartItem);
+         await privateRequest.post(`${CART_URL}/cart-items`, cartItem);
          navigate("/check-out", { state: { from: location.pathname } });
 
          setApiLoading(false);
@@ -73,15 +77,17 @@ export default function useCart({ autoRun = false }: Props) {
       }
    };
 
-   const deleteCartItem = async (handleCartData: (cart: Cart) => void, id?: number) => {
+   const deleteCartItem = async (handleCartData?: (cart: Cart) => void, id?: number) => {
       try {
          if (id === undefined) throw new Error("id is undefined");
 
          setApiLoading(true);
-         await publicRequest.delete(`${CART_URL}/cart-items/${id}`);
+         await privateRequest.delete(`${CART_URL}/cart-items/${id}`);
 
-         const cartData = await apiGetDetail();
-         handleCartData(cartData);
+         if (handleCartData) {
+            const cartData = await apiGetDetail();
+            handleCartData(cartData);
+         }
       } catch (error) {
          console.log(error);
          setErrorToast();
@@ -90,14 +96,17 @@ export default function useCart({ autoRun = false }: Props) {
       }
    };
 
-   const updateCartItem = async (handleCartData: (cart: Cart) => void, cartItem: CartItemSchema & { id: number }) => {
+   const updateCartItem = async (
+      handleCartData: (cart: Cart) => void,
+      cartItem: CartItemSchema & { id: number }
+   ) => {
       try {
          if (cartItem.id === undefined) throw new Error("item id is undefined");
 
          const { username, product_name_ascii, ...rest } = cartItem;
 
          setApiLoading(true);
-         await publicRequest.put(`${CART_URL}/cart-items/${cartItem.id}`, rest);
+         await privateRequest.put(`${CART_URL}/cart-items/${cartItem.id}`, rest);
 
          const cartData = await apiGetDetail();
          handleCartData(cartData);
