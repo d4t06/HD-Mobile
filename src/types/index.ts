@@ -244,6 +244,9 @@ export type CartItem = {
       combines_data: ProductCombine[];
       colors_data: { color: string; id: number }[];
       storages_data: { storage: string; id: number }[];
+      category_data: {
+         category_ascii: string;
+      };
    };
    updatedAt: string;
    createdAt: string;
@@ -271,10 +274,7 @@ export type Order = {
    createdAt: string;
 };
 
-export type OrderSchema = Omit<
-   Order,
-   "createdAt" | "items" | "id" | "deliveredAt" | "canceledAt" | "createdAt"
->;
+export type OrderSchema = Omit<Order, "createdAt" | "items" | "id" | "deliveredAt" | "canceledAt" | "createdAt">;
 
 export type OrderDetail = Omit<
    Order,
@@ -296,12 +296,9 @@ export type OrderItem = {
    storage: string;
    image_url: string;
    slug: string;
-   price: number
+   price: number;
 };
 
-export type CartItemSchema = Omit<
-   CartItem,
-   "id" | "product_data" | "updatedAt" | "createdAt"
->;
+export type CartItemSchema = Omit<CartItem, "id" | "product_data" | "updatedAt" | "createdAt">;
 
 export type GetArrayType<T extends any[]> = T extends (infer U)[] ? U : never;

@@ -1,4 +1,5 @@
 import PushFrame from "@/components/ui/PushFrame";
+import { useAuth } from "@/store/AuthContext";
 import { Bars3Icon} from "@heroicons/react/16/solid";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import { Dispatch, SetStateAction } from "react";
@@ -9,6 +10,7 @@ type Props = {
 };
 
 export default function MobileHeader({ setIsOpenSidebar }: Props) {
+   const {auth} = useAuth()
    const classes = {
       container: "relative justify-center items-center h-[50px] hidden max-[768px]:flex",
    };
@@ -30,13 +32,13 @@ export default function MobileHeader({ setIsOpenSidebar }: Props) {
                </h1>
             </Link>
 
-            <div className="absolute right-0 translate-y-[2px]">
+           {auth?.username && <div className="absolute right-0 translate-y-[2px]">
                <PushFrame  type="translate">
                   <Link to={'/check-out'} className="block text-[#333] p-[2px]">
                      <ShoppingBagIcon className="w-[22px]" />
                   </Link>
                </PushFrame>
-            </div>
+            </div>}
          </div>
       </>
    );

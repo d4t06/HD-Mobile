@@ -7,13 +7,8 @@ import { PlusSmallIcon } from "@heroicons/react/20/solid";
 import { MinusSmallIcon } from "@heroicons/react/24/solid";
 import { useEffect, useRef } from "react";
 
-export default function VariantList({
-   cartItem,
-   handleCartData,
-}: {
-   cartItem: CartItem;
-   handleCartData: (cart: Cart) => void;
-}) {
+function VariantList({ cartItem, handleCartData }: { cartItem: CartItem; handleCartData: (cart: Cart) => void }) {
+   // ref: Ref<VariantListRef>
    const { updateCartItem, apiLoading } = useCart({});
    const { setErrorToast } = useToast();
 
@@ -32,19 +27,19 @@ export default function VariantList({
                cartItemForUpdate.color_id = value;
                // console.log('>>> check cart item', cartItemForUpdate, field, value);
 
-               await updateCartItem(handleCartData, cartItemForUpdate);
+               await updateCartItem(handleCartData, cartItemForUpdate, "update-variant");
                break;
             case "storage_id":
                cartItemForUpdate.storage_id = value;
                // console.log('>>> check cart item', cartItemForUpdate, field, value);
 
-               await updateCartItem(handleCartData, cartItemForUpdate);
+               await updateCartItem(handleCartData, cartItemForUpdate, "update-variant");
                break;
             case "quantity":
                cartItemForUpdate.amount = value;
                // console.log('>>> check cart item', cartItemForUpdate, field, value);
 
-               await updateCartItem(handleCartData, cartItemForUpdate);
+               await updateCartItem(handleCartData, cartItemForUpdate, "update-quantity");
          }
       } catch (error) {
          console.log(error);
@@ -128,3 +123,5 @@ export default function VariantList({
       </div>
    );
 }
+
+export default VariantList;

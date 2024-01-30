@@ -1,10 +1,10 @@
 import { useAuth } from "@/store/AuthContext";
 import { useToast } from "@/store/ToastContext";
 import { Cart, CartItemSchema } from "@/types";
-import { privateRequest } from "@/utils/request";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { usePrivateRequest } from ".";
+import { useApp } from "@/store/AppContext";
 
 type Props = {
    autoRun?: boolean;
@@ -14,13 +14,14 @@ const CART_URL = "/carts";
 
 export default function useCart({ autoRun = false }: Props) {
    const [cart, setCart] = useState<Cart>();
-   const [status, setStatus] = useState<"loading" | "error" | "success">("loading");
+   const [initStatus, setInitStatus] = useState<"loading" | "error" | "success">("loading");
    const [apiLoading, setApiLoading] = useState(false);
 
    const ranEffect = useRef(false);
 
-   const { auth } = useAuth();
-   const privateRequest = usePrivateRequest()
+   const { initLoading } = useApp();
+   const { auth, loading: authLoading } = useAuth();
+   const privateRequest = usePrivateRequest();
    const { setErrorToast } = useToast();
    const navigate = useNavigate();
    const location = useLocation();
@@ -28,10 +29,7 @@ export default function useCart({ autoRun = false }: Props) {
    const apiGetDetail = async () => {
       if (!auth?.username) throw new Error("auth is undefined");
 
-      const res = await privateRequest.get(
-         `http://localhost:3000/api/carts/${auth.username}`
-      );
-
+      const res = await privateRequest.get(`${CART_URL}/${auth.username}`);
       return res.data as Cart;
    };
 
@@ -52,12 +50,19 @@ export default function useCart({ autoRun = false }: Props) {
          const cartData = await apiGetDetail();
          handleCartData(cartData);
 
-         setStatus("success");
+         setInitStatus("success");
       } catch (error) {
          console.log(error);
          setErrorToast();
-         setStatus("error");
+         setInitStatus("error");
       }
+   };
+
+   const handleGetCartDetail = async () => {
+      if (!auth || !auth.username) {
+         setInitStatus("success");
+         navigate("/");
+      } else await getCartDetail();
    };
 
    const addItemToCart = async (cartItem: CartItemSchema) => {
@@ -98,15 +103,21 @@ export default function useCart({ autoRun = false }: Props) {
 
    const updateCartItem = async (
       handleCartData: (cart: Cart) => void,
-      cartItem: CartItemSchema & { id: number }
+      cartItem: CartItemSchema & { id: number },
+      type: "update-quantity" | "update-variant"
    ) => {
       try {
          if (cartItem.id === undefined) throw new Error("item id is undefined");
 
-         const { username, product_name_ascii, ...rest } = cartItem;
+         const { username, ...rest } = cartItem;
 
          setApiLoading(true);
-         await privateRequest.put(`${CART_URL}/cart-items/${cartItem.id}`, rest);
+         if (type === "update-quantity") {
+            await privateRequest.put(`${CART_URL}/cart-items/${cartItem.id}`, rest);
+         } else if (type === "update-variant") {
+            const { amount, ...restLess } = rest;
+            await privateRequest.put(`${CART_URL}/cart-items/${cartItem.id}`, restLess);
+         }
 
          const cartData = await apiGetDetail();
          handleCartData(cartData);
@@ -119,13 +130,14 @@ export default function useCart({ autoRun = false }: Props) {
    };
 
    useEffect(() => {
-      if (!auth?.username || !autoRun) return;
+      if (authLoading || initLoading) return;
+      if (!autoRun) return;
 
       if (!ranEffect.current) {
          ranEffect.current = true;
-         getCartDetail();
+         handleGetCartDetail();
       }
-   }, [auth]);
+   }, [authLoading, initLoading]);
 
    return {
       addItemToCart,
@@ -135,6 +147,6 @@ export default function useCart({ autoRun = false }: Props) {
       updateCartItem,
       handleCartData,
       apiLoading,
-      status,
+      initStatus,
    };
 }

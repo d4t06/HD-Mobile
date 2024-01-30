@@ -1,23 +1,23 @@
 import { useAuth } from "@/store/AuthContext";
 import { useToast } from "@/store/ToastContext";
-import { Cart, CartItemSchema, Order, OrderSchema } from "@/types";
-import { privateRequest, publicRequest } from "@/utils/request";
+import { Order, OrderSchema } from "@/types";
+import { privateRequest } from "@/utils/request";
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 
 const USER_ORDER_URL = "/orders";
 
-export default function useUserOrder({ autoRun }: { autoRun?: boolean }) {
+type Props = { autoRun?: boolean; id?: string };
+
+export default function useUserOrder({ autoRun = false, id }: Props) {
    const [orders, setOrders] = useState<Order[]>();
    const [status, setStatus] = useState<"loading" | "error" | "success">("loading");
    const [apiLoading, setApiLoading] = useState(false);
+   const [orderDetail, setOrderDetail] = useState<Order>();
 
    const ranEffect = useRef(false);
 
    const { auth } = useAuth();
    const { setErrorToast } = useToast();
-   const navigate = useNavigate();
-   const location = useLocation();
 
    const apiGetAllUserOrders = async () => {
       if (!auth?.username) throw new Error("auth is undefined");
@@ -27,7 +27,14 @@ export default function useUserOrder({ autoRun }: { autoRun?: boolean }) {
       return res.data as Order[];
    };
 
-   const getOrderDetail = async () => {
+   // const apiGetOrderDetail = async () => {
+   //    if (!auth?.username || !id || Number.isNaN(+id)) throw new Error("auth is undefined or is wrong");
+   //    const res = await privateRequest.get(`${USER_ORDER_URL}/${+id}`);
+
+   //    return res.data as Order;
+   // };
+
+   const getAllUserOrders = async () => {
       try {
          if (!auth?.username) throw new Error("auth is undefined");
 
@@ -35,6 +42,23 @@ export default function useUserOrder({ autoRun }: { autoRun?: boolean }) {
 
          if (ordersData) {
             setOrders(ordersData);
+         }
+
+         setStatus("success");
+      } catch (error) {
+         console.log(error);
+         setErrorToast();
+         setStatus("error");
+      }
+   };
+
+   const getOrderDetail = async () => {
+      try {
+         if (!auth?.username || !id || Number.isNaN(+id)) throw new Error("auth is undefined or is wrong");
+         const res = await privateRequest.get(`${USER_ORDER_URL}/${+id}`);
+
+         if (res.data) {
+            setOrderDetail(res.data);
          }
 
          setStatus("success");
@@ -65,15 +89,25 @@ export default function useUserOrder({ autoRun }: { autoRun?: boolean }) {
 
       if (!ranEffect.current) {
          ranEffect.current = true;
-         getOrderDetail();
+         getAllUserOrders();
       }
    }, [auth]);
 
+   useEffect(() => {
+      if (id) {
+         if (!ranEffect.current) {
+            ranEffect.current = true;
+            getOrderDetail();
+         }
+      }
+   }, [id]);
+
    return {
       orders,
+      orderDetail,
       apiLoading,
       status,
-      getOrderDetail,
+      getAllUserOrders,
       addNewOrder,
    };
 }

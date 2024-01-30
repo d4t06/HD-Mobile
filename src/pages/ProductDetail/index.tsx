@@ -49,29 +49,23 @@ export default function DetailPage() {
 
    const SliderSkeleton = useMemo(() => <Skeleton className="w-full pt-[50%] rounded-[16px]" />, []);
 
+   const BoxSkeleton = [...Array(2).keys()].map((item) => (
+      <div key={item} className="col w-1/2 sm:w-1/3">
+         <Skeleton className="h-[6rem] rounded-[6px]" />
+      </div>
+   ));
+
    const ProductInfoSkeleton = useMemo(
       () => (
          <>
             <Skeleton className="w-[300px] h-[26px] rounded-[6px] mb-[14px]" />
-            <Skeleton className="w-[50px] h-[20px] rounded-[6px] mb-[4px]" />
-            <div className="row">
-               {[...Array(2).keys()].map((item) => (
-                  <div key={item} className="col w-1/3">
-                     <Skeleton className="h-[6rem] rounded-[6px]" />
-                  </div>
-               ))}
-            </div>
+            <Skeleton className="w-[70px] h-[20px] rounded-[6px] mb-[6px]" />
+            <div className="row">{BoxSkeleton}</div>
 
-            <Skeleton className="w-[50px] h-[20px] rounded-[6px] mt-[14px] mb-[4px]" />
-            <div className="row">
-               {[...Array(2).keys()].map((item) => (
-                  <div key={item} className="col w-1/3">
-                     <Skeleton className="h-[6rem] rounded-[6px]" />
-                  </div>
-               ))}
-            </div>
+            <Skeleton className="w-[70px] h-[20px] rounded-[6px] mt-[14px] mb-[6px]" />
+            <div className="row">{BoxSkeleton}</div>
 
-            <Skeleton className="w-[50px] h-[20px] rounded-[6px] mt-[14px] mb-[4px]" />
+            <Skeleton className="w-[70px] h-[20px] rounded-[6px] mt-[14px] mb-[6px]" />
             <Skeleton className="w-[200px] h-[34px] rounded-[6px] my-[6px]" />
             <Skeleton className="w-[160px] h-[24px] rounded-[6px] my-[6px]" />
          </>

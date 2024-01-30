@@ -34,7 +34,7 @@
 }
 
 .filter-brand-skeleton {
-   height: 22px;
+   height: 24px;
    width: 45%;
    border-radius: 4px;
 
@@ -44,11 +44,11 @@
 }
 
 .filter-price-skeleton {
-   height: 22px;
+   height: 24px;
    width: 70%;
    border-radius: 4px;
-   
+
    @media screen and (max-width: 756px) {
-      width: 100%;
+      width: calc(30% - 6px);
    }
 }

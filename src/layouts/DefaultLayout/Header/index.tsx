@@ -7,8 +7,7 @@ import styles from "./Header.module.scss";
 import { useApp } from "@/store/AppContext";
 import Sidebar from "@/components/Sidebar";
 import MobileHeader from "./MobileHeader";
-import { Cog6ToothIcon } from "@heroicons/react/16/solid";
-import { ArchiveBoxIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { ArchiveBoxIcon, ShoppingBagIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 const cx = classNames.bind(styles);
 
 function Header() {

@@ -33,15 +33,11 @@ export default function LoginPage() {
       try {
          setApiLoading(true);
 
-         const response = await publicRequest.post(LOGIN_URL, JSON.stringify({ username: user, password: password }), {
-            headers: { "Content-Type": "application/json" },
-         });
+         const response = await publicRequest.post(LOGIN_URL, { username: user, password: password });
 
          const token = response.data?.token;
 
-         const decode: { username: string; role: "ADMIN" | "" } = token.token
-            ? jwtDecode(token.token)
-            : { username: "", role: "" };
+         const decode: { username: string; role: "ADMIN" | "" } = token ? jwtDecode(token) : { username: "", role: "" };
 
          if (token) {
             setAuth({ token, ...decode });
