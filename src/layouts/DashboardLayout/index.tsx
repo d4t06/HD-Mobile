@@ -12,9 +12,15 @@ function DashboardLayout({ children }: { children: ReactNode }) {
    return (
       <UploadImageProvider>
          <div className="app">
-            <Header />
-            <DashboardSideBar />
-            <div className={cx("dashboard_wrapper", "bg-[#f1f1f1]")}>{children}</div>
+            <div className="flex flex-nowrap overflow-hidden h-[100vh]">
+               <DashboardSideBar />
+               <div className="relative flex-grow overflow-hidden">
+                  <Header />
+                  <div className={cx("dashboard_wrapper", "no-scrollbar")}>
+                     {children}
+                  </div>
+               </div>
+            </div>
 
             <UploadImagePortal />
          </div>

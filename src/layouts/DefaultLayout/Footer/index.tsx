@@ -1,5 +1,6 @@
 import PushFrame from "@/components/ui/PushFrame";
 import "./style.scss";
+import { MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
 
 function Footer() {
    return (
@@ -8,7 +9,9 @@ function Footer() {
             <PushFrame type="translate">
                <div className="flex flex-wrap text-[#333] p-[20px]">
                   <div className="w-full sm:w-1/2 flex flex-col items-center justify-center">
-                     <h1 className="text-[22px] leading-[26px] text-[#000] font-semibold">HD <span className="text-[#cd1818]">Mobile</span></h1>
+                     <h1 className="text-[22px] leading-[26px] text-[#000] font-semibold">
+                        HD <span className="text-[#cd1818]">Mobile</span>
+                     </h1>
                      <i className="text-[14px]">'' Hắc đê mô bồ ''</i>
                   </div>
                   <div className="flex mt-[30px] md:mt-0 w-full sm:w-1/2">
@@ -17,12 +20,12 @@ function Footer() {
 
                         <ul className="list">
                            <li>
-                              <i className="material-icons mr-[4px]">phone</i>
-                              0123456890
+                              <PhoneIcon className="w-[24px]" />
+                              <span>0123456890</span>
                            </li>
                            <li>
-                              <i className="material-icons mr-[4px]">phone</i>
-                              0123456890
+                              <PhoneIcon className="w-[24px]" />
+                              <span>0123456890</span>
                            </li>
                         </ul>
                      </div>
@@ -32,8 +35,8 @@ function Footer() {
 
                         <ul className="list">
                            <li>
-                              <i className="material-icons mr-[4px]">location_on</i>
-                              Tri Tôn, An Giang
+                              <MapPinIcon className="w-[24px]" />
+                              <span>Tri Tôn, An Giang</span>
                            </li>
                         </ul>
                      </div>

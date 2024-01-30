@@ -1,28 +1,48 @@
 .sidebar {
-   width: 180px;
-   position: fixed;
-   left: 0;
-   top: 0;
-   bottom: 0;
+   max-height: 100vh;
    background-color: #e1e1e1;
-   .logo {
-      font-weight: 600;
-      line-height: 60px;
-      margin-left: 12px;
-      letter-spacing: -1px;
-      font-size: 22px;
+   position: relative;
+   width: 70px;
+   transition: width linear 0.3s;
+
+   .head {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .logo-text {
+         font-weight: 600;
+         letter-spacing: -1px;
+         font-size: 22px;
+         white-space: nowrap;
+      }
+
+      .logo-image {
+         width: 50px;
+      }
+   }
+
+   &.expand {
+      width: 180px;
+      .sidebar__item {
+         padding: 10px 12px;
+         gap: 8px;
+         justify-content: start;
+         white-space: nowrap;
+      }
    }
 
    @mixin active {
       color: #cd1818;
-      padding-left: 18px;
+      background-color: #f1f1f1;
    }
 
    &__item {
       display: flex;
       align-items: center;
-      padding: 10px 12px;
+      padding: 10px 0;
       font-size: 1.6rem;
+      justify-content: center;
       font-weight: 500;
       transition: padding linear 0.15s;
       color: #333;
@@ -32,9 +52,6 @@
       }
       &.active {
          @include active();
-      }
-      i {
-         margin-right: 5px;
       }
    }
 }

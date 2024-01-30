@@ -17,7 +17,7 @@ export default function useUserOrder({ autoRun = false, id }: Props) {
    const ranEffect = useRef(false);
 
    const { auth } = useAuth();
-   const { setErrorToast } = useToast();
+   const { setErrorToast, setSuccessToast } = useToast();
 
    const apiGetAllUserOrders = async () => {
       if (!auth?.username) throw new Error("auth is undefined");
@@ -54,7 +54,8 @@ export default function useUserOrder({ autoRun = false, id }: Props) {
 
    const getOrderDetail = async () => {
       try {
-         if (!auth?.username || !id || Number.isNaN(+id)) throw new Error("auth is undefined or is wrong");
+         if (!auth?.username || !id || Number.isNaN(+id))
+            throw new Error("auth is undefined or is wrong");
          const res = await privateRequest.get(`${USER_ORDER_URL}/${+id}`);
 
          if (res.data) {
@@ -84,6 +85,22 @@ export default function useUserOrder({ autoRun = false, id }: Props) {
       }
    };
 
+   const updateStatus = async (data: { id: number; status: Order["status"] }) => {
+      try {
+         setApiLoading(true);
+         await privateRequest.put(USER_ORDER_URL, data);
+
+         setOrderDetail((prev) => ({ ...prev, status: data.status } as Order));
+
+         setSuccessToast(`Your order ${data.status}`);
+      } catch (error) {
+         console.log(error);
+         setErrorToast();
+      } finally {
+         setApiLoading(false);
+      }
+   };
+
    useEffect(() => {
       if (!auth?.username || !autoRun) return;
 
@@ -104,10 +121,12 @@ export default function useUserOrder({ autoRun = false, id }: Props) {
 
    return {
       orders,
+      setOrderDetail,
       orderDetail,
       apiLoading,
       status,
       getAllUserOrders,
       addNewOrder,
+      updateStatus,
    };
 }

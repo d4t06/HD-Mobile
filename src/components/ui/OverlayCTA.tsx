@@ -4,7 +4,7 @@ import { Button } from "..";
 type Props = {
    data: {
       cb: () => void;
-      icon: string;
+      icon: ReactNode;
       className?: string;
    }[];
    children?: ReactNode;
@@ -24,7 +24,7 @@ export default function OverlayCTA({ data }: Props) {
 
          return (
             <Button circle key={index} onClick={cb} className={`${classes.button} ${className ? className : ""}`}>
-               <i className="material-icons  text-current">{icon}</i>
+               {icon}
             </Button>
          );
       });

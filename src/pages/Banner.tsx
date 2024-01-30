@@ -4,6 +4,7 @@ import useAppConfig from "@/hooks/useAppConfig";
 import { useToast } from "@/store/ToastContext";
 import { CategorySlider } from "@/types";
 import { sleep } from "@/utils/appHelper";
+import { CheckIcon } from "@heroicons/react/24/outline";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function Banner() {
@@ -90,7 +91,7 @@ export default function Banner() {
       {status === "success" && !!categorySliders.length && (
         <p className="text-center">
           <Button isLoading={apiLoading} onClick={handleSubmit} primary className={""}>
-            <i className="material-icons">save</i> Save
+          <CheckIcon className="w-[24px]"/>
           </Button>
         </p>
       )}

@@ -1,3 +1,4 @@
+import { XMarkIcon } from "@heroicons/react/16/solid";
 import { Dispatch, SetStateAction } from "react";
 
 export default function ModalHeader({
@@ -11,7 +12,7 @@ export default function ModalHeader({
       <div className="flex justify-between mb-[15px]">
          <h1 className="text-[22px] text-[#333] font-semibold">{title}</h1>
          <button onClick={() => setIsOpenModal(false)}>
-            <i className="material-icons">close</i>
+            <XMarkIcon className="w-[24px]"/>
          </button>
       </div>
    );

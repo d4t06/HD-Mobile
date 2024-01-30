@@ -9,7 +9,7 @@ import { ArchiveBoxIcon, CreditCardIcon, MapPinIcon } from "@heroicons/react/24/
 import { useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 
-export default function UserOrderDetail() {
+export default function DashboardOrderDetail() {
    const statusWantToUpdate = useRef<Order["status"] | "">("");
 
    const { id } = useParams<{ id: string }>();
@@ -40,7 +40,7 @@ export default function UserOrderDetail() {
          case "processing":
             return (
                <h5 className={classes.h5}>
-                  Ngày nhận dự kiến:
+                  Ngày giao dự kiến:
                   <span className={classes.blackText}> Mùng 1 Tết nhận bạn</span>
                </h5>
             );
@@ -63,7 +63,7 @@ export default function UserOrderDetail() {
 
    const classes = {
       p: "text-[16px] text-center",
-      container: "mb-[20px] md:mb-[30px]",
+      container: "mb-[20px]",
       h5: "text-[14px] md:text-[16px] text-gray-600 font-[500]",
       blackText: "text-[333] font-[600]",
       h1: "text-[22px] font-[600] text-[#333] uppercase",
@@ -77,43 +77,54 @@ export default function UserOrderDetail() {
    return (
       <div className="">
          <div className={classes.container}>
-            <PrimaryLabel className="mb-[8px]" title={`Thông tin đơn hàng`}>
-               <ArchiveBoxIcon className="w-[22px] md:w-[24px]" />
-            </PrimaryLabel>
-            <PushFrame>
-               <h1 className={classes.h1}>
-                  <span className={classes.blackText}>{orderDetail.status}</span>
-               </h1>
-               <h5 className={classes.h5}>
-                  Ngày đặt hàng:{" "}
-                  <span className={classes.blackText}>{orderDetail.createdAt}</span>
-               </h5>
-               {renderDateInfo()}
-            </PushFrame>
+            <div className="flex mx-[-4px]">
+               <div className="px-[4px] w-1/2 flex flex-col">
+                  <PrimaryLabel
+                     className="mb-[8px]"
+                     title={`Đơn hàng #${orderDetail.id}`}
+                  >
+                     <ArchiveBoxIcon className="w-[22px] md:w-[24px]" />
+                  </PrimaryLabel>
+                  <PushFrame>
+                     <h1 className={classes.h1}>
+                        <span className={classes.blackText}>{orderDetail.status}</span>
+                     </h1>
+                     <h5 className={classes.h5}>
+                        Ngày đặt hàng:{" "}
+                        <span className={classes.blackText}>{orderDetail.createdAt}</span>
+                     </h5>
+                     {renderDateInfo()}
+                  </PushFrame>
+               </div>
+
+               <div className="px-[4px] w-1/2 flex flex-col">
+                  <PrimaryLabel className="mb-[8px]" title={`Thông tin người nhận`}>
+                     <MapPinIcon className="w-[22px] md:w-[24px]" />
+                  </PrimaryLabel>
+                  <PushFrame >
+                     <h5 className={classes.h5}>
+                        Họ tên:{" "}
+                        <span className={classes.blackText}>
+                           {orderDetail.recipient_name}
+                        </span>
+                     </h5>
+                     <h5 className={classes.h5}>
+                        Số điện thoại:{" "}
+                        <span className={classes.blackText}>
+                           {orderDetail.recipient_phone_number}
+                        </span>
+                     </h5>
+                     <h5 className={classes.h5}>
+                        Địa chỉ:{" "}
+                        <span className={classes.blackText}>
+                           {orderDetail.recipient_address}
+                        </span>
+                     </h5>
+                  </PushFrame>
+               </div>
+            </div>
          </div>
-         <div className={classes.container}>
-            <PrimaryLabel className="mb-[8px]" title={`Thông tin người nhận`}>
-               <MapPinIcon className="w-[22px] md:w-[24px]" />
-            </PrimaryLabel>
-            <PushFrame>
-               <h5 className={classes.h5}>
-                  Họ tên:{" "}
-                  <span className={classes.blackText}>{orderDetail.recipient_name}</span>
-               </h5>
-               <h5 className={classes.h5}>
-                  Số điện thoại:{" "}
-                  <span className={classes.blackText}>
-                     {orderDetail.recipient_phone_number}
-                  </span>
-               </h5>
-               <h5 className={classes.h5}>
-                  Địa chỉ:{" "}
-                  <span className={classes.blackText}>
-                     {orderDetail.recipient_address}
-                  </span>
-               </h5>
-            </PushFrame>
-         </div>
+         <div className={classes.container}></div>
          <div className={classes.container}>
             <PrimaryLabel className="mb-[8px]" title={`Sản phẩm`}>
                <ArchiveBoxIcon className="w-[22px] md:w-[24px]" />
@@ -197,11 +208,11 @@ export default function UserOrderDetail() {
                      Huỷ
                   </Button>
                   <Button
-                     isLoading={apiLoading && statusWantToUpdate.current === "completed"}
+                     isLoading={apiLoading && statusWantToUpdate.current === "delivering"}
                      primary
-                     onClick={() => handleUpdateOrderStatus("completed")}
+                     onClick={() => handleUpdateOrderStatus("delivering")}
                   >
-                     Đã nhận hàng
+                     Đã chuẩn bị hàng
                   </Button>
                </>
             )}

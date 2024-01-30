@@ -7,10 +7,9 @@ import styles from "./Gallery.module.scss";
 import usePrivateRequest from "@/hooks/usePrivateRequest";
 import { ImageType } from "@/types";
 import { sleep } from "@/utils/appHelper";
-// import { nanoid } from "nanoid";
-// import OverlayCTA from "../ui/OverlayCTA";
 import { useUploadContext } from "@/store/ImageContext";
 import Skeleton from "../Skeleton";
+import { ArrowPathIcon, PlusSmallIcon } from "@heroicons/react/24/outline";
 
 const cx = classNames.bind(styles);
 
@@ -160,7 +159,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                   <div className={cx("image-container")}>
                      <div className={cx("image-frame", "relative")}>
                         <img className="opacity-[.4]" src={item.image_url} alt="img" />
-                        {!added && <i className="material-icons animate-spin absolute text-[30px]">sync</i>}
+                        {!added && <ArrowPathIcon className="animate-spin absolute text-[30px]"/>}
                      </div>
                   </div>
                </div>
@@ -193,7 +192,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                      className={cx("input-label", { disable: apiLoading || uploadStatus === "uploading" })}
                      htmlFor="image_upload"
                   >
-                     <i className="material-icons">add</i>
+                     <PlusSmallIcon className='w-[24px]'/>
                      Upload
                   </label>
                </div>

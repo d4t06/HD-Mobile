@@ -16,7 +16,8 @@ import useAppConfig from "@/hooks/useAppConfig";
 import { useApp } from "@/store/AppContext";
 import AttributeGroup from "./child/AttributeGroup";
 import PriceRangeGroup from "./child/PriceRangeGroup";
-// import PushFrame from "@/components/ui/PushFrame";
+import { ArrowPathIcon, PencilIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+
 const cx = classNames.bind(styles);
 
 const CAT_FIELDS: ["Name", "Icon"] = ["Name", "Icon"];
@@ -232,11 +233,11 @@ export default function CategoryBrand() {
                            {
                               cb: () =>
                                  handleOpenModal("delete-category", index),
-                              icon: "delete",
+                              icon: <PencilIcon className="w-[24px]"/>,
                            },
                            {
                               cb: () => handleOpenModal("edit-category", index),
-                              icon: "edit",
+                              icon: <TrashIcon className="w-[24px]"/>,
                            },
                         ]}
                      />
@@ -301,12 +302,12 @@ export default function CategoryBrand() {
                                  {
                                     cb: () =>
                                        handleOpenModal("delete-brand", index),
-                                    icon: "delete",
+                                    icon: <TrashIcon  className="w-[24px]"/>,
                                  },
                                  {
                                     cb: () =>
                                        handleOpenModal("edit-brand", index),
-                                    icon: "edit",
+                                    icon: <PencilSquareIcon  className="w-[24px]"/>,
                                  },
                               ]}
                            />
@@ -327,7 +328,7 @@ export default function CategoryBrand() {
 
    return (
       <div className="pb-[30px]">
-         {initLoading && <i className="material-icons animate-spin">sync</i>}
+         {initLoading && <ArrowPathIcon className="w-[24px] animate-spin" />}
 
          {!initLoading && content}
 

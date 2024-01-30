@@ -3,6 +3,7 @@ import styles from "./BrandSort.module.scss";
 import { useMemo } from "react";
 import { FilterType } from "@/store/filtersSlice";
 import { Brand } from "@/types";
+import { TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const cx = classNames.bind(styles);
 
@@ -26,21 +27,31 @@ export default function SelectedSort({ data, handleFilter }: Props) {
          <h2 className="text-[16px]">Bộ lọc:</h2>
          {data.brands.map((item, index) => {
             return (
-               <div onClick={() => handleToggle(item)} className={cx("selected-item")} key={index}>
+               <div
+                  onClick={() => handleToggle(item)}
+                  className={cx("selected-item")}
+                  key={index}
+               >
                   <p>{item.brand_name}</p>
-                  <i className="material-icons">delete</i>
+                  <TrashIcon className="w-[24px]" />
                </div>
             );
          })}
          {data.price && (
-            <span onClick={() => handleFilter([], "price")} className={cx("selected-item")}>
+            <span
+               onClick={() => handleFilter([], "price")}
+               className={cx("selected-item")}
+            >
                {data.price.label}
-               <i className="material-icons">delete</i>
+               <TrashIcon className="w-[24px]" />
             </span>
          )}
          {isShowClear && (
-            <button className={cx("clear-filter")} onClick={() => handleFilter([], "clear")}>
-               <i className="material-icons">clear</i>
+            <button
+               className={cx("clear-filter")}
+               onClick={() => handleFilter([], "clear")}
+            >
+               <XMarkIcon className="w-[24px]" />
             </button>
          )}
       </>

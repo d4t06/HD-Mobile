@@ -1,3 +1,4 @@
+import { PlusIcon } from "@heroicons/react/16/solid";
 import { ReactNode } from "react";
 
 type Props = {
@@ -19,7 +20,7 @@ export default function Empty({ onClick, children, className, fontClassName, pus
    return (
       <div onClick={onClick} className={`${classes.container} ${className}`}>
          <div className={`${classes.font} ${fontClassName} ${pushAble ? classes.pushAble : ''}`}>
-            {children || <i className="material-icons select-none">add</i>}
+            {children || <PlusIcon className="select-none w-[24px]"/>}
          </div>
       </div>
    );

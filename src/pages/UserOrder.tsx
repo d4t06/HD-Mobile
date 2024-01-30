@@ -56,7 +56,7 @@ export default function UserOrder() {
                   <PushFrame key={index}>
                      <div className="">
                         <h5 className={`${classes.h5} mb-[4px]`}>
-                           Đơn hàng #{order.id} - {order.createdAt} - {order.status}
+                           Đơn hàng #{order.id} - <span className="text-[#333] font-[600]">{order.createdAt}  - <span className="uppercase"> {order.status}</span> </span>
                         </h5>
                         <div key={index} className="flex items-start flex-col sm:flex-row sm:items-center">
                            <div className="flex flex-grow">
@@ -85,8 +85,8 @@ export default function UserOrder() {
                               </div>
                            </div>
 
-                           <Button className="px-[12px] py-[2px] sm:px-[16px] sm:py-[4px]" backClass="mx-auto mt-[10px] sm:mx-0 sm:mt-0" primary>
-                              <Link to={`/order/${order.id}`}>Chi tiết</Link>
+                           <Button className="!p-0" backClass="mx-auto mt-[10px] sm:mx-0 sm:mt-0" primary>
+                              <Link className="px-[12px] py-[2px] sm:px-[16px] sm:py-[4px]" to={`/order/${order.id}`}>Chi tiết</Link>
                            </Button>
                         </div>
                      </div>

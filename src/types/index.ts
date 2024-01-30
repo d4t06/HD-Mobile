@@ -255,7 +255,7 @@ export type CartItem = {
 export type Order = {
    id: number;
    username: string;
-   status: "successful" | "canceled" | "processing";
+   status: "completed" | "canceled" | "processing" | "delivering";
 
    items: OrderItem[];
 

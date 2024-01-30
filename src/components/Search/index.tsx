@@ -7,9 +7,9 @@ import searchService from "../../services/searchService";
 import useDebounce from "../../hooks/useDebounce";
 import Popup from "../ui/Popup";
 import { Product } from "@/types";
+import { ArrowPathIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const cx = classNames.bind(styles);
-// const  = classNames.bind(PopupStyles);
 
 type Props = {
    setShowModal?: Dispatch<SetStateAction<boolean>>;
@@ -130,22 +130,20 @@ function Search({ setShowModal }: Props) {
                   value={query}
                   onChange={(e) => handleSearchText(e)}
                   onFocus={() => handleShow(true)}
-                  // onKeyDown={(e) => {
-                  //    e.key === "Enter" && handleSubmit();
-                  // }}
+                  
                />
                {loading && query && (
                   <button className={cx("loading-btn", "btn")}>
-                     <i className="material-icons">sync</i>
+                     <ArrowPathIcon  className="w-[24px] animate-spin"/>
                   </button>
                )}
                {!loading && query && (
                   <button type="button" className={cx("clear-btn", "btn")} onClick={(e) => handleClear(e)}>
-                     <i className="material-icons">clear</i>
+                     <XMarkIcon  className="w-[24px]"/>
                   </button>
                )}
                <button type="submit" className={cx("search-btn", "btn")}>
-                  <i className="material-icons">search</i>
+                  <MagnifyingGlassIcon className="w-[24px]" />
                </button>
             </form>
          </div>

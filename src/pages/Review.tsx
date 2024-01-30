@@ -68,11 +68,9 @@ export default function Review() {
    const Cta = (index: number, comment: ProductComment) => (
       <>
          <Button className={classes.button} onClick={() => handleOpenModal("Add-Reply", index)} primary>
-            <i className="material-icons text-[15px]">reply</i>
             <span className="ml-[4px]">Reply</span>
          </Button>
          <Button className={classes.button} onClick={() => handleOpenModal("Delete-Comment", index)} primary>
-            <i className="material-icons text-[15px]">delete</i>
             <span className="ml-[4px]">Delete</span>
          </Button>
          {!comment.approve && (
@@ -82,7 +80,6 @@ export default function Review() {
                primary
                className={classes.button}
             >
-               <i className="material-icons text-[15px]">check</i>
                <span className="ml-[4px]">Approve</span>
             </Button>
          )}
@@ -114,7 +111,6 @@ export default function Review() {
                                        primary
                                        className={classes.button}
                                     >
-                                       <i className="material-icons text-[15px]">edit</i>
                                        <span className="ml-[4px]">Edit</span>
                                     </Button>
                                  }

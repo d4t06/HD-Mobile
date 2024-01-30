@@ -3,6 +3,8 @@ import classNames from "classnames/bind";
 import styles from "./ToastPortal.module.scss";
 
 import { Toast } from "../../types";
+import { CheckIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/16/solid";
 
 type Props = {
    toast: Toast;
@@ -12,12 +14,6 @@ type Props = {
 const cx = classNames.bind(styles);
 
 export default function ToastItem({ toast, onClick }: Props) {
-   // const classes = {
-   //    icon: `w-[30px] max-[549px]:w-[25px]`,
-   //    container: `text-white px-[12px] py-[6px] rounded-[4px] flex items-center  border `,
-   //    text: `font-[500] text-[14px] max-[549px]:text-[14px] text-[#333]`,
-   // };
-
    return (
       <div
          onClick={() => (onClick ? onClick(toast.id) : undefined)}
@@ -25,8 +21,8 @@ export default function ToastItem({ toast, onClick }: Props) {
       >
          {toast.title && (
             <>
-               {toast.title === "success" && <i className="material-icons ">check</i>}
-               {toast.title === "error" && <i className="material-icons">report</i>}
+               {toast.title === "success" && <CheckIcon className="w-[24px]"/>}
+               {toast.title === "error" && <XMarkIcon className="w-[24px]"/>}
             </>
          )}
          <p className={cx("text")}>{toast.desc}</p>

@@ -58,18 +58,6 @@
    color: #666;
    font-size: 1.8rem;
 }
-.loading-btn i {
-   animation: spinner 1s linear infinite;
-}
-
-@keyframes spinner {
-   from {
-      transform: rotate(0);
-   }
-   to {
-      transform: rotate(-360deg);
-   }
-}
 
 .search-result {
    background-color: #fff;

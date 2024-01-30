@@ -10,6 +10,8 @@ import ConfirmModal from "@/components/Modal/Confirm";
 import useBrandAction from "@/hooks/useBrand";
 import { generateId } from "@/utils/appHelper";
 import PushFrame from "@/components/ui/PushFrame";
+import { PlusIcon } from "@heroicons/react/16/solid";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -140,7 +142,7 @@ function AttributeGroup({ categories }: Props) {
                </div>
 
                <Button disable={!curCategory} onClick={() => handleOpenModal("add-attr")} primary>
-                  <i className="material-icons mr-[8px]">add</i> Add attribute
+                  <PlusIcon  className="w-[24px]"/> Add attribute
                </Button>
             </div>
 
@@ -153,10 +155,10 @@ function AttributeGroup({ categories }: Props) {
 
                            <div className={cx("cta")}>
                               <Button onClick={() => handleOpenModal("delete-attr", index)}>
-                                 <i className="material-icons">delete</i>
+                                 <TrashIcon  className="w-[24px]"/>
                               </Button>
                               <Button onClick={() => handleOpenModal("edit-attr", index)}>
-                                 <i className="material-icons">edit</i>
+                              <PencilSquareIcon  className="w-[24px]"/>
                               </Button>
                            </div>
                         </div>

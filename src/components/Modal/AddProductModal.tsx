@@ -11,6 +11,7 @@ import useProductAction from "@/hooks/useProductAction";
 import { useApp } from "@/store/AppContext";
 import useAppConfig from "@/hooks/useAppConfig";
 import { useToast } from "@/store/ToastContext";
+import {  CheckIcon } from "@heroicons/react/24/outline";
 
 type OpenType = "Edit" | "Add";
 
@@ -116,7 +117,6 @@ export default function AddProductModal({
             <div className="">
               {!productData.image_url && (
                 <Empty fontClassName="bg-[#f1f1f1]" onClick={() => setIsOpenModal(true)}>
-                  <i className="material-icons">add</i>
                 </Empty>
               )}
               {productData.image_url && (
@@ -199,7 +199,8 @@ export default function AddProductModal({
             onClick={handleSubmit}
             primary
           >
-            <i className="material-icons mr-[6px]">save</i> Save
+            <CheckIcon className="w-[24px] mr-[6px]"/>
+            Save
           </Button>
         </p>
       </div>

@@ -45,11 +45,6 @@ export default function EditBrand({ setIsOpenModalParent, addBrand, apiLoading, 
       Edit: `Edit brand ${curBrand?.brand_name}`,
    };
 
-   // console.log('check curBrand', curBrand);
-
-
-
-
    return (
       <AddItem
          title={tileMap[type]}

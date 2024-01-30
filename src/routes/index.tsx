@@ -19,6 +19,8 @@ import {
    Unauthorized,
 } from "@/pages";
 import Checkout from "@/pages/Checkout/Checkout";
+import DashboardOrder from "@/pages/DashboardOrder";
+import DashboardOrderDetail from "@/pages/DashboardOrderDetail";
 import UserOrder from "@/pages/UserOrder";
 import UserOrderDetail from "@/pages/UserOrderDetail";
 
@@ -127,7 +129,12 @@ const privateRoutes = [
    {
       path: "/dashboard/order",
       role: ["ADMIN"],
-      component: Order,
+      component: DashboardOrder,
+   },
+   {
+      path: "/dashboard/order/:id",
+      role: ["ADMIN"],
+      component: DashboardOrderDetail,
    },
    {
       path: "/dashboard/message",

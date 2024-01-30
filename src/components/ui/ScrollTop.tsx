@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "..";
+import { ArrowUpIcon } from "@heroicons/react/24/outline";
 
 export default function ScrollTop() {
   const [show, setShow] = useState(false);
@@ -35,7 +36,7 @@ export default function ScrollTop() {
   return (
     <div className={`${classes.container} ${show ? classes.show : classes.hide}`}>
       <Button onClick={show ? scrollToTop : () => {}} className={`${classes.button}`}>
-        <i className="material-icons text-[20px] text-[#333]">arrow_upward</i>
+       <ArrowUpIcon className="w-[20px] text-[#333]"/>
       </Button>
     </div>
   );

@@ -1,3 +1,4 @@
+import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import { ReactNode } from "react";
 
 type Props = {
@@ -33,7 +34,7 @@ export default function Button({
 
   const content = (
     <>
-      {isLoading && <i className="material-icons animate-spin">sync</i>}
+      {isLoading && <ArrowPathIcon className="w-[24px]"/> }
       {!isLoading && children}
     </>
   );

@@ -94,7 +94,6 @@ export default function Message() {
         primary
         className={classes.button}
       >
-        <i className="material-icons text-[15px]">reply</i>
         <span className="ml-[4px]">Reply</span>
       </Button>
 
@@ -103,7 +102,6 @@ export default function Message() {
         primary
         className={classes.button}
       >
-        <i className="material-icons text-[15px]">delete</i>
         <span className="ml-[4px]">Delete</span>
       </Button>
     </>

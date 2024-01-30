@@ -10,6 +10,8 @@ import useBrandAction from "@/hooks/useBrand";
 import { generateId } from "@/utils/appHelper";
 import PushFrame from "@/components/ui/PushFrame";
 import AddItemMulti from "@/components/Modal/AddItemMulti";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/16/solid";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -46,8 +48,7 @@ export default function PriceRangeGroup({ categories }: Props) {
       data: Record<string, string>,
       type: "Add" | "Edit"
    ) => {
-      if (curCategory?.id === undefined)
-         throw new Error("curCategory.id is undefined");
+      if (curCategory?.id === undefined) throw new Error("curCategory.id is undefined");
 
       const newPriceRange: PriceRange = {
          id: undefined,
@@ -78,10 +79,7 @@ export default function PriceRangeGroup({ categories }: Props) {
       await deletePriceRange(curPriceIndex.current);
    };
 
-   const handleOpenModal = (
-      target: typeof openModalTarget.current,
-      index?: number
-   ) => {
+   const handleOpenModal = (target: typeof openModalTarget.current, index?: number) => {
       openModalTarget.current = target;
       switch (target) {
          case "edit-price":
@@ -187,16 +185,12 @@ export default function PriceRangeGroup({ categories }: Props) {
                   onClick={() => handleOpenModal("add-price")}
                   primary
                >
-                  <i className="material-icons mr-[8px]">add</i> Add price range
+                 <PlusIcon  className="w-[24px]"/> Add price range
                </Button>
             </div>
 
             {curCategory?.price_ranges && (
-               <div
-                  className={`mt-[14px] row gap-[10px] ${
-                     apiLoading ? "disable" : ""
-                  }`}
-               >
+               <div className={`mt-[14px] row gap-[10px] ${apiLoading ? "disable" : ""}`}>
                   {curCategory.price_ranges.map((price, index) => (
                      <PushFrame type="translate" key={index}>
                         <div className={cx("attr-item")}>
@@ -209,18 +203,14 @@ export default function PriceRangeGroup({ categories }: Props) {
 
                            <div className={cx("cta")}>
                               <Button
-                                 onClick={() =>
-                                    handleOpenModal("delete-price", index)
-                                 }
+                                 onClick={() => handleOpenModal("delete-price", index)}
                               >
-                                 <i className="material-icons">delete</i>
+                                 <TrashIcon className="w-[24px]" />
                               </Button>
                               <Button
-                                 onClick={() =>
-                                    handleOpenModal("edit-price", index)
-                                 }
+                                 onClick={() => handleOpenModal("edit-price", index)}
                               >
-                                 <i className="material-icons">edit</i>
+                                 <PencilSquareIcon className="w-[24px]" />
                               </Button>
                            </div>
                         </div>
@@ -230,9 +220,7 @@ export default function PriceRangeGroup({ categories }: Props) {
             )}
          </div>
 
-         {isOpenModal && (
-            <Modal setShowModal={setIsOpenModal}>{renderModal}</Modal>
-         )}
+         {isOpenModal && <Modal setShowModal={setIsOpenModal}>{renderModal}</Modal>}
       </>
    );
 }

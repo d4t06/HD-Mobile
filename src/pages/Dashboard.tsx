@@ -11,6 +11,8 @@ import { Category, Product } from "@/types";
 import AddProductModal from "@/components/Modal/AddProductModal";
 import { useApp } from "@/store/AppContext";
 import useAppConfig from "@/hooks/useAppConfig";
+import { Cog6ToothIcon, PencilIcon,  } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
 type ModelTarget = "Add" | "Edit";
 
@@ -102,11 +104,11 @@ export default function Dashboard() {
                                        circle
                                        className="bg-black/10 hover:bg-[#cd1818] hover:text-white"
                                     >
-                                       <i className="material-icons">edit</i>
+                                      <PencilIcon className="w-[24px] p-[2px]"/>
                                     </Button>
                                     <Link to={`product/edit/${productItem.product_name_ascii}`}>
                                        <Button circle className="bg-black/10 hover:bg-[#cd1818] hover:text-white">
-                                          <i className="material-icons">settings</i>
+                                       <Cog6ToothIcon className="w-[24px]"/>
                                        </Button>
                                     </Link>
                                  </div>
@@ -166,9 +168,9 @@ export default function Dashboard() {
    }, []);
 
    const classes = {
-      button: "border-b-[4px] py-[4px] px-[16px] hover:brightness-100",
-      disableButton: "border-transparent text-[20px] hover:border-[#cd1818]",
-      activeButton: "border-[#cd1818] text-[30px]",
+      tab: "border-b-[4px] py-[3px] px-[12px] hover:brightness-100 flex-shrink-0",
+      disableTab: "border-transparent text-[16px] hover:border-[#cd1818]",
+      activeTab: "border-[#cd1818] text-[20px]",
    };
 
    // console.log('check cur brands', curBrands, appConfigStatus);
@@ -180,8 +182,8 @@ export default function Dashboard() {
          <div className="flex gap-[8px] mb-[10px]">
             <Button
                onClick={() => setCurCategory(undefined)}
-               className={`${classes.button} ${
-                  curCategory === undefined ? classes.activeButton : classes.disableButton
+               className={`${classes.tab} ${
+                  curCategory === undefined ? classes.activeTab : classes.disableTab
                }`}
             >
                All
@@ -192,7 +194,7 @@ export default function Dashboard() {
                   <Button
                      key={index}
                      onClick={() => setCurCategory(cat)}
-                     className={`${classes.button} ${active ? classes.activeButton : classes.disableButton}`}
+                     className={`${classes.tab} ${active ? classes.activeTab : classes.disableTab}`}
                   >
                      {cat.category_name}
                      {status === "successful" && active && " (" + count + ")"}
@@ -205,7 +207,7 @@ export default function Dashboard() {
             <QuickFilter curCategory={curCategory} admin loading={appConfigStatus === "loading"} brands={curBrands} />
          )}
 
-         <div className="flex items-center justify-between mt-[10px]">
+         <div className="flex items-center justify-between mt-[30px]">
             <div className="flex items-start">
                <Input placeholder="Product..." cb={(key) => console.log(key)} />
                <p className="ml-[8px]">
@@ -214,12 +216,12 @@ export default function Dashboard() {
             </div>
 
             <Button onClick={() => handleOpenModal("Add")} primary>
-               <i className="material-icons mr-[4px]">add</i>
-               Thêm sản phẩm
+            <PlusIcon className="w-[24px]"/>
+                           Thêm sản phẩm
             </Button>
          </div>
 
-         <div className="mt-[30px]">
+         <div className="mt-[10px]">
             {renderProducts}
             {status === "loading" && <h1 className="text-3xl text-center">Loading...</h1>}
             {status !== "loading" && !!products.length && (

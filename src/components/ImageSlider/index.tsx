@@ -3,6 +3,7 @@ import styles from "./ImageSlider.module.scss";
 import useSlider from "@/hooks/useSlider";
 import { SliderImage } from "@/types";
 import Image from "../ui/Image";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const cx = classNames.bind(styles);
 
@@ -38,10 +39,10 @@ function ImageSlider({ data, className = "pt-[25%]", autoSlide }: Props) {
             onMouseDown={(e) => e.stopPropagation()}
             onClick={previous}
          >
-            <i className="material-icons">arrow_back</i>
+            <ArrowLeftIcon className="w-[24px]" />
          </div>
          <div className={cx("right-arrow", "slider-control")} onMouseDown={(e) => e.stopPropagation()} onClick={next}>
-            <i className="material-icons">arrow_forward</i>
+            <ArrowRightIcon className="w-[24px]" />
          </div>
          <div className={cx("slider-index")}>
             <span>{data.length ? curIndex : 0}</span>

@@ -8,6 +8,7 @@ import { Gallery, Modal } from "@/components";
 import { useToast } from "@/store/ToastContext";
 import OverlayCTA from "@/components/ui/OverlayCTA";
 import Image from "@/components/ui/Image";
+import { ArrowPathIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const SLIDER_URL = "/slider-management/sliders";
 
@@ -188,11 +189,11 @@ function SliderGroup(
                         data={[
                            {
                               cb: () => handleRemoveSliderImage(index),
-                              icon: "delete",
+                              icon: <TrashIcon className="w-[24px]" />,
                            },
                            {
                               cb: () => handleOpenModal("change", index),
-                              icon: "sync",
+                              icon: <ArrowPathIcon className="w-[24px]" />,
                            },
                         ]}
                      />

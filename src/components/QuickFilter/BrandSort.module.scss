@@ -63,6 +63,7 @@ $alpha: rgba(
   padding: 4px 8px;
   color: #666;
   border: 1px solid #666;
+  gap: 4px;
 
   font-size: 1.6rem;
   border-radius: 8px;
@@ -72,9 +73,7 @@ $alpha: rgba(
     border-color: #cd1818;
     color: #cd1818;
   }
-  p {
-    margin-right: 5px;
-  }
+
 }
 .clear-filter {
   display: flex;
@@ -83,9 +82,6 @@ $alpha: rgba(
   margin-left: 8px;
   &:hover {
     color: #cd1818;
-  }
-  i {
-    font-size: 3rem;
   }
   span {
     display: inline-block;
