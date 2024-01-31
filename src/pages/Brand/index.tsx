@@ -224,7 +224,6 @@ export default function CategoryBrand() {
             {categories.map((item, index) => (
                <div key={index} className="col w-2/12">
                   <Empty fontClassName="bg-[#f1f1f1] text-[#333]">
-                     <i className="material-icons mr-[8px]">{item.icon}</i>
                      <span className="text-[16px] font-semibold">
                         {item.category_name}
                      </span>

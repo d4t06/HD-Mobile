@@ -29,7 +29,6 @@ function Header() {
             })}
          >
             <Link to={`/${cat.category_ascii}`}>
-               <i className="material-icons">{cat.icon}</i>
                <p className={cx("nav-text")}>{cat.category_name}</p>
             </Link>
          </li>

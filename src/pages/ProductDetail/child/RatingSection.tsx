@@ -6,6 +6,8 @@ import NoComment from "./NoComment";
 import { ProductReview } from "@/types";
 import { initLocalStorage } from "@/utils/appHelper";
 import ReviewItem from "@/components/ReviewItem";
+import { ArrowPathIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
+import { HeartIcon } from "@heroicons/react/16/solid";
 
 export default function RatingSection({ product_name_ascii }: { product_name_ascii: string }) {
    const {
@@ -57,17 +59,11 @@ export default function RatingSection({ product_name_ascii }: { product_name_asc
                      className="px-[5px] !py-[0px] group"
                      primary
                   >
-                     {isLoading ? (
-                        <i className="material-icons text-[15px] mr-[4px] animate-spin">sync</i>
-                     ) : (
-                        <i
-                           className={`material-icons text-[15px] mr-[4px] transition-transform ${
-                              isLiked ? "group-hover:rotate-180" : ""
-                           }`}
-                        >
-                           thumb_up
-                        </i>
-                     )}
+                      {isLoading ? (
+                           <ArrowPathIcon className="w-[20px] mr-[4px] animate-spin" />
+                        ) : (
+                           <HeartIcon className="w-[20px] mr-[4px]" />
+                        )}
                      {r.total_like}
                   </Button>
                </ReviewItem>

@@ -9,7 +9,8 @@ import { ImageType } from "@/types";
 import { sleep } from "@/utils/appHelper";
 import { useUploadContext } from "@/store/ImageContext";
 import Skeleton from "../Skeleton";
-import { ArrowPathIcon, PlusSmallIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/16/solid";
 
 const cx = classNames.bind(styles);
 
@@ -159,7 +160,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                   <div className={cx("image-container")}>
                      <div className={cx("image-frame", "relative")}>
                         <img className="opacity-[.4]" src={item.image_url} alt="img" />
-                        {!added && <ArrowPathIcon className="animate-spin absolute text-[30px]"/>}
+                        {!added && <ArrowPathIcon className="animate-spin absolute text-[30px]" />}
                      </div>
                   </div>
                </div>
@@ -186,14 +187,16 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
       <div className={cx("gallery")}>
          <div className={cx("gallery__top")}>
             <div className={cx("left")}>
-               <h1 className="text-2xl font-semibold">Images</h1>
+               <h1 className="text-[22px] font-semibold">Images</h1>
                <div>
                   <label
                      className={cx("input-label", { disable: apiLoading || uploadStatus === "uploading" })}
                      htmlFor="image_upload"
                   >
-                     <PlusSmallIcon className='w-[24px]'/>
-                     Upload
+                     <span>
+                        <PlusIcon className="w-[22px] mr-[4px]" />
+                        Upload
+                     </span>
                   </label>
                </div>
             </div>
@@ -202,46 +205,44 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                Chọn
             </Button>
          </div>
-         <div className={cx("gallery__body")}>
-            <div className={cx("row", "container")}>
-               <div className={cx("w-2/3 no-scrollbar", "left")}>
-                  <div className="row">
-                     {status === "loading" && imageSkeleton}
+         <div className={cx("gallery__body", "flex mx-[-8px]")}>
+            <div className={cx("w-2/3 px-[8px] no-scrollbar", "left")}>
+               <div className="row">
+                  {status === "loading" && imageSkeleton}
 
-                     {status !== "loading" && (
-                        <>
-                           {status === "success" ? (
-                              <>
-                                 {!!tempImages?.length && renderTempImages} {renderImages}
-                              </>
-                           ) : (
-                              <h1>Some thing went wrong</h1>
-                           )}
-                        </>
-                     )}
-                  </div>
-               </div>
-               <div className={cx("col w-1/3 overflow-hidden border-l-[2px]")}>
-                  {active && (
-                     <div className={cx("image-info")}>
-                        <h2 className="break-words">{active.name}</h2>
-                        <ul>
-                           <li>
-                              <h4 className="font-semibold">Image path:</h4>{" "}
-                              <a target="blank" href={active.image_url}>
-                                 {active.image_url}
-                              </a>
-                           </li>
-                           <li>
-                              <h4 className="font-semibold">Size:</h4> {formatSize(active.size)}
-                           </li>
-                        </ul>
-                        <Button isLoading={apiLoading} primary onClick={handleDeleteImage}>
-                           Xóa
-                        </Button>
-                     </div>
+                  {status !== "loading" && (
+                     <>
+                        {status === "success" ? (
+                           <>
+                              {!!tempImages?.length && renderTempImages} {renderImages}
+                           </>
+                        ) : (
+                           <h1>Some thing went wrong</h1>
+                        )}
+                     </>
                   )}
                </div>
+            </div>
+            <div className={cx("col w-1/3 px-[8px] overflow-hidden border-l-[2px]")}>
+               {active && (
+                  <div className={cx("image-info")}>
+                     <h2 className="break-words">{active.name}</h2>
+                     <ul>
+                        <li>
+                           <h4 className="font-semibold">Image path:</h4>{" "}
+                           <a target="blank" href={active.image_url}>
+                              {active.image_url}
+                           </a>
+                        </li>
+                        <li>
+                           <h4 className="font-semibold">Size:</h4> {formatSize(active.size)}
+                        </li>
+                     </ul>
+                     <Button isLoading={apiLoading} primary onClick={handleDeleteImage}>
+                        Xóa
+                     </Button>
+                  </div>
+               )}
             </div>
          </div>
       </div>

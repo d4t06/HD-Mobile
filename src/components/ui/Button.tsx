@@ -34,7 +34,7 @@ export default function Button({
 
   const content = (
     <>
-      {isLoading && <ArrowPathIcon className="w-[24px]"/> }
+      {isLoading && <ArrowPathIcon className="w-[24px] animate-spin"/> }
       {!isLoading && children}
     </>
   );

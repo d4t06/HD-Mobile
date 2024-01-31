@@ -11,7 +11,7 @@ import { Category, Product } from "@/types";
 import AddProductModal from "@/components/Modal/AddProductModal";
 import { useApp } from "@/store/AppContext";
 import useAppConfig from "@/hooks/useAppConfig";
-import { Cog6ToothIcon, PencilIcon,  } from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
 
 type ModelTarget = "Add" | "Edit";
@@ -104,11 +104,11 @@ export default function Dashboard() {
                                        circle
                                        className="bg-black/10 hover:bg-[#cd1818] hover:text-white"
                                     >
-                                      <PencilIcon className="w-[24px] p-[2px]"/>
+                                       <PencilSquareIcon className="w-[24px] p-[2px]" />
                                     </Button>
                                     <Link to={`product/edit/${productItem.product_name_ascii}`}>
                                        <Button circle className="bg-black/10 hover:bg-[#cd1818] hover:text-white">
-                                       <Cog6ToothIcon className="w-[24px]"/>
+                                          <Cog6ToothIcon className="w-[24px]" />
                                        </Button>
                                     </Link>
                                  </div>
@@ -182,9 +182,7 @@ export default function Dashboard() {
          <div className="flex gap-[8px] mb-[10px]">
             <Button
                onClick={() => setCurCategory(undefined)}
-               className={`${classes.tab} ${
-                  curCategory === undefined ? classes.activeTab : classes.disableTab
-               }`}
+               className={`${classes.tab} ${curCategory === undefined ? classes.activeTab : classes.disableTab}`}
             >
                All
             </Button>
@@ -216,8 +214,8 @@ export default function Dashboard() {
             </div>
 
             <Button onClick={() => handleOpenModal("Add")} primary>
-            <PlusIcon className="w-[24px]"/>
-                           Thêm sản phẩm
+               <PlusIcon className="w-[24px]" />
+               Thêm sản phẩm
             </Button>
          </div>
 

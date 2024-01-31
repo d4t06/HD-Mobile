@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "..";
-import { ArrowUpIcon } from "@heroicons/react/24/outline";
+import { ArrowUpIcon } from "@heroicons/react/16/solid";
 
 export default function ScrollTop() {
   const [show, setShow] = useState(false);

@@ -5,29 +5,26 @@ import emptyCart from "@/assets/images/empty-cart.png";
 import { moneyFormat } from "@/utils/appHelper";
 import { Link } from "react-router-dom";
 import { Button } from "@/components";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Order } from "@/types";
 
-const tabs: Array<Order["status"]> = [
-   "processing",
-   "delivering",
-   "completed",
-   "canceled",
-];
+const tabs: Array<Order["status"]> = ["processing", "delivering", "completed", "canceled"];
 
 export default function DashboardOrder() {
    const [currentTab, setCurrentTab] = useState<Order["status"] | "">("");
 
    const { state, getAllOrders, status } = useManageOrder({ currentTab });
-   const remaining = useMemo(
-      () => (!state ? 0 : state.count - state.orders.length),
-      [state]
-   );
+   let remaining = useMemo(() => (!state ? 0 : state.count - state.orders.length), [state]);
 
    const handleGetMore = async () => {
       if (!state) throw new Error("State is undefined");
       await getAllOrders({ page: state.page + 1, type: "push", status: currentTab });
    };
+
+   const handleSetTab = (tab: typeof currentTab) => {
+      // remaining = 0
+      setCurrentTab(tab)
+   }
 
    const classes = {
       emptyImage: "w-[160px] md:w-[200px] mx-auto h-auto",
@@ -62,10 +59,8 @@ export default function DashboardOrder() {
       <div className="">
          <div className="flex space-x-[8px] mb-[20px] overflow-auto">
             <Button
-               onClick={() => setCurrentTab("")}
-               className={`${classes.tab} ${
-                  !currentTab ? classes.activeTab : classes.disableTab
-               }`}
+               onClick={() => handleSetTab("")}
+               className={`${classes.tab} ${!currentTab ? classes.activeTab : classes.disableTab}`}
             >
                All
                {status === "success" && !currentTab && state && " (" + state.count + ")"}
@@ -75,10 +70,8 @@ export default function DashboardOrder() {
                return (
                   <Button
                      key={index}
-                     onClick={() => setCurrentTab(tab)}
-                     className={`${classes.tab} ${
-                        active ? classes.activeTab : classes.disableTab
-                     }`}
+                     onClick={() => handleSetTab(tab)}
+                     className={`${classes.tab} ${active ? classes.activeTab : classes.disableTab}`}
                   >
                      <span className="capitalize">{tab}</span>
                      {status === "success" && state && active && " (" + state.count + ")"}
@@ -97,8 +90,7 @@ export default function DashboardOrder() {
                               <h5 className={`${classes.h5} mb-[4px]`}>
                                  Đơn hàng #{order.id} -{" "}
                                  <span className="text-[#333] font-[600]">
-                                    {order.createdAt} -{" "}
-                                    <span className="uppercase"> {order.status}</span>{" "}
+                                    {order.createdAt} - <span className="uppercase"> {order.status}</span>{" "}
                                  </span>
                               </h5>
                               <div className="flex items-start flex-col sm:flex-row sm:items-center">
@@ -115,10 +107,7 @@ export default function DashboardOrder() {
                                           </h5>
                                           <h5 className={classes.h5}>
                                              Tổng:
-                                             <span className="text-[#333]">
-                                                {" "}
-                                                {moneyFormat(order.total_price)}
-                                             </span>
+                                             <span className="text-[#333]"> {moneyFormat(order.total_price)}</span>
                                           </h5>
                                           <h5 className={classes.h5}>
                                              Giảm giá:
@@ -138,34 +127,19 @@ export default function DashboardOrder() {
                                  </div>
                                  <div className="mt-[4px] sm:mt-0 sm:ml-[10px] flex-grow">
                                     <h5 className={classes.h5}>
-                                       Họ tên:{" "}
-                                       <span className={classes.blackText}>
-                                          {order.recipient_name}
-                                       </span>
+                                       Họ tên: <span className={classes.blackText}>{order.recipient_name}</span>
                                     </h5>
                                     <h5 className={classes.h5}>
                                        Số điện thoại:{" "}
-                                       <span className={classes.blackText}>
-                                          {order.recipient_phone_number}
-                                       </span>
+                                       <span className={classes.blackText}>{order.recipient_phone_number}</span>
                                     </h5>
                                     <h5 className={classes.h5}>
-                                       Địa chỉ:{" "}
-                                       <span className={classes.blackText}>
-                                          {order.recipient_address}
-                                       </span>
+                                       Địa chỉ: <span className={classes.blackText}>{order.recipient_address}</span>
                                     </h5>
                                  </div>
 
-                                 <Button
-                                    className="!p-0"
-                                    backClass="mx-auto mt-[10px] sm:mx-0 sm:mt-0"
-                                    primary
-                                 >
-                                    <Link
-                                       className="px-[12px] py-[2px] sm:px-[16px] sm:py-[4px]"
-                                       to={`${order.id}`}
-                                    >
+                                 <Button className="!p-0" backClass="mx-auto mt-[10px] sm:mx-0 sm:mt-0" primary>
+                                    <Link className="px-[12px] py-[2px] sm:px-[16px] sm:py-[4px]" to={`${order.id}`}>
                                        Chi tiết
                                     </Link>
                                  </Button>

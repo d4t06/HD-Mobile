@@ -17,6 +17,8 @@ import ConfirmModal from "@/components/Modal/Confirm";
 import useProductAction from "@/hooks/useProductAction";
 import MyEditor, { EditorRef } from "@/components/MyEditor";
 import useEdit from "@/hooks/useEdit";
+import { ArrowPathIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { CheckIcon } from "@heroicons/react/16/solid";
 
 type ModelTarget =
    | "add-storage"
@@ -422,14 +424,14 @@ function EditProductMain() {
       container: "flex bg-[#fff] rounded-[12px] p-[20px]",
    };
 
-   if (status === "loading") return <p className="text-[16px] text-[#333}">Loading...</p>;
+   if (status === "loading") return <ArrowPathIcon className="w-[24px] animate-spin" />;
    if (status === "error") return <p className="text-[16px] text-[#333}">Some thing went wrong...</p>;
 
    return (
       <>
          <div className="flex items-center text-[#cd1818] mb-[20px]">
-            <i className="material-icons mr-[8px]">mode_edit</i>
-            <h1 className={`text-[22px] font-semibold text-[#cd1818]`}>{product_name}</h1>
+            <PencilSquareIcon className="w-[24px]" />
+            <h1 className={`text-[22px] ml-[8px] font-semibold text-[#cd1818]`}>{product_name}</h1>
          </div>
 
          <div className="pb-[30px]">
@@ -447,11 +449,11 @@ function EditProductMain() {
                                        data={[
                                           {
                                              cb: () => handleOpenModal("edit-storage", index),
-                                             icon: "edit",
+                                             icon: <PencilSquareIcon className="w-[24px]" />,
                                           },
                                           {
                                              cb: () => handleOpenModal("delete-storage", index),
-                                             icon: "delete",
+                                             icon: <TrashIcon className="w-[24px] " />,
                                           },
                                        ]}
                                     />
@@ -476,11 +478,11 @@ function EditProductMain() {
                                     data={[
                                        {
                                           cb: () => handleOpenModal("edit-color", index),
-                                          icon: "edit",
+                                          icon: <PencilSquareIcon className="w-[24px]" />,
                                        },
                                        {
                                           cb: () => handleOpenModal("delete-color", index),
-                                          icon: "delete",
+                                          icon: <TrashIcon className="w-[24px] " />,
                                        },
                                     ]}
                                  />
@@ -507,7 +509,8 @@ function EditProductMain() {
 
             <p className="text-center mt-[30px]">
                <Button disable={!isChange} isLoading={apiProductLoading} onClick={handleSubmit} primary>
-                  <i className="material-icons mr-[8px]">save</i> Save
+                  <CheckIcon className="w-[24px] mr-[8px]" />
+                  Save
                </Button>
             </p>
 

@@ -61,9 +61,6 @@ export default function AddItemMulti({ setIsOpenModal, cb, title, fields, loadin
                      htmlFor={item.name_ascii}
                   >
                      {item.name}
-                     {item.name_ascii === "icon" && (
-                        <i className="material-icons ml-[8px]">{fieldData[item.name_ascii]}</i>
-                     )}
                   </label>
                   <Input
                      key={index}

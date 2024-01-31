@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, ImageSlider, Modal } from "@/components";
 import * as productServices from "@/services/productServices";
@@ -17,6 +17,7 @@ import { CommentStateType } from "@/hooks/useComment";
 import SpecSection from "./child/SpecSection";
 import ContentSection from "./child/ContentSection";
 import ModalHeader from "@/components/Modal/ModalHeader";
+import { BoltIcon, ChatBubbleBottomCenterTextIcon, Cog6ToothIcon, DocumentTextIcon, PaperClipIcon, PlusIcon, StarIcon, TagIcon } from "@heroicons/react/16/solid";
 
 type ModalTarget = "add-comment" | "add-review" | "confirm-login";
 
@@ -25,9 +26,9 @@ const classes = {
    label: "text-[20px] font-semibold text-[#333]",
 };
 
-export const PrimaryLabel = (icon: string, title: string) => (
+export const PrimaryLabel = (icon: ReactNode, title: string) => (
    <div className="flex items-center text-[#cd1818]">
-      <i className="material-icons mr-[8px]">{icon}</i>
+      {icon}
       <h1 className={`${classes.label} text-[#cd1818]`}>{title}</h1>
    </div>
 );
@@ -154,7 +155,7 @@ export default function DetailPage() {
                )}
 
                <div className="mt-[40px]">
-                  {PrimaryLabel("loyalty", "Chính sách bảo hành")}
+                  {PrimaryLabel(<TagIcon className="w-[24px] mr-[8px]" />, "Chính sách bảo hành")}
                   <div className="mt-[10px]">
                      <Policy loading={status === "loading"} />
                   </div>
@@ -164,14 +165,14 @@ export default function DetailPage() {
 
          <div className=" md:mt-[60px] flex flex-wrap-reverse md:mx-[-12px]">
             <div className={"w-full mt-[40px] md:mt-0 md:w-2/3 flex-shrink-0 md:px-[12px]"}>
-               {PrimaryLabel("mode_edit", `Chi tiết ${product.product_name}`)}
+               {PrimaryLabel(<DocumentTextIcon className="w-[24px] mr-[8px]" />, `Chi tiết ${product.product_name}`)}
                <div className="mt-[20px]">
                   <ContentSection loading={status === "loading"} detail={product.detail} />
                </div>
             </div>
             <div className="w-full mt-[40px] md:mt-0 md:w-1/3 flex-shrink-0 md:px-[12px]">
                <div className="flex items-center text-[#cd1818]">
-                  <i className="material-icons mr-[8px]">settings</i>
+                  <Cog6ToothIcon className="w-[24px] mr-[8px]" />
                   <h1 className={`${classes.label} text-[#cd1818]`}>Cấu hình {product.product_name || ""}</h1>
                </div>
                <div className="mt-[20px] spec-table">
@@ -182,9 +183,9 @@ export default function DetailPage() {
 
          <div className="mt-[40px] md:mt-[60px]">
             <div className="md:flex-row md:gap-0 flex flex-col space-y-[8px] justify-between items-top mb-[30px]">
-               {PrimaryLabel("star", `Đánh giá về ${product.product_name}`)}
+               {PrimaryLabel(<StarIcon className="w-[24px] mr-[8px]" />, `Đánh giá về ${product.product_name}`)}
                <Button onClick={() => handleOpenModal("add-review")} primary>
-                  <i className="material-icons mr-[8px]">add</i>
+                  <PlusIcon className="mr-[8px] w-[24px]" />
                   Viết đánh giá
                </Button>
             </div>
@@ -193,16 +194,16 @@ export default function DetailPage() {
 
          <div className="mt-[40px] md:mt-[60px]">
             <div className="flex flex-col space-y-[8px] justify-between items-top mb-[30px] md:flex-row md:gap-0">
-               {PrimaryLabel("message", `Hỏi đáp về ${product.product_name}`)}
+               {PrimaryLabel(<ChatBubbleBottomCenterTextIcon className="w-[24px] mr-[8px]" />, `Hỏi đáp về ${product.product_name}`)}
                <Button onClick={() => handleOpenModal("add-comment")} primary>
-                  <i className="material-icons mr-[8px]">add</i>
+                  <PlusIcon className="mr-[8px] w-[24px]" />
                   Thêm câu hỏi
                </Button>
             </div>
             <CommentSection product_name_ascii={product.product_name_ascii} />
          </div>
 
-         <div className="mt-[40px] md:mt-[60px]">{PrimaryLabel("flash_on", `Sản phẩm gợi ý`)}</div>
+         <div className="mt-[40px] md:mt-[60px]">{PrimaryLabel(<BoltIcon className="mr-[8px] w-[24px]" />, `Sản phẩm gợi ý`)}</div>
 
          {isOpenModal && (
             <Modal z="z-[200]" setShowModal={setIsOpenModal}>

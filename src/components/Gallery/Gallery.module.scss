@@ -1,16 +1,16 @@
 .gallery {
    height: 80vh;
-   width: 80vw;
+   width: 90vw;
    position: relative;
-   min-width: 500px;
    background-color: #fff;
-   overflow: auto;
+   overflow: hidden;
    &__top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 2px dashed #ccc;
       padding-bottom: 10px;
+      padding-top: 6px;
       margin-bottom: 10px;
 
       .left {
@@ -21,13 +21,13 @@
          }
       }
       h1 {
-         margin-right: 30px;  
+         margin-right: 30px;
          font-size: 2rem;
       }
    }
    &__body {
       .left {
-         height: calc(80vh - 54px);
+         height: calc(80vh - 61px);
          overflow-y: auto;
       }
    }
@@ -67,6 +67,7 @@
    h2 {
       font-size: 22px;
       margin-bottom: 15px;
+      font-weight: 500;
    }
    li {
       font-size: 14px;
@@ -83,14 +84,32 @@
 }
 
 .input-label {
-   background-color: #cd1818;
-   display: inline-flex;
-   align-items: center;
-   padding: 4px 16px;
+   display: inline-block;
+   background-color: #8f1313;
    font-size: 1.4rem;
    font-weight: bold;
-   min-width: 100px;
-   color: #fff;
    border-radius: 8px;
    cursor: pointer;
+   span {
+      min-width: 100px;
+      color: #fff;
+      display: inline-flex;
+      padding: 4px 16px;
+      align-items: center;
+      border-radius: 8px;
+      background-color: #cd1818;
+
+      transition: transform 0.1s linear;
+      transform: translateY(-2px);
+   }
+   &:hover {
+      span {
+         transform: translateY(-4px);
+      }
+   }
+   &:active {
+      span {
+         transform: translateY(0);
+      }
+   }
 }

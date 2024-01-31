@@ -27,7 +27,7 @@ export default function QuickFilter({ brands, admin, loading, curCategory }: Pro
    const { page, category_id } = useSelector(selectedAllProduct);
    const { filters: filtersInStore, sort } = useSelector(selectedAllFilter);
 
-   const isFiltered = useMemo(() => !!filtersInStore?.brands.length || filtersInStore.price, [filtersInStore]);
+   const isFiltered = useMemo(() => !!filtersInStore.brands.length || !!filtersInStore.price, [filtersInStore]);
 
    const showFilteredResults = async (filters: FilterType) => {
       await dispatchRedux(fetchProducts({ page, sort, category_id, filters, admin }));

@@ -132,7 +132,6 @@ export default function Message() {
                           primary
                           className={classes.button}
                         >
-                          <i className="material-icons text-[15px]">edit</i>
                           <span className="ml-[4px]">Edit</span>
                         </Button>
                       }

@@ -165,7 +165,7 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
 
       //  in home page
       if (curCategory === undefined) {
-         return;
+         return setStatus('success')
       }
 
       getCategoryChild();

@@ -6,6 +6,8 @@ import { Dispatch, SetStateAction, useState } from "react";
 
 import styles from "../Brand.module.scss";
 import classNames from "classnames/bind";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { PhoneXMarkIcon } from "@heroicons/react/16/solid";
 
 const cx = classNames.bind(styles);
 
@@ -22,7 +24,6 @@ type Props = {
 export default function EditBrand({ setIsOpenModalParent, addBrand, apiLoading, type, curBrand, catId }: Props) {
    const [brandData, setBrandData] = useState<Brand>(curBrand || initBrandObject({}));
    const [isOpenModal, setIsOpenModal] = useState(false);
-
 
    const handleChoseBrandImage = (imageUrls: string[]) => {
       const newBrandData: Brand = { ...brandData, image_url: imageUrls[0] };
@@ -59,7 +60,7 @@ export default function EditBrand({ setIsOpenModalParent, addBrand, apiLoading, 
                   <div className={cx("brand-image")}>
                      <img src={brandData.image_url} />
                      <Button onClick={() => handleChoseBrandImage([""])} className="ml-[8px]">
-                        <i className="material-icons text-[20px]">close</i>
+                        <PhoneXMarkIcon className="w-[24px]" />
                      </Button>
                   </div>
                )}

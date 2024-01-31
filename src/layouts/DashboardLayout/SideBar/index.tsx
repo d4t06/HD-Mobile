@@ -83,7 +83,7 @@ function Sidebar() {
                {expand && <>Order</>}
             </Link>
 
-            <div className="m-[10px] border-t border-black/10"></div>
+            {/* <div className="m-[10px] border-t border-black/10"></div> */}
 
             <Link
                className={cx(

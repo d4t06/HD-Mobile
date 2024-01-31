@@ -13,6 +13,7 @@ import ProductSkeleton from "@/components/Skeleton/ProductSkeleton";
 import { AppDispatch } from "@/store/store";
 import { searchProducts } from "@/store/productsSlice";
 import { useApp } from "@/store/AppContext";
+import { ArrowPathIcon } from "@heroicons/react/16/solid";
 
 export default function SearchResultPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -75,7 +76,7 @@ export default function SearchResultPage() {
             ) : (
               <>
                 Kết quả tìm kiếm cho từ khóa "{key}"
-                <i className={"animate-spin ml-[8px] material-icons"}>sync</i>
+                <ArrowPathIcon className="w-[24px] ml-[8px] animate-spin" />
               </>
             )}
           </h1>

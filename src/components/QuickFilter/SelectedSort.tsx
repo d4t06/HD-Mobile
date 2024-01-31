@@ -20,7 +20,8 @@ export default function SelectedSort({ data, handleFilter }: Props) {
       handleFilter(newBrands, "brands");
    };
 
-   const isShowClear = useMemo(() => data.brands.length >= 2, [data]);
+   // const isShowClear = useMemo(() => data.brands.length >= 2, [data]);
+   const isShowClear = true;
 
    return (
       <>

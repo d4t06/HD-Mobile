@@ -9,6 +9,8 @@ import "../styles.scss";
 // import { useLocalStorage } from "@/hooks";
 // import { initLocalStorage } from "@/utils/appHelper";
 import PushFrame from "@/components/ui/PushFrame";
+import { ArrowPathIcon, HeartIcon } from "@heroicons/react/16/solid";
+import { HandThumbUpIcon } from "@heroicons/react/24/outline";
 
 export default function CommentSection({ product_name_ascii }: { product_name_ascii: string }) {
    const {
@@ -56,9 +58,9 @@ export default function CommentSection({ product_name_ascii }: { product_name_as
                         primary
                      >
                         {isLoading ? (
-                           <i className="material-icons text-[15px] mr-[4px] animate-spin">sync</i>
+                           <ArrowPathIcon className="w-[20px] mr-[4px] animate-spin" />
                         ) : (
-                           <i className={`material-icons text-[15px] mr-[4px] transition-transform`}>thumb_up</i>
+                           <HeartIcon className="w-[20px] mr-[4px]" />
                         )}
                         {c.total_like}
                      </Button>

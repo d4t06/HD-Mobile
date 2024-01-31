@@ -42,7 +42,6 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
                      to={`/${c.category_ascii}`}
                      className="flex items-center  h-[40px] text-[#333]"
                   >
-                     <i className="material-icons text-[25px] mr-[8px]">{c.icon}</i>
                      <span className="text-[16px] font-[500]">{c.category_name}</span>
                   </Link>
                ))}

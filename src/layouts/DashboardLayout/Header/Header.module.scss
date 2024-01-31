@@ -1,16 +1,27 @@
-
 .header__wrapper {
-    background-color: #cd1818;
-    color: #fff; 
-    position: absolute;
-    left: 0;
-    width: 100%;
-    z-index: 99;
-    padding: 0 40px;
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: 60px;
-    }
+   background-color: transparent;
+   position: absolute;
+   left: 0;
+   width: 100%;
+   z-index: 99;
+   .header {
+      position: relative;
+      height: 60px;
+      &.shadow {
+         box-shadow: 2px 4px 10px rgba($color: #000000, $alpha: .15);
+      }
+   }
+}
+
+.header-main {
+   display: flex;
+   align-items: center;
+   height: 100%;
+   padding: 0 20px;
+   p {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+      margin-left: auto;
+   }
 }

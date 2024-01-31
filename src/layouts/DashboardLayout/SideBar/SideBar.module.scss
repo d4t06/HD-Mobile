@@ -47,6 +47,9 @@
       transition: padding linear 0.15s;
       color: #333;
       cursor: pointer;
+      svg {
+         flex-shrink: 0;
+      }
       &:hover {
          @include active();
       }
