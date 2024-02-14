@@ -13,12 +13,13 @@ const cx = classNames.bind(styles);
 
 type Props = {
    setShowModal?: Dispatch<SetStateAction<boolean>>;
+   setOpenSidebar?: Dispatch<SetStateAction<boolean>>;
 };
 
-function Search({ setShowModal }: Props) {
+function Search({ setShowModal,setOpenSidebar }: Props) {
    const [loading, setLoading] = useState(false);
    const [query, setQuery] = useState("");
-   const [searchResult, setSearchResult] = useState<{ products: Product[] }>();
+   const [searchResult, setSearchResult] = useState<Product[]>([]);
    const [show, setShow] = useState(false);
    const [someThingToAbortApi, setSomeThingToAbortApi] = useState(0);
 
@@ -28,21 +29,22 @@ function Search({ setShowModal }: Props) {
 
    const handleSearchText = (e: any) => {
       handleShow(true);
-      setSomeThingToAbortApi(0)
+      setSomeThingToAbortApi(0);
       setQuery(e.target.value);
-      if (!query) setSearchResult(undefined);
+      if (!query) setSearchResult([]);
    };
 
    const handleClear = (e: any) => {
       e.stopPropagation();
       setQuery("");
       debounceValue = "";
-      setSearchResult(undefined);
+      setSearchResult([]);
    };
 
    const handleShow = (value: any) => {
       setShow(value);
       setShowModal && setShowModal(value);
+      setOpenSidebar && setOpenSidebar(false)
    };
 
    const handleDetailPage = (item: Product) => {
@@ -96,10 +98,9 @@ function Search({ setShowModal }: Props) {
       <Popup
          content={
             <div className={cx("search-result")}>
-               <h2 className={cx("search-result-title")}>Sản phẩm được gợi ý</h2>
                <ul>
-                  {searchResult &&
-                     searchResult?.products.map((p, index) => {
+                  {searchResult.length &&
+                     searchResult?.map((p, index) => {
                         return (
                            <li onClick={() => handleDetailPage(p)} className={cx("product")} key={index}>
                               <div className={cx("product-img")}>
@@ -116,7 +117,7 @@ function Search({ setShowModal }: Props) {
             </div>
          }
          opts={{
-            visible: isShowResult,
+            visible: isShowResult && !!searchResult.length,
             appendTo: () => document.body,
             onClickOutside: () => handleShow(false),
          }}
@@ -130,16 +131,15 @@ function Search({ setShowModal }: Props) {
                   value={query}
                   onChange={(e) => handleSearchText(e)}
                   onFocus={() => handleShow(true)}
-                  
                />
                {loading && query && (
                   <button className={cx("loading-btn", "btn")}>
-                     <ArrowPathIcon  className="w-[24px] animate-spin"/>
+                     <ArrowPathIcon className="w-[24px] animate-spin" />
                   </button>
                )}
                {!loading && query && (
                   <button type="button" className={cx("clear-btn", "btn")} onClick={(e) => handleClear(e)}>
-                     <XMarkIcon  className="w-[24px]"/>
+                     <XMarkIcon className="w-[24px]" />
                   </button>
                )}
                <button type="submit" className={cx("search-btn", "btn")}>

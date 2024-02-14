@@ -46,7 +46,7 @@ function Header() {
             </div>
             <div className="container">
                {/* mobile header */}
-               <MobileHeader setIsOpenSidebar={setIsOpenSidebar} />
+               <MobileHeader isOpenSidebar={isOpenSidebar} setIsOpenSidebar={setIsOpenSidebar} />
 
                <div className={cx("header-top")}>
                   <div className={cx("header-top-wrap")}>
@@ -55,7 +55,7 @@ function Header() {
                            HD <span className="text-[#cd1818]">Mobile</span>
                         </Link>
                      </div>
-                     <Search setShowModal={setShowModal} />
+                     <Search setOpenSidebar={setIsOpenSidebar} setShowModal={setShowModal} />
 
                      <div className="w-1/4 max-[768px]:hidden">
                         <Avatar revert />

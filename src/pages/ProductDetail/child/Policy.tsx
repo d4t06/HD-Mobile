@@ -1,7 +1,6 @@
 import Skeleton from "@/components/Skeleton";
 import PushFrame from "@/components/ui/PushFrame";
 import { PaperClipIcon } from "@heroicons/react/16/solid";
-import { TagIcon } from "@heroicons/react/24/outline";
 
 type Props = {
    loading: boolean;

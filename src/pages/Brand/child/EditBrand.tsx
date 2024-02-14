@@ -6,7 +6,6 @@ import { Dispatch, SetStateAction, useState } from "react";
 
 import styles from "../Brand.module.scss";
 import classNames from "classnames/bind";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PhoneXMarkIcon } from "@heroicons/react/16/solid";
 
 const cx = classNames.bind(styles);

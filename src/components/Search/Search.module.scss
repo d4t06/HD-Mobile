@@ -6,8 +6,8 @@
    position: relative;
    overflow: hidden;
    z-index: 200;
-   box-shadow: 2px 2px 8px rgba($color: #000000, $alpha: 0.15);
-   border: 1px solid rgba($color: #000000, $alpha: .1);
+   // box-shadow: 2px 2px 8px rgba($color: #000000, $alpha: 0.15);
+   border: 1px solid rgba($color: #000000, $alpha: 0.1);
 
    @media screen and (max-width: 768px) {
       max-width: unset;
@@ -63,9 +63,14 @@
    background-color: #fff;
    width: 500px;
    border-radius: 16px;
-   padding: 10px 14px;
+   padding: 10px 6px;
    max-height: 60vh;
    overflow: auto;
+
+   @media screen and (max-width: 768px) {
+      width: calc(100vw - 20px);
+      border-radius: 0 0 6px 6px
+   }
    &-title {
       font-size: 16px;
       font-weight: 500;
@@ -73,18 +78,18 @@
    }
    .product {
       display: flex;
-      padding: 4px 0 ;
+      padding: 4px 0;
       border-left: 4px solid transparent;
-      transition: padding linear 0.15s;
       cursor: pointer;
       &-img {
-         width: 75px;
+         width: 60px;
          flex-shrink: 0;
       }
       &-info {
          margin-left: 6px;
-         font-size: 16px;
+         font-size: 14px;
          font-weight: 500;
+         line-height: 20px;
          .price {
             color: #cd1818;
             font-size: 18px;
@@ -92,7 +97,6 @@
       }
       &:hover {
          border-color: #cd1818;
-         padding-left: 10px;
       }
    }
 }

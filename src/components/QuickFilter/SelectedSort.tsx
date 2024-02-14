@@ -1,6 +1,5 @@
 import classNames from "classnames/bind";
 import styles from "./BrandSort.module.scss";
-import { useMemo } from "react";
 import { FilterType } from "@/store/filtersSlice";
 import { Brand } from "@/types";
 import { TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";

@@ -10,7 +10,6 @@ import "../styles.scss";
 // import { initLocalStorage } from "@/utils/appHelper";
 import PushFrame from "@/components/ui/PushFrame";
 import { ArrowPathIcon, HeartIcon } from "@heroicons/react/16/solid";
-import { HandThumbUpIcon } from "@heroicons/react/24/outline";
 
 export default function CommentSection({ product_name_ascii }: { product_name_ascii: string }) {
    const {

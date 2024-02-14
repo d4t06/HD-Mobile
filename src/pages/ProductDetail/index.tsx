@@ -17,7 +17,7 @@ import { CommentStateType } from "@/hooks/useComment";
 import SpecSection from "./child/SpecSection";
 import ContentSection from "./child/ContentSection";
 import ModalHeader from "@/components/Modal/ModalHeader";
-import { BoltIcon, ChatBubbleBottomCenterTextIcon, Cog6ToothIcon, DocumentTextIcon, PaperClipIcon, PlusIcon, StarIcon, TagIcon } from "@heroicons/react/16/solid";
+import { BoltIcon, ChatBubbleBottomCenterTextIcon, Cog6ToothIcon, DocumentTextIcon, PlusIcon, StarIcon, TagIcon } from "@heroicons/react/16/solid";
 
 type ModalTarget = "add-comment" | "add-review" | "confirm-login";
 

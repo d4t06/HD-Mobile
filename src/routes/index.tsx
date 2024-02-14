@@ -11,7 +11,6 @@ import {
    Dashboard,
    EditProduct,
    Search,
-   Order,
    Message,
    Review,
    Login,

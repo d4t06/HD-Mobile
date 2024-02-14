@@ -51,7 +51,7 @@ export default function Banner() {
    };
 
    const Skeletons = [...Array(3).keys()].map((index) => (
-      <Skeleton className="w-full mb-[30px]  rounded-[12px] h-[300px]" />
+      <Skeleton key={index} className="w-full mb-[30px]  rounded-[12px] h-[300px]" />
    ));
    const content = useMemo(
       () =>

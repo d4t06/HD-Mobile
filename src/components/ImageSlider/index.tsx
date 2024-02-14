@@ -3,7 +3,7 @@ import styles from "./ImageSlider.module.scss";
 import useSlider from "@/hooks/useSlider";
 import { SliderImage } from "@/types";
 import Image from "../ui/Image";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 const cx = classNames.bind(styles);
 

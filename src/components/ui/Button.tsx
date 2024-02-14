@@ -29,7 +29,7 @@ export default function Button({
     } font-[600]`,
     primary: "rounded-[8px] bg-[#8f1313] text-[white] translate-y-[2px]",
     circle: "rounded-[50%] p-[6px]",
-    font: "bg-[#cd1818] transition-transform flex items-center justify-center rounded-[8px] px-[16px] py-[6px] translate-y-[-4px] group-active:translate-y-[-2px] group-hover:translate-y-[-6px]",
+    font: "bg-[#cd1818] transition-transform flex items-center justify-center rounded-[8px] px-[16px] py-[6px] translate-y-[-4px] group-active:translate-y-[-2px] sm:group-hover:translate-y-[-6px]",
   };
 
   const content = (

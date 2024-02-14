@@ -4,9 +4,8 @@ import { CommentSkeleton } from "@/components/CommentItem";
 import { Button } from "@/components";
 import NoComment from "./NoComment";
 import { ProductReview } from "@/types";
-import { initLocalStorage } from "@/utils/appHelper";
 import ReviewItem from "@/components/ReviewItem";
-import { ArrowPathIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/16/solid";
 
 export default function RatingSection({ product_name_ascii }: { product_name_ascii: string }) {
@@ -47,9 +46,6 @@ export default function RatingSection({ product_name_ascii }: { product_name_asc
       () =>
          reviews.map((r, index) => {
             const isLoading = apiLoading && currentCommentIndex.current === index;
-
-            const localVal = JSON.parse(localStorage.getItem("HD-Mobile") || JSON.stringify(initLocalStorage));
-            const isLiked = localVal.like_review_ids.includes(r.id!);
 
             return (
                <ReviewItem key={index} review={r}>
