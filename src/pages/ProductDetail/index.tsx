@@ -17,7 +17,7 @@ import { CommentStateType } from "@/hooks/useComment";
 import SpecSection from "./child/SpecSection";
 import ContentSection from "./child/ContentSection";
 import ModalHeader from "@/components/Modal/ModalHeader";
-import { BoltIcon, ChatBubbleBottomCenterTextIcon, Cog6ToothIcon, DocumentTextIcon, PlusIcon, StarIcon, TagIcon } from "@heroicons/react/16/solid";
+import { BoltIcon, ChatBubbleBottomCenterTextIcon, Cog6ToothIcon, DocumentTextIcon  , StarIcon, TagIcon } from "@heroicons/react/16/solid";
 
 type ModalTarget = "add-comment" | "add-review" | "confirm-login";
 
@@ -185,7 +185,6 @@ export default function DetailPage() {
             <div className="md:flex-row md:gap-0 flex flex-col space-y-[8px] justify-between items-top mb-[30px]">
                {PrimaryLabel(<StarIcon className="w-[24px] mr-[8px]" />, `Đánh giá về ${product.product_name}`)}
                <Button onClick={() => handleOpenModal("add-review")} primary>
-                  <PlusIcon className="mr-[8px] w-[24px]" />
                   Viết đánh giá
                </Button>
             </div>
@@ -196,7 +195,6 @@ export default function DetailPage() {
             <div className="flex flex-col space-y-[8px] justify-between items-top mb-[30px] md:flex-row md:gap-0">
                {PrimaryLabel(<ChatBubbleBottomCenterTextIcon className="w-[24px] mr-[8px]" />, `Hỏi đáp về ${product.product_name}`)}
                <Button onClick={() => handleOpenModal("add-comment")} primary>
-                  <PlusIcon className="mr-[8px] w-[24px]" />
                   Thêm câu hỏi
                </Button>
             </div>

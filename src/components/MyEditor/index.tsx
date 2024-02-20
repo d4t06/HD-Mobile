@@ -37,7 +37,7 @@ function MyEditor({ extensions, ...props }: Props, ref: Ref<EditorRef>) {
         <Toolbar editor={editor} />
       </div>
       <div className={classes.editContainer}>
-        <EditorContent editor={editor} />
+        <EditorContent className="max-w-[100vw]" editor={editor} />
       </div>
     </div>
   );
