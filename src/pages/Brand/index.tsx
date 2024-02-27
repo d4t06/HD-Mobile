@@ -27,72 +27,56 @@ const cx = classNames.bind(styles);
 
 const CAT_FIELDS: ["Name"] = ["Name"];
 
-type ModalTarget =
-   | "add-brand"
-   | "add-category"
-   | "edit-category"
-   | "delete-category"
-   | "delete-brand"
-   | "edit-brand";
+type ModalTarget = "add-brand" | "add-category" | "edit-category" | "delete-category" | "delete-brand" | "edit-brand";
 
 export default function CategoryBrand() {
-   const [curCategory, setCurCategory] = useState<Category | undefined>();
-   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [curCategory, setCurCategory] = useState<Category | undefined>();
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
-   const openModalTarget = useRef<ModalTarget | "">("");
-   const curCatIndex = useRef<number>();
-   const curBrandIndex = useRef<number>();
+  const openModalTarget = useRef<ModalTarget | "">("");
+  const curCatIndex = useRef<number>();
+  const curBrandIndex = useRef<number>();
 
-   // hooks
-   const { categories, initLoading } = useApp();
-   const { status: appConfigStatus, curBrands } = useAppConfig({
-      curCategory: curCategory,
-      autoRun: true,
-      admin: true,
-   });
-   const { deleteBrand, deleteCategory, addCategory, addBrand, apiLoading } =
-      useBrandAction({
-         setIsOpenModal,
-         curCategory,
-         curBrands,
-      });
-   const { setErrorToast } = useToast();
+  // hooks
+  const { categories, initLoading } = useApp();
+  const { status: appConfigStatus, curBrands } = useAppConfig({
+    curCategory: curCategory,
+    autoRun: true,
+    admin: true,
+  });
+  const { deleteBrand, deleteCategory, addCategory, addBrand, apiLoading } = useBrandAction({
+    setIsOpenModal,
+    curCategory,
+    curBrands,
+  });
+  const { setErrorToast } = useToast();
 
-   const handleOpenModal = (
-      target: typeof openModalTarget.current,
-      index?: number
-   ) => {
-      openModalTarget.current = target;
-      if (target === "add-brand" && curCatIndex === undefined) return;
-      switch (target) {
-         case "edit-category":
-         case "delete-category":
-            curCatIndex.current = index ?? undefined;
-            break;
+  const handleOpenModal = (target: typeof openModalTarget.current, index?: number) => {
+    openModalTarget.current = target;
+    if (target === "add-brand" && curCatIndex === undefined) return;
+    switch (target) {
+      case "edit-category":
+      case "delete-category":
+        curCatIndex.current = index ?? undefined;
+        break;
 
-         case "edit-brand":
-         case "delete-brand":
-            curBrandIndex.current = index ?? undefined;
-            break;
-      }
-      setIsOpenModal(true);
-   };
+      case "edit-brand":
+      case "delete-brand":
+        curBrandIndex.current = index ?? undefined;
+        break;
+    }
+    setIsOpenModal(true);
+  };
 
-   const getFieldValue = (
-      value: Record<string, string>,
-      name: GetArrayType<typeof CAT_FIELDS> | "default"
-   ) => {
-      return value[generateId(name)];
-   };
+  const getFieldValue = (value: Record<string, string>, name: GetArrayType<typeof CAT_FIELDS> | "default") => {
+    return value[generateId(name)];
+  };
 
-   const handleAddCategory = async (
-      value: Record<string, string>,
-      type: "Add" | "Edit"
-   ) => {
-      if (!value[generateId("Name")].trim()) {
-         setErrorToast("Must have category name");
-         return;
-      }
+  const handleAddCategory = async (value: Record<string, string>, type: "Add" | "Edit") => {
+    if (!value[generateId("Name")].trim()) {
+      setErrorToast("Must have category name");
+      return;
+    }
 
       const newCategory: CategorySchema = {
          category_name: getFieldValue(value, "Name"),
@@ -123,62 +107,40 @@ export default function CategoryBrand() {
       });
    };
 
-   const handleDeleteCategory = async () => {
-      if (curCatIndex.current === undefined) return setErrorToast();
-      await deleteCategory(categories[curCatIndex.current]);
-   };
+  const handleDeleteCategory = async () => {
+    if (curCatIndex.current === undefined) return setErrorToast();
+    await deleteCategory(categories[curCatIndex.current]);
+  };
 
-   const handleDeleteBrand = async () => {
-      await deleteBrand(curBrandIndex.current);
-   };
+  const handleDeleteBrand = async () => {
+    await deleteBrand(curBrandIndex.current);
+  };
 
-   const renderModal = useMemo(() => {
-      if (!isOpenModal) return;
-      switch (openModalTarget.current) {
-         case "add-brand":
-            if (curCategory?.id === undefined)
-               return <h1 className="text-[18px]">Category not define</h1>;
-            console.log(curCategory);
+  const renderModal = useMemo(() => {
+    if (!isOpenModal) return;
+    switch (openModalTarget.current) {
+      case "add-brand":
+        if (curCategory?.id === undefined) return;
+        console.log(curCategory);
 
-            return (
-               <EditBrand
-                  type={"Add"}
-                  addBrand={addBrand}
-                  apiLoading={apiLoading}
-                  setIsOpenModalParent={setIsOpenModal}
-                  catId={curCategory.id}
-               />
-            );
-         case "add-category":
-            return (
-               <AddItemMulti
-                  loading={apiLoading}
-                  fields={CAT_FIELDS}
-                  title="Add category"
-                  cb={(value) => handleAddCategory(value, "Add")}
-                  setIsOpenModal={setIsOpenModal}
-               />
-            );
-         case "edit-brand":
-            if (
-               curBrandIndex.current === undefined ||
-               curBrands === undefined ||
-               curCategory?.id === undefined
-            )
-               return "Index not found";
-            return (
-               <EditBrand
-                  type={"Edit"}
-                  addBrand={addBrand}
-                  apiLoading={apiLoading}
-                  setIsOpenModalParent={setIsOpenModal}
-                  curBrand={{
-                     ...curBrands[curBrandIndex.current],
-                     curIndex: curBrandIndex.current,
-                  }}
-                  catId={curCategory?.id}
-               />
-            );
+        return <EditBrand type={"Add"} addBrand={addBrand} apiLoading={apiLoading} setIsOpenModalParent={setIsOpenModal} catId={curCategory.id} />;
+      case "add-category":
+        return <AddItemMulti loading={apiLoading} fields={CAT_FIELDS} title="Add category" cb={(value) => handleAddCategory(value, "Add")} setIsOpenModal={setIsOpenModal} />;
+      case "edit-brand":
+        if (curBrandIndex.current === undefined || curBrands === undefined || curCategory?.id === undefined) return "Index not found";
+        return (
+          <EditBrand
+            type={"Edit"}
+            addBrand={addBrand}
+            apiLoading={apiLoading}
+            setIsOpenModalParent={setIsOpenModal}
+            curBrand={{
+              ...curBrands[curBrandIndex.current],
+              curIndex: curBrandIndex.current,
+            }}
+            catId={curCategory?.id}
+          />
+        );
 
          case "edit-category":
             if (curCatIndex.current === undefined) return "Index not found";
@@ -197,35 +159,16 @@ export default function CategoryBrand() {
          case "delete-category":
             if (curCatIndex.current === undefined) return "Index not found";
 
-            return (
-               <ConfirmModal
-                  callback={handleDeleteCategory}
-                  loading={apiLoading}
-                  setOpenModal={setIsOpenModal}
-                  label={`Delete category '${
-                     categories[curCatIndex.current].category_name
-                  }'`}
-               />
-            );
-         case "delete-brand":
-            if (curBrandIndex.current === undefined || curBrands === undefined)
-               return "Index not found";
+        return <ConfirmModal callback={handleDeleteCategory} loading={apiLoading} setOpenModal={setIsOpenModal} label={`Delete category '${categories[curCatIndex.current].category_name}'`} />;
+      case "delete-brand":
+        if (curBrandIndex.current === undefined || curBrands === undefined) return "Index not found";
 
-            return (
-               <ConfirmModal
-                  callback={handleDeleteBrand}
-                  loading={apiLoading}
-                  setOpenModal={setIsOpenModal}
-                  label={`Delete brand '${
-                     curBrands[curBrandIndex.current].brand_name
-                  }'`}
-               />
-            );
+        return <ConfirmModal callback={handleDeleteBrand} loading={apiLoading} setOpenModal={setIsOpenModal} label={`Delete brand '${curBrands[curBrandIndex.current].brand_name}'`} />;
 
-         default:
-            return <h1 className="text-3xl">Not thing to show</h1>;
-      }
-   }, [isOpenModal, apiLoading]);
+      default:
+        return <h1 className="text-3xl">Not thing to show</h1>;
+    }
+  }, [isOpenModal, apiLoading]);
 
    const content = (
       <>
@@ -265,13 +208,13 @@ export default function CategoryBrand() {
             </div>
          </div>
 
-         <h1 className={cx("page-title")}>Price Range</h1>
-         <PriceRangeGroup categories={categories} />
+      <h1 className={cx("page-title")}>Price Range</h1>
+      <PriceRangeGroup categories={categories} />
 
-         <h1 className={cx("page-title")}>Category Attribute</h1>
-         <AttributeGroup categories={categories} />
+      <h1 className={cx("page-title")}>Category Attribute</h1>
+      <AttributeGroup categories={categories} />
 
-         <h1 className={cx("page-title")}>Brand</h1>
+      <h1 className={cx("page-title")}>Brand</h1>
 
          <div className="bg-[#fff] rounded-[8px] p-[20px]">
             <div className="mb-[15px] flex items-center">
@@ -330,30 +273,23 @@ export default function CategoryBrand() {
                      </div>
                   ))}
 
-               <div className="col w-2/12">
-                  <Empty
-                     fontClassName="bg-[#f1f1f1]"
-                     onClick={() => handleOpenModal("add-brand")}
-                  />
-               </div>
-            </div>
-         </div>
-      </>
-   );
-
-   return (
-      <div className="pb-[30px]">
-         {initLoading && <ArrowPathIcon className="w-[24px] animate-spin" />}
-
-         {!initLoading && content}
-
-         {appConfigStatus === "error" && (
-            <h1 className="text-[18px]">Some thing went wrong</h1>
-         )}
-
-         {isOpenModal && (
-            <Modal setShowModal={setIsOpenModal}>{renderModal}</Modal>
-         )}
+          <div className={`col w-2/12 ${!curCategory ? 'opacity-40 pointer-events-none' : ''}`}>
+            <Empty fontClassName="bg-[#f1f1f1]" onClick={() => handleOpenModal("add-brand")} />
+          </div>
+        </div>
       </div>
-   );
+    </>
+  );
+
+  return (
+    <div className="pb-[30px]">
+      {initLoading && <ArrowPathIcon className="w-[24px] animate-spin" />}
+
+      {!initLoading && content}
+
+      {appConfigStatus === "error" && <h1 className="text-[18px]">Some thing went wrong</h1>}
+
+      {isOpenModal && <Modal setShowModal={setIsOpenModal}>{renderModal}</Modal>}
+    </div>
+  );
 }

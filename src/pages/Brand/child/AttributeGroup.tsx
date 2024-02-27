@@ -53,6 +53,12 @@ function AttributeGroup({ categories }: Props) {
       attribute_ascii: generateId(value),
       category_id: curCategory?.id,
     };
+    const newCatAttr: CategoryAttribute = {
+      id: undefined,
+      attribute: value,
+      attribute_ascii: generateId(value),
+      category_id: curCategory?.id,
+    };
 
     if (type === "Edit") {
       if (
@@ -64,10 +70,17 @@ function AttributeGroup({ categories }: Props) {
 
       newCatAttr.id = curCategory.attributes[curAttrIndex.current].id;
     }
+      newCatAttr.id = curCategory.attributes[curAttrIndex.current].id;
+    }
 
     await addAttribute(newCatAttr, type, curAttrIndex.current);
   };
+    await addAttribute(newCatAttr, type, curAttrIndex.current);
+  };
 
+  const handleDeleteAttr = async () => {
+    await deleteAttribute(curAttrIndex.current);
+  };
   const handleDeleteAttr = async () => {
     await deleteAttribute(curAttrIndex.current);
   };
@@ -144,7 +157,15 @@ function AttributeGroup({ categories }: Props) {
         return <h1 className="text-3xl">Not thing to show</h1>;
     }
   }, [isOpenModal, apiLoading]);
+      default:
+        return <h1 className="text-3xl">Not thing to show</h1>;
+    }
+  }, [isOpenModal, apiLoading]);
 
+  useEffect(() => {
+    if (curCategoryIndex === undefined) return;
+    setCurCategory(categories[curCategoryIndex]);
+  }, [categories, curCategoryIndex]);
   useEffect(() => {
     if (curCategoryIndex === undefined) return;
     setCurCategory(categories[curCategoryIndex]);

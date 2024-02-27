@@ -9,7 +9,7 @@ import { ImageType } from "@/types";
 import { sleep } from "@/utils/appHelper";
 import { useUploadContext } from "@/store/ImageContext";
 import Skeleton from "../Skeleton";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/16/solid";
 
 const cx = classNames.bind(styles);
@@ -160,7 +160,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                   <div className={cx("image-container")}>
                      <div className={cx("image-frame", "relative")}>
                         <img className="opacity-[.4]" src={item.image_url} alt="img" />
-                        {!added && <ArrowPathIcon className="animate-spin absolute text-[30px]" />}
+                        {!added && <ArrowPathIcon className="animate-spin absolute w-[30px]" />}
                      </div>
                   </div>
                </div>
@@ -194,7 +194,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                      htmlFor="image_upload"
                   >
                      <span>
-                        <PlusIcon className="w-[22px] mr-[4px]" />
+                        <ArrowUpTrayIcon className="w-[22px] mr-[6px]" />
                         Upload
                      </span>
                   </label>
