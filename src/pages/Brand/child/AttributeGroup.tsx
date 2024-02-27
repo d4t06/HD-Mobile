@@ -4,173 +4,244 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import styles from "../Brand.module.scss";
 import classNames from "classnames/bind";
-import { Button, Modal } from "@/components";
+import { Button, DragAbleItem, Modal } from "@/components";
 import AddItem from "@/components/Modal/AddItem";
 import ConfirmModal from "@/components/Modal/Confirm";
 import useBrandAction from "@/hooks/useBrand";
 import { generateId } from "@/utils/appHelper";
-import PushFrame from "@/components/ui/PushFrame";
 import { PlusIcon } from "@heroicons/react/16/solid";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 const cx = classNames.bind(styles);
 
 type Props = {
-   categories: Category[];
-   //  addAttribute: (attribute: Category_Attribute, type: "Add" | "Edit", curIndex?: number | undefined) => Promise<void>;
-   //  deleteAttribute: (curIndex?: number | undefined) => Promise<void>;
+  categories: Category[];
+  //  addAttribute: (attribute: Category_Attribute, type: "Add" | "Edit", curIndex?: number | undefined) => Promise<void>;
+  //  deleteAttribute: (curIndex?: number | undefined) => Promise<void>;
 };
 
 type ModalTarget = "add-attr" | "edit-attr" | "delete-attr";
 
 function AttributeGroup({ categories }: Props) {
-   const [curCategory, setCurCategory] = useState<Category | undefined>();
-   const [curCategoryIndex, setCurCategoryIndex] = useState<number>();
-   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [curCategory, setCurCategory] = useState<Category | undefined>();
+  const [curCategoryIndex, setCurCategoryIndex] = useState<number>();
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isDrag, setIsDrag] = useState(false);
 
-   const openModalTarget = useRef<ModalTarget | "">("");
-   const curAttrIndex = useRef<number>();
+  const endIndexRef = useRef<number>(0);
+  const openModalTarget = useRef<ModalTarget | "">("");
+  const curAttrIndex = useRef<number>();
 
-   //  hooks
-   const { addAttribute, deleteAttribute, apiLoading } = useBrandAction({
+  //  hooks
+  const { addAttribute, deleteAttribute, sortAttribute, apiLoading } =
+    useBrandAction({
       curCategory,
       setIsOpenModal,
       curBrands: undefined,
-   });
+    });
 
-   const handleAddAttr = async (value: string, type: "Add" | "Edit") => {
-      if (curCategory?.id === undefined) throw new Error("curCategory.id is undefined");
+  const attributeOrder = curCategory
+    ? curCategory.attribute_order.split("-")
+    : [];
 
-      const newCatAttr: CategoryAttribute = {
-         id: undefined,
-         attribute: value,
-         attribute_ascii: generateId(value),
-         category_id: curCategory?.id,
-      };
+  const handleAddAttr = async (value: string, type: "Add" | "Edit") => {
+    if (curCategory?.id === undefined)
+      throw new Error("curCategory.id is undefined");
 
-      if (type === "Edit") {
-         if (curAttrIndex.current === undefined || curCategory.attributes === undefined) {
-            throw new Error("Current index not found");
-         }
+    const newCatAttr: CategoryAttribute = {
+      id: undefined,
+      attribute: value,
+      attribute_ascii: generateId(value),
+      category_id: curCategory?.id,
+    };
 
-         newCatAttr.id = curCategory.attributes[curAttrIndex.current].id;
+    if (type === "Edit") {
+      if (
+        curAttrIndex.current === undefined ||
+        curCategory.attributes === undefined
+      ) {
+        throw new Error("Current index not found");
       }
 
-      await addAttribute(newCatAttr, type, curAttrIndex.current);
-   };
+      newCatAttr.id = curCategory.attributes[curAttrIndex.current].id;
+    }
 
-   const handleDeleteAttr = async () => {
-      await deleteAttribute(curAttrIndex.current);
-   };
+    await addAttribute(newCatAttr, type, curAttrIndex.current);
+  };
 
-   const handleOpenModal = (target: typeof openModalTarget.current, index?: number) => {
-      openModalTarget.current = target;
-      switch (target) {
-         case "edit-attr":
-         case "delete-attr":
-            curAttrIndex.current = index ?? undefined;
-            break;
-      }
-      setIsOpenModal(true);
-   };
+  const handleDeleteAttr = async () => {
+    await deleteAttribute(curAttrIndex.current);
+  };
 
-   const renderModal = useMemo(() => {
-      if (!isOpenModal) return;
-      switch (openModalTarget.current) {
-         case "add-attr":
-            if (!curCategory) return <p className="text-[16px]">Current category not found</p>;
-            return (
-               <AddItem
-                  loading={apiLoading}
-                  title="Add attribute"
-                  cbWhenSubmit={(value) => handleAddAttr(value, "Add")}
-                  setIsOpenModal={setIsOpenModal}
-               />
-            );
-         case "edit-attr":
-            if (curAttrIndex.current === undefined || curCategory?.attributes == undefined)
-               return <h1>Index not found</h1>;
+  const handleSortAttrs = async (startIndex: number) => {
+    if (!curCategory) throw new Error("curCategory.id is undefined");
 
-            const initValue = curCategory?.attributes[curAttrIndex.current].attribute;
-            return (
-               <AddItem
-                  loading={apiLoading}
-                  title="Add category"
-                  cbWhenSubmit={(value) => handleAddAttr(value, "Edit")}
-                  setIsOpenModal={setIsOpenModal}
-                  initValue={initValue}
-               />
-            );
+    await sortAttribute(startIndex, endIndexRef.current, curCategory);
+  };
 
-         case "delete-attr":
-            if (curAttrIndex.current === undefined || curCategory?.attributes == undefined)
-               return <h1>Index not found</h1>;
+  const handleOpenModal = (
+    target: typeof openModalTarget.current,
+    index?: number
+  ) => {
+    openModalTarget.current = target;
+    switch (target) {
+      case "edit-attr":
+      case "delete-attr":
+        curAttrIndex.current = index ?? undefined;
+        break;
+    }
+    setIsOpenModal(true);
+  };
 
-            return <ConfirmModal callback={handleDeleteAttr} loading={apiLoading} setOpenModal={setIsOpenModal} />;
+  const renderModal = useMemo(() => {
+    if (!isOpenModal) return;
+    switch (openModalTarget.current) {
+      case "add-attr":
+        if (!curCategory)
+          return <p className="text-[16px]">Current category not found</p>;
+        return (
+          <AddItem
+            loading={apiLoading}
+            title="Add attribute"
+            cbWhenSubmit={(value) => handleAddAttr(value, "Add")}
+            setIsOpenModal={setIsOpenModal}
+          />
+        );
+      case "edit-attr":
+        if (
+          curAttrIndex.current === undefined ||
+          curCategory?.attributes == undefined
+        )
+          return <h1>Index not found</h1>;
 
-         default:
-            return <h1 className="text-3xl">Not thing to show</h1>;
-      }
-   }, [isOpenModal, apiLoading]);
+        const initValue =
+          curCategory?.attributes[curAttrIndex.current].attribute;
+        return (
+          <AddItem
+            loading={apiLoading}
+            title="Add category"
+            cbWhenSubmit={(value) => handleAddAttr(value, "Edit")}
+            setIsOpenModal={setIsOpenModal}
+            initValue={initValue}
+          />
+        );
 
-   useEffect(() => {
-      if (curCategoryIndex === undefined) return;
-      setCurCategory(categories[curCategoryIndex]);
-   }, [categories, curCategoryIndex]);
+      case "delete-attr":
+        if (
+          curAttrIndex.current === undefined ||
+          curCategory?.attributes == undefined
+        )
+          return <h1>Index not found</h1>;
 
-   return (
-      <>
-         <div className="bg-[#fff]  rounded-[8px] p-[20px] mb-[30px]">
-            <div className="flex items-center justify-between">
-               <div className="flex items-center">
-                  <p className={cx("input-label", "mr-[10px]")}>Category: </p>
-                  <div className="bg-[#ccc] rounded-[12px]">
-                     <select
-                        disabled={!categories.length}
-                        className={`${inputClasses.input} min-w-[100px]`}
-                        name="category"
-                        onChange={(e) => setCurCategoryIndex(+e.target.value)}
-                     >
-                        <option value={undefined}>---</option>
-                        {!!categories.length &&
-                           categories.map((category, index) => (
-                              <option key={index} value={index}>
-                                 {category.category_name}
-                              </option>
-                           ))}
-                     </select>
-                  </div>
-               </div>
+        return (
+          <ConfirmModal
+            callback={handleDeleteAttr}
+            loading={apiLoading}
+            setOpenModal={setIsOpenModal}
+          />
+        );
 
-               <Button disable={!curCategory} onClick={() => handleOpenModal("add-attr")} primary>
-                  <PlusIcon  className="w-[24px]"/> Add attribute
-               </Button>
-            </div>
+      default:
+        return <h1 className="text-3xl">Not thing to show</h1>;
+    }
+  }, [isOpenModal, apiLoading]);
 
-            {curCategory?.attributes && (
-               <div className={`mt-[14px] row gap-[10px] ${apiLoading ? "disable" : ""}`}>
-                  {curCategory.attributes.map((attr, index) => (
-                     <PushFrame type="translate" key={index}>
-                        <div className={cx("attr-item")}>
-                           <span>{attr.attribute}</span>
+  useEffect(() => {
+    if (curCategoryIndex === undefined) return;
+    setCurCategory(categories[curCategoryIndex]);
+  }, [categories, curCategoryIndex]);
 
-                           <div className={cx("cta")}>
-                              <Button onClick={() => handleOpenModal("delete-attr", index)}>
-                                 <TrashIcon  className="w-[24px]"/>
-                              </Button>
-                              <Button onClick={() => handleOpenModal("edit-attr", index)}>
-                              <PencilSquareIcon  className="w-[24px]"/>
-                              </Button>
-                           </div>
-                        </div>
-                     </PushFrame>
+  return (
+    <>
+      <div className="bg-[#fff]  rounded-[8px] p-[20px] mb-[30px]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <p className={cx("input-label", "mr-[10px]")}>Category: </p>
+            <div className="bg-[#ccc] rounded-[12px]">
+              <select
+                disabled={!categories.length}
+                className={`${inputClasses.input} min-w-[100px]`}
+                name="category"
+                onChange={(e) => setCurCategoryIndex(+e.target.value)}
+              >
+                <option value={undefined}>---</option>
+                {!!categories.length &&
+                  categories.map((category, index) => (
+                    <option key={index} value={index}>
+                      {category.category_name}
+                    </option>
                   ))}
-               </div>
-            )}
-         </div>
+              </select>
+            </div>
+          </div>
 
-         {isOpenModal && <Modal setShowModal={setIsOpenModal}>{renderModal}</Modal>}
-      </>
-   );
+          <Button
+            disable={!curCategory}
+            onClick={() => handleOpenModal("add-attr")}
+            primary
+          >
+            <PlusIcon className="w-[24px]" /> Add attribute
+          </Button>
+        </div>
+
+        {curCategory && (
+          <div
+            className={`mt-[14px] row gap-[10px] ${
+              apiLoading ? "disable" : ""
+            }`}
+          >
+            {attributeOrder.length ? (
+              attributeOrder.map((item, index) => {
+                const foundedCatAttribute = curCategory.attributes.find(
+                  (attr) => attr.attribute_ascii === item
+                );
+                if (!foundedCatAttribute) return <p>Wrong index</p>;
+
+                return (
+                  <DragAbleItem
+                    index={index}
+                    key={index}
+                    className={`attr-item ${
+                      apiLoading ? "opacity-60 pointer-events-none" : ""
+                    }`}
+                    setIsDrag={setIsDrag}
+                    isDrag={isDrag}
+                    handleDragEnd={() => handleSortAttrs(index)}
+                    endIndexRef={endIndexRef}
+                  >
+                    <div className="flex">
+                      <span className="text-[14px]">
+                        {foundedCatAttribute.attribute}
+                      </span>
+                      <div className={'cta'}>
+                        <button
+                          className="hover:text-[#cd1818]"
+                          onClick={() => handleOpenModal("delete-attr", index)}
+                        >
+                          <TrashIcon className="w-[22px]" />
+                        </button>
+                        <button
+                          className="hover:text-[#cd1818]"
+                          onClick={() => handleOpenModal("edit-attr", index)}
+                        >
+                          <PencilSquareIcon className="w-[22px]" />
+                        </button>
+                      </div>
+                    </div>
+                  </DragAbleItem>
+                );
+              })
+            ) : (
+              <p>No have attribute jet...</p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {isOpenModal && (
+        <Modal setShowModal={setIsOpenModal}>{renderModal}</Modal>
+      )}
+    </>
+  );
 }
 
 export default AttributeGroup;

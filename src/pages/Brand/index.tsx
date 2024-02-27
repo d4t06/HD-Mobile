@@ -16,11 +16,16 @@ import useAppConfig from "@/hooks/useAppConfig";
 import { useApp } from "@/store/AppContext";
 import AttributeGroup from "./child/AttributeGroup";
 import PriceRangeGroup from "./child/PriceRangeGroup";
-import { ArrowPathIcon, PencilIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+   ArrowPathIcon,
+   PencilIcon,
+   PencilSquareIcon,
+   TrashIcon,
+} from "@heroicons/react/24/outline";
 
 const cx = classNames.bind(styles);
 
-const CAT_FIELDS: ["Name", "Icon"] = ["Name", "Icon"];
+const CAT_FIELDS: ["Name"] = ["Name"];
 
 type ModalTarget =
    | "add-brand"
@@ -91,10 +96,10 @@ export default function CategoryBrand() {
 
       const newCategory: CategorySchema = {
          category_name: getFieldValue(value, "Name"),
-         category_ascii: generateId(getFieldValue(value, "Name")),
-         icon: getFieldValue(value, "Icon"),
+         category_name_ascii: generateId(getFieldValue(value, "Name")),
          id: undefined,
-         default: !!getFieldValue(value, "default"),
+         hidden: false,
+         attribute_order: "",
       };
 
       if (type === "Edit") {
@@ -102,10 +107,20 @@ export default function CategoryBrand() {
             setErrorToast("Current index not found");
             return;
          }
+
          newCategory.id = categories[curCatIndex.current].id;
+
+         return await addCategory({
+            type: "Edit",
+            category: newCategory,
+            curIndex: curCatIndex.current,
+         });
       }
 
-      await addCategory(newCategory, type, curCatIndex.current);
+      await addCategory({
+         type: "Add",
+         category: newCategory,
+      });
    };
 
    const handleDeleteCategory = async () => {
@@ -176,7 +191,6 @@ export default function CategoryBrand() {
                   setIsOpenModal={setIsOpenModal}
                   intiFieldData={{
                      name: categories[curCatIndex.current].category_name,
-                     icon: categories[curCatIndex.current].icon,
                   }}
                />
             );
@@ -232,11 +246,11 @@ export default function CategoryBrand() {
                            {
                               cb: () =>
                                  handleOpenModal("delete-category", index),
-                              icon: <PencilIcon className="w-[24px]"/>,
+                              icon: <PencilIcon className="w-[24px]" />,
                            },
                            {
                               cb: () => handleOpenModal("edit-category", index),
-                              icon: <TrashIcon className="w-[24px]"/>,
+                              icon: <TrashIcon className="w-[24px]" />,
                            },
                         ]}
                      />
@@ -301,12 +315,14 @@ export default function CategoryBrand() {
                                  {
                                     cb: () =>
                                        handleOpenModal("delete-brand", index),
-                                    icon: <TrashIcon  className="w-[24px]"/>,
+                                    icon: <TrashIcon className="w-[24px]" />,
                                  },
                                  {
                                     cb: () =>
                                        handleOpenModal("edit-brand", index),
-                                    icon: <PencilSquareIcon  className="w-[24px]"/>,
+                                    icon: (
+                                       <PencilSquareIcon className="w-[24px]" />
+                                    ),
                                  },
                               ]}
                            />

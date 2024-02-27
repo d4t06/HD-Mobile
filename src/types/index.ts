@@ -86,7 +86,7 @@ export interface Product {
    installment: boolean;
    category_data: {
       category_name: string;
-      category_ascii: string;
+      category_name_ascii: string;
       attributes: CategoryAttribute[];
    };
    brand_data: {
@@ -139,15 +139,15 @@ export type CategoryAttribute = {
 
 export type Category = {
    id?: number;
-   category_ascii: string;
+   category_name_ascii: string;
    category_name: string;
-   icon: string;
-   default?: boolean;
-   attributes?: CategoryAttribute[];
-   price_ranges?: PriceRange[];
+   attribute_order: string;
+   hidden?: boolean;
+   attributes: CategoryAttribute[];
+   price_ranges: PriceRange[];
 };
 
-export type CategorySchema = Omit<Category, "attributes" | "price_range">;
+export type CategorySchema = Omit<Category, "attributes" | "price_ranges">;
 
 export type CategorySlider = {
    category_data: Category;
@@ -245,7 +245,7 @@ export type CartItem = {
       colors_data: { color: string; id: number }[];
       storages_data: { storage: string; id: number }[];
       category_data: {
-         category_ascii: string;
+         category_name_ascii: string;
       };
    };
    updatedAt: string;

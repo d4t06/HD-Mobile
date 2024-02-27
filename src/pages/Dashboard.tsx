@@ -187,7 +187,7 @@ export default function Dashboard() {
                All
             </Button>
             {categories.map((cat, index) => {
-               const active = curCategory?.category_ascii === cat.category_ascii;
+               const active = curCategory?.category_name_ascii === cat.category_name_ascii;
                return (
                   <Button
                      key={index}

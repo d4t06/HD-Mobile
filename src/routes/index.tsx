@@ -25,7 +25,7 @@ import UserOrderDetail from "@/pages/UserOrderDetail";
 
 const routes = {
    HOME: "",
-   CATEGORY: "/:category_ascii",
+   CATEGORY: "/:category_name_ascii",
    LOGIN: "/login",
    REGISTER: "/register",
    SEARCH: "/search/:key",

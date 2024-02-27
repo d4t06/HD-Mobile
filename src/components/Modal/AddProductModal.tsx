@@ -40,7 +40,7 @@ export default function AddProductModal({ curProduct, openType, setIsOpenModalPa
 
    const brandsByCategory = useMemo(() => {
       if (appStatus === "loading" || !brands || !selectedCat) return [];
-      return brands[selectedCat.category_ascii] || [];
+      return brands[selectedCat.category_name_ascii] || [];
    }, [brands, selectedCat, appStatus]);
 
    const handleInput = (field: keyof typeof productData, value: any) => {

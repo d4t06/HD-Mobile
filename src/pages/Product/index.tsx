@@ -31,16 +31,16 @@ export default function Product() {
    const prevCat = useRef("");
 
    // use hooks
-   const { category_ascii } = useParams<{ category_ascii: string }>();
-   const remaining = useMemo(() => count - products.length, [products, category_ascii]);
+   const { category_name_ascii } = useParams<{ category_name_ascii: string }>();
+   const remaining = useMemo(() => count - products.length, [products, category_name_ascii]);
 
    const curCategory = useMemo(
-      () => categories.find((c) => c.category_ascii === category_ascii),
-      [category_ascii, categories]
+      () => categories.find((c) => c.category_name_ascii === category_name_ascii),
+      [category_name_ascii, categories]
    );
    const { status: brandApiStatus } = useAppConfig({ curCategory, includeSlider: true });
 
-   const curBrands = useMemo(() => (curCategory ? brands[curCategory.category_ascii] : []), [curCategory, brands]);
+   const curBrands = useMemo(() => (curCategory ? brands[curCategory.category_name_ascii] : []), [curCategory, brands]);
 
    const handleGetMore = () => {
       if (!category_id) return;
@@ -57,7 +57,7 @@ export default function Product() {
 
    const sliderSkeleton = useMemo(() => <Skeleton className="w-full pt-[25%] rounded-[16px]" />, []);
    const canRenderSlider = useMemo(
-      () => curCategory?.category_ascii && !!sliders[curCategory?.category_ascii],
+      () => curCategory?.category_name_ascii && !!sliders[curCategory?.category_name_ascii],
       [sliders, curCategory]
    );
    const isLoading = useMemo(
@@ -76,17 +76,17 @@ export default function Product() {
    );
 
    useEffect(() => {
-      if (!category_ascii || !curCategory) return;
+      if (!category_name_ascii || !curCategory) return;
 
-      if (firstTimeRender.current || prevCat.current !== category_ascii) {
+      if (firstTimeRender.current || prevCat.current !== category_name_ascii) {
          dispatchRedux(fetchProducts({ category_id: curCategory?.id, filters, page: 1, sort }));
       }
 
       return () => {
          firstTimeRender.current = false;
-         prevCat.current = category_ascii || "";
+         prevCat.current = category_name_ascii || "";
       };
-   }, [categories, category_ascii]);
+   }, [categories, category_name_ascii]);
 
    if (!initLoading && (!curCategory || !curCategory.id)) return <h1>Category not found</h1>;
 
@@ -96,7 +96,7 @@ export default function Product() {
 
          {brandApiStatus === "loading" && sliderSkeleton}
          {brandApiStatus === "success" && canRenderSlider && (
-            <ImageSlider data={sliders[curCategory!.category_ascii]} />
+            <ImageSlider data={sliders[curCategory!.category_name_ascii]} />
          )}
 
          <div className={cx("product-body", "row")}>
@@ -107,7 +107,7 @@ export default function Product() {
                </div>
 
                <div className="block md:hidden">
-                  <Filter loading={brandApiStatus === "loading"} categoryAscii={curCategory?.category_ascii} />
+                  <Filter loading={brandApiStatus === "loading"} categoryAscii={curCategory?.category_name_ascii} />
                </div>
 
                <Sort loading={status === "loading"} category_id={curCategory?.id} />
@@ -140,7 +140,7 @@ export default function Product() {
             </div>
 
             <div className="col w-1/4 max-[768px]:hidden">
-               {<Filter loading={brandApiStatus === "loading"} categoryAscii={curCategory?.category_ascii} />}
+               {<Filter loading={brandApiStatus === "loading"} categoryAscii={curCategory?.category_name_ascii} />}
             </div>
          </div>
       </div>
