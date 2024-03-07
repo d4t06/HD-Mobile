@@ -43,7 +43,7 @@ export default function SpecSection({ product, loading }: Props) {
                      return (
                         <tr key={index}>
                            <td className="w-[40%]">{foundedCategoryAttribute.attribute}</td>
-                           <td className="">{foundedProductAttribute?.value || "..."}</td>
+                           <td className="leading-[1.6]">{foundedProductAttribute?.value || "..."}</td>
                         </tr>
                      );
                   })}

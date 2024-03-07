@@ -22,6 +22,12 @@ export default function DefaultLayout({ children }: Props) {
          </div>
          <ScrollTop />
          <Footer />
+
+         <div className="container">
+            <p className="py-[10px] text-[14px] text-[#333] font-[500]">
+               © All rights no reserved ¯\_(ツ)_/¯. Make with ❤️ by d4t06
+            </p>
+         </div>
       </div>
    );
 }

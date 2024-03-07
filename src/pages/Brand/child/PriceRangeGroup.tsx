@@ -1,5 +1,5 @@
 import { inputClasses } from "@/components/ui/Input";
-import { Category, PriceRange } from "@/types";
+import { Category, PriceRange, PriceRangeSchema } from "@/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import styles from "../Brand.module.scss";
@@ -47,29 +47,33 @@ export default function PriceRangeGroup({ categories }: Props) {
    const handleAddPriceRange = async (data: Record<string, string>, type: "Add" | "Edit") => {
       if (curCategory?.id === undefined) throw new Error("curCategory.id is undefined");
 
-      const newPriceRange: PriceRange = {
-         id: undefined,
+      const newPriceRange: PriceRangeSchema = {
          from: +getFieldValue(data, "From"),
          to: +getFieldValue(data, "To"),
          label: getFieldValue(data, "Label"),
          category_id: curCategory.id,
       };
 
-      if (type === "Edit") {
-         if (
-            data === undefined ||
-            curPriceIndex.current === undefined ||
-            curCategory.price_ranges === undefined
-         ) {
-            throw new Error("Current index not found");
-         }
+      switch (type) {
+         case "Add":
+            return addPriceRange({ type: "Add", priceRange: newPriceRange });
 
-         newPriceRange.id = curCategory.price_ranges[curPriceIndex.current].id;
+         case "Edit":
+            if (
+               data === undefined ||
+               curPriceIndex.current === undefined ||
+               curCategory.price_ranges === undefined
+            ) {
+               throw new Error("Current index not found");
+            }
 
-         if (newPriceRange.id === undefined) throw new Error("id not found");
+            return addPriceRange({
+               currentIndex: curPriceIndex.current,
+               id: curCategory.price_ranges[curPriceIndex.current].id,
+               priceRange: newPriceRange,
+               type: "Edit",
+            });
       }
-
-      await addPriceRange(newPriceRange, type, curPriceIndex.current);
    };
 
    const handleDeleteAttr = async () => {
@@ -182,7 +186,7 @@ export default function PriceRangeGroup({ categories }: Props) {
                <div className={`mt-[14px] row gap-[10px] ${apiLoading ? "disable" : ""}`}>
                   {curCategory.price_ranges.length ? (
                      curCategory.price_ranges.map((price, index) => (
-                        <div className={cx("attr-item")}>
+                        <div key={index} className={cx("attr-item")}>
                            <div>
                               <p>{price.label}</p>
                               <p>

@@ -10,6 +10,7 @@ import {
    ChatBubbleBottomCenterIcon,
    ChevronLeftIcon,
    ChevronRightIcon,
+   ComputerDesktopIcon,
    DevicePhoneMobileIcon,
    PhotoIcon,
    StarIcon,
@@ -41,20 +42,21 @@ function Sidebar() {
          <div>
             <Link
                to="/dashboard"
-               className={cx(
-                  { active: location.pathname === "/dashboard" },
-                  "sidebar__item"
-               )}
+               className={cx({ active: location.pathname === "/dashboard" }, "sidebar__item")}
+            >
+               <ComputerDesktopIcon className="w-[24px]" />
+               {expand && <>Dashboard</>}
+            </Link>
+            <Link
+               to="/dashboard/product"
+               className={cx({ active: location.pathname === "/dashboard/product" }, "sidebar__item")}
             >
                <DevicePhoneMobileIcon className="w-[24px]" />
                {expand && <>Product</>}
             </Link>
 
             <Link
-               className={cx(
-                  { active: location.pathname === "/dashboard/brand" },
-                  "sidebar__item"
-               )}
+               className={cx({ active: location.pathname === "/dashboard/brand" }, "sidebar__item")}
                to="/dashboard/brand"
             >
                <BookmarkSquareIcon className="w-[24px]" />
@@ -73,10 +75,7 @@ function Sidebar() {
             </Link>
 
             <Link
-               className={cx(
-                  { active: location.pathname === "/dashboard/order" },
-                  "sidebar__item"
-               )}
+               className={cx({ active: location.pathname === "/dashboard/order" }, "sidebar__item")}
                to="/dashboard/order"
             >
                <ArchiveBoxArrowDownIcon className="w-[24px]" />

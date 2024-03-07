@@ -213,12 +213,15 @@ export type LCStorage = {
 };
 
 export type PriceRange = {
-   id?: number;
+   id: number;
    category_id: number;
    from: number;
    to: number;
    label: string;
 };
+
+export type PriceRangeSchema = Omit<PriceRange, "id">
+
 
 export type Cart = {
    id: number;

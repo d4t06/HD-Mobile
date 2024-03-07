@@ -8,7 +8,7 @@ import {
    Banner,
    Account,
    ProductDetail,
-   Dashboard,
+   DashboardProduct,
    EditProduct,
    Search,
    Message,
@@ -16,12 +16,13 @@ import {
    Login,
    Register,
    Unauthorized,
+   Checkout,
+   DashboardOrder,
+   DashboardOrderDetail,
+   UserOrder,
+   UserOrderDetail,
+   Dashboard
 } from "@/pages";
-import Checkout from "@/pages/Checkout/Checkout";
-import DashboardOrder from "@/pages/DashboardOrder";
-import DashboardOrderDetail from "@/pages/DashboardOrderDetail";
-import UserOrder from "@/pages/UserOrder";
-import UserOrderDetail from "@/pages/UserOrderDetail";
 
 const routes = {
    HOME: "",
@@ -109,6 +110,11 @@ const privateRoutes = [
       path: "/dashboard",
       role: ["ADMIN"],
       component: Dashboard,
+   },
+   {
+      path: "/dashboard/product",
+      role: ["ADMIN"],
+      component: DashboardProduct,
    },
    {
       path: "/dashboard/brand",
