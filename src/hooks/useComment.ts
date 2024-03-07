@@ -7,13 +7,13 @@ import { initLocalStorage } from "@/utils/appHelper";
 
 type Props = {
    setIsOpenModal: Dispatch<SetStateAction<boolean>>;
-   product_name_ascii?: string;
+   product_ascii?: string;
    admin?: boolean;
 };
 
 export type CommentStateType = {
    page: number;
-   product_name_ascii: string;
+   product_ascii: string;
    comments: ProductComment[];
    status: "loading" | "error" | "success";
    count: number;
@@ -24,7 +24,7 @@ const initialState: CommentStateType = {
    status: "loading",
    comments: [],
    page: 1,
-   product_name_ascii: "",
+   product_ascii: "",
    count: 0,
    page_size: 0,
 };
@@ -32,7 +32,7 @@ const initialState: CommentStateType = {
 const COMMENT_URL = "/product-comment-management";
 const COMMENT_URL_CLIENT = "/product-comments";
 
-export default function useComment({ setIsOpenModal, product_name_ascii, admin }: Props) {
+export default function useComment({ setIsOpenModal, product_ascii, admin }: Props) {
    const [state, setState] = useState<CommentStateType>(initialState);
    const [apiLoading, setApiLoading] = useState(false);
    const { setSuccessToast, setErrorToast } = useToast();
@@ -81,7 +81,7 @@ export default function useComment({ setIsOpenModal, product_name_ascii, admin }
                params: { page: _page },
             });
          } else {
-            res = await publicRequest.get(`${COMMENT_URL_CLIENT}/${product_name_ascii}`, {
+            res = await publicRequest.get(`${COMMENT_URL_CLIENT}/${product_ascii}`, {
                params: { page: _page },
             });
          }
@@ -229,12 +229,12 @@ export default function useComment({ setIsOpenModal, product_name_ascii, admin }
    //  run initial
    useEffect(() => {
       if (!ranEffect.current) {
-         if (product_name_ascii || admin) {
+         if (product_ascii || admin) {
             ranEffect.current = true;
             getComments(1);
          }
       }
-   }, [product_name_ascii]);
+   }, [product_ascii]);
 
    return {
       apiLoading,

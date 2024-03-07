@@ -23,24 +23,33 @@ export default function useProductAction({ setIsOpenModal }: Props) {
    const privateRequest = usePrivateRequest();
    const { setErrorToast, setSuccessToast } = useToast();
 
-   const updateProducts = (products: Product[], product: Product, index: number) => {
+   const updateProducts = (products: Product[], product: ProductSchema, index: number) => {
       const newProducts = [...products];
       newProducts[index] = { ...newProducts[index], ...product };
 
       return newProducts;
    };
 
-   const addProduct = async (
-      type: "Edit" | "Add",
-      product: ProductSchema & { curIndex?: number; id?: number }
-   ) => {
-      try {
-         if (!product) throw new Error("Product data error");
+   type AddProduct = {
+      type: "Add";
+      product: ProductSchema;
+   };
 
-         switch (type) {
+   type EditProduct = {
+      type: "Edit";
+      product: ProductSchema;
+      currentIndex: number;
+      product_id: number;
+   };
+
+   const addProduct = async ({ ...props }: AddProduct | EditProduct) => {
+      try {
+         if (!props.product) throw new Error("Product data error");
+
+         switch (props.type) {
             case "Add":
                setApiLoading(true);
-               const res = await privateRequest.post(`${PRODUCT_URL}/products`, product, {
+               const res = await privateRequest.post(`${PRODUCT_URL}/products`, props.product, {
                   headers: { "Content-Type": "application/json" },
                });
 
@@ -50,32 +59,26 @@ export default function useProductAction({ setIsOpenModal }: Props) {
                   combines_data: [],
                } as Product;
 
-               return dispatch(storingProducts({ products: [newProductData] }));
+               dispatch(storingProducts({ products: [newProductData] }));
+               break;
 
             case "Edit":
-               if (product.curIndex === undefined || product.id === undefined)
-                  throw new Error("No have product index");
                setApiLoading(true);
-               const { curIndex, id, ...productProps } = product;
+               const { currentIndex, product, product_id } = props;
 
-               await privateRequest.put(`${PRODUCT_URL}/products/${id}`, productProps, {
+               await privateRequest.put(`${PRODUCT_URL}/products/${product_id}`, product, {
                   headers: { "Content-Type": "application/json" },
                });
 
-               const newProductsUpdate: Product[] = updateProducts(
-                  products,
-                  productProps as Product,
-                  curIndex
-               );
-
+               const newProductsUpdate: Product[] = updateProducts(products, product, currentIndex);
                dispatch(setProducts({ products: newProductsUpdate }));
-               break;
          }
-
-         setSuccessToast(`${type} product successful`);
+         setSuccessToast(`${props.type} product successful`);
+         
       } catch (error) {
          console.log({ message: error });
-         setErrorToast(`${type} product fail`);
+         setErrorToast(`${props.type} product fail`);
+
       } finally {
          setApiLoading(false);
          setIsOpenModal(false);

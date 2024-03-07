@@ -25,10 +25,10 @@ function Header() {
          <li
             key={index}
             className={cx("nav-item", {
-               active: !showModal && location.pathname === `/${cat.category_name_ascii}`,
+               active: !showModal && location.pathname === `/${cat.category_ascii}`,
             })}
          >
-            <Link to={`/${cat.category_name_ascii}`}>
+            <Link to={`/${cat.category_ascii}`}>
                <p className={cx("nav-text")}>{cat.category_name}</p>
             </Link>
          </li>

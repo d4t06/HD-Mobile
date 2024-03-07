@@ -37,7 +37,7 @@ export default function CommentItem({ className, comment, admin, children }: Pro
                      <h5 className={classes.userName}>{comment.cus_name}</h5>
                      <span className="text-[#808080] text-[16px] ml-[8px]">{titleContent.commentDashboard}</span>
                   </div>
-                  <p className={classes.comment}>Đã bình luận '{comment.product_name_ascii}'</p>
+                  <p className={classes.comment}>Đã bình luận '{comment.product_ascii}'</p>
                </>
             ) : (
                <h5 className={classes.userName}>{titleContent.defaultComment}</h5>

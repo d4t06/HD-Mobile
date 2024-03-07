@@ -17,26 +17,26 @@ type Props = {
 const PRODUCT_ATTRIBUTE_URL = "/product-management/attributes";
 
 const findInitValue = (attributes_data: ProductAttribute[], catAttr: CategoryAttribute) => {
-   const target = attributes_data.find((item) => item.attribute_data.attribute_ascii === catAttr.attribute_ascii);
+   const target = attributes_data.find((item) => item.category_attr_id === catAttr.id);
 
    return target;
 };
 
 function AttributeGroup({ catAttr }: Props, ref: Ref<AttributeRef>) {
-   const { attributes_data, product_name_ascii, setIsChange } = useProductContext();
+   const { attributes_data, product_ascii, setIsChange } = useProductContext();
    const [value, setValue] = useState("");
    const stock = useRef<ProductAttribute>();
 
    const privateRequest = usePrivateRequest();
 
    const submit = async () => {
-      if (catAttr.id === undefined || product_name_ascii === undefined)
+      if (catAttr.id === undefined || product_ascii === undefined)
          throw new Error("category attribute id is undefined");
 
       if (stock.current === undefined && !!value) {
          const data = initProductAttributeSchema({
             category_attr_id: catAttr.id,
-            product_name_ascii,
+            product_ascii,
             value,
          });
 
@@ -47,7 +47,7 @@ function AttributeGroup({ catAttr }: Props, ref: Ref<AttributeRef>) {
       if (stock.current && !!value && stock.current.value !== value) {
          const data = initProductAttributeSchema({
             category_attr_id: catAttr.id,
-            product_name_ascii,
+            product_ascii,
             value,
          });
 

@@ -72,7 +72,7 @@ export default function Checkout() {
                image_url: item.product_data.image_url,
                order_id: newOrderData.id,
                product_name: item.product_data.product_name,
-               slug: item.product_data.category_data.category_name_ascii + "/" + item.product_name_ascii,
+               slug: item.product_data.category_data.category_ascii + "/" + item.product_ascii,
                storage: storage.storage,
                price: item.product_data.combines_data[0].price,
             } as OrderItem;

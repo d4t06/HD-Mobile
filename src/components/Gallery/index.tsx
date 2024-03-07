@@ -6,11 +6,10 @@ import { Button } from "../";
 import styles from "./Gallery.module.scss";
 import usePrivateRequest from "@/hooks/usePrivateRequest";
 import { ImageType } from "@/types";
-import { sleep } from "@/utils/appHelper";
-import { useUploadContext } from "@/store/ImageContext";
+import { formatSize, sleep } from "@/utils/appHelper";
+import { useImage } from "@/store/ImageContext";
 import Skeleton from "../Skeleton";
 import { ArrowPathIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
-import { PlusIcon } from "@heroicons/react/16/solid";
 
 const cx = classNames.bind(styles);
 
@@ -20,31 +19,40 @@ type Props = {
    multiple?: boolean;
 };
 
+type getImagesRes = {
+   page: number;
+   images: ImageType[];
+   pageSize: number;
+   count: number;
+};
+
 const IMAGE_URL = "/image-management/images";
 
 function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
    const [choseList, setChoseList] = useState<string[]>([]);
    const [active, setActive] = useState<ImageType>();
-   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+   const [status, setStatus] = useState<"fetching" | "loadingImages" | "success" | "error">(
+      "loadingImages"
+   );
    const [apiLoading, setApiLoading] = useState(false);
 
    const ranUseEffect = useRef(false);
 
+   // hooks
    const privateRequest = usePrivateRequest();
-   const { addedImageIds, currentImages, setCurrentImages, tempImages, status: uploadStatus } = useUploadContext();
+   const {
+      imageStore: { currentImages, tempImages, page, count, pageSize },
+      storeImages,
+   } = useImage();
 
-   const formatSize = (size: number) => {
-      const units = ["Kb", "Mb"];
-      let mb = 0;
+   const isLoading = status === "fetching" || status === "loadingImages";
 
-      if (size < 1024) return size + units[mb];
-      while (size > 1024) {
-         size -= 1024;
-         mb++;
-      }
-
-      return mb + "," + size + units[1];
-   };
+   const ableToChosenImage = useMemo(
+      () => (multiple ? !!choseList.length : !!active) && !isLoading,
+      [active, choseList]
+   );
+   const isRemaining = useMemo(() => count - page * pageSize > 0, [currentImages]);
+   const isNoHaveImage = !currentImages.length && !tempImages.length && !isLoading;
 
    const handleSubmit = () => {
       switch (multiple) {
@@ -77,10 +85,10 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
          setApiLoading(true);
          const controller = new AbortController();
 
-         await privateRequest.delete(`${IMAGE_URL}/${active.public_id}`);
+         await privateRequest.delete(`${IMAGE_URL}/${encodeURIComponent(active.public_id)}`);
 
          const newImages = currentImages.filter((image) => image.public_id !== active.public_id);
-         setCurrentImages(newImages);
+         storeImages({ currentImages: newImages });
 
          return () => {
             controller.abort();
@@ -92,12 +100,18 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
       }
    };
 
-   const getImages = async () => {
+   const getImages = async (page: number) => {
       try {
-         console.log("run getImages");
+         const res = await privateRequest.get(`${IMAGE_URL}?page=${page}`); //res.data
+         const data = res.data as getImagesRes;
+         const newImages = [...currentImages, ...data.images];
 
-         const res = await privateRequest.get(IMAGE_URL); //res.data
-         setCurrentImages(res.data);
+         storeImages({
+            count: data.count,
+            pageSize: data.pageSize,
+            page: data.page,
+            currentImages: newImages,
+         });
 
          if (import.meta.env.DEV) await sleep(300);
          setStatus("success");
@@ -110,22 +124,20 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
    const imageSkeleton = useMemo(
       () =>
          [...Array(8).keys()].map((item) => (
-            <div key={item} className={cx("col w-1/4", "gallery-item")}>
+            <div key={item} className={cx("px-[4px] w-1/6", "gallery-item")}>
                <Skeleton className="pt-[100%] w-[100% rounded-[6px]" />
             </div>
          )),
       []
    );
 
-   const ableToChosenImage = useMemo(() => (multiple ? !!choseList.length : !!active), [active, choseList]);
-
    const renderImages = useMemo(() => {
-      return currentImages?.map((item, index) => {
+      return currentImages.map((item, index) => {
          const indexOf = choseList.indexOf(item.image_url);
          const isInChoseList = indexOf !== -1;
 
          return (
-            <div key={index} className={cx("col w-1/4")}>
+            <div key={index} className={cx("w-1/6")}>
                <div className={cx("image-container", "group")}>
                   <div
                      onClick={() => setActive(item)}
@@ -142,7 +154,11 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                            isInChoseList ? "bg-[#cd1818] " : "bg-[#ccc] hover:bg-[#cd1818]"
                         } z-10 h-[24px] w-[24px] absolute rounded-[6px] text-[white]  left-[10px] bottom-[10px]`}
                      >
-                        {isInChoseList && <span className="text-[18px] font-semibold leading-[1]">{indexOf + 1}</span>}
+                        {isInChoseList && (
+                           <span className="text-[18px] font-semibold leading-[1]">
+                              {indexOf + 1}
+                           </span>
+                        )}
                      </Button>
                   )}
                </div>
@@ -153,20 +169,20 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
 
    const renderTempImages = useMemo(
       () =>
+         !!tempImages.length &&
          tempImages?.map((item, index) => {
-            const added = addedImageIds.includes(item.public_id);
             return (
-               <div key={index} className={cx("col w-1/4")}>
+               <div key={index} className={cx("w-1/6")}>
                   <div className={cx("image-container")}>
                      <div className={cx("image-frame", "relative")}>
                         <img className="opacity-[.4]" src={item.image_url} alt="img" />
-                        {!added && <ArrowPathIcon className="animate-spin absolute w-[30px]" />}
+                        <ArrowPathIcon className="animate-spin absolute w-[30px]" />
                      </div>
                   </div>
                </div>
             );
          }),
-      [tempImages, addedImageIds]
+      [tempImages]
    );
 
    useEffect(() => {
@@ -179,18 +195,22 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
 
       if (!ranUseEffect.current) {
          ranUseEffect.current = true;
-         getImages();
+         getImages(1);
       }
    }, []);
+
+   console.log('check current images', currentImages)
 
    return (
       <div className={cx("gallery")}>
          <div className={cx("gallery__top")}>
             <div className={cx("left")}>
-               <h1 className="text-[22px] font-semibold">Images</h1>
+               <h1 className="text-[22px] font-semibold">Images ({count})</h1>
                <div>
                   <label
-                     className={cx("input-label", { disable: apiLoading || uploadStatus === "uploading" })}
+                     className={cx("input-label", {
+                        disable: isLoading,
+                     })}
                      htmlFor="image_upload"
                   >
                      <span>
@@ -201,27 +221,40 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                </div>
             </div>
 
-            <Button className={cx("choose-image-btn")} disable={!ableToChosenImage} primary onClick={handleSubmit}>
+            <Button
+               className={cx("choose-image-btn")}
+               disable={!ableToChosenImage}
+               primary
+               onClick={handleSubmit}
+            >
                Chọn
             </Button>
          </div>
          <div className={cx("gallery__body", "flex mx-[-8px]")}>
             <div className={cx("w-2/3 px-[8px] no-scrollbar", "left")}>
-               <div className="row">
-                  {status === "loading" && imageSkeleton}
-
-                  {status !== "loading" && (
+               <div className="flex flex-wrap gap-y-[12px]">
+                  {status === "error" && <p>Some thing went wrong</p>}
+                  {status !== "error" && (
                      <>
-                        {status === "success" ? (
-                           <>
-                              {!!tempImages?.length && renderTempImages} {renderImages}
-                           </>
+                        {renderTempImages}
+                        {isNoHaveImage ? (
+                           <p className="text-[16px]">No have image jet...</p>
                         ) : (
-                           <h1>Some thing went wrong</h1>
+                           renderImages
                         )}
                      </>
                   )}
+
+                  {status === "loadingImages" && imageSkeleton}
                </div>
+
+               {!!currentImages.length && isRemaining && (
+                  <div className="text-center mt-[14px]">
+                     <Button onClick={() => getImages(page + 1)} primary>
+                        Thêm
+                     </Button>
+                  </div>
+               )}
             </div>
             <div className={cx("col w-1/3 px-[8px] overflow-hidden border-l-[2px]")}>
                {active && (

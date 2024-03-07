@@ -8,13 +8,13 @@ import ReviewItem from "@/components/ReviewItem";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/16/solid";
 
-export default function RatingSection({ product_name_ascii }: { product_name_ascii: string }) {
+export default function RatingSection({ product_ascii }: { product_ascii: string }) {
    const {
       state: { count, page, reviews, page_size, status, average },
       getReviews,
       likeReview,
       apiLoading,
-   } = useReview({ setIsOpenModal: () => {}, product_name_ascii });
+   } = useReview({ setIsOpenModal: () => {}, product_ascii });
 
    const currentCommentIndex = useRef(0);
 

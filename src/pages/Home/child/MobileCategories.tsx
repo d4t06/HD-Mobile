@@ -15,7 +15,7 @@ export default function MobileCategories({ categories }: Props) {
                   <div className="bg-[#8f1313] rounded-[8px] overflow-hidden relative pt-[100%] ">
                      <Link
                         className="bg-[#cd1818] mt-[6px] absolute inset-0 flex flex-col items-center justify-center text-white translate-y-[-6px] rounded-[8px]"
-                        to={`/${c.category_name_ascii}`}
+                        to={`/${c.category_ascii}`}
                      >
                         <span className="text-[14px] mt-[4px]">{c.category_name}</span>
                      </Link>

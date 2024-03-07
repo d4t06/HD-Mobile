@@ -27,7 +27,9 @@ export const countDayDiff = (dateString: string) => {
    const mysqlDate = new Date(dateString);
    const currentDate = new Date();
 
-   const daysDiff = Math.floor(Math.abs(currentDate.getTime() - mysqlDate.getTime()) / (1000 * 60 * 60 * 24));
+   const daysDiff = Math.floor(
+      Math.abs(currentDate.getTime() - mysqlDate.getTime()) / (1000 * 60 * 60 * 24)
+   );
 
    return daysDiff;
 };
@@ -47,13 +49,13 @@ export const initImageObject = (data: Partial<ImageType>) => {
 
 export const initProductObject = (data: Partial<ProductSchema>) => {
    const newProduct: ProductSchema = {
-      product_name_ascii: "",
+      imei: "",
+      product_ascii: "",
       image_url: "",
       installment: false,
       product_name: "",
-      brand_id: undefined,
-      category_id: undefined,
-      attributes_data: [],
+      brand_id: 0,
+      category_id: 0,
       ...data,
    };
 
@@ -64,14 +66,22 @@ export const initProductDetailObject = (data: Partial<Product>) => {
    const newProduct: Product = {
       ...initProductObject({}),
       brand_data: { brand_ascii: "", brand_name: "" },
-      category_data: { category_name_ascii: "", category_name: "", attributes: [] },
-      detail: { content: "", product_name_ascii: "" },
+      category_data: {
+         category_ascii: "",
+         category_name: "",
+         attributes: [],
+         attribute_order: "",
+         id: 0,
+         price_ranges: [],
+      },
+      detail: { content: "", product_ascii: "" },
       colors_data: [],
       combines_data: [],
       sliders_data: [],
       storages_data: [],
       attributes_data: [],
       comments_data: [],
+      id: 0,
       ...data,
    };
 
@@ -82,7 +92,7 @@ export const initStorageObject = (data: Partial<ProductStorage>) => {
    const initStorage: ProductStorage = {
       id: undefined,
       base_price: 0,
-      product_name_ascii: "",
+      product_ascii: "",
       default: false,
       storage: "",
       storage_ascii: "",
@@ -96,7 +106,7 @@ export const initColorObject = (data: Partial<ProductColor>) => {
    const newColor: ProductColor = {
       color: "",
       id: undefined,
-      product_name_ascii: "",
+      product_ascii: "",
       color_ascii: "",
       default: false,
       ...data,
@@ -114,7 +124,7 @@ export function initCombineData(data: Partial<ProductCombine>, color: string, st
       price: 0,
       color_id: 0,
       storage_id: 0,
-      product_name_ascii: "",
+      product_ascii: "",
       quantity: 0,
       color_data: { color, color_ascii: generateId(color) },
       storage_data: { storage, storage_ascii: generateId(storage) },
@@ -128,7 +138,7 @@ export const initProductSlider = (data: Partial<ProductSlider>) => {
    const productSlider: ProductSlider = {
       color_id: 0,
       id: 0,
-      product_name_ascii: "",
+      product_ascii: "",
       slider_id: 0,
       color_data: { color: "", color_ascii: "" },
       slider_data: { images: [], slider_name: "", id: 0 },
@@ -166,9 +176,21 @@ export const initBrandObject = (data: Partial<Brand>) => {
    return object;
 };
 
-
 export const initLocalStorage: LCStorage = {
    like_comment_ids: [],
    like_review_ids: [],
    product_history_ids: [],
+};
+
+export const formatSize = (size: number) => {
+   const units = ["Kb", "Mb"];
+   let mb = 0;
+
+   if (size < 1024) return size + units[mb];
+   while (size > 1024) {
+      size -= 1024;
+      mb++;
+   }
+
+   return mb + "," + size + units[1];
 };

@@ -188,7 +188,7 @@ export default function DetailPage() {
                   Viết đánh giá
                </Button>
             </div>
-            <RatingSection product_name_ascii={product.product_name_ascii} />
+            <RatingSection product_ascii={product.product_ascii} />
          </div>
 
          <div className="mt-[40px] md:mt-[60px]">
@@ -198,7 +198,7 @@ export default function DetailPage() {
                   Thêm câu hỏi
                </Button>
             </div>
-            <CommentSection product_name_ascii={product.product_name_ascii} />
+            <CommentSection product_ascii={product.product_ascii} />
          </div>
 
          <div className="mt-[40px] md:mt-[60px]">{PrimaryLabel(<BoltIcon className="mr-[8px] w-[24px]" />, `Sản phẩm gợi ý`)}</div>

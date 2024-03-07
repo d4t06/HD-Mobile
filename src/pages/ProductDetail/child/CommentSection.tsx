@@ -11,13 +11,13 @@ import "../styles.scss";
 import PushFrame from "@/components/ui/PushFrame";
 import { ArrowPathIcon, HeartIcon } from "@heroicons/react/16/solid";
 
-export default function CommentSection({ product_name_ascii }: { product_name_ascii: string }) {
+export default function CommentSection({ product_ascii }: { product_ascii: string }) {
    const {
       state: { comments, status, count, page, page_size },
       getComments,
       like,
       apiLoading,
-   } = useComment({ setIsOpenModal: () => {}, product_name_ascii });
+   } = useComment({ setIsOpenModal: () => {}, product_ascii });
 
    // for loading animation
    const currentCommentIndex = useRef(0);

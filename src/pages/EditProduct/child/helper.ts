@@ -5,7 +5,7 @@ export const getExistCombine = (
    combines: ProductCombine[],
    colorItem: ProductColor & { id?: number },
    storageItem: ProductStorage & { id?: number },
-   product_name_ascii: string
+   product_ascii: string
 ) => {
    let isExits = true;
    let existCombine = combines.find((item) => item.color_id === colorItem.id && item.storage_id === storageItem.id);
@@ -14,7 +14,7 @@ export const getExistCombine = (
       isExits = false;
       existCombine = initCombineData(
          {
-            product_name_ascii,
+            product_ascii,
          },
          colorItem.color,
          storageItem.storage
@@ -47,7 +47,7 @@ export const getExistSlider = (
 export const initProductAttributeSchema = (data: Partial<ProductAttributeSchema>) => {
    const newData: ProductAttributeSchema = {
       category_attr_id: 0,
-      product_name_ascii: "",
+      product_ascii: "",
       value: "",
       ...data,
    };

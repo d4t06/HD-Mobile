@@ -36,24 +36,24 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
 
    const curBrands = useMemo(() => {
       if (curCategory === undefined) return undefined;
-      return brands[curCategory.category_name_ascii];
+      return brands[curCategory.category_ascii];
    }, [curCategory, brands]);
 
    const curPriceRanges = useMemo(() => {
       if (curCategory === undefined) return undefined;
-      return priceRanges[curCategory.category_name_ascii];
+      return priceRanges[curCategory.category_ascii];
    }, [curCategory, priceRanges]);
 
    const curSlider = useMemo(() => {
       if (curCategory === undefined) return undefined;
-      return sliders[curCategory.category_name_ascii];
+      return sliders[curCategory.category_ascii];
    }, [curCategory, sliders]);
 
    const getCategoryChild = async () => {
       console.log(">>> api get brand and slider");
 
       try {
-         if (!curCategory?.id || !curCategory.category_name_ascii) throw new Error("Cur category data error");
+         if (!curCategory?.id || !curCategory.category_ascii) throw new Error("Cur category data error");
 
          setStatus("loading");
          await sleep(300);
@@ -63,7 +63,7 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
             const brandsData = brandsRes.data as (Brand & { id: number })[];
             setBrands((brands) => ({
                ...brands,
-               [curCategory.category_name_ascii]: brandsData,
+               [curCategory.category_ascii]: brandsData,
             }));
 
             const pricesRes = await privateRequest.get(`${APP_URL}/category-prices?category_id=${curCategory.id}`);
@@ -72,19 +72,19 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
             })[];
             setPriceRanges((prev) => ({
                ...prev,
-               [curCategory.category_name_ascii]: pricesData,
+               [curCategory.category_ascii]: pricesData,
             }));
          }
 
          // when in category edit, don't not slider
-         if (includeSlider && !sliders[curCategory.category_name_ascii]) {
+         if (includeSlider && !sliders[curCategory.category_ascii]) {
             const sliderRes = await privateRequest.get(
-               `${APP_URL}/category-sliders?category_name_ascii=${curCategory.category_name_ascii}`
+               `${APP_URL}/category-sliders?category_ascii=${curCategory.category_ascii}`
             );
             const sliderData = sliderRes.data as CategorySlider;
             setSliders((sliders) => ({
                ...sliders,
-               [curCategory.category_name_ascii]: sliderData.slider_data.images,
+               [curCategory.category_ascii]: sliderData.slider_data.images,
             }));
          }
 
@@ -119,7 +119,7 @@ export default function useAppConfig({ curCategory, autoRun = false, includeSlid
          if (import.meta.env.DEV) await sleep(300);
 
          if (!sliders["home"]) {
-            const sliderRes = await privateRequest.get(`${APP_URL}/category-sliders?category_name_ascii=home`);
+            const sliderRes = await privateRequest.get(`${APP_URL}/category-sliders?category_ascii=home`);
             if (!sliderRes.data) throw new Error("Slider not found");
 
             const sliderData = sliderRes.data as CategorySlider;

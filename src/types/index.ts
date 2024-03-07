@@ -2,7 +2,7 @@ import { Omit } from "@reduxjs/toolkit/dist/tsHelpers";
 
 export interface ProductCombine {
    id?: number;
-   product_name_ascii: string;
+   product_ascii: string;
    color_id: number;
    storage_id: number;
    quantity: number;
@@ -29,7 +29,7 @@ export type ProductCombineSchema = Omit<
 
 export interface ProductSlider {
    id: number;
-   product_name_ascii: string;
+   product_ascii: string;
    slider_id: number;
    color_id: number;
    color_data: {
@@ -61,7 +61,7 @@ export type SliderSchema = Omit<Slider, "images" | "id">;
 
 export type ProductStorage = {
    id?: number;
-   product_name_ascii: string;
+   product_ascii: string;
    storage_ascii: string;
    storage: string;
    default: boolean;
@@ -70,25 +70,22 @@ export type ProductStorage = {
 
 export type ProductColor = {
    id?: number;
-   product_name_ascii: string;
+   product_ascii: string;
    color_ascii: string;
    color: string;
    default: boolean;
 };
 
 export interface Product {
-   id?: number;
+   id: number;
+   imei: string;
    product_name: string;
-   product_name_ascii: string;
-   category_id?: number;
-   brand_id?: number;
+   product_ascii: string;
+   category_id: number;
+   brand_id: number;
    image_url: string;
    installment: boolean;
-   category_data: {
-      category_name: string;
-      category_name_ascii: string;
-      attributes: CategoryAttribute[];
-   };
+   category_data: Category;
    brand_data: {
       brand_name: string;
       brand_ascii: string;
@@ -112,20 +109,21 @@ export type ProductSchema = Omit<
    | "category_data"
    | "detail"
    | "comments_data"
+   | "id"
+   | "attributes_data"
 >;
 
 export type ProductDetail = {
    id?: number;
-   product_name_ascii: string;
+   product_ascii: string;
    content: string;
 };
 
 export type ProductAttribute = {
    id: number;
    category_attr_id: number;
+   product_ascii: string;
    value: string;
-   product_name_ascii: string;
-   attribute_data: CategoryAttribute;
 };
 
 export type ProductAttributeSchema = Omit<ProductAttribute, "attribute_data" | "id">;
@@ -138,8 +136,8 @@ export type CategoryAttribute = {
 };
 
 export type Category = {
-   id?: number;
-   category_name_ascii: string;
+   id: number;
+   category_ascii: string;
    category_name: string;
    attribute_order: string;
    hidden?: boolean;
@@ -147,7 +145,7 @@ export type Category = {
    price_ranges: PriceRange[];
 };
 
-export type CategorySchema = Omit<Category, "attributes" | "price_ranges">;
+export type CategorySchema = Omit<Category, "attributes" | "price_ranges" | "id">;
 
 export type CategorySlider = {
    category_data: Category;
@@ -191,7 +189,7 @@ export type Toast = {
 export type ProductComment = {
    id?: number;
    q_id?: number;
-   product_name_ascii: string;
+   product_ascii: string;
    cus_name: string;
    content: string;
    approve: number;
@@ -234,7 +232,7 @@ export type CartSchema = Omit<Cart, "id" | "items">;
 export type CartItem = {
    id: number;
    username: string;
-   product_name_ascii: string;
+   product_ascii: string;
    amount: number;
    color_id: number;
    storage_id: number;
@@ -245,7 +243,7 @@ export type CartItem = {
       colors_data: { color: string; id: number }[];
       storages_data: { storage: string; id: number }[];
       category_data: {
-         category_name_ascii: string;
+         category_ascii: string;
       };
    };
    updatedAt: string;
@@ -274,7 +272,10 @@ export type Order = {
    createdAt: string;
 };
 
-export type OrderSchema = Omit<Order, "createdAt" | "items" | "id" | "deliveredAt" | "canceledAt" | "createdAt">;
+export type OrderSchema = Omit<
+   Order,
+   "createdAt" | "items" | "id" | "deliveredAt" | "canceledAt" | "createdAt"
+>;
 
 export type OrderDetail = Omit<
    Order,

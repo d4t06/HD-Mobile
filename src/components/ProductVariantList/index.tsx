@@ -35,7 +35,7 @@ const getCurrentCombine = (curVar: CurVar, combines: ProductCombine[]) => {
 };
 
 export default function ProductVariantList({ productData, setSliderImages }: Props) {
-   const { colors_data, storages_data, product_name_ascii, combines_data, sliders_data } = productData;
+   const { colors_data, storages_data, product_ascii, combines_data, sliders_data } = productData;
    const [curVar, setCurVar] = useState<CurVar | undefined>(findDefaultCombine(combines_data));
 
    const [isOpenModal, setIsOpenModal] = useState(false);
@@ -57,7 +57,7 @@ export default function ProductVariantList({ productData, setSliderImages }: Pro
          username: auth.username,
          color_id: curCombineData?.color_id,
          storage_id: curCombineData?.storage_id,
-         product_name_ascii,
+         product_ascii,
       };
 
       await addItemToCart(cartItem);

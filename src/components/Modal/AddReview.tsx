@@ -18,7 +18,7 @@ const initReview = (product?: Product) => {
       content: "",
       cus_name: "",
       approve: 0,
-      product_name_ascii: product?.product_name_ascii || "",
+      product_ascii: product?.product_ascii || "",
       phone_number: "",
       date_convert: "",
       total_like: 0,
@@ -71,7 +71,7 @@ export default function AddReviewModal({
             if (comment?.id === undefined) return;
             const replyData: Reply = {
                q_id: comment.id,
-               product_name_ascii: comment.product_name_ascii,
+               product_ascii: comment.product_ascii,
                content: replyContent,
                total_like: 0,
                date_convert: "",

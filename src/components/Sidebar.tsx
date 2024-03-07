@@ -40,7 +40,7 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
                   <Link
                      onClick={() => setIsOpen(false)}
                      key={index}
-                     to={`/${c.category_name_ascii}`}
+                     to={`/${c.category_ascii}`}
                      className="flex items-center space-x-[4px] h-[34px] text-[#333]"
                   >
                      <TagIcon className="w-[24px]" />

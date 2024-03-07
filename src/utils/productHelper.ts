@@ -48,14 +48,14 @@ export const initCombinesForInsert = (
 export const initProductSlidersForInsert = (
    sliders: (SliderSchema & { id: number; color_ascii: string })[],
    colors: ProductColor[],
-   product_name_ascii: string
+   product_ascii: string
 ) => {
    const data = sliders.map((slider) => {
       const colorItem = colors.find((color) => color.color_ascii === slider.color_ascii);
       if (colorItem && slider.id) {
          return {
             color_id: colorItem.id,
-            product_name_ascii,
+            product_ascii,
             slider_id: slider.id,
          } as ProductSliderSchema;
       }

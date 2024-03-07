@@ -49,7 +49,7 @@ function Search({ setShowModal,setOpenSidebar }: Props) {
 
    const handleDetailPage = (item: Product) => {
       handleShow(false);
-      navigate(`/${item.category_data.category_name_ascii}/${item.product_name_ascii}`);
+      navigate(`/${item.category_data.category_ascii}/${item.product_ascii}`);
    };
 
    const handleSubmit = (e: FormEvent) => {

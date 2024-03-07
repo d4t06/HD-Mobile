@@ -7,13 +7,13 @@ import { initLocalStorage } from "@/utils/appHelper";
 
 type Props = {
    setIsOpenModal: Dispatch<SetStateAction<boolean>>;
-   product_name_ascii?: string;
+   product_ascii?: string;
    admin?: boolean;
 };
 
 type StateType = {
    page: number;
-   product_name_ascii: string;
+   product_ascii: string;
    reviews: ProductReview[];
    status: "loading" | "error" | "success";
    count: number;
@@ -23,12 +23,12 @@ type StateType = {
 const REVIEW_URL = "/product-review-management";
 const REVIEW_URL_CLIENT = "/product-reviews";
 
-export default function useReview({ setIsOpenModal, product_name_ascii, admin }: Props) {
+export default function useReview({ setIsOpenModal, product_ascii, admin }: Props) {
    const [state, setState] = useState<StateType>({
       status: "loading",
       reviews: [],
       page: 1,
-      product_name_ascii: "",
+      product_ascii: "",
       count: 0,
       page_size: 0,
       average: 0,
@@ -80,14 +80,14 @@ export default function useReview({ setIsOpenModal, product_name_ascii, admin }:
                params: { page: _page },
             });
          } else {
-            res = await publicRequest.get(`${REVIEW_URL_CLIENT}/${product_name_ascii}`, {
+            res = await publicRequest.get(`${REVIEW_URL_CLIENT}/${product_ascii}`, {
                params: { page: _page },
             });
          }
 
          const { reviews, ...restData } = res.data as StateType;
 
-         const averageRes = await publicRequest.get(`${REVIEW_URL_CLIENT}/avg/${product_name_ascii}`);
+         const averageRes = await publicRequest.get(`${REVIEW_URL_CLIENT}/avg/${product_ascii}`);
          const averageNumber = +averageRes.data.average;
 
          console.log("check average", averageNumber);
@@ -212,12 +212,12 @@ export default function useReview({ setIsOpenModal, product_name_ascii, admin }:
    //  run initial
    useEffect(() => {
       if (!ranEffect.current) {
-         if (product_name_ascii || admin) {
+         if (product_ascii || admin) {
             ranEffect.current = true;
             getReviews(1);
          }
       }
-   }, [product_name_ascii]);
+   }, [product_ascii]);
 
    return {
       apiLoading,

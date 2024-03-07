@@ -28,13 +28,14 @@
    tr {
       td {
          font-size: 14px;
-         padding: 6px 8px;
+         padding: 12px 8px;
 
          white-space: pre-line;
 
          &:first-child {
             border-radius: 8px 0 0 8px;
             color: #808080;
+            font-weight: 500;
          }
 
          &:last-child {
@@ -44,6 +45,7 @@
 
       &:nth-child(even) {
          td {
+            line-height: 2;
             background-color: #f1f1f1;
          }
       }

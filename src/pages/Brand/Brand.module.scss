@@ -59,35 +59,32 @@ $alpha: rgba(
 }
 
 .attr-item {
-   display: flex;
-   align-items: center;
    padding: 8px 16px;
-   span, p {
+   display: flex;
+   span,
+   p {
       font-size: 1.4rem;
       text-align: center;
    }
 
-   // background-color: #f1f1f1;
+   border: solid 2px #ccc;
    border-radius: 8px;
 
    .cta {
-      border-left: 1px solid $alpha;
+      display: flex;
+      align-items: center;
+      border-left: 1px solid #ccc;
       margin-left: 10px;
-      padding-left: 6px;
+      padding-left: 10px;
       button {
-         padding: 4px;
          transition: scale linear 0.1s;
-         i {
-            color: #333;
-         }
+         color: #333;
          &:hover {
-            i {
-               color: #cd1818;
-            }
+            color: #cd1818;
             scale: 1.1;
          }
          & + button {
-            margin-left: 4px;
+            margin-left: 6px;
          }
       }
    }

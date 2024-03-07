@@ -27,7 +27,7 @@ export default function ProductItem({ data }: Props) {
   return (
     <div className={cx("product-item")}>
       <Link
-        to={`/${data.category_data.category_name_ascii}/${data.product_name_ascii}?${
+        to={`/${data.category_data.category_ascii}/${data.product_ascii}?${
           activeVar?.storage_ascii || ""
         }`}
         className={cx("product-item-frame")}

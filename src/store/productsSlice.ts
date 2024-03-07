@@ -11,7 +11,7 @@ export type ProductState = {
   products: Product[];
   count: number;
   pageSize: number;
-  variants_data: (ProductStorage & { product_name_ascii: string })[];
+  variants_data: (ProductStorage & { product_ascii: string })[];
 };
 
 export type StateType = {
@@ -103,14 +103,14 @@ export const searchProducts = createAsyncThunk(
 
 const mergeVariantToProduct = (
   products: Product[],
-  variants_data: (ProductStorage & { product_name_ascii: string })[]
+  variants_data: (ProductStorage & { product_ascii: string })[]
 ) => {
   const newProducts = [...products];
 
   for (let i = 0; i < products.length; i++) {
     const p = products[i];
     const filteredStorages_data = variants_data.filter(
-      (v) => v.product_name_ascii === p.product_name_ascii
+      (v) => v.product_ascii === p.product_ascii
     );
 
     if (filteredStorages_data.length) {
