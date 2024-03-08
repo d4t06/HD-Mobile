@@ -138,7 +138,7 @@ export default function Dashboard() {
                                     >
                                        <PencilSquareIcon className="w-[24px] p-[2px]" />
                                     </Button>
-                                    <Link to={`product/edit/${productItem.product_ascii}`}>
+                                    <Link to={`edit/${productItem.product_ascii}`}>
                                        <Button
                                           circle
                                           className="bg-black/10 hover:bg-[#cd1818] hover:text-white"

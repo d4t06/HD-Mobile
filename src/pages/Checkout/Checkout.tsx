@@ -1,4 +1,3 @@
-import emptyCart from "@/assets/images/empty-cart.png";
 import { ShoppingBagIcon, TrashIcon, CreditCardIcon, MapPinIcon, TruckIcon, BanknotesIcon } from "@heroicons/react/24/outline";
 import PushFrame from "@/components/ui/PushFrame";
 import useCart from "@/hooks/useCart";
@@ -13,11 +12,14 @@ import { CartItem, OrderItem, OrderSchema } from "@/types";
 import { useToast } from "@/store/ToastContext";
 import { usePrivateRequest } from "@/hooks";
 import { useNavigate } from "react-router-dom";
+import emptyCart from "@/assets/images/empty-cart.png";
+
 
 const USER_ORDER_URL = "/orders";
 
 export default function Checkout() {
-  const [submitLoading, setSubmitLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const AddressGroupRef = useRef<AddressGroupRef>(null);
 
@@ -43,7 +45,7 @@ export default function Checkout() {
       const address = AddressGroupRef.current?.getAddress();
       if (!address) throw new Error("invalid address");
 
-      setSubmitLoading(true);
+      setIsSubmitting(true);
 
       const orderDataForInsert: OrderSchema = {
         username: cart.username,
@@ -89,7 +91,7 @@ export default function Checkout() {
       console.log(error);
       setErrorToast();
     } finally {
-      setSubmitLoading(false);
+      setIsFetching(false);
     }
   };
 
@@ -129,7 +131,7 @@ export default function Checkout() {
 
   return (
     <>
-      <div className={`${submitLoading ? "opacity-60 pointer-events-none" : ""} `}>
+      <div className={`${isSubmitting ? "opacity-60 pointer-events-none" : ""} `}>
         <div className={classes.container}>
           <PrimaryLabel className="mb-[12px]" title={`Tất cả sản phẩm (${cart.items.length})`}>
             <ShoppingBagIcon className="w-[22px] md:w-[24px]" />
@@ -145,7 +147,7 @@ export default function Checkout() {
                     <div className="flex flex-grow flex-col items-start md:items-center ml-[10px] space-y-[10px] md:flex-row md:space-y-0">
                       <div className="h-full">
                         <h5 className="text-[16px] font-[600] mb-[10px] md:mb-0">{item.product_data.product_name}</h5>
-                        <VariantList handleCartData={handleCartData} cartItem={item} />
+                        <VariantList setIsFetching={setIsFetching} handleCartData={handleCartData} cartItem={item} />
                       </div>
 
                       <h4 className="text-[18px] font-[600] text-gray-600  ml-auto md:mr-[50px]">
@@ -154,7 +156,7 @@ export default function Checkout() {
                     </div>
                   </div>
 
-                  <Button onClick={() => handleDeleteItem(item)} className="px-[8px] py-[3px]" primary>
+                  <Button disable={isFetching} onClick={() => handleDeleteItem(item)} className="px-[8px] py-[3px]" primary>
                     <TrashIcon className="w-[18px] sm:w-[22px]" />
                   </Button>
                 </div>
@@ -169,7 +171,7 @@ export default function Checkout() {
           </PrimaryLabel>
 
           <div className="flex space-x-[10px]">
-            <PushFrame active={false} type="translate">
+            <PushFrame active={true} type="translate">
               <button className={classes.pushBtn} onClick={() => {}}>
                 Giao hàng tận nơi
               </button>
@@ -196,7 +198,7 @@ export default function Checkout() {
             <CreditCardIcon className="w-[22px] md:w-[24px]" />
           </PrimaryLabel>
           <div className="flex flex-col items-start md:flex-row space-y-[10px] md:space-y-0 md:items-center md:space-x-[10px]">
-            <PushFrame active={false} type="translate">
+            <PushFrame active={true} type="translate">
               <button className={`${classes.pushBtn} inline-flex items-center`} onClick={() => {}}>
                 <BanknotesIcon className="w-[22px] md:w-[24px] mr-[6px]" />
                 Thanh toán khi nhận hàng
@@ -230,7 +232,7 @@ export default function Checkout() {
                   <p className={classes.h5}>Cần thanh toán:</p>
                   <p className="text-[20px] text-[#cd1818] font-[600] ml-auto">{moneyFormat(cart.total_price)}đ</p>
                 </div>
-                <Button isLoading={submitLoading} onClick={handleSubmit} backClass="w-full mt-[10px]" primary>
+                <Button isLoading={isSubmitting} disable={isFetching} onClick={handleSubmit} backClass="w-full mt-[10px]" primary>
                   Thanh toán
                 </Button>
               </div>

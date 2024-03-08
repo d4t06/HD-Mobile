@@ -5,9 +5,15 @@ import { Cart, CartItem, CartItemSchema } from "@/types";
 
 import { PlusSmallIcon } from "@heroicons/react/20/solid";
 import { MinusSmallIcon } from "@heroicons/react/24/solid";
-import { useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
-function VariantList({ cartItem, handleCartData }: { cartItem: CartItem; handleCartData: (cart: Cart) => void }) {
+type Props = {
+   setIsFetching: Dispatch<SetStateAction<boolean>>;
+   cartItem: CartItem;
+   handleCartData: (cart: Cart) => void;
+};
+
+function VariantList({ cartItem, handleCartData, setIsFetching }: Props) {
    // ref: Ref<VariantListRef>
    const { updateCartItem, apiLoading } = useCart({});
    const { setErrorToast } = useToast();
@@ -15,8 +21,13 @@ function VariantList({ cartItem, handleCartData }: { cartItem: CartItem; handleC
    const colorRef = useRef<HTMLSelectElement>(null);
    const storageRef = useRef<HTMLSelectElement>(null);
 
-   const handleUpdateCartItem = async (value: number, field: "quantity" | "color_id" | "storage_id") => {
+   const handleUpdateCartItem = async (
+      value: number,
+      field: "quantity" | "color_id" | "storage_id"
+   ) => {
       try {
+         setIsFetching(true);
+
          const { product_data, updatedAt, createdAt, ...rest } = cartItem;
          const cartItemForUpdate: CartItemSchema & { id: number } = {
             ...rest,
@@ -44,6 +55,8 @@ function VariantList({ cartItem, handleCartData }: { cartItem: CartItem; handleC
       } catch (error) {
          console.log(error);
          setErrorToast();
+      } finally {
+         setIsFetching(false);
       }
    };
 

@@ -34,9 +34,6 @@ function EditGroup({}, ref: Ref<ConfigRef>) {
 
    const attributeOrder = category_data.attribute_order.split("_") || [];
 
-   // const submitSliderList = sliderRefs.current.map((item) => item.submit);
-   // const submitCombines = useMemo(() => combineRefs.current.map((item) => item.submit), [colors, storages]);
-
    const submitSliders = async () => {
       console.log(">>> submit slider");
       let newSliders = [];
@@ -126,6 +123,10 @@ function EditGroup({}, ref: Ref<ConfigRef>) {
       label: "text-[20px] font-semibold text-[#333] mb-[8px]",
       container: "flex bg-[#fff] rounded-[12px] p-[20px]",
    };
+
+
+console.log(">>> edit group render");
+
 
    return (
       <>

@@ -124,7 +124,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
    const imageSkeleton = useMemo(
       () =>
          [...Array(8).keys()].map((item) => (
-            <div key={item} className={cx("px-[4px] w-1/6", "gallery-item")}>
+            <div key={item} className={cx("w-1/5", "px-[4px] gallery-item")}>
                <Skeleton className="pt-[100%] w-[100% rounded-[6px]" />
             </div>
          )),
@@ -137,7 +137,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
          const isInChoseList = indexOf !== -1;
 
          return (
-            <div key={index} className={cx("w-1/6")}>
+            <div key={index} className={cx("w-1/5 px-[4px]")}>
                <div className={cx("image-container", "group")}>
                   <div
                      onClick={() => setActive(item)}
@@ -172,7 +172,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
          !!tempImages.length &&
          tempImages?.map((item, index) => {
             return (
-               <div key={index} className={cx("w-1/6")}>
+               <div key={index} className={cx("w-1/5")}>
                   <div className={cx("image-container")}>
                      <div className={cx("image-frame", "relative")}>
                         <img className="opacity-[.4]" src={item.image_url} alt="img" />
@@ -199,7 +199,6 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
       }
    }, []);
 
-   console.log('check current images', currentImages)
 
    return (
       <div className={cx("gallery")}>
@@ -232,7 +231,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
          </div>
          <div className={cx("gallery__body", "flex mx-[-8px]")}>
             <div className={cx("w-2/3 px-[8px] no-scrollbar", "left")}>
-               <div className="flex flex-wrap gap-y-[12px]">
+               <div className="flex flex-wrap gap-y-[8px]">
                   {status === "error" && <p>Some thing went wrong</p>}
                   {status !== "error" && (
                      <>

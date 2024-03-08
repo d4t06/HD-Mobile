@@ -4,6 +4,7 @@
    position: relative;
    width: 70px;
    transition: width linear 0.3s;
+   flex-shrink: 0;
 
    .head {
       height: 60px;

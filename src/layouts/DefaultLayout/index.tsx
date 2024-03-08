@@ -25,7 +25,8 @@ export default function DefaultLayout({ children }: Props) {
 
          <div className="container">
             <p className="py-[10px] text-[14px] text-[#333] font-[500]">
-               © All rights no reserved ¯\_(ツ)_/¯. Make with ❤️ by d4t06
+               Make with ❤️ by d4t06 <br/>
+               © All rights no reserved ¯\_(ツ)_/¯ 
             </p>
          </div>
       </div>

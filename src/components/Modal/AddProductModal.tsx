@@ -47,19 +47,25 @@ const runInitProductData = (props: Props) => {
    }
 };
 
+const runInitCategory = (props: Props) => {
+   if (props.type === "Add") {
+      if (props.curCategory) return props.curCategory;
+   }
+};
+
 export default function AddProductModal({ ...props }: Props) {
    const [productData, setProductData] = useState<ProductSchema>(() => runInitProductData(props));
    const [isOpenModal, setIsOpenModal] = useState(false);
-   const [selectedCat, setSelectedCat] = useState<Category>();
+   const [selectedCat, setSelectedCat] = useState<Category | undefined>(() => runInitCategory(props));
 
    const nameRef = useRef<HTMLInputElement>(null);
    // use hook
-   const { addProduct, apiLoading } = useProductAction({
-      setIsOpenModal: props.setIsOpenModalParent,
-   });
    const { brands, categories } = useApp();
    const { status: appStatus } = useAppConfig({ curCategory: selectedCat });
    const { setErrorToast } = useToast();
+   const { addProduct, apiLoading } = useProductAction({
+      setIsOpenModal: props.setIsOpenModalParent,
+   });
 
    const brandsByCategory = useMemo(() => {
       if (appStatus === "loading" || !brands || !selectedCat) return [];

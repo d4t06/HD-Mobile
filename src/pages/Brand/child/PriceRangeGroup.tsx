@@ -1,5 +1,5 @@
 import { inputClasses } from "@/components/ui/Input";
-import { Category, PriceRange, PriceRangeSchema } from "@/types";
+import { Category, PriceRangeSchema } from "@/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import styles from "../Brand.module.scss";

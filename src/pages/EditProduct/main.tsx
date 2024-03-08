@@ -152,8 +152,7 @@ function EditProductMain() {
 
    const submitDetail = async () => {
       const content = editorRef.current?.getContent();
-      if (!content || !product_ascii)
-         return console.log("content or product name is undefined");
+      if (!content || !product_ascii) return console.log("content or product name is undefined");
 
       const data: ProductDetail = {
          content,
@@ -355,6 +354,8 @@ function EditProductMain() {
       navigate("/dashboard");
    };
 
+   const renderEditGroup = useMemo(() => <EditGroup ref={EditGroupRef} />, [])
+
    const renderModal = useMemo(() => {
       if (!isOpenModal) return;
 
@@ -525,10 +526,12 @@ function EditProductMain() {
                </div>
             </div>
 
-            <EditGroup ref={EditGroupRef} />
+            
+             {renderEditGroup}
+            
 
             <h5 className={classes.label}>Description</h5>
-            <div className="rounded-[12px] overflow-hidden">
+            <div className="overflow-hidden">
                <MyEditor
                   content={detail ? detail.content : ""}
                   ref={(ref) => (editorRef.current = ref!)}

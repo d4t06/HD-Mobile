@@ -25,10 +25,10 @@ function MyEditor({ extensions, ...props }: Props, ref: Ref<EditorRef>) {
   useImperativeHandle(ref, () => ({ getContent }));
 
   const classes = {
-    wrapper: "border border-black/10 bg-white my-editor",
+    wrapper: "my-editor border border-black/10 bg-white rounded-[12px] overflow-hidden",
     controlContainer:
       "bg-[#cd1818] text-white flex gap-[12px] items-center h-[50px] px-[10px]",
-    editContainer: "p-[14px] max-h-[80vh] overflow-auto no-scrollbar",
+    editContainer: "max-h-[70vh] overflow-auto editor-container",
   };
 
   return (
@@ -37,7 +37,7 @@ function MyEditor({ extensions, ...props }: Props, ref: Ref<EditorRef>) {
         <Toolbar editor={editor} />
       </div>
       <div className={classes.editContainer}>
-        <EditorContent className="max-w-[100vw]" editor={editor} />
+        <EditorContent editor={editor} />
       </div>
     </div>
   );

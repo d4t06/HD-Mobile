@@ -48,7 +48,7 @@ export default function DetailPage() {
       setIsOpenModal(true);
    };
 
-   const SliderSkeleton = useMemo(() => <Skeleton className="w-full pt-[50%] rounded-[16px]" />, []);
+   const SliderSkeleton = useMemo(() => <Skeleton className="w-full pt-[75%] rounded-[16px]" />, []);
 
    const BoxSkeleton = [...Array(2).keys()].map((item) => (
       <div key={item} className="col w-1/2 sm:w-1/3">
@@ -132,7 +132,7 @@ export default function DetailPage() {
          <div className="flex flex-wrap mt-[10px] md:mx-[-12px]">
             <div className="w-full mb-[20px] md:mb-0 md:w-7/12 md:px-[12px]">
                {status === "loading" && SliderSkeleton}
-               {status === "success" && <ImageSlider className="pt-[50%]" data={sliderImages} />}
+               {status === "success" && <ImageSlider className="pt-[75%]" data={sliderImages} />}
             </div>
             <div className={"w-full md:w-5/12 md:px-[12px]"}>
                {status === "loading" && ProductInfoSkeleton}

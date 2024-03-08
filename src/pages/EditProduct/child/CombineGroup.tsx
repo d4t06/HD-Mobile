@@ -27,13 +27,20 @@ function InputGroup({ initCombine, isExist }: InputGroupProps, ref: Ref<CombineR
       if (field === "price") {
          value = value.replaceAll(",", "");
       }
+
+      // console.log("chekc value", +value === 0);
+
       if (!Number.isInteger(+value)) return;
+
       setCombineData({ ...combineData, [field]: +value });
       setIsChange(true);
    };
 
    const detectChange = () => {
-      if (stockCombine.current.price !== combineData.price || stockCombine.current.quantity !== combineData.quantity)
+      if (
+         stockCombine.current.price !== combineData.price ||
+         stockCombine.current.quantity !== combineData.quantity
+      )
          return true;
       else return false;
    };
@@ -87,9 +94,9 @@ function InputGroup({ initCombine, isExist }: InputGroupProps, ref: Ref<CombineR
       <div className="row">
          <div className="col w-1/2">
             <Input
-               type="number"
+               type="text"
                placeholder="Quantity"
-               value={combineData.quantity}
+               value={combineData.quantity || ""}
                cb={(value) => handleInput("quantity", value)}
             />
          </div>
@@ -99,7 +106,9 @@ function InputGroup({ initCombine, isExist }: InputGroupProps, ref: Ref<CombineR
                type="text"
                className={error ? "bg-red-200" : ""}
                placeholder="Price"
-               value={moneyFormat(combineData.price || "")}
+               value={combineData.price || ""}
+               onFocus={e => e.target.value = combineData.price ? combineData.price + "" : ""}
+               onBlur={(e) => (e.target.value = moneyFormat(combineData.price || ""))}
                cb={(value) => handleInput("price", value)}
             />
          </div>

@@ -14,7 +14,7 @@
    }
 
    img {
-      margin: 0 auto;
+      width: 100%;
       &.ProseMirror-selectednode {
          outline: 3px solid #68cef8;
       }
@@ -33,6 +33,15 @@
       &.active {
          background-color: white;
          color: #cd1818;
+      }
+   }
+   .editor-container {
+      > div {
+         // padding-bottom: 50vh;
+      }
+      .tiptap {
+         padding: 30px 10vw 50vh;
+         min-height: 30vh;
       }
    }
 }
