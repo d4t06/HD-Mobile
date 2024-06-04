@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import styles from "./ImageSlider.module.scss";
 import useSlider from "@/hooks/useSlider";
-import { SliderImage } from "@/types";
+
 import Image from "../ui/Image";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 

@@ -5,17 +5,18 @@ import { Button } from "../";
 
 import styles from "./Gallery.module.scss";
 import usePrivateRequest from "@/hooks/usePrivateRequest";
-import { ImageType } from "@/types";
+
 import { formatSize, sleep } from "@/utils/appHelper";
 import { useImage } from "@/store/ImageContext";
 import Skeleton from "../Skeleton";
 import { ArrowPathIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
+import PushButton from "../ui/PushButton";
 
 const cx = classNames.bind(styles);
 
 type Props = {
    setImageUrl: (image_url: string[]) => void;
-   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
    multiple?: boolean;
 };
 
@@ -28,12 +29,12 @@ type getImagesRes = {
 
 const IMAGE_URL = "/image-management/images";
 
-function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
+function Gallery({ setImageUrl, close, multiple = false }: Props) {
    const [choseList, setChoseList] = useState<string[]>([]);
    const [active, setActive] = useState<ImageType>();
-   const [status, setStatus] = useState<"fetching" | "loadingImages" | "success" | "error">(
-      "loadingImages"
-   );
+   const [status, setStatus] = useState<
+      "fetching" | "loadingImages" | "success" | "error"
+   >("loadingImages");
    const [apiLoading, setApiLoading] = useState(false);
 
    const ranUseEffect = useRef(false);
@@ -65,7 +66,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
             if (!active) return;
             setImageUrl([active.image_url]);
       }
-      setIsOpenModal(false);
+      close();
    };
 
    const handleSelect = (image: ImageType) => {
@@ -85,9 +86,13 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
          setApiLoading(true);
          const controller = new AbortController();
 
-         await privateRequest.delete(`${IMAGE_URL}/${encodeURIComponent(active.public_id)}`);
+         await privateRequest.delete(
+            `${IMAGE_URL}/${encodeURIComponent(active.public_id)}`
+         );
 
-         const newImages = currentImages.filter((image) => image.public_id !== active.public_id);
+         const newImages = currentImages.filter(
+            (image) => image.public_id !== active.public_id
+         );
          storeImages({ currentImages: newImages });
 
          return () => {
@@ -148,18 +153,20 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                      <img src={item.image_url} alt="img" />
                   </div>
                   {multiple && (
-                     <Button
+                     <button
                         onClick={() => handleSelect(item)}
                         className={`${
-                           isInChoseList ? "bg-[#cd1818] " : "bg-[#ccc] hover:bg-[#cd1818]"
-                        } z-10 h-[24px] w-[24px] absolute rounded-[6px] text-[white]  left-[10px] bottom-[10px]`}
+                           isInChoseList
+                              ? "bg-[#cd1818] "
+                              : "bg-[#ccc] hover:bg-[#cd1818]"
+                        } z-10 h-[24px] w-[24px] absolute rounded-[6px] text-[white] left-[10px] bottom-[10px]`}
                      >
                         {isInChoseList && (
                            <span className="text-[18px] font-semibold leading-[1]">
                               {indexOf + 1}
                            </span>
                         )}
-                     </Button>
+                     </button>
                   )}
                </div>
             </div>
@@ -199,7 +206,6 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
       }
    }, []);
 
-
    return (
       <div className={cx("gallery")}>
          <div className={cx("gallery__top")}>
@@ -220,14 +226,9 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                </div>
             </div>
 
-            <Button
-               className={cx("choose-image-btn")}
-               disable={!ableToChosenImage}
-               primary
-               onClick={handleSubmit}
-            >
+            <PushButton disabled={!ableToChosenImage} onClick={handleSubmit}>
                Chọn
-            </Button>
+            </PushButton>
          </div>
          <div className={cx("gallery__body", "flex mx-[-8px]")}>
             <div className={cx("w-2/3 px-[8px] no-scrollbar", "left")}>
@@ -249,9 +250,7 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
 
                {!!currentImages.length && isRemaining && (
                   <div className="text-center mt-[14px]">
-                     <Button onClick={() => getImages(page + 1)} primary>
-                        Thêm
-                     </Button>
+                     <PushButton onClick={() => getImages(page + 1)}>Thêm</PushButton>
                   </div>
                )}
             </div>
@@ -267,12 +266,13 @@ function Gallery({ setImageUrl, setIsOpenModal, multiple = false }: Props) {
                            </a>
                         </li>
                         <li>
-                           <h4 className="font-semibold">Size:</h4> {formatSize(active.size)}
+                           <h4 className="font-semibold">Size:</h4>{" "}
+                           {formatSize(active.size)}
                         </li>
                      </ul>
-                     <Button isLoading={apiLoading} primary onClick={handleDeleteImage}>
+                     <PushButton loading={apiLoading} onClick={handleDeleteImage}>
                         Xóa
-                     </Button>
+                     </PushButton>
                   </div>
                )}
             </div>

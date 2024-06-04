@@ -3,12 +3,13 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import styles from "./ProductVariantList.module.scss";
 import classNames from "classnames/bind";
 import { moneyFormat } from "@/utils/appHelper";
-import { CartItemSchema, Product, ProductCombine, SliderImage } from "@/types";
-import { Button, Modal } from "..";
+
+import { Modal } from "..";
 import useCart from "@/hooks/useCart";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/store/AuthContext";
 import ModalHeader from "../Modal/ModalHeader";
+import PushButton from "../ui/PushButton";
 
 const cx = classNames.bind(styles);
 
@@ -31,12 +32,18 @@ const findDefaultCombine = (combines: ProductCombine[]): CurVar | undefined => {
 };
 
 const getCurrentCombine = (curVar: CurVar, combines: ProductCombine[]) => {
-   return combines.find((combine) => combine.color_id === curVar.color_id && combine.storage_id === curVar.storage_id);
+   return combines.find(
+      (combine) =>
+         combine.color_id === curVar.color_id && combine.storage_id === curVar.storage_id
+   );
 };
 
 export default function ProductVariantList({ productData, setSliderImages }: Props) {
-   const { colors_data, storages_data, product_ascii, combines_data, sliders_data } = productData;
-   const [curVar, setCurVar] = useState<CurVar | undefined>(findDefaultCombine(combines_data));
+   const { colors_data, storages_data, product_ascii, combines_data, sliders_data } =
+      productData;
+   const [curVar, setCurVar] = useState<CurVar | undefined>(
+      findDefaultCombine(combines_data)
+   );
 
    const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -46,7 +53,12 @@ export default function ProductVariantList({ productData, setSliderImages }: Pro
    const navigate = useNavigate();
    const location = useLocation();
 
-   const curCombineData = useMemo(() => (curVar ? getCurrentCombine(curVar, combines_data) : undefined), [curVar]);
+   const curCombineData = useMemo(
+      () => (curVar ? getCurrentCombine(curVar, combines_data) : undefined),
+      [curVar]
+   );
+
+   const closeModal = () => setIsOpenModal(false);
 
    const handleAddProductToCart = async () => {
       if (!auth || !auth?.username) return setIsOpenModal(true);
@@ -106,7 +118,9 @@ export default function ProductVariantList({ productData, setSliderImages }: Pro
                      <div className={cx("wrap")}>
                         <div className={cx("box")}>
                            <span className={cx("label")}>{storage.storage}</span>
-                           <span className={cx("min-price")}>{moneyFormat(storage.base_price)}đ</span>
+                           <span className={cx("min-price")}>
+                              {moneyFormat(storage.base_price)}đ
+                           </span>
                         </div>
                      </div>
                   </li>
@@ -141,32 +155,32 @@ export default function ProductVariantList({ productData, setSliderImages }: Pro
          </div>
 
          <div className="mt-[14px] text-[18px] flex flex-col">
-            <Button
-               disable={apiLoading}
+            <PushButton
+               disabled={apiLoading}
                className="h-[40px]"
-               primary
-               isLoading={apiLoading}
-               onClick={() => handleAddProductToCart()}
+               size={"clear"}
+               loading={apiLoading}
+               onClick={handleAddProductToCart}
             >
                Mua Ngay
-            </Button>
+            </PushButton>
          </div>
 
          {isOpenModal && (
-            <Modal setShowModal={setIsOpenModal}>
+            <Modal close={closeModal}>
                <div className="w-[500px] max-w-[80vw]">
-                  <ModalHeader title={"Đăng nhập dùm cái"} setIsOpenModal={setIsOpenModal} />
+                  <ModalHeader title={"Đăng nhập dùm cái"} close={closeModal} />
                   <p className="text-[16px] text-gray-600 font-[500]">
                      Không đăng nhập mà mua thì tao lấy cái gì lưu ???
                   </p>
                   <div className="flex flex-col space-y-[10px] sm:space-y-0 sm:flex-row sm:space-x-[10px] mt-[30px] ">
-                     <Button isLoading={false} onClick={() => handleImDoNotBuy()} primary>
+                     <PushButton colors={"second"} onClick={() => handleImDoNotBuy()}>
                         Cút, tao đéo mua
-                     </Button>
+                     </PushButton>
 
-                     <Button isLoading={false} onClick={() => handleNavigateToLogin()} primary>
+                     <PushButton onClick={() => handleNavigateToLogin()}>
                         Dạ để em đăng nhập
-                     </Button>
+                     </PushButton>
                   </div>
                </div>
             </Modal>

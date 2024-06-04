@@ -1,7 +1,7 @@
 import { Dispatch, Ref, SetStateAction, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 
 import Empty from "@/components/ui/Empty";
-import { Slider, SliderImage, SliderImageSchema, SliderSchema } from "@/types";
+
 
 import { usePrivateRequest } from "@/hooks";
 import { Gallery, Modal } from "@/components";
@@ -47,6 +47,10 @@ function SliderGroup(
       curIndex.current = i || 0;
       setIsOpenModal(true);
    };
+
+
+   const closeModal = ()=> setIsOpenModal(false);
+
    const filterImages = (image_url: string[]) => {
       return image_url.filter((url) => {
          const currentImageUrls = sliderImages.map((si) => si.image_url);
@@ -210,8 +214,8 @@ function SliderGroup(
          </div>
 
          {isOpenModal && (
-            <Modal setShowModal={setIsOpenModal}>
-               <Gallery multiple setImageUrl={handleAddSliderImage} setIsOpenModal={setIsOpenModal} />
+            <Modal close={closeModal}>
+               <Gallery multiple setImageUrl={handleAddSliderImage} close={closeModal} />
             </Modal>
          )}
       </>

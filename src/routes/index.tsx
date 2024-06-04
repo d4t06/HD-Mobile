@@ -1,10 +1,10 @@
 import CheckoutLayout from "@/layouts/CheckoutLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import LoginLayout from "@/layouts/LoginLayout";
+import AuthLayout from "@/layouts/AuthLayout";
 import {
    Product,
    Home,
-   Brand,
+   Category,
    Banner,
    Account,
    ProductDetail,
@@ -21,7 +21,7 @@ import {
    DashboardOrderDetail,
    UserOrder,
    UserOrderDetail,
-   Dashboard
+   Dashboard,
 } from "@/pages";
 
 const routes = {
@@ -42,12 +42,12 @@ const publicRoutes = [
    {
       path: routes.LOGIN,
       component: Login,
-      layout: LoginLayout,
+      layout: AuthLayout,
    },
    {
       path: routes.REGISTER,
       component: Register,
-      layout: LoginLayout,
+   layout: AuthLayout,
    },
    {
       path: routes.HOME,
@@ -117,9 +117,9 @@ const privateRoutes = [
       component: DashboardProduct,
    },
    {
-      path: "/dashboard/brand",
+      path: "/dashboard/category",
       role: ["ADMIN"],
-      component: Brand,
+      component: Category,
    },
    {
       path: "/dashboard/banner",
@@ -127,7 +127,7 @@ const privateRoutes = [
       component: Banner,
    },
    {
-      path: "/dashboard/product/edit/:id",
+      path: "/dashboard/product/:productAscii",
       role: ["ADMIN"],
       component: EditProduct,
    },

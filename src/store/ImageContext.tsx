@@ -1,5 +1,5 @@
 "use client";
-import { ImageType } from "@/types";
+
 import {
   ReactNode,
   createContext,

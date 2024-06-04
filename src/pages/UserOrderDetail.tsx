@@ -1,9 +1,9 @@
-import { Button } from "@/components";
 import Skeleton from "@/components/Skeleton";
 import PrimaryLabel from "@/components/ui/PrimaryLabel";
+import PushButton from "@/components/ui/PushButton";
 import PushFrame from "@/components/ui/PushFrame";
 import useUserOrder from "@/hooks/useUserOrder";
-import { Order } from "@/types";
+
 import { moneyFormat } from "@/utils/appHelper";
 import { ArchiveBoxIcon, CreditCardIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import { useRef } from "react";
@@ -189,20 +189,18 @@ export default function UserOrderDetail() {
          <div className="mt-[30px] flex flex-col space-y-[14px] sm:flex-row sm:space-y-0 sm:space-x-[14px] justify-center ">
             {orderDetail.status !== "canceled" && orderDetail.status !== "completed" && (
                <>
-                  <Button
-                     primary
-                     isLoading={apiLoading && statusWantToUpdate.current === "canceled"}
+                  <PushButton
+                     loading={apiLoading && statusWantToUpdate.current === "canceled"}
                      onClick={() => handleUpdateOrderStatus("canceled")}
                   >
                      Huỷ
-                  </Button>
-                  <Button
-                     isLoading={apiLoading && statusWantToUpdate.current === "completed"}
-                     primary
+                  </PushButton>
+                  <PushButton
+                     loading={apiLoading && statusWantToUpdate.current === "completed"}
                      onClick={() => handleUpdateOrderStatus("completed")}
                   >
                      Đã nhận hàng
-                  </Button>
+                  </PushButton>
                </>
             )}
          </div>

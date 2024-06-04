@@ -30,7 +30,7 @@ export default function DragAbleItem({
 
   return (
     <div
-      className={`draggable transition-[padding_margin]`}
+      className={`draggable`}
       {...parentProps}
       draggable
     >

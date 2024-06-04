@@ -1,10 +1,9 @@
 import { Button } from "@/components";
 import useCart from "@/hooks/useCart";
 import { useToast } from "@/store/ToastContext";
-import { Cart, CartItem, CartItemSchema } from "@/types";
 
-import { PlusSmallIcon } from "@heroicons/react/20/solid";
-import { MinusSmallIcon } from "@heroicons/react/24/solid";
+
+import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 type Props = {
@@ -70,7 +69,8 @@ function VariantList({ cartItem, handleCartData, setIsFetching }: Props) {
    }, []);
 
    const classes = {
-      container: "flex flex-col space-y-[10px] md:space-y-0 md:space-x-[10px] md:flex-row ",
+      container:
+         "flex flex-col space-y-[10px] md:space-y-0 md:space-x-[10px] md:flex-row ",
       variantLabel: "text-[13px] md:text-[14px] text-gray-600 font-[500]",
 
       select:
@@ -80,23 +80,27 @@ function VariantList({ cartItem, handleCartData, setIsFetching }: Props) {
    };
 
    return (
-      <div className={`${classes.container} ${apiLoading ? "opacity-60 pointer-events-none" : ""}`}>
+      <div
+         className={`${classes.container} ${
+            apiLoading ? "opacity-60 pointer-events-none" : ""
+         }`}
+      >
          <div className="space-y-[4px]">
             <p className={classes.variantLabel}>Quantity</p>
             <div className={classes.quantityBox}>
                <Button
-                  disable={cartItem.amount === 1}
+                  disabled={cartItem.amount === 1}
                   className=" hover:bg-[#e1e1e1] border-r border-[#e1e1e1] p-[3px]"
                   onClick={() => handleUpdateCartItem(cartItem.amount - 1, "quantity")}
                >
-                  <MinusSmallIcon className="w-[24px]" />
+                  <MinusIcon className="w-[24px]" />
                </Button>
                <span className="text-[16px] font-[500] px-[10px]">{cartItem.amount}</span>
                <Button
                   className="border-l border-[#e1e1e1] p-[3px] hover:bg-[#e1e1e1]"
                   onClick={() => handleUpdateCartItem(cartItem.amount + 1, "quantity")}
                >
-                  <PlusSmallIcon className="w-[24px]" />
+                  <PlusIcon className="w-[24px]" />
                </Button>
             </div>
          </div>

@@ -6,7 +6,7 @@ import styles from "./Search.module.scss";
 import searchService from "../../services/searchService";
 import useDebounce from "../../hooks/useDebounce";
 import Popup from "../ui/Popup";
-import { Product } from "@/types";
+
 import { ArrowPathIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const cx = classNames.bind(styles);

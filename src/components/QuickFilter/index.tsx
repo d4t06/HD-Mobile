@@ -7,27 +7,41 @@ import BrandList from "./BrandList";
 import SelectedSort from "./SelectedSort";
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectedAllProduct, selectedAllFilter, fetchProducts, storingFilters } from "../../store";
+import {
+   selectedAllProduct,
+   selectedAllFilter,
+   fetchProducts,
+   storingFilters,
+} from "../../store";
 import { FilterType } from "@/store/filtersSlice";
 import { AppDispatch } from "@/store/store";
-import { Brand, Category } from "@/types";
+
 import Skeleton from "../Skeleton";
+import useCurrentCategory from "@/hooks/useCurrentCategory";
 
 const cx = classNames.bind(styles);
 
 type Props = {
    admin?: boolean;
-   brands: Brand[] | undefined;
-   loading: boolean;
-   curCategory: Category | undefined;
 };
 
-export default function QuickFilter({ brands, admin, loading, curCategory }: Props) {
+export default function QuickFilter({ admin }: Props) {
    const dispatchRedux = useDispatch<AppDispatch>();
    const { page, category_id } = useSelector(selectedAllProduct);
    const { filters: filtersInStore, sort } = useSelector(selectedAllFilter);
 
-   const isFiltered = useMemo(() => !!filtersInStore.brands.length || !!filtersInStore.price, [filtersInStore]);
+   // hooks
+   const { currentCategory, status } = useCurrentCategory();
+
+   const isFiltered = useMemo(
+      () => !!filtersInStore.brands.length || !!filtersInStore.price,
+      [filtersInStore]
+   );
+
+   const brandsByCategory = useMemo(
+      () => currentCategory?.brands || [],
+      [currentCategory]
+   );
 
    const showFilteredResults = async (filters: FilterType) => {
       await dispatchRedux(fetchProducts({ page, sort, category_id, filters, admin }));
@@ -57,35 +71,47 @@ export default function QuickFilter({ brands, admin, loading, curCategory }: Pro
    };
 
    const BrandSkeleton = useMemo(() => {
-      return [...Array(5).keys()].map((index) => <Skeleton key={index} className="brand-skeleton" />);
+      return [...Array(5).keys()].map((index) => (
+         <Skeleton key={index} className="brand-skeleton" />
+      ));
    }, []);
 
    const BrandsRemaining = useMemo(() => {
-      if (loading || !brands) return [];
-      if (!admin) return brands;
+      if (status === "loading" || !currentCategory) return [];
+      if (!admin) return brandsByCategory;
 
-      return brands.filter((b) => {
+      return brandsByCategory.filter((b) => {
          const existing = filtersInStore.brands.map((e) => e.brand_ascii);
          return !existing.includes(b.brand_ascii);
       });
-   }, [curCategory, filtersInStore, loading]);
+   }, [currentCategory, filtersInStore, status === "loading"]);
 
    const classes = {
       brandList: "space-x-[10px] md:space-x-0 md:gap-[10px]",
    };
    return (
       <>
-         <div className={cx("container", { disable: loading, admin })}>
-            {loading && <div className={cx("brand-list", `${classes.brandList}`)}>{BrandSkeleton}</div>}
+         <div className={cx("container", { disable: status === "loading", admin })}>
+            {status === "loading" && (
+               <div className={cx("brand-list", `${classes.brandList}`)}>
+                  {BrandSkeleton}
+               </div>
+            )}
 
-            {!loading && brands && (
+            {status === "success" && brandsByCategory && (
                <>
                   {!admin && (
                      <div className={cx("brand-list", `${classes.brandList}`)}>
                         {isFiltered ? (
-                           <SelectedSort data={filtersInStore} handleFilter={handleFilter} />
+                           <SelectedSort
+                              data={filtersInStore}
+                              handleFilter={handleFilter}
+                           />
                         ) : (
-                           <BrandList data={BrandsRemaining} handleFilter={handleFilter} />
+                           <BrandList
+                              data={BrandsRemaining}
+                              handleFilter={handleFilter}
+                           />
                         )}
                      </div>
                   )}
@@ -94,7 +120,10 @@ export default function QuickFilter({ brands, admin, loading, curCategory }: Pro
                      <>
                         {isFiltered && (
                            <div className={cx("brand-list", `${classes.brandList}`)}>
-                              <SelectedSort data={filtersInStore} handleFilter={handleFilter} />
+                              <SelectedSort
+                                 data={filtersInStore}
+                                 handleFilter={handleFilter}
+                              />
                            </div>
                         )}
                         {!!BrandsRemaining.length && (

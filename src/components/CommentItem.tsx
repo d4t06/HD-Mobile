@@ -1,5 +1,5 @@
 import { AvatarPlaceholder } from "@/components/Avatar";
-import { ProductComment, Reply } from "@/types";
+;
 import { HTMLAttributes, ReactNode, useMemo } from "react";
 import Skeleton from "./Skeleton";
 

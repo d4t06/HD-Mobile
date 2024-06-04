@@ -1,4 +1,4 @@
-import { Product } from "@/types";
+
 import "../styles.scss";
 import Image from "@/components/ui/Image";
 import Skeleton from "@/components/Skeleton";

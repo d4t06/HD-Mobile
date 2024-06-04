@@ -24,7 +24,6 @@
    outline: none;
    padding-left: 20px;
    padding-right: 70px;
-   font-size: 1.7rem;
    border: none;
    font-weight: 500;
 }
@@ -41,7 +40,6 @@
    right: 0;
    width: 45px;
    color: #999;
-   font-size: 2rem;
 }
 .input:not(:placeholder-shown) ~ .search-btn {
    color: #333;
@@ -57,7 +55,6 @@
    background-color: transparent;
    top: 0;
    color: #666;
-   font-size: 1.8rem;
 }
 
 .search-result {

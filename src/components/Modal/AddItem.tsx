@@ -1,11 +1,17 @@
-import { Dispatch, FormEvent, SetStateAction, useEffect, useState, useRef, ReactNode } from "react";
-//  import ModalHeader from "./ModalHeader";
+import {
+   FormEvent,
+   useEffect,
+   useState,
+   useRef,
+   ReactNode,
+} from "react";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import ModalHeader from "./ModalHeader";
+import PushButton from "../ui/PushButton";
 
 type Props = {
-   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
    cbWhenSubmit: (value: string) => void;
    title: string;
    initValue?: string;
@@ -13,7 +19,14 @@ type Props = {
    loading?: boolean;
 };
 
-export default function AddItem({ setIsOpenModal, cbWhenSubmit, title, initValue, loading, children }: Props) {
+export default function AddItem({
+   close,
+   cbWhenSubmit,
+   title,
+   initValue,
+   loading,
+   children,
+}: Props) {
    const [value, setValue] = useState(initValue || "");
    const inputRef = useRef<HTMLInputElement>(null);
 
@@ -27,8 +40,8 @@ export default function AddItem({ setIsOpenModal, cbWhenSubmit, title, initValue
    };
 
    return (
-      <div className="w-[300px] bg-[#fff]">
-         <ModalHeader setIsOpenModal={setIsOpenModal} title={title} />
+      <div className="w-[400px] bg-[#fff]">
+         <ModalHeader close={close} title={title} />
          <form action="" onSubmit={handleSubmit}>
             <Input
                className="w-full"
@@ -41,9 +54,9 @@ export default function AddItem({ setIsOpenModal, cbWhenSubmit, title, initValue
             {children}
 
             <p className="text-right mt-[20px]">
-               <Button isLoading={loading} type="submit" primary>
+               <PushButton loading={loading} type="submit">
                   Save
-               </Button>
+               </PushButton>
             </p>
          </form>
       </div>

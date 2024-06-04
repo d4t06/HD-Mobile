@@ -1,25 +1,26 @@
-import { useApp } from "@/store/AppContext";
-import { Dispatch, SetStateAction } from "react";
-import { Button, Modal } from ".";
+import { Modal } from ".";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/store/AuthContext";
 import useLogout from "@/hooks/useLogout";
 import { ArchiveBoxIcon, TagIcon } from "@heroicons/react/24/outline";
+import PushButton from "./ui/PushButton";
+import { useSelector } from "react-redux";
+import { selectCategory } from "@/store/categorySlice";
 
 type Props = {
    isOpen: boolean;
-   setIsOpen: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
 };
 
-export default function Sidebar({ isOpen, setIsOpen }: Props) {
-   const { categories } = useApp();
+export default function Sidebar({ isOpen, close }: Props) {
+   const { categories } = useSelector(selectCategory);
    const { auth } = useAuth();
 
    const logout = useLogout();
 
    const singOut = async () => {
       await logout();
-      setIsOpen(false)
+      close();
    };
 
    const classes = {
@@ -32,25 +33,22 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
    return (
       <>
          <div className={`${classes.container} ${isOpen ? classes.open : classes.hide}`}>
-            {/* <div className="text-white relative p-[14px] bg-[#cd1818]">
-               <Avatar />
-            </div> */}
             <ul className="py-[14px] px-[10px]">
                {categories.map((c, index) => (
                   <Link
-                     onClick={() => setIsOpen(false)}
+                     onClick={close}
                      key={index}
                      to={`/${c.category_ascii}`}
                      className="flex items-center space-x-[4px] h-[34px] text-[#333]"
                   >
                      <TagIcon className="w-[24px]" />
-                     <span className="text-[16px] font-[500]">{c.category_name}</span>
+                     <span className="text-[16px] font-[500]">{c.category}</span>
                   </Link>
                ))}
 
                {auth?.username && (
                   <Link
-                     onClick={() => setIsOpen(false)}
+                     onClick={close}
                      to={`/order`}
                      className="flex items-center  space-x-[4px] h-[34px] text-[#333]"
                   >
@@ -62,20 +60,14 @@ export default function Sidebar({ isOpen, setIsOpen }: Props) {
 
             <div className="text-center mt-auto absolute bottom-[30px] left-[50%] translate-x-[-50%]">
                {auth?.token ? (
-                  <Button className="px-[12px] !py-[4px]" onClick={singOut} primary>
-                     Log out
-                  </Button>
+                  <PushButton onClick={singOut}>Log out</PushButton>
                ) : (
-                  <Link to="/login">
-                     <Button className="px-[12px] !py-[4px]" primary>
-                        Log in
-                     </Button>
-                  </Link>
+                  <PushButton to="/login">Login</PushButton>
                )}
             </div>
          </div>
 
-         {isOpen && <Modal setShowModal={setIsOpen} />}
+         {isOpen && <Modal close={close} />}
       </>
    );
 }

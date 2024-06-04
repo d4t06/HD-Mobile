@@ -1,14 +1,15 @@
 import { Button, Input } from "@/components";
-import { ProductComment, Product, Reply, ProductReview } from "@/types";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+
+import { useMemo, useState } from "react";
 import ModalHeader from "./ModalHeader";
 import { inputClasses } from "../ui/Input";
 import useReview from "@/hooks/useReview";
 import { StarIcon } from "@heroicons/react/16/solid";
+import PushButton from "../ui/PushButton";
 
 type Props = {
    product?: Product;
-   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
    target: "Add-Review" | "Add-Reply" | "Edit-Reply";
    comment?: ProductComment;
 };
@@ -27,12 +28,7 @@ const initReview = (product?: Product) => {
    return data;
 };
 
-export default function AddReviewModal({
-   product,
-   setIsOpenModal,
-   target,
-   comment,
-}: Props) {
+export default function AddReviewModal({ product, close, target, comment }: Props) {
    const [reviewData, setReviewData] = useState<ProductReview>(initReview(product));
    const [replyContent, setReplyContent] = useState(
       comment?.reply_data ? comment.reply_data.content : ""
@@ -41,7 +37,7 @@ export default function AddReviewModal({
 
    // hooks
    const { addReview, apiLoading, replyReview, editReply } = useReview({
-      setIsOpenModal,
+      close,
    });
 
    const handleReviewData = (field: keyof typeof reviewData, value: string | number) => {
@@ -108,21 +104,21 @@ export default function AddReviewModal({
       <div className="w-[700px] max-w-[85vw]">
          {showConfirm && (
             <>
-               <ModalHeader title={"Gửi thành công"} setIsOpenModal={setIsOpenModal} />
+               <ModalHeader title={"Gửi thành công"} close={close} />
                <p className="text-[16px] text-[#333]">
                   Chúng tôi đã nhận được đánh giá của bạn
                </p>
                <div className="text-center mt-[30px]">
-                  <Button isLoading={false} onClick={() => setIsOpenModal(false)} primary>
+                  <PushButton loading={false} onClick={close}>
                      Cút
-                  </Button>
+                  </PushButton>
                </div>
             </>
          )}
 
          {!showConfirm && (
             <>
-               <ModalHeader title={titleMap[target]} setIsOpenModal={setIsOpenModal} />
+               <ModalHeader title={titleMap[target]} close={close} />
                {target === "Add-Review" && (
                   <div className="">
                      <div className="mb-[20px]">
@@ -130,7 +126,7 @@ export default function AddReviewModal({
                            {[...Array(5).keys()].map((index) => {
                               const isActive = index + 1 <= reviewData.rate;
                               return (
-                                 <Button
+                                 <button
                                     onClick={() => handleReviewData("rate", index + 1)}
                                     key={index}
                                  >
@@ -139,7 +135,7 @@ export default function AddReviewModal({
                                           isActive ? "text-[#efb140]" : "text-[#808080]"
                                        }`}
                                     />
-                                 </Button>
+                                 </button>
                               );
                            })}
                         </div>
@@ -177,9 +173,9 @@ export default function AddReviewModal({
                   ></textarea>
                </div>
                <div className="text-right mt-[30px]">
-                  <Button isLoading={apiLoading} onClick={handleSubmit} primary>
+                  <PushButton loading={apiLoading} onClick={handleSubmit}>
                      Post
-                  </Button>
+                  </PushButton>
                </div>
             </>
          )}

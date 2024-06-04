@@ -1,5 +1,4 @@
-import { Product, ProductSchema } from "@/types";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { usePrivateRequest } from ".";
 import { useToast } from "@/store/ToastContext";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,12 +6,12 @@ import { selectedAllProduct } from "@/store";
 import { setProducts, storingProducts } from "@/store/productsSlice";
 
 type Props = {
-   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
 };
 
-const PRODUCT_URL = "/product-management";
+const PRODUCT_URL = "/products";
 
-export default function useProductAction({ setIsOpenModal }: Props) {
+export default function useProductAction({ close }: Props) {
    const dispatch = useDispatch();
    const [apiLoading, setApiLoading] = useState(false);
 
@@ -23,7 +22,11 @@ export default function useProductAction({ setIsOpenModal }: Props) {
    const privateRequest = usePrivateRequest();
    const { setErrorToast, setSuccessToast } = useToast();
 
-   const updateProducts = (products: Product[], product: ProductSchema, index: number) => {
+   const updateProducts = (
+      products: Product[],
+      product: ProductSchema,
+      index: number
+   ) => {
       const newProducts = [...products];
       newProducts[index] = { ...newProducts[index], ...product };
 
@@ -49,39 +52,43 @@ export default function useProductAction({ setIsOpenModal }: Props) {
          switch (props.type) {
             case "Add":
                setApiLoading(true);
-               const res = await privateRequest.post(`${PRODUCT_URL}/products`, props.product, {
-                  headers: { "Content-Type": "application/json" },
-               });
+               const res = await privateRequest.post(`${PRODUCT_URL}`, props.product);
 
-               const newProductData = {
-                  ...res.data.data,
-                  colors_data: [],
-                  combines_data: [],
-               } as Product;
+               // const newProductData = {
+               //    ...res.data.data,
+               //    colors_data: [],
+               //    combines_data: [],
+               // } as Product;
 
-               dispatch(storingProducts({ products: [newProductData] }));
+               dispatch(storingProducts({ products: [res.data.data] }));
                break;
 
             case "Edit":
                setApiLoading(true);
                const { currentIndex, product, product_id } = props;
 
-               await privateRequest.put(`${PRODUCT_URL}/products/${product_id}`, product, {
-                  headers: { "Content-Type": "application/json" },
-               });
+               await privateRequest.put(
+                  `${PRODUCT_URL}/products/${product_id}`,
+                  product,
+                  {
+                     headers: { "Content-Type": "application/json" },
+                  }
+               );
 
-               const newProductsUpdate: Product[] = updateProducts(products, product, currentIndex);
+               const newProductsUpdate: Product[] = updateProducts(
+                  products,
+                  product,
+                  currentIndex
+               );
                dispatch(setProducts({ products: newProductsUpdate }));
          }
          setSuccessToast(`${props.type} product successful`);
-         
       } catch (error) {
          console.log({ message: error });
          setErrorToast(`${props.type} product fail`);
-
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close();
       }
    };
 
@@ -103,7 +110,7 @@ export default function useProductAction({ setIsOpenModal }: Props) {
          setErrorToast("Delete product fail");
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close();
       }
    };
 

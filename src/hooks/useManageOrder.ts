@@ -1,4 +1,4 @@
-import { Order } from "@/types";
+
 import { privateRequest } from "@/utils/request";
 import { useEffect, useRef, useState } from "react";
 

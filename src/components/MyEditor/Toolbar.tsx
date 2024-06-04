@@ -1,5 +1,5 @@
 import { Editor } from "@tiptap/react";
-import { Button, Gallery, Modal } from "..";
+import { Gallery, Modal } from "..";
 import { useState } from "react";
 
 export default function Toolbar({ editor }: { editor: Editor | null }) {
@@ -9,75 +9,73 @@ export default function Toolbar({ editor }: { editor: Editor | null }) {
 
    const [isOpenModal, setIsOpenModal] = useState(false);
 
+   const closeModal = () => setIsOpenModal(false);
+
    const handleAddImage = (imageList: string[]) => {
       if (imageList[0]) {
          editor.chain().focus().setImage({ src: imageList[0] }).run();
       }
    };
 
-   // const classes = {
-   //    btn: 'px-[6px] py-[3px] rounded-[]'
-   //    activeBtn: 'bg-white text-[#cd1818]'
-   // }
-
    return (
       <>
-         <Button
+         <button
             onClick={() => editor.chain().focus().toggleBold().run()}
-            disable={!editor.can().chain().focus().toggleBold().run()}
-            className={editor.isActive("bold") ? 'active' : ""}
+            disabled={!editor.can().chain().focus().toggleBold().run()}
+            className={editor.isActive("bold") ? "active" : ""}
          >
             bold
-         </Button>
-         <Button
+         </button>
+         <button
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            disable={!editor.can().chain().focus().toggleItalic().run()}
-            className={editor.isActive("italic") ? 'active' : ""}
+            disabled={!editor.can().chain().focus().toggleItalic().run()}
+            className={editor.isActive("italic") ? "active" : ""}
          >
             italic
-         </Button>
-
-         {/* <Button onClick={() => editor.chain().focus().unsetAllMarks().run()}>clear marks</Button>
-         <Button onClick={() => editor.chain().focus().clearNodes().run()}>clear nodes</Button> */}
-         <Button
+         </button>
+         <button
             onClick={() => editor.chain().focus().setParagraph().run()}
-            className={editor.isActive("paragraph") ? 'active' : ""}
+            className={editor.isActive("paragraph") ? "active" : ""}
          >
             paragraph
-         </Button>
-         <Button
+         </button>
+         <button
             onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
-            className={editor.isActive("heading", { level: 5 }) ? 'active' : ""}
+            className={editor.isActive("heading", { level: 5 }) ? "active" : ""}
          >
             h5
-         </Button>
-         <Button
+         </button>
+         <button
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={editor.isActive("blockquote") ? 'active' : ""}
+            className={editor.isActive("blockquote") ? "active" : ""}
          >
             blockquote
-         </Button>
-         <Button onClick={() => setIsOpenModal(true)} className={editor.isActive("blockquote") ? 'active' : ""}>
+         </button>
+         <button
+            onClick={() => setIsOpenModal(true)}
+            className={editor.isActive("blockquote") ? "active" : ""}
+         >
             image
-         </Button>
-         {/* <Button onClick={() => editor.chain().focus().setHorizontalRule().run()}>horizontal rule</Button>
-         <Button onClick={() => editor.chain().focus().setHardBreak().run()}>hard break</Button> */}
-         <Button
+         </button>
+         <button
             onClick={() => editor.chain().focus().undo().run()}
-            disable={!editor.can().chain().focus().undo().run()}
+            disabled={!editor.can().chain().focus().undo().run()}
          >
             undo
-         </Button>
-         <Button
+         </button>
+         <button
             onClick={() => editor.chain().focus().redo().run()}
-            disable={!editor.can().chain().focus().redo().run()}
+            disabled={!editor.can().chain().focus().redo().run()}
          >
             redo
-         </Button>
+         </button>
 
          {isOpenModal && (
-            <Modal setShowModal={setIsOpenModal}>
-               <Gallery setIsOpenModal={setIsOpenModal} setImageUrl={(images) => handleAddImage(images)} />
+            <Modal close={closeModal}>
+               <Gallery
+                  close={closeModal}
+                  setImageUrl={(images) => handleAddImage(images)}
+               />
             </Modal>
          )}
       </>

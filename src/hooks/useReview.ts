@@ -1,12 +1,12 @@
 import { useToast } from "@/store/ToastContext";
-import { ProductComment, ProductReview, Reply } from "@/types";
+
 import { publicRequest } from "@/utils/request";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useLocalStorage, usePrivateRequest } from ".";
 import { initLocalStorage } from "@/utils/appHelper";
 
 type Props = {
-   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
    product_ascii?: string;
    admin?: boolean;
 };
@@ -23,7 +23,7 @@ type StateType = {
 const REVIEW_URL = "/product-review-management";
 const REVIEW_URL_CLIENT = "/product-reviews";
 
-export default function useReview({ setIsOpenModal, product_ascii, admin }: Props) {
+export default function useReview({ close, product_ascii, admin }: Props) {
    const [state, setState] = useState<StateType>({
       status: "loading",
       reviews: [],
@@ -45,15 +45,20 @@ export default function useReview({ setIsOpenModal, product_ascii, admin }: Prop
       const newReviews = [...state.reviews];
 
       let myIndex = index;
-      if (myIndex === undefined) myIndex = newReviews.findIndex((r) => review.id === r.id);
+      if (myIndex === undefined)
+         myIndex = newReviews.findIndex((r) => review.id === r.id);
 
-      if (myIndex === -1 || myIndex === undefined) throw new Error("update review index is undefined");
+      if (myIndex === -1 || myIndex === undefined)
+         throw new Error("update review index is undefined");
 
       newReviews[myIndex] = review;
       setState((prev) => ({ ...prev, reviews: newReviews }));
    };
 
-   const addReview = async (reviewData: ProductReview, setShowConfirm: Dispatch<SetStateAction<boolean>>) => {
+   const addReview = async (
+      reviewData: ProductReview,
+      setShowConfirm: Dispatch<SetStateAction<boolean>>
+   ) => {
       try {
          setApiLoading(true);
 
@@ -87,7 +92,9 @@ export default function useReview({ setIsOpenModal, product_ascii, admin }: Prop
 
          const { reviews, ...restData } = res.data as StateType;
 
-         const averageRes = await publicRequest.get(`${REVIEW_URL_CLIENT}/avg/${product_ascii}`);
+         const averageRes = await publicRequest.get(
+            `${REVIEW_URL_CLIENT}/avg/${product_ascii}`
+         );
          const averageNumber = +averageRes.data.average;
 
          console.log("check average", averageNumber);
@@ -115,7 +122,7 @@ export default function useReview({ setIsOpenModal, product_ascii, admin }: Prop
          setErrorToast("Reply comment fail");
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close();
       }
    };
 
@@ -131,7 +138,7 @@ export default function useReview({ setIsOpenModal, product_ascii, admin }: Prop
          setErrorToast("Reply comment fail");
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close();
       }
    };
 
@@ -146,7 +153,7 @@ export default function useReview({ setIsOpenModal, product_ascii, admin }: Prop
          setErrorToast("Edit reply comment fail");
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close();
       }
    };
 
@@ -176,7 +183,10 @@ export default function useReview({ setIsOpenModal, product_ascii, admin }: Prop
             await publicRequest.post(`${REVIEW_URL_CLIENT}/unlike`, { id: r.id });
          }
 
-         const newReview = { ...r, total_like: type === "like" ? r.total_like + 1 : r.total_like - 1 } as ProductReview;
+         const newReview = {
+            ...r,
+            total_like: type === "like" ? r.total_like + 1 : r.total_like - 1,
+         } as ProductReview;
 
          setLocalValue((prev) => ({ ...prev, like_review_ids: newLocalLikeReviewIds }));
          updateReviews(newReview);
@@ -187,7 +197,11 @@ export default function useReview({ setIsOpenModal, product_ascii, admin }: Prop
       }
    };
 
-   const approveReview = async (index: number, state: StateType, setState: Dispatch<SetStateAction<StateType>>) => {
+   const approveReview = async (
+      index: number,
+      state: StateType,
+      setState: Dispatch<SetStateAction<StateType>>
+   ) => {
       try {
          setApiLoading(true);
          const newReviews = [...state.reviews];
@@ -205,7 +219,7 @@ export default function useReview({ setIsOpenModal, product_ascii, admin }: Prop
          setErrorToast("Approve fail");
       } finally {
          setApiLoading(false);
-         // setIsOpenModal(false);
+         // close(false);
       }
    };
 

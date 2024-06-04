@@ -4,12 +4,21 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import RequireAuth from "./routes/RequireAuth";
 import { Fragment } from "react";
 import PersistLogin from "./routes/PersistLogin";
+import { Init } from "./pages";
 
 function App() {
    return (
       <Router basename="/HD-Mobile">
          <Routes>
-            <Route path="*" element={<h1 className="mt-[30px] border-b text-center text-[20px]">Not found</h1>} />
+            <Route
+               path="*"
+               element={
+                  <h1 className="mt-[30px] border-b text-center text-[20px]">
+                     Not found
+                  </h1>
+               }
+            />
+            <Route path="/dashboard/init" element={<Init />} />
 
             <Route element={<PersistLogin />}>
                {publicRoutes.map((route, index) => {
@@ -39,7 +48,10 @@ function App() {
                   if (route.layout) Layout = route.layout;
 
                   return (
-                     <Route key={index} element={<RequireAuth allowedRole={route.role} />}>
+                     <Route
+                        key={index}
+                        element={<RequireAuth allowedRole={route.role} />}
+                     >
                         <Route
                            key={index}
                            path={route.path}

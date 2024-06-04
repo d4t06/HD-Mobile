@@ -1,6 +1,6 @@
 import { useAuth } from "@/store/AuthContext";
 import { useToast } from "@/store/ToastContext";
-import { Order, OrderSchema } from "@/types";
+
 import { privateRequest } from "@/utils/request";
 import { useEffect, useRef, useState } from "react";
 

@@ -3,26 +3,23 @@ import classNames from "classnames/bind";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Login/Login.module.scss";
 import { publicRequest } from "@/utils/request";
-import { Button } from "@/components";
 import { useToast } from "@/store/ToastContext";
-// import { Cart } from "@/types";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/16/solid";
+import PushButton from "@/components/ui/PushButton";
 
 const REGISTER_URL = "/auth/register";
-// const CART_URL = "/carts";
 const cx = classNames.bind(styles);
 
-const USER_REGEX = /^(?=.{4,20}$)[a-zA-Z].*/;
+// const USER_REGEX = /^(?=.{4,20}$)[a-zA-Z].*/;
 const PWD_REGEX = /^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
 export default function Register() {
    const userInputRef = useRef<HTMLInputElement>(null);
-   const prevUser = useRef("");
+   // const prevUser = useRef("");
 
    const [loading, setLoading] = useState(false);
-   const [user, setUser] = useState("");
-   const [validName, setValidName] = useState(false);
-   const [userFocus, setUserFocus] = useState(false);
+
+   const [username, setUsername] = useState("");
 
    const [password, setPassword] = useState("");
    const [validPwd, setValidPwd] = useState(false);
@@ -38,8 +35,8 @@ export default function Register() {
    const navigate = useNavigate();
 
    const ableToSubmit = useMemo(
-      () => validName && validPwd && validMatchPwg && prevUser.current !== user,
-      [validName, validPwd, validMatchPwg, user]
+      () => validPwd && validMatchPwg,
+      [validPwd, validMatchPwg]
    );
 
    useEffect(() => {
@@ -47,17 +44,15 @@ export default function Register() {
    }, []);
 
    const handleClear = () => {
-      setUser("");
+      setUsername("");
       setPassword("");
    };
 
    const handleSubmit = async (e: FormEvent) => {
       e.preventDefault();
-      //  if submit with js tool
-      const test1 = USER_REGEX.test(user);
-      const test2 = PWD_REGEX.test(password);
+      const validPassword = PWD_REGEX.test(password);
 
-      if (!test1 || !test2) {
+      if (!validPassword) {
          setErrorMsg("missing payload");
          return;
       }
@@ -65,29 +60,22 @@ export default function Register() {
       try {
          setLoading(true);
 
-         await publicRequest.post(REGISTER_URL, JSON.stringify({ username: user, password: password }), {
-            headers: { "Content-Type": "application/json" },
+         await publicRequest.post(REGISTER_URL, {
+            password: password,
+            username: username,
          });
 
-         // const initCart: Cart = {
-         //    count_: 0,
-         //    total_price: 0,
-         //    username: user,
-         //    items: [],
-         // };
-         // await publicRequest.post(CART_URL, initCart);
-
-         setSuccessToast("Đăng ký thành công");
+         setSuccessToast("Register successful");
          handleClear();
          navigate("/login");
       } catch (error: any) {
          if (!error?.response) {
             setErrorMsg("No server response");
          } else if (error?.response.status === 409) {
-            setErrorMsg("Tên tài khoản đã tồn tại");
-            prevUser.current = user;
+            setErrorMsg("This user name had taken");
+            // prevUser.current = username;
          } else {
-            setErrorMsg("Đăng ký thất bại");
+            setErrorMsg("Register fail");
          }
       } finally {
          setLoading(false);
@@ -95,11 +83,11 @@ export default function Register() {
    };
 
    // validate username
-   useEffect(() => {
-      const result = USER_REGEX.test(user);
+   // useEffect(() => {
+   //    const result = USER_REGEX.test(username);
 
-      setValidName(result);
-   }, [user]);
+   //    setValidName(result);
+   // }, [username]);
 
    // validate password
    useEffect(() => {
@@ -112,52 +100,33 @@ export default function Register() {
    }, [password, matchPwg]);
 
    const classes = {
-      constructor: "bg-[#333] p-[6px] rounded-[6px] text-[1.4rem] text-white origin-top duration-[.3s] transition-all",
+      constructor:
+         "bg-[#333] p-[6px] rounded-[6px] text-[14px] text-white origin-top duration-[.3s] transition-all",
       checkIcon: "text-emerald-500 w-[24px]",
       xIcon: "text-red-500 w-[24px]",
    };
 
    return (
       <div className={cx("page")}>
-         <form className={cx("form", "space-y-[14px]", { disable: loading })} onSubmit={handleSubmit}>
+         <form
+            className={cx("form", "space-y-[20px]", { disable: loading })}
+            onSubmit={handleSubmit}
+         >
             {errMsg && <h2 className={cx("error-msg")}>{errMsg}</h2>}
             <h1 className={cx("title")}>Đăng ký</h1>
             <div className={cx("form-group")}>
                <div className="flex items-center space-x-[4px]">
                   <label htmlFor="username">Tên tài khoản</label>
-                  {user && (
-                     <span>
-                        {validName ? (
-                           <CheckIcon className={`${classes.checkIcon} `} />
-                        ) : (
-                           <XMarkIcon className={`${classes.xIcon} `} />
-                        )}
-                     </span>
-                  )}
                </div>
 
                <input
                   id="username"
-                  ref={userInputRef}
                   autoComplete="off"
                   type="text"
-                  value={user}
+                  value={username}
                   aria-describedby="note"
-                  onFocus={() => setUserFocus(true)}
-                  onBlur={() => setUserFocus(false)}
-                  onChange={(e) => setUser(e.target.value.trim() && e.target.value)}
+                  onChange={(e) => setUsername(e.target.value)}
                />
-
-               <div
-                  id="note"
-                  className={`${classes.constructor} ${
-                     userFocus && user && !validName ? "max-h-[200px] opacity-100" : "max-h-0 my-[-6px] opacity-0"
-                  }`}
-               >
-                  4 - 24 ký tự <br />
-                  Phải bắt đầu bằng chữ cái <br />
-                  Cho phép chữ Hoa, gạch chân, số
-               </div>
             </div>
             <div className={cx("form-group")}>
                <div className="flex items-center space-x-[4px]">
@@ -217,25 +186,25 @@ export default function Register() {
                />
             </div>
 
-            <div className="!mt-[20px] text-center">
-               <Button
-                  isLoading={loading}
-                  disable={loading || !ableToSubmit}
-                  primary
-                  backClass="w-full"
+            <div className="">
+               <PushButton
+                  loading={loading}
+                  disabled={!ableToSubmit}
+                  size={"clear"}
+                  baseClassName="mt-[10px] w-full"
                   className={`h-[40px]`}
                   type="submit"
                >
                   Đăng ký
-               </Button>
+               </PushButton>
+               <p className={cx("register-text", "mt-[20px]")}>
+                  Đã có tài khoản?
+                  <Link className={cx("switch")} to="/login">
+                     {" "}
+                     Đăng nhập
+                  </Link>
+               </p>
             </div>
-            <span className={cx("register-text")}>
-               Đã có tài khoản?
-               <Link className={cx("switch")} to="/login">
-                  {" "}
-                  Đăng nhập
-               </Link>
-            </span>
          </form>
       </div>
    );

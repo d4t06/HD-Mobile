@@ -1,19 +1,19 @@
 import { XMarkIcon } from "@heroicons/react/16/solid";
-import { Dispatch, SetStateAction } from "react";
+import { Button } from "..";
 
 export default function ModalHeader({
-   setIsOpenModal,
+   close,
    title,
 }: {
    title: string;
-   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
 }) {
    return (
-      <div className="flex justify-between mb-[15px]">
+      <div className="flex justify-between mb-[30px]">
          <h1 className="text-[22px] text-[#333] font-semibold">{title}</h1>
-         <button onClick={() => setIsOpenModal(false)}>
-            <XMarkIcon className="w-[24px]"/>
-         </button>
+         <Button size={"clear"} className="p-[4px]" colors={"second"} onClick={close}>
+            <XMarkIcon className="w-[24px]" />
+         </Button>
       </div>
    );
 }

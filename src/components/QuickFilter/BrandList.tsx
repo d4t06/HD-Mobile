@@ -2,7 +2,7 @@ import classNames from "classnames/bind";
 import styles from "./BrandSort.module.scss";
 
 import { FilterType } from "@/store/filtersSlice";
-import { Brand } from "@/types";
+
 
 const cx = classNames.bind(styles);
 

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import * as productServices from "../services/productServices";
 import searchService from "../services/searchService";
-import { Product, ProductStorage } from "@/types";
+
 import { FilterType, SortType } from "./filtersSlice";
 import { sleep } from "@/utils/appHelper";
 // import { AxiosInstance } from "axios";

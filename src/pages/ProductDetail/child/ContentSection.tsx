@@ -1,10 +1,10 @@
-import { ProductDetail } from "@/types";
+
 import HTMLReactParser from "html-react-parser/lib/index";
 import { useEffect, useRef, useState } from "react";
 
 import "../styles.scss";
-import { Button } from "@/components";
 import Skeleton from "@/components/Skeleton";
+import PushButton from "@/components/ui/PushButton";
 
 type Props = {
    detail: ProductDetail | null;
@@ -40,21 +40,22 @@ export default function ContentSection({ detail, loading }: Props) {
       }
    }, [loading, updatedHeight]);
 
-   if (loading || !updatedHeight) return <Skeleton className="w-full h-[500px] rounded-[12px]" />;
+   if (loading || !updatedHeight)
+      return <Skeleton className="w-full h-[500px] rounded-[12px]" />;
    if (!detail) return <p className="text-[16px] text-[#333]">Detail not found</p>;
 
    return (
       <>
          <div ref={containerRef} className="content-container relative overflow-hidden">
             {HTMLReactParser(detail.content) || "..."}
-            {!isShowMore && <div className="absolute w-full bottom-0 h-[150px] blur-block"></div>}
+            {!isShowMore && (
+               <div className="absolute w-full bottom-0 h-[150px] blur-block"></div>
+            )}
          </div>
          {!isShowMore && (
             <>
                <p className="text-center">
-                  <Button className="leading-[20px]" primary onClick={handleShowMore}>
-                     Xêm thêm
-                  </Button>
+                  <PushButton onClick={handleShowMore}>Xêm thêm</PushButton>
                </p>
             </>
          )}

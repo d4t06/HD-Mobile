@@ -45,9 +45,9 @@ $getter: 10px;
    row-gap: 17px;
    .filter-item {
       button {
-         font-size: 1.4rem;
+         font-size: 14px;
          padding: 0 6px;
-         line-height: 2.4rem;
+         line-height: 24px;
       }
       &.active {
          button {
@@ -57,16 +57,3 @@ $getter: 10px;
       }
    }
 }
-// .label {
-//    font-size: 1.5rem;
-//    padding-left: 5px;
-// }
-// .price {
-//    flex-direction: column;
-// }
-
-// input[type="checkbox"],
-// input[type="radio"] {
-//    scale: 1.2;
-//    margin-right: 4px;
-// }

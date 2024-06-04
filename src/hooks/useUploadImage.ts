@@ -3,7 +3,7 @@ import { ChangeEvent } from "react";
 
 import { useImage } from "@/store/ImageContext";
 import { useToast } from "@/store/ToastContext";
-import { ImageType } from "@/types";
+
 import { usePrivateRequest } from ".";
 
 const IMAGE_URL = "/image-management/images";

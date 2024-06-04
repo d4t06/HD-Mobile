@@ -1,0 +1,32 @@
+.attribute-item {
+   padding: 6px 18px;
+   display: flex;
+   
+   span,
+   p {
+      text-align: center;
+   }
+
+   // border: solid 1px rgba($color: #000000, $alpha: .15);
+   // border-radius: 8px;
+   background-color: #f1f1f1;
+
+   .cta {
+      display: flex;
+      align-items: center;
+      border-left: solid 1px rgba($color: #000000, $alpha: .15);
+      margin-left: 16px;
+      padding-left: 16px;
+      button {
+         transition: scale linear 0.1s;
+         color: #333;
+         &:hover {
+            color: #cd1818;
+            scale: 1.1;
+         }
+         & + button {
+            margin-left: 8px;
+         }
+      }
+   }
+}

@@ -1,36 +1,24 @@
 import { ImageSlider } from "@/components";
 import Skeleton from "@/components/Skeleton";
-import useAppConfig from "@/hooks/useAppConfig";
-import { useApp } from "@/store/AppContext";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import MobileCategories from "./child/MobileCategories";
+import useCurrentCategory from "@/hooks/useCurrentCategory";
 
 export default function Home() {
-   const { categories, sliders, initLoading } = useApp();
-   const { getHomeSlider, status } = useAppConfig({});
-   const ranEffect = useRef(false);
+   const { getHomeSliderImages, status, categories } = useCurrentCategory();
 
-   const sliderSkeleton = useMemo(() => <Skeleton className="w-full pt-[25%] rounded-[16px]" />, []);
+   const sliderSkeleton = useMemo(
+      () => <Skeleton className="w-full pt-[25%] rounded-[16px]" />,
+      []
+   );
 
-   const handleGetHomeSlider = async () => await getHomeSlider();
-
-   useEffect(() => {
-      if (initLoading) return;
-      if (!ranEffect.current) {
-         ranEffect.current = true;
-
-         handleGetHomeSlider();
-         console.log("run home get home page slider");
-      }
-   }, [initLoading]);
+   const homeSlider = useMemo(() => getHomeSliderImages(), []);
 
    return (
       <div className="">
-         {status === "loading" && sliderSkeleton}
-         {status === "success" && sliders["home"] && <ImageSlider data={sliders["home"]} />}
+         {status === "loading" ? sliderSkeleton : <ImageSlider data={homeSlider} />}
 
-         {/* mobile categories */}
-         {!initLoading && <MobileCategories categories={categories} />}
+         {status === "success" && <MobileCategories categories={categories} />}
       </div>
    );
 }

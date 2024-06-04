@@ -1,12 +1,12 @@
 import { useToast } from "@/store/ToastContext";
-import { ProductComment, Reply } from "@/types";
+
 import { publicRequest } from "@/utils/request";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useLocalStorage, usePrivateRequest } from ".";
 import { initLocalStorage } from "@/utils/appHelper";
 
 type Props = {
-   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+   close: () => void
    product_ascii?: string;
    admin?: boolean;
 };
@@ -32,7 +32,7 @@ const initialState: CommentStateType = {
 const COMMENT_URL = "/product-comment-management";
 const COMMENT_URL_CLIENT = "/product-comments";
 
-export default function useComment({ setIsOpenModal, product_ascii, admin }: Props) {
+export default function useComment({ close, product_ascii, admin }: Props) {
    const [state, setState] = useState<CommentStateType>(initialState);
    const [apiLoading, setApiLoading] = useState(false);
    const { setSuccessToast, setErrorToast } = useToast();
@@ -122,7 +122,7 @@ export default function useComment({ setIsOpenModal, product_ascii, admin }: Pro
          setErrorToast("Reply comment fail");
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close()
       }
    };
 
@@ -149,7 +149,7 @@ export default function useComment({ setIsOpenModal, product_ascii, admin }: Pro
          setErrorToast("Reply comment fail");
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close()
       }
    };
 
@@ -182,7 +182,7 @@ export default function useComment({ setIsOpenModal, product_ascii, admin }: Pro
          setErrorToast("Edit reply comment fail");
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close()
       }
    };
 

@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components";
+import PushButton from "../ui/PushButton";
 
 type Props = {
    callback: () => void;
@@ -8,14 +9,14 @@ type Props = {
    buttonLabel?: string;
    loading: boolean;
    className?: string;
-   setOpenModal: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
 };
 
 export default function ConfirmModal({
    loading,
    callback,
    label,
-   setOpenModal,
+   close,
    buttonLabel,
    desc = "This action cannot be undone",
    className,
@@ -30,12 +31,12 @@ export default function ConfirmModal({
          {desc && <p className=" text-[16px] font-semibold text-red-500">{desc}</p>}
 
          <div className="flex gap-[10px] mt-[20px]">
-            <Button primary onClick={() => setOpenModal(false)}>
+            <PushButton colors="second" onClick={close}>
                Close
-            </Button>
-            <Button isLoading={loading} primary onClick={callback}>
+            </PushButton>
+            <PushButton loading={loading} onClick={callback}>
                {buttonLabel || "Yes please"}
-            </Button>
+            </PushButton>
          </div>
       </div>
    );

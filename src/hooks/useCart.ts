@@ -1,10 +1,11 @@
 import { useAuth } from "@/store/AuthContext";
 import { useToast } from "@/store/ToastContext";
-import { Cart, CartItemSchema } from "@/types";
+
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { usePrivateRequest } from ".";
-import { useApp } from "@/store/AppContext";
+import { useSelector } from "react-redux";
+import { selectCategory } from "@/store/categorySlice";
 
 type Props = {
    autoRun?: boolean;
@@ -14,12 +15,15 @@ const CART_URL = "/carts";
 
 export default function useCart({ autoRun = false }: Props) {
    const [cart, setCart] = useState<Cart>();
-   const [initStatus, setInitStatus] = useState<"loading" | "error" | "success">("loading");
+   const [initStatus, setInitStatus] = useState<"loading" | "error" | "success">(
+      "loading"
+   );
    const [apiLoading, setApiLoading] = useState(false);
 
    const ranEffect = useRef(false);
 
-   const { initLoading } = useApp();
+   const { status } = useSelector(selectCategory);
+
    const { auth, loading: authLoading } = useAuth();
    const privateRequest = usePrivateRequest();
    const { setErrorToast } = useToast();
@@ -130,14 +134,14 @@ export default function useCart({ autoRun = false }: Props) {
    };
 
    useEffect(() => {
-      if (authLoading || initLoading) return;
+      if (authLoading || status === "loading") return;
       if (!autoRun) return;
 
       if (!ranEffect.current) {
          ranEffect.current = true;
          handleGetCartDetail();
       }
-   }, [authLoading, initLoading]);
+   }, [authLoading, status]);
 
    return {
       addItemToCart,

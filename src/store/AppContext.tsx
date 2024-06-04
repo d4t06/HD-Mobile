@@ -1,50 +1,58 @@
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
-import { Brand, Category, PriceRange, SliderImage } from "@/types";
+import {
+   Dispatch,
+   ReactNode,
+   SetStateAction,
+   createContext,
+   useContext,
+   useMemo,
+   useState,
+} from "react";
+import { useParams } from "react-router-dom";
 
 type StateType = {
    categories: Category[];
-   brands: Record<string, Brand[]>;
-   sliders: Record<string, SliderImage[]>;
-   priceRanges: Record<string,PriceRange[]>;
-   initLoading: boolean;
+   // brands: Record<string, Brand[]>;
+   // sliders: Record<string, SliderImage[]>;
+   // priceRanges: Record<string,PriceRange[]>;
+   status: "loading" | "success" | "error";
 };
 
 const initialState: StateType = {
    categories: [],
-   priceRanges: {},
-   sliders: {},
-   brands: {},
-   initLoading: true,
+   // priceRanges: {},
+   // sliders: {},
+   // brands: {},
+   status: "loading",
 };
 
 type ContextType = {
    state: StateType;
    setCategories: Dispatch<SetStateAction<StateType["categories"]>>;
-   setBrands: Dispatch<SetStateAction<StateType["brands"]>>;
-   setPriceRanges: Dispatch<SetStateAction<StateType["priceRanges"]>>;
-   setSliders: Dispatch<SetStateAction<StateType["sliders"]>>;
-   setInitLoading: Dispatch<SetStateAction<StateType["initLoading"]>>;
+   // setBrands: Dispatch<SetStateAction<StateType["brands"]>>;
+   // setPriceRanges: Dispatch<SetStateAction<StateType["priceRanges"]>>;
+   // setSliders: Dispatch<SetStateAction<StateType["sliders"]>>;
+   setStatus: Dispatch<SetStateAction<StateType["status"]>>;
 };
 
 const AppContext = createContext<ContextType | undefined>(undefined);
 
 const AppProvider = ({ children }: { children: ReactNode }) => {
    const [categories, setCategories] = useState<StateType["categories"]>([]);
-   const [brands, setBrands] = useState<StateType["brands"]>({});
-   const [sliders, setSliders] = useState<StateType["sliders"]>({});
-   const [priceRanges, setPriceRanges] = useState<StateType["priceRanges"]>({});
+   // const [brands, setBrands] = useState<StateType["brands"]>({});
+   // const [sliders, setSliders] = useState<StateType["sliders"]>({});
+   // const [priceRanges, setPriceRanges] = useState<StateType["priceRanges"]>({});
 
-   const [initLoading, setInitLoading] = useState(initialState["initLoading"]);
+   const [status, setStatus] = useState(initialState["status"]);
 
    return (
       <AppContext.Provider
          value={{
-            state: { sliders, priceRanges, brands, categories, initLoading },
-            setInitLoading,
-            setSliders,
-            setBrands,
+            state: { categories, status },
+            setStatus,
+            // setSliders,
+            // setBrands,
             setCategories,
-            setPriceRanges,
+            // setPriceRanges,
          }}
       >
          {children}
@@ -57,10 +65,18 @@ const useApp = () => {
    if (context == undefined) throw new Error("Context not found");
 
    const {
-      state: { ...restState },
+      state: { categories, ...restState },
       ...restSetState
    } = context;
-   return { ...restState, ...restSetState };
+
+   const { category_ascii } = useParams<{ category_ascii: string }>();
+
+   const currentCategory = useMemo(
+      () => categories.find((c) => c.category_ascii === category_ascii),
+      [category_ascii, categories]
+   );
+
+   return { ...restState, categories, currentCategory, ...restSetState };
 };
 
 export default AppProvider;

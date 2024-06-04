@@ -9,6 +9,7 @@ import styles from "./ProductSort.module.scss";
 import { fetchProducts, searchProducts } from "../../store/productsSlice";
 import { AppDispatch } from "@/store/store";
 import PushFrame from "../ui/PushFrame";
+import useCurrentCategory from "@/hooks/useCurrentCategory";
 const cx = classNames.bind(styles);
 
 const continents = [
@@ -38,18 +39,23 @@ const continents = [
    },
 ];
 
-type Props = { category_id?: number; loading: boolean; searchKey?: string };
-function ProductSort({ category_id, loading, searchKey }: Props) {
+type Props = { searchKey?: string };
+function ProductSort({ searchKey }: Props) {
    const dispatch = useDispatch<AppDispatch>();
    const { filters } = useSelector(selectedAllFilter);
    const [checked, setChecked] = useState(1);
 
+   // hooks
+   const { currentCategory, status } = useCurrentCategory();
+
    useEffect(() => {
       if (checked === 1) return;
       setChecked(1);
-   }, [category_id]);
+   }, [currentCategory]);
 
    const handleSort = (id: number) => {
+      if (!currentCategory) return;
+
       const newSort: SortType = {
          column: "",
          type: "acs",
@@ -62,8 +68,25 @@ function ProductSort({ category_id, loading, searchKey }: Props) {
 
          dispatch(storingFilters({ filters, sort: newSort }));
          if (searchKey)
-            dispatch(searchProducts({ page: 1, category_id, filters, sort: newSort, key: searchKey, replace: true }));
-         else dispatch(fetchProducts({ page: 1, category_id, filters, sort: newSort }));
+            dispatch(
+               searchProducts({
+                  page: 1,
+                  category_id: currentCategory.id,
+                  filters,
+                  sort: newSort,
+                  key: searchKey,
+                  replace: true,
+               })
+            );
+         else
+            dispatch(
+               fetchProducts({
+                  page: 1,
+                  category_id: currentCategory.id,
+                  filters,
+                  sort: newSort,
+               })
+            );
       }
    };
 
@@ -77,7 +100,7 @@ function ProductSort({ category_id, loading, searchKey }: Props) {
    return (
       <div className={cx("product-sort")}>
          <p className="text-[16px] font-[500]">Xem theo</p>
-         <ul className={cx("btn-group", { disable: loading })}>
+         <ul className={cx("btn-group", { disable: status === "loading" })}>
             {continents.map((item, index) => {
                return (
                   <li

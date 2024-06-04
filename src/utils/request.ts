@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_ENDPOINT || "https://hd-mobile-backend.vercel.app/api"
+const BASE_URL = import.meta.env.VITE_API_ENDPOINT || "https://hd-mobile-backend.vercel.app/api"
 
 const publicRequest = axios.create({
    baseURL: BASE_URL,

@@ -20,6 +20,7 @@
     "@tiptap/react": "^2.1.15",
     "@tiptap/starter-kit": "^2.1.15",
     "axios": "^1.2.5",
+    "class-variance-authority": "^0.7.0",
     "classnames": "^2.3.2",
     "gh-pages": "^6.0.0",
     "html-react-parser": "^5.1.0",

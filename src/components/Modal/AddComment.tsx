@@ -1,13 +1,14 @@
 import { Button, Input } from "@/components";
-import { ProductComment, Product, Reply } from "@/types";
+
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import ModalHeader from "./ModalHeader";
 import { inputClasses } from "../ui/Input";
 import useComment, { CommentStateType } from "@/hooks/useComment";
+import PushButton from "../ui/PushButton";
 
 type Props = {
    product?: Product;
-   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
    target: "Add-Comment" | "Add-Reply" | "Edit-Reply" | "Edit-Reply";
    comment?: ProductComment;
    index?: number;
@@ -28,14 +29,24 @@ const initComment = (product?: Product) => {
    return data;
 };
 
-export default function AddCommentModal({ product, setIsOpenModal, target, comment, index, setState, state }: Props) {
+export default function AddCommentModal({
+   product,
+   close,
+   target,
+   comment,
+   index,
+   setState,
+   state,
+}: Props) {
    const [commentData, setCommentData] = useState<ProductComment>(initComment(product));
-   const [replyContent, setReplyContent] = useState(comment?.reply_data ? comment.reply_data.content : "");
+   const [replyContent, setReplyContent] = useState(
+      comment?.reply_data ? comment.reply_data.content : ""
+   );
    const [showConfirm, setShowConfirm] = useState(false);
 
    // hooks
    const { addComment, apiLoading, replyComment, editReply } = useComment({
-      setIsOpenModal,
+      close,
    });
 
    const handleCommentData = (field: keyof typeof commentData, value: string) => {
@@ -62,7 +73,8 @@ export default function AddCommentModal({ product, setIsOpenModal, target, comme
          case "Add-Comment":
             return await addComment(commentData, setShowConfirm);
          case "Add-Reply":
-            if (comment?.id === undefined || index === undefined) throw new Error("id or index is undefined");
+            if (comment?.id === undefined || index === undefined)
+               throw new Error("id or index is undefined");
             const replyData: Reply = {
                q_id: comment.id,
                product_ascii: comment.product_ascii,
@@ -74,7 +86,12 @@ export default function AddCommentModal({ product, setIsOpenModal, target, comme
             await replyComment(replyData, index, state, setState);
             break;
          case "Edit-Reply":
-            if (!comment?.reply_data || comment.reply_data.id === undefined || index === undefined) return;
+            if (
+               !comment?.reply_data ||
+               comment.reply_data.id === undefined ||
+               index === undefined
+            )
+               return;
             await editReply(comment.reply_data.id, replyContent, index, state, setState);
       }
    };
@@ -89,21 +106,20 @@ export default function AddCommentModal({ product, setIsOpenModal, target, comme
       <div className="w-[700px] max-w-[85vw]">
          {showConfirm && (
             <>
-               <ModalHeader title={"Gửi thành công"} setIsOpenModal={setIsOpenModal} />
+               <ModalHeader title={"Gửi thành công"} close={close} />
                <p className="text-[16px] text-[#333]">
-                  Chúng tôi đã nhận được câu hỏi của bạn và sẽ lời trong thời gian sớm nhất hihi
+                  Chúng tôi đã nhận được câu hỏi của bạn và sẽ lời trong thời gian sớm
+                  nhất hihi
                </p>
                <div className="text-center mt-[30px]">
-                  <Button isLoading={false} onClick={() => setIsOpenModal(false)} primary>
-                     Ok
-                  </Button>
+                  <PushButton onClick={close}>Ok</PushButton>
                </div>
             </>
          )}
 
          {!showConfirm && (
             <>
-               <ModalHeader title={titleMap[target]} setIsOpenModal={setIsOpenModal} />
+               <ModalHeader title={titleMap[target]} close={close} />
 
                {target === "Add-Comment" && (
                   <div className="flex gap-[20px] mb-[20px]">
@@ -131,9 +147,9 @@ export default function AddCommentModal({ product, setIsOpenModal, target, comme
                </div>
 
                <div className="text-right mt-[30px]">
-                  <Button isLoading={apiLoading} onClick={handleSubmit} primary>
+                  <PushButton loading={apiLoading} onClick={handleSubmit}>
                      Post
-                  </Button>
+                  </PushButton>
                </div>
             </>
          )}

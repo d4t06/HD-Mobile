@@ -1,11 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-
-import { useApp } from "@/store/AppContext";
 import { useMemo } from "react";
 import { fetchProducts, selectedAllProduct } from "../../store/productsSlice";
 import { FilterType, selectedAllFilter, storingFilters } from "../../store/filtersSlice";
 import { AppDispatch } from "@/store/store";
-import { Brand, PriceRange } from "@/types";
 
 import classNames from "classnames/bind";
 import styles from "./ProductFilter.module.scss";
@@ -13,25 +10,24 @@ import styles from "./ProductFilter.module.scss";
 import Checkbox from "./child/Checkbox";
 import Radiobox from "./child/Radiobox";
 import Skeleton from "../Skeleton";
+import useCurrentCategory from "@/hooks/useCurrentCategory";
 
 const cx = classNames.bind(styles);
 
-type Props = { categoryAscii: string | undefined; loading: boolean };
-
-function ProductFilter({ categoryAscii, loading }: Props) {
+function ProductFilter() {
    const dispatch = useDispatch<AppDispatch>();
    const { sort, filters: filtersInStore } = useSelector(selectedAllFilter);
    const { status, category_id } = useSelector(selectedAllProduct);
 
-   const { brands, priceRanges } = useApp();
+   const { currentCategory, status: categoryStatus } = useCurrentCategory();
 
-   const curBrands = useMemo(
-      () => (categoryAscii && brands[categoryAscii] ? brands[categoryAscii] : []),
-      [categoryAscii, brands]
+   const brandsByCategory = useMemo(
+      () => currentCategory?.brands || [],
+      [currentCategory]
    );
-   const curPriceRanges = useMemo(
-      () => (categoryAscii && priceRanges[categoryAscii] ? priceRanges[categoryAscii] : []),
-      [categoryAscii, priceRanges]
+   const priceRangesByCategory = useMemo(
+      () => currentCategory?.price_ranges || [],
+      [currentCategory]
    );
 
    const showFilteredResults = (filters: FilterType) => {
@@ -68,11 +64,15 @@ function ProductFilter({ categoryAscii, loading }: Props) {
    };
 
    const BrandSkeleton = useMemo(() => {
-      return [...Array(5).keys()].map((index) => <Skeleton key={index} className="filter-brand-skeleton" />);
+      return [...Array(5).keys()].map((index) => (
+         <Skeleton key={index} className="filter-brand-skeleton" />
+      ));
    }, []);
 
    const PriceSkeleton = useMemo(() => {
-      return [...Array(5).keys()].map((index) => <Skeleton key={index} className="filter-price-skeleton" />);
+      return [...Array(5).keys()].map((index) => (
+         <Skeleton key={index} className="filter-price-skeleton" />
+      ));
    }, []);
 
    return (
@@ -83,13 +83,15 @@ function ProductFilter({ categoryAscii, loading }: Props) {
                {/* phai render data lay ra tu checkbox component
                   ban đầu render nhiều checkbox
                   fix: chỉ có mỗi checkbox nhưng trong checkbox có nhiều item */}
-               {loading ? (
+               {categoryStatus === "loading" ? (
                   BrandSkeleton
                ) : (
                   <Checkbox
-                     data={curBrands}
+                     data={brandsByCategory}
                      filters={filtersInStore}
-                     handleFilter={(brands) => handleFilter({ by: "brands", value: brands })}
+                     handleFilter={(brands) =>
+                        handleFilter({ by: "brands", value: brands })
+                     }
                   />
                )}
             </div>
@@ -97,13 +99,15 @@ function ProductFilter({ categoryAscii, loading }: Props) {
          <div className={cx("filter-section")}>
             <h1 className={cx("filter-title")}>Mức giá</h1>
             <div className={cx("filter-list")}>
-               {loading ? (
+               {categoryStatus === "loading" ? (
                   PriceSkeleton
                ) : (
                   <Radiobox
-                     data={curPriceRanges}
+                     data={priceRangesByCategory}
                      filters={filtersInStore}
-                     handleFilter={(priceRange) => handleFilter({ by: "price", value: priceRange })}
+                     handleFilter={(priceRange) =>
+                        handleFilter({ by: "price", value: priceRange })
+                     }
                   />
                )}
             </div>

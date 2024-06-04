@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./ProductItem.module.scss";
 import { moneyFormat } from "../../utils/appHelper";
-import { Product, ProductCombine, ProductStorage } from "@/types";
+
 import { useState } from "react";
 import PushFrame from "../ui/PushFrame";
 //

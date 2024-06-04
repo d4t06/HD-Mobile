@@ -1,12 +1,12 @@
 import useReview from "@/hooks/useReview";
 import { useMemo, useRef } from "react";
 import { CommentSkeleton } from "@/components/CommentItem";
-import { Button } from "@/components";
 import NoComment from "./NoComment";
-import { ProductReview } from "@/types";
+
 import ReviewItem from "@/components/ReviewItem";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/16/solid";
+import PushButton from "@/components/ui/PushButton";
 
 export default function RatingSection({ product_ascii }: { product_ascii: string }) {
    const {
@@ -49,26 +49,27 @@ export default function RatingSection({ product_ascii }: { product_ascii: string
 
             return (
                <ReviewItem key={index} review={r}>
-                  <Button
-                     disable={isLoading}
+                  <PushButton
+                     disabled={isLoading}
                      onClick={() => handleLike(r, index)}
-                     className="px-[5px] !py-[0px] group"
-                     primary
+                     className="px-[5px] py-[0px] group"
+                     size={"clear"}
                   >
-                      {isLoading ? (
-                           <ArrowPathIcon className="w-[20px] mr-[4px] animate-spin" />
-                        ) : (
-                           <HeartIcon className="w-[20px] mr-[4px]" />
-                        )}
+                     {isLoading ? (
+                        <ArrowPathIcon className="w-[20px] mr-[4px] animate-spin" />
+                     ) : (
+                        <HeartIcon className="w-[20px] mr-[4px]" />
+                     )}
                      {r.total_like}
-                  </Button>
+                  </PushButton>
                </ReviewItem>
             );
          }),
       [reviews, apiLoading]
    );
 
-   if (status === "success" && reviews.length === 0) return <NoComment title="Chưa có đánh giá" />;
+   if (status === "success" && reviews.length === 0)
+      return <NoComment title="Chưa có đánh giá" />;
 
    return (
       <div className="">
@@ -76,10 +77,16 @@ export default function RatingSection({ product_ascii }: { product_ascii: string
 
          {!!reviews.length && (
             <div className="text-center mb-[30px]">
-               <h2 className="text-[20px] text-[#333] font-[600] ">Đánh giá trung bình</h2>
+               <h2 className="text-[20px] text-[#333] font-[600] ">
+                  Đánh giá trung bình
+               </h2>
                {/* <p className="text-[#495057] text-[18px] leading-[20px]">Đánh giá trung bình</p> */}
-               <h1 className="text-[70px] font-[600] leading-[80px] text-[#cd1818]">{average.toFixed(1)} /5</h1>
-               <p className="text-[#495057] text-[16px] leading-[20px]">{count} đánh giá</p>
+               <h1 className="text-[70px] font-[600] leading-[80px] text-[#cd1818]">
+                  {average.toFixed(1)} /5
+               </h1>
+               <p className="text-[#495057] text-[16px] leading-[20px]">
+                  {count} đánh giá
+               </p>
             </div>
          )}
 
@@ -87,9 +94,9 @@ export default function RatingSection({ product_ascii }: { product_ascii: string
 
          {!!reviews.length && (
             <p className="text-center mt-[20px]">
-               <Button onClick={handleGetMore} disable={remaining <= 0} primary>
+               <PushButton onClick={handleGetMore} disabled={remaining <= 0}>
                   Xem thêm ({remaining > 0 ? remaining : 0}) đánh giá
-               </Button>
+               </PushButton>
             </p>
          )}
       </div>

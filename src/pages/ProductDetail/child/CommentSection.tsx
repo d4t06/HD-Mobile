@@ -1,7 +1,6 @@
-import { Button } from "@/components";
 import CommentItem, { CommentSkeleton } from "@/components/CommentItem";
 import useComment from "@/hooks/useComment";
-import { ProductComment } from "@/types";
+
 import { useMemo, useRef } from "react";
 import logo from "@/assets/images/logo.jpg";
 import NoComment from "./NoComment";
@@ -10,6 +9,7 @@ import "../styles.scss";
 // import { initLocalStorage } from "@/utils/appHelper";
 import PushFrame from "@/components/ui/PushFrame";
 import { ArrowPathIcon, HeartIcon } from "@heroicons/react/16/solid";
+import PushButton from "@/components/ui/PushButton";
 
 export default function CommentSection({ product_ascii }: { product_ascii: string }) {
    const {
@@ -50,11 +50,11 @@ export default function CommentSection({ product_ascii }: { product_ascii: strin
             return (
                <div className="comment-item" key={index}>
                   <CommentItem comment={c}>
-                     <Button
-                        disable={isLoading}
+                     <PushButton
+                        disabled={isLoading}
                         onClick={() => handleLike(c, index)}
-                        className="px-[5px] !py-[0px] group"
-                        primary
+                        className="px-[5px] py-[0px]"
+                        size={'clear'}
                      >
                         {isLoading ? (
                            <ArrowPathIcon className="w-[20px] mr-[4px] animate-spin" />
@@ -62,7 +62,7 @@ export default function CommentSection({ product_ascii }: { product_ascii: strin
                            <HeartIcon className="w-[20px] mr-[4px]" />
                         )}
                         {c.total_like}
-                     </Button>
+                     </PushButton>
                   </CommentItem>
                   <div className="ml-[54px] mt-[14px] bg-[#ccc] rounded-[12px]">
                      <PushFrame type="translate">
@@ -93,9 +93,9 @@ export default function CommentSection({ product_ascii }: { product_ascii: strin
          {renderComments}
          {status === "loading" && renderSkeleton}
          <p className="text-center mt-[20px]">
-            <Button onClick={handleGetMore} primary disable={remaining <= 0}>
+            <PushButton onClick={handleGetMore} disabled={remaining <= 0}>
                Xem thêm ({remaining > 0 ? remaining : 0}) hỏi đáp
-            </Button>
+            </PushButton>
          </p>
       </div>
    );

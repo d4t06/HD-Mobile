@@ -7,7 +7,6 @@ $shadow: 2px 2px 5px 0
    );
 
 .label {
-   font-size: 1.6rem;
    margin-bottom: 4px;
    font-weight: 600;
 }
@@ -15,12 +14,12 @@ $shadow: 2px 2px 5px 0
    font-weight: 500;
    line-height: 1.2;
    .cur-price {
-      font-size: 3.5rem;
+      font-size: 35px;
       font-weight: 600;
       color: #cd1818;
    }
    .old-price {
-      font-size: 2rem;
+      font-size: 20px;
       margin-right: 10px;
       color: #99a2aa;
       position: relative;
@@ -39,7 +38,7 @@ $shadow: 2px 2px 5px 0
    }
    .vat-tag {
       // margin-left: 12px;
-      font-size: 1.6rem;
+
       color: #99a2aa;
    }
 }
@@ -82,7 +81,7 @@ $shadow: 2px 2px 5px 0
       }
 
       .box {
-         min-height: 6rem;
+         min-height: 60px;
          display: flex;
          flex-direction: column;
          align-items: center;
@@ -110,7 +109,7 @@ $shadow: 2px 2px 5px 0
             right: 0;
          }
          .min-price {
-            font-size: 1.4rem;
+            font-size: 14px;
             font-weight: 500;
          }
 
@@ -132,7 +131,6 @@ $shadow: 2px 2px 5px 0
 }
 
 .var-opt-label {
-   font-size: 1.6rem;
    font-weight: 500;
    margin-top: 10px;
 }

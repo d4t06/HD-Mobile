@@ -1,21 +1,17 @@
-import { Product, ProductColor, ProductStorage } from "@/types";
-import { Dispatch, SetStateAction, useState } from "react";
+
+import { useState } from "react";
 import { usePrivateRequest } from ".";
 import { useToast } from "@/store/ToastContext";
 import { sleep } from "@/utils/appHelper";
 import { useProductContext } from "@/store/ProductDataContext";
 
 type Props = {
-   // setColors: Dispatch<SetStateAction<ProductColor[]>>;
-   // setStorages: Dispatch<SetStateAction<ProductStorage[]>>;
-   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
-   // storages_data: ProductStorage[];
-   // colors: ProductColor[];
+   close: () => void;
 };
 
 const MANAGE_PRODUCT_URL = "/product-management";
 
-export default function useVariantAction({ setIsOpenModal }: Props) {
+export default function useVariantAction({ close }: Props) {
    const { storages_data, colors_data, setEditorData } = useProductContext();
    const [apiLoading, setApiLoading] = useState(false);
 
@@ -40,7 +36,7 @@ export default function useVariantAction({ setIsOpenModal }: Props) {
          setSuccessToast(`Delete storage fail`);
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close();
       }
    };
 
@@ -55,7 +51,10 @@ export default function useVariantAction({ setIsOpenModal }: Props) {
             case "Add":
                setApiLoading(true);
                if (import.meta.env.DEV) await sleep(300);
-               const res = await privateRequest.post(`${MANAGE_PRODUCT_URL}/storages`, storage);
+               const res = await privateRequest.post(
+                  `${MANAGE_PRODUCT_URL}/storages`,
+                  storage
+               );
 
                const newStorageData = res.data as ProductStorage;
                // setStorages((prev) => [...prev, newStorageData]);
@@ -84,7 +83,7 @@ export default function useVariantAction({ setIsOpenModal }: Props) {
          setErrorToast(`${type} storage fail`);
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close();
       }
    };
 
@@ -100,7 +99,10 @@ export default function useVariantAction({ setIsOpenModal }: Props) {
                setApiLoading(true);
 
                if (import.meta.env.DEV) await sleep(300);
-               const res = await privateRequest.post(`${MANAGE_PRODUCT_URL}/colors`, color);
+               const res = await privateRequest.post(
+                  `${MANAGE_PRODUCT_URL}/colors`,
+                  color
+               );
 
                const newColorData = res.data as ProductColor;
                // setColors((prev) => [...prev, newColorData]);
@@ -130,7 +132,7 @@ export default function useVariantAction({ setIsOpenModal }: Props) {
          setErrorToast(`${type} Color fail`);
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close();
       }
    };
 
@@ -154,7 +156,7 @@ export default function useVariantAction({ setIsOpenModal }: Props) {
          setSuccessToast(`Delete Color fail`);
       } finally {
          setApiLoading(false);
-         setIsOpenModal(false);
+         close();
       }
    };
 

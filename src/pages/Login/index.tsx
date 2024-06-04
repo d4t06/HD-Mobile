@@ -1,25 +1,26 @@
 import classNames from "classnames/bind";
-import { useState, useRef, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import styles from "./Login.module.scss";
 import { useAuth } from "@/store/AuthContext";
-import { publicRequest } from "@/utils/request";
 import useToggleCheckbox from "@/hooks/useToggle";
-import { Button } from "@/components";
-import jwtDecode from "jwt-decode";
+import axios from "axios";
+import PushButton from "@/components/ui/PushButton";
 
-const LOGIN_URL = "/auth/login";
+const LOGIN_URL =
+   (import.meta.env.VITE_API_ENDPOINT || "https://hd-mobile-backend.vercel.app/api") +
+   "/auth/login";
 const cx = classNames.bind(styles);
 
 export default function LoginPage() {
    const { auth, setAuth, loading } = useAuth();
 
-   const [user, setUser] = useState("");
+   const [username, setUsername] = useState("");
    const [password, setPassword] = useState("");
    const [errMsg, setErrorMsg] = useState("");
    const [apiLoading, setApiLoading] = useState(false);
 
-   const userInputRef = useRef<HTMLInputElement>(null);
+   const phoneNumberInputRef = useRef<HTMLInputElement>(null);
    const [runCheckAuth, setRunCheckAuth] = useState(false);
 
    const { value, toggle } = useToggleCheckbox("persist", false);
@@ -33,18 +34,25 @@ export default function LoginPage() {
       try {
          setApiLoading(true);
 
-         const response = await publicRequest.post(LOGIN_URL, { username: user, password: password });
+         const response = await axios.post(LOGIN_URL, {
+            username: username,
+            password: password,
+         }, {
+            withCredentials: true
+         });
 
-         const token = response.data?.token;
+         const data = response.data.data as AuthResponse;
 
-         const decode: { username: string; role: "ADMIN" | "" } = token ? jwtDecode(token) : { username: "", role: "" };
+         if (data) {
+            setAuth({
+               role: data.userInfo.role,
+               token: data.token,
+               username: data.userInfo.username,
+            });
 
-         if (token) {
-            setAuth({ token, ...decode });
-            setUser("");
+            setUsername("");
             setPassword("");
             navigate(from, { replace: true });
-            //   redirect(from);
          }
       } catch (error: any) {
          if (!error?.response) {
@@ -68,29 +76,32 @@ export default function LoginPage() {
    }, [loading]);
 
    useEffect(() => {
-      userInputRef.current?.focus();
+      phoneNumberInputRef.current?.focus();
    }, [runCheckAuth]);
 
    if (!runCheckAuth || loading) return;
 
    return (
       <div className={cx("page")}>
-         <form className={cx("form", "space-y-[20px]", { disable: apiLoading })} onSubmit={handleSubmit}>
+         <form
+            className={cx("form", "space-y-[20px]", { disable: apiLoading })}
+            onSubmit={handleSubmit}
+         >
             {errMsg && <h2 className={cx("error-msg")}>{errMsg}</h2>}
-            <h1>Đăng nhập</h1>
+            <h1>Login</h1>
             <div className={cx("form-group")}>
-               <label htmlFor="name">Tài khoản</label>
+               <label htmlFor="name">Username</label>
                <input
-                  ref={userInputRef}
+                  ref={phoneNumberInputRef}
                   autoComplete="off"
                   type="text"
                   required
-                  value={user}
-                  onChange={(e) => setUser(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                />
             </div>
             <div className={cx("form-group")}>
-               <label htmlFor="image">Mật khẩu</label>
+               <label htmlFor="image">Password</label>
                <input
                   type="text"
                   autoComplete="off"
@@ -106,12 +117,12 @@ export default function LoginPage() {
                </label>
             </div>
 
-            <Button isLoading={apiLoading} primary className="leading-[30px]" type="submit">
-               Đăng nhập
-            </Button>
+            <PushButton loading={apiLoading} type="submit">
+               Login
+            </PushButton>
             <span className={cx("register-text")}>
-               Chưa có tài khoản?
-               <Link to="/register"> Đăng ký ngay</Link>
+               No have account?
+               <Link to="/register"> Register</Link>
             </span>
          </form>
       </div>

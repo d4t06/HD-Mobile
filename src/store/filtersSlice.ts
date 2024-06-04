@@ -1,4 +1,4 @@
-import { Brand, PriceRange } from "@/types";
+
 import { createSlice } from "@reduxjs/toolkit";
 
 export type FilterType = {

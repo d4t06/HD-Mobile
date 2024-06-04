@@ -4,9 +4,8 @@ import useUserOrder from "@/hooks/useUserOrder";
 import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
 import emptyCart from "@/assets/images/empty-cart.png";
 import Skeleton from "@/components/Skeleton";
-import { Button } from "@/components";
 import { moneyFormat } from "@/utils/appHelper";
-import { Link } from "react-router-dom";
+import PushButton from "@/components/ui/PushButton";
 
 export default function UserOrder() {
    const { status, orders } = useUserOrder({ autoRun: true });
@@ -47,7 +46,10 @@ export default function UserOrder() {
    return (
       <div className="">
          <div className={classes.container}>
-            <PrimaryLabel className="mb-[12px]" title={`Tất cả đơn hàng (${orders.length})`}>
+            <PrimaryLabel
+               className="mb-[12px]"
+               title={`Tất cả đơn hàng (${orders.length})`}
+            >
                <ArchiveBoxIcon className="w-[22px] md:w-[24px]" />
             </PrimaryLabel>
 
@@ -56,9 +58,16 @@ export default function UserOrder() {
                   <PushFrame key={index}>
                      <div className="">
                         <h5 className={`${classes.h5} mb-[4px]`}>
-                           Đơn hàng #{order.id} - <span className="text-[#333] font-[600]">{order.createdAt}  - <span className="uppercase"> {order.status}</span> </span>
+                           Đơn hàng #{order.id} -{" "}
+                           <span className="text-[#333] font-[600]">
+                              {order.createdAt} -{" "}
+                              <span className="uppercase"> {order.status}</span>{" "}
+                           </span>
                         </h5>
-                        <div key={index} className="flex items-start flex-col sm:flex-row sm:items-center">
+                        <div
+                           key={index}
+                           className="flex items-start flex-col sm:flex-row sm:items-center"
+                        >
                            <div className="flex flex-grow">
                               <img
                                  src={order.items[0].image_url}
@@ -66,14 +75,21 @@ export default function UserOrder() {
                                  alt=""
                               />
                               <div className="h-full">
-                                 <h5 className="text-[16px] font-[600] mb-[4px]">{order.items[0].product_name}</h5>
+                                 <h5 className="text-[16px] font-[600] mb-[4px]">
+                                    {order.items[0].product_name}
+                                 </h5>
                                  <h5 className={classes.h5}>
                                     Tổng:
-                                    <span className="text-[#333]"> {moneyFormat(order.total_price)}</span>
+                                    <span className="text-[#333]">
+                                       {" "}
+                                       {moneyFormat(order.total_price)}
+                                    </span>
                                  </h5>
                                  <h5 className={classes.h5}>
                                     Giảm giá:
-                                    <span className="text-[#333]">{moneyFormat(order.discount) || " -0đ"}</span>
+                                    <span className="text-[#333]">
+                                       {moneyFormat(order.discount) || " -0đ"}
+                                    </span>
                                  </h5>
                                  <h5 className={`${classes.h5} `}>
                                     Thanh toán:
@@ -85,9 +101,14 @@ export default function UserOrder() {
                               </div>
                            </div>
 
-                           <Button className="!p-0" backClass="mx-auto mt-[10px] sm:mx-0 sm:mt-0" primary>
-                              <Link className="px-[12px] py-[2px] sm:px-[16px] sm:py-[4px]" to={`/order/${order.id}`}>Chi tiết</Link>
-                           </Button>
+                           <PushButton
+                              size="clear"
+                              baseClassName="mx-auto mt-[10px] sm:mx-0 sm:mt-0"
+                              className="px-[12px] py-[2px] sm:px-[16px] sm:py-[4px]"
+                              to={`/order/${order.id}`}
+                           >
+                              Chi tiết
+                           </PushButton>
                         </div>
                      </div>
                   </PushFrame>

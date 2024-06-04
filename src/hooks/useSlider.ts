@@ -1,4 +1,4 @@
-import { SliderImage } from "@/types";
+
 import {
   useEffect,
   useRef,

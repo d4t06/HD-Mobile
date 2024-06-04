@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, ImageSlider, Modal } from "@/components";
+import { ImageSlider, Modal } from "@/components";
 import * as productServices from "@/services/productServices";
-import { Product, SliderImage } from "@/types";
+
 import Skeleton from "@/components/Skeleton";
 import ProductVariantList from "@/components/ProductVariantList";
 import { initProductDetailObject } from "@/utils/appHelper";
@@ -17,7 +17,15 @@ import { CommentStateType } from "@/hooks/useComment";
 import SpecSection from "./child/SpecSection";
 import ContentSection from "./child/ContentSection";
 import ModalHeader from "@/components/Modal/ModalHeader";
-import { BoltIcon, ChatBubbleBottomCenterTextIcon, Cog6ToothIcon, DocumentTextIcon  , StarIcon, TagIcon } from "@heroicons/react/16/solid";
+import {
+   BoltIcon,
+   ChatBubbleBottomCenterTextIcon,
+   Cog6ToothIcon,
+   DocumentTextIcon,
+   StarIcon,
+   TagIcon,
+} from "@heroicons/react/16/solid";
+import PushButton from "@/components/ui/PushButton";
 
 type ModalTarget = "add-comment" | "add-review" | "confirm-login";
 
@@ -43,12 +51,16 @@ export default function DetailPage() {
 
    const { category, key } = useParams();
 
+   const closeModal = () => setIsOpenModal(false);
    const handleOpenModal = (type: ModalTarget) => {
       openModalTarget.current = type;
       setIsOpenModal(true);
    };
 
-   const SliderSkeleton = useMemo(() => <Skeleton className="w-full pt-[75%] rounded-[16px]" />, []);
+   const SliderSkeleton = useMemo(
+      () => <Skeleton className="w-full pt-[75%] rounded-[16px]" />,
+      []
+   );
 
    const BoxSkeleton = [...Array(2).keys()].map((item) => (
       <div key={item} className="col w-1/2 sm:w-1/3">
@@ -74,7 +86,10 @@ export default function DetailPage() {
       []
    );
 
-   const isHaveProduct = useMemo(() => status === "success" && !!product, [status, product]);
+   const isHaveProduct = useMemo(
+      () => status === "success" && !!product,
+      [status, product]
+   );
 
    const renderModal = useMemo(() => {
       if (!isOpenModal) return;
@@ -85,21 +100,23 @@ export default function DetailPage() {
                   state={{} as CommentStateType}
                   setState={() => {}}
                   target="Add-Comment"
-                  setIsOpenModal={setIsOpenModal}
+                  close={close}
                   product={product}
                />
             );
          case "add-review":
-            return <AddReviewModal target="Add-Review" setIsOpenModal={setIsOpenModal} product={product} />;
+            return <AddReviewModal target="Add-Review" close={close} product={product} />;
          case "confirm-login":
             return (
                <>
-                  <ModalHeader title={"Đăng nhập dùm cái"} setIsOpenModal={setIsOpenModal} />
-                  <p className="text-[16px] text-[#333]">Không đăng nhập mà mua thì tao lấy cái gì lưu ???</p>
+                  <ModalHeader title={"Đăng nhập dùm cái"} close={close} />
+                  <p className="text-[16px] text-[#333]">
+                     Không đăng nhập mà mua thì tao lấy cái gì lưu ???
+                  </p>
                   <div className="text-center mt-[30px]">
-                     <Button isLoading={false} onClick={() => setIsOpenModal(false)} primary>
+                     <PushButton loading={false} onClick={() => setIsOpenModal(false)}>
                         Ok
-                     </Button>
+                     </PushButton>
                   </div>
                </>
             );
@@ -125,14 +142,17 @@ export default function DetailPage() {
       fetchData();
    }, [key]);
 
-   if (status === "error" || (status === "success" && !product)) return <h1>Some thing went wrong</h1>;
+   if (status === "error" || (status === "success" && !product))
+      return <h1>Some thing went wrong</h1>;
 
    return (
       <>
          <div className="flex flex-wrap mt-[10px] md:mx-[-12px]">
             <div className="w-full mb-[20px] md:mb-0 md:w-7/12 md:px-[12px]">
                {status === "loading" && SliderSkeleton}
-               {status === "success" && <ImageSlider className="pt-[75%]" data={sliderImages} />}
+               {status === "success" && (
+                  <ImageSlider className="pt-[75%]" data={sliderImages} />
+               )}
             </div>
             <div className={"w-full md:w-5/12 md:px-[12px]"}>
                {status === "loading" && ProductInfoSkeleton}
@@ -155,7 +175,10 @@ export default function DetailPage() {
                )}
 
                <div className="mt-[40px]">
-                  {PrimaryLabel(<TagIcon className="w-[24px] mr-[8px]" />, "Chính sách bảo hành")}
+                  {PrimaryLabel(
+                     <TagIcon className="w-[24px] mr-[8px]" />,
+                     "Chính sách bảo hành"
+                  )}
                   <div className="mt-[10px]">
                      <Policy loading={status === "loading"} />
                   </div>
@@ -164,16 +187,26 @@ export default function DetailPage() {
          </div>
 
          <div className=" md:mt-[60px] flex flex-wrap-reverse md:mx-[-12px]">
-            <div className={"w-full mt-[40px] md:mt-0 md:w-2/3 flex-shrink-0 md:px-[12px]"}>
-               {PrimaryLabel(<DocumentTextIcon className="w-[24px] mr-[8px]" />, `Chi tiết ${product.product_name}`)}
+            <div
+               className={"w-full mt-[40px] md:mt-0 md:w-2/3 flex-shrink-0 md:px-[12px]"}
+            >
+               {PrimaryLabel(
+                  <DocumentTextIcon className="w-[24px] mr-[8px]" />,
+                  `Chi tiết ${product.product_name}`
+               )}
                <div className="mt-[20px]">
-                  <ContentSection loading={status === "loading"} detail={product.detail} />
+                  <ContentSection
+                     loading={status === "loading"}
+                     detail={product.detail}
+                  />
                </div>
             </div>
             <div className="w-full mt-[40px] md:mt-0 md:w-1/3 flex-shrink-0 md:px-[12px]">
                <div className="flex items-center text-[#cd1818]">
                   <Cog6ToothIcon className="w-[24px] mr-[8px]" />
-                  <h1 className={`${classes.label} text-[#cd1818]`}>Cấu hình {product.product_name || ""}</h1>
+                  <h1 className={`${classes.label} text-[#cd1818]`}>
+                     Cấu hình {product.product_name || ""}
+                  </h1>
                </div>
                <div className="mt-[20px] spec-table">
                   <SpecSection loading={status === "loading"} product={product} />
@@ -183,28 +216,36 @@ export default function DetailPage() {
 
          <div className="mt-[40px] md:mt-[60px]">
             <div className="md:flex-row md:gap-0 flex flex-col space-y-[8px] justify-between items-top mb-[30px]">
-               {PrimaryLabel(<StarIcon className="w-[24px] mr-[8px]" />, `Đánh giá về ${product.product_name}`)}
-               <Button onClick={() => handleOpenModal("add-review")} primary>
+               {PrimaryLabel(
+                  <StarIcon className="w-[24px] mr-[8px]" />,
+                  `Đánh giá về ${product.product_name}`
+               )}
+               <PushButton onClick={() => handleOpenModal("add-review")}>
                   Viết đánh giá
-               </Button>
+               </PushButton>
             </div>
             <RatingSection product_ascii={product.product_ascii} />
          </div>
 
          <div className="mt-[40px] md:mt-[60px]">
             <div className="flex flex-col space-y-[8px] justify-between items-top mb-[30px] md:flex-row md:gap-0">
-               {PrimaryLabel(<ChatBubbleBottomCenterTextIcon className="w-[24px] mr-[8px]" />, `Hỏi đáp về ${product.product_name}`)}
-               <Button onClick={() => handleOpenModal("add-comment")} primary>
+               {PrimaryLabel(
+                  <ChatBubbleBottomCenterTextIcon className="w-[24px] mr-[8px]" />,
+                  `Hỏi đáp về ${product.product_name}`
+               )}
+               <PushButton onClick={() => handleOpenModal("add-comment")}>
                   Thêm câu hỏi
-               </Button>
+               </PushButton>
             </div>
             <CommentSection product_ascii={product.product_ascii} />
          </div>
 
-         <div className="mt-[40px] md:mt-[60px]">{PrimaryLabel(<BoltIcon className="mr-[8px] w-[24px]" />, `Sản phẩm gợi ý`)}</div>
+         <div className="mt-[40px] md:mt-[60px]">
+            {PrimaryLabel(<BoltIcon className="mr-[8px] w-[24px]" />, `Sản phẩm gợi ý`)}
+         </div>
 
          {isOpenModal && (
-            <Modal z="z-[200]" setShowModal={setIsOpenModal}>
+            <Modal z="z-[200]" close={closeModal}>
                {renderModal}
             </Modal>
          )}

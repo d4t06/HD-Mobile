@@ -1,24 +1,23 @@
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
-import { Product } from "@/types";
+import {
+   Dispatch,
+   ReactNode,
+   SetStateAction,
+   createContext,
+   useContext,
+   useState,
+} from "react";
+
 
 type StateType = {
    productData: Product;
    isChange: boolean;
 };
 
-// const initialState: StateType = {
-//    productData: initProductObject({}),
-// };
-
 type ContextType = {
    state: StateType;
    setEditorData: Dispatch<SetStateAction<Product>>;
    setIsChange: Dispatch<SetStateAction<boolean>>;
 };
-
-// const initialContext = {
-//    state: initialState,
-// };
 
 const ProductDataContext = createContext<ContextType | null>(null);
 
@@ -31,7 +30,13 @@ const ProductDataProvider = ({ children }: Props) => {
    const [isChange, setIsChange] = useState(false);
 
    return (
-      <ProductDataContext.Provider value={{ state: { productData: editorData, isChange }, setEditorData, setIsChange }}>
+      <ProductDataContext.Provider
+         value={{
+            state: { productData: editorData, isChange },
+            setEditorData,
+            setIsChange,
+         }}
+      >
          {children}
       </ProductDataContext.Provider>
    );

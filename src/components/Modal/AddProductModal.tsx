@@ -1,30 +1,30 @@
-import { Dispatch, SetStateAction, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { generateId, initProductObject } from "@/utils/appHelper";
-import { Button, Gallery, Modal } from "@/components";
+import { Gallery, Modal } from "@/components";
 
-import { Category, Product, ProductSchema } from "@/types";
 import { Empty, Input } from "@/components";
 import { inputClasses } from "@/components/ui/Input";
 import ModalHeader from "./ModalHeader";
 import useProductAction from "@/hooks/useProductAction";
-import { useApp } from "@/store/AppContext";
-import useAppConfig from "@/hooks/useAppConfig";
 import { useToast } from "@/store/ToastContext";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import OverlayCTA from "../ui/OverlayCTA";
+import PushButton from "../ui/PushButton";
+import { useSelector } from "react-redux";
+import { selectCategory } from "@/store/categorySlice";
 
 type OpenType = "Edit" | "Add";
 
 type AddProduct = {
    type: "Add";
-   setIsOpenModalParent: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
    curCategory?: Category;
 };
 
 type EditProduct = {
    type: "Edit";
-   setIsOpenModalParent: Dispatch<SetStateAction<boolean>>;
+   close: () => void;
    product: Product;
    currentIndex: number;
 };
@@ -39,7 +39,7 @@ const runInitProductData = (props: Props) => {
          const { product } = props;
          return initProductObject({
             image_url: product.image_url,
-            product_name: product.product_name,
+            product: product.product,
             product_ascii: product.product_ascii,
             brand_id: product.brand_id,
             category_id: product.category_id,
@@ -54,27 +54,30 @@ const runInitCategory = (props: Props) => {
 };
 
 export default function AddProductModal({ ...props }: Props) {
-   const [productData, setProductData] = useState<ProductSchema>(() => runInitProductData(props));
+   const { categories } = useSelector(selectCategory);
+
+   const [productData, setProductData] = useState<ProductSchema>(() =>
+      runInitProductData(props)
+   );
    const [isOpenModal, setIsOpenModal] = useState(false);
-   const [selectedCat, setSelectedCat] = useState<Category | undefined>(() => runInitCategory(props));
+   const [selectedCat, setSelectedCat] = useState<Category | undefined>(() =>
+      runInitCategory(props)
+   );
 
    const nameRef = useRef<HTMLInputElement>(null);
-   // use hook
-   const { brands, categories } = useApp();
-   const { status: appStatus } = useAppConfig({ curCategory: selectedCat });
+
    const { setErrorToast } = useToast();
    const { addProduct, apiLoading } = useProductAction({
-      setIsOpenModal: props.setIsOpenModalParent,
+      close: props.close,
    });
 
-   const brandsByCategory = useMemo(() => {
-      if (appStatus === "loading" || !brands || !selectedCat) return [];
-      return brands[selectedCat.category_ascii] || [];
-   }, [brands, selectedCat, appStatus]);
+   const brandsByCategory = useMemo(() => selectedCat?.brands || [], [selectedCat]);
+
+   const localCloseModal = () => setIsOpenModal(false);
 
    const handleInput = (field: keyof ProductSchema, value: any) => {
       // also set product_ascii
-      if (field === "product_name") {
+      if (field === "product") {
          return setProductData({
             ...productData,
             [field]: value,
@@ -98,7 +101,7 @@ export default function AddProductModal({ ...props }: Props) {
 
    const ableToCreateProduct = useMemo(
       () =>
-         !!productData.product_name &&
+         !!productData.product &&
          productData.category_id !== undefined &&
          productData.brand_id !== undefined,
       [productData]
@@ -126,26 +129,17 @@ export default function AddProductModal({ ...props }: Props) {
       }
    };
 
-   if (appStatus === "error") return <h1>Some thing went wrong</h1>;
-
    const tileMap: Record<OpenType, string> = {
       Add: "Thêm sản phẩm mới",
-      Edit: `Chỉnh sửa sản phẩm '${productData?.product_name}'`,
+      Edit: `Chỉnh sửa sản phẩm '${productData?.product}'`,
    };
 
    return (
       <div className="w-[700px] max-w-[90vw]">
-         <ModalHeader
-            setIsOpenModal={props.setIsOpenModalParent}
-            title={`${tileMap[props.type]}`}
-         />
-         <div
-            className={
-               appStatus === "loading" || apiLoading ? "opacity-60 pointer-events-none" : ""
-            }
-         >
-            <div className="row mb-[30px]">
-               <div className="col w-1/3">
+         <ModalHeader close={props.close} title={`${tileMap[props.type]}`} />
+         <div>
+            <div className="flex gap-[16px] mb-[30px]">
+               <div className="w-1/3">
                   <div className="group relative">
                      {!productData.image_url && (
                         <Empty
@@ -171,7 +165,7 @@ export default function AddProductModal({ ...props }: Props) {
                      )}
                   </div>
                </div>
-               <div className="col w-2/3 space-y-[14px]">
+               <div className="w-2/3 space-y-[14px]">
                   <div className="flex flex-col">
                      <label className={"text-[18px] mb-[4px]"} htmlFor="">
                         Tên sản phẩm
@@ -180,12 +174,12 @@ export default function AddProductModal({ ...props }: Props) {
                         ref={nameRef}
                         name="name"
                         type="text"
-                        value={productData.product_name}
-                        cb={(value) => handleInput("product_name", value)}
+                        value={productData.product}
+                        cb={(value) => handleInput("product", value)}
                      />
                   </div>
 
-                  <div className="flex flex-col">
+                  {/* <div className="flex flex-col">
                      <label className={"text-[18px] mb-[4px]"} htmlFor="">
                         IMEI
                      </label>
@@ -196,7 +190,7 @@ export default function AddProductModal({ ...props }: Props) {
                         value={productData.imei}
                         cb={(value) => handleInput("imei", value)}
                      />
-                  </div>
+                  </div> */}
 
                   <div className="flex flex-col">
                      <label className={"text-[18px] mb-[4px]"} htmlFor="">
@@ -212,7 +206,7 @@ export default function AddProductModal({ ...props }: Props) {
                         {!!categories.length &&
                            categories.map((category, index) => (
                               <option key={index} value={category.id}>
-                                 {category.category_name}
+                                 {category.category}
                               </option>
                            ))}
                      </select>
@@ -231,7 +225,7 @@ export default function AddProductModal({ ...props }: Props) {
                         <option value={undefined}>- - -</option>
                         {brandsByCategory.map((brand, index) => (
                            <option key={index} value={brand.id}>
-                              {brand.brand_name}
+                              {brand.brand}
                            </option>
                         ))}
                      </select>
@@ -240,21 +234,20 @@ export default function AddProductModal({ ...props }: Props) {
             </div>
 
             <p className="text-center">
-               <Button
-                  disable={!ableToCreateProduct}
-                  isLoading={apiLoading}
+               <PushButton
+                  disabled={!ableToCreateProduct}
+                  loading={apiLoading}
                   className="font-[600]"
                   onClick={handleSubmit}
-                  primary
                >
                   Save
-               </Button>
+               </PushButton>
             </p>
          </div>
 
          {isOpenModal && (
-            <Modal setShowModal={setIsOpenModal}>
-               <Gallery setIsOpenModal={setIsOpenModal} setImageUrl={handleChoseProductImage} />
+            <Modal close={localCloseModal}>
+               <Gallery close={localCloseModal} setImageUrl={handleChoseProductImage} />
             </Modal>
          )}
       </div>

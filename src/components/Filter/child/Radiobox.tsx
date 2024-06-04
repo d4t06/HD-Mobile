@@ -1,5 +1,5 @@
 import { FilterType } from "@/store/filtersSlice";
-import { PriceRange } from "@/types";
+
 
 import style from "../ProductFilter.module.scss";
 import classNames from "classnames/bind";

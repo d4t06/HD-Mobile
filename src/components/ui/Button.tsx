@@ -1,60 +1,89 @@
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
+import { VariantProps, cva } from "class-variance-authority";
 import { ReactNode } from "react";
+import { Link } from "react-router-dom";
 
-type Props = {
-  onClick?: () => void;
-  isLoading?: boolean;
-  circle?: boolean;
-  primary?: boolean;
-  children: ReactNode;
-  disable?: boolean;
-  className?: string;
-  backClass?: string;
-  type?: HTMLButtonElement["type"];
+const classes = {
+   active: "before:shadow-none translate-y-[2px] text-[#cd1818]",
+   button: "inline-flex relative font-[500] items-center justify-center z-0",
 };
+
+const ButtonVariant = cva(classes.button, {
+   variants: {
+      variant: {
+         primary:
+            "before:content-[''] before:absolute before:border-[2px] before:z-[-1] before:inset-0 before:rounded-[8px] rounded-[8px] bg-[#fff] active:translate-y-[2px] active:before:shadow-none",
+         clear: "",
+      },
+      size: {
+         clear: "",
+         primary: "px-[12px] py-[4px]",
+      },
+      colors: {
+         primary: "before:border-[#cd1818] text-[#333] before:shadow-[0_2px_0_#cd1818]",
+         second: "before:border-[#ccc] text-[#333] before:shadow-[0_2px_0_#ccc]",
+      },
+   },
+   defaultVariants: {
+      size: "primary",
+      colors: "primary",
+      variant: "primary",
+   },
+});
+
+interface Props extends VariantProps<typeof ButtonVariant> {
+   onClick?: () => void;
+   loading?: boolean;
+   children: ReactNode;
+   disabled?: boolean;
+   className?: string;
+   type?: HTMLButtonElement["type"];
+   to?: string;
+   active?: boolean;
+}
 export default function Button({
-  onClick,
-  circle,
-  isLoading,
-  primary,
-  disable,
-  type = "button",
-  children,
-  className,
-  backClass,
+   onClick,
+   disabled,
+   type = "button",
+   children,
+   loading,
+   className,
+   size,
+   variant,
+   colors,
+   to,
+   active,
 }: Props) {
-  const classes = {
-    button: `text-[14px] ${
-      !primary ? "inline-flex items-center justify-center" : "p-0 group border-0"
-    } font-[600]`,
-    primary: "rounded-[8px] bg-[#8f1313] text-[white] translate-y-[2px]",
-    circle: "rounded-[50%] p-[6px]",
-    font: "bg-[#cd1818] transition-transform flex items-center justify-center rounded-[8px] px-[16px] py-[6px] translate-y-[-4px] group-active:translate-y-[-2px] sm:group-hover:translate-y-[-6px]",
-  };
+   const content = (
+      <>
+         {loading && <ArrowPathIcon className="w-[24px] animate-spin" />}
+         {!loading && children}
+      </>
+   );
 
-  const content = (
-    <>
-      {isLoading && <ArrowPathIcon className="w-[24px] animate-spin"/> }
-      {!isLoading && children}
-    </>
-  );
-
-  return (
-    <button
-      type={type || "button"}
-      onClick={onClick}
-      disabled={isLoading || disable}
-      className={`${disable ? "opacity-60 pointer-events-none" : ""} ${classes.button} ${
-        primary ? classes.primary : ""
-         } ${circle ? classes.circle : ""} ${!primary ? className : ""}
-         ${backClass ? backClass : ''}
-      `}
-    >
-      {primary ? (
-        <span className={`${classes.font} ${primary ? className : ""}`}>{content}</span>
-      ) : (
-        content
-      )}
-    </button>
-  );
+   return (
+      <>
+         {to ? (
+            <Link
+               to={to}
+               className={`${ButtonVariant({ variant, size, colors, className })} ${
+                  active ? classes.active : ""
+               }`}
+            >
+               {content}
+            </Link>
+         ) : (
+            <button
+               type={type || "button"}
+               onClick={onClick}
+               disabled={loading || disabled}
+               className={`${ButtonVariant({ variant, size, colors, className })} ${
+                  active ? classes.active : ""
+               }`}
+            >
+               {content}
+            </button>
+         )}
+      </>
+   );
 }

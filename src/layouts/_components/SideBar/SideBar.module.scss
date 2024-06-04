@@ -1,0 +1,61 @@
+.sidebar {
+   max-height: 100vh;
+   background-color: #fff;
+   position: relative;
+   width: 70px;
+   transition: width linear 0.3s;
+   flex-shrink: 0;
+
+   .head {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .logo-text {
+         font-weight: 600;
+         letter-spacing: -1px;
+         font-size: 22px;
+         white-space: nowrap;
+      }
+
+      .logo-image {
+         width: 50px;
+      }
+   }
+
+   &.expand {
+      width: 180px;
+      .sidebar__item {
+         padding: 10px 12px;
+         gap: 8px;
+         justify-content: start;
+         white-space: nowrap;
+      }
+   }
+
+   @mixin active {
+      color: #cd1818;
+      background-color: #f1f1f1;
+   }
+
+   &__item {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+;
+      justify-content: center;
+      font-weight: 500;
+      transition: padding linear 0.15s;
+      color: #333;
+      cursor: pointer;
+      svg {
+         flex-shrink: 0;
+      }
+      &:hover {
+         @include active();
+      }
+      &.active {
+         @include active();
+      }
+   }
+}

@@ -1,15 +1,3 @@
-import {
-   Brand,
-   ImageType,
-   LCStorage,
-   Product,
-   ProductColor,
-   ProductCombine,
-   ProductSchema,
-   ProductSlider,
-   ProductStorage,
-} from "@/types";
-
 export const sleep = (time: number) =>
    new Promise<void>((rs) => {
       setTimeout(() => {
@@ -49,11 +37,9 @@ export const initImageObject = (data: Partial<ImageType>) => {
 
 export const initProductObject = (data: Partial<ProductSchema>) => {
    const newProduct: ProductSchema = {
-      imei: "",
       product_ascii: "",
       image_url: "",
-      installment: false,
-      product_name: "",
+      product: "",
       brand_id: 0,
       category_id: 0,
       ...data,
@@ -63,27 +49,7 @@ export const initProductObject = (data: Partial<ProductSchema>) => {
 };
 
 export const initProductDetailObject = (data: Partial<Product>) => {
-   const newProduct: Product = {
-      ...initProductObject({}),
-      brand_data: { brand_ascii: "", brand_name: "" },
-      category_data: {
-         category_ascii: "",
-         category_name: "",
-         attributes: [],
-         attribute_order: "",
-         id: 0,
-         price_ranges: [],
-      },
-      detail: { content: "", product_ascii: "" },
-      colors_data: [],
-      combines_data: [],
-      sliders_data: [],
-      storages_data: [],
-      attributes_data: [],
-      comments_data: [],
-      id: 0,
-      ...data,
-   };
+   const newProduct: Product = {};
 
    return newProduct;
 };
@@ -115,7 +81,11 @@ export const initColorObject = (data: Partial<ProductColor>) => {
    return newColor;
 };
 
-export function initCombineData(data: Partial<ProductCombine>, color: string, storage: string) {
+export function initCombineData(
+   data: Partial<ProductCombine>,
+   color: string,
+   storage: string
+) {
    // eliminate in order to prevent replace data
    const { storage_data, color_data, ...rest } = data;
    const combineData: ProductCombine = {
