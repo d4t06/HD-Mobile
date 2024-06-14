@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import { ChevronUpIcon } from "@heroicons/react/16/solid";
 import { Button } from "..";
-import { ArrowUpIcon } from "@heroicons/react/16/solid";
 
 export default function ScrollTop() {
    const [show, setShow] = useState(false);
@@ -26,18 +26,20 @@ export default function ScrollTop() {
    }, []);
 
    const classes = {
-      base: "fixed z-[99] p-[6px] bottom-[30px] transition-[padding,opacity,transform] right-[30px]",
+      base: "!fixed z-[99] bottom-[30px] transition-[padding,opacity,transform] right-[30px]",
       hide: "opacity-0 translate-y-[30px]",
       show: "translate-y-[0] opacity-[1]",
    };
 
    return (
-      <Button
-         className={`${classes.base} ${show ? classes.show : classes.hide}`}
-         size={'clear'}
-         onClick={show ? scrollToTop : () => {}}
-      >
-         <ArrowUpIcon className="w-[22px] " />
-      </Button>
+      <div className={`${classes.base} ${show ? classes.show : classes.hide}`}>
+         <Button
+            className="p-[6px]"
+            size={"clear"}
+            onClick={show ? scrollToTop : () => {}}
+         >
+            <ChevronUpIcon className="w-[22px] " />
+         </Button>
+      </div>
    );
 }

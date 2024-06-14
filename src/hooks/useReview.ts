@@ -6,7 +6,7 @@ import { useLocalStorage, usePrivateRequest } from ".";
 import { initLocalStorage } from "@/utils/appHelper";
 
 type Props = {
-   close: () => void;
+   closeModal: () => void;
    product_ascii?: string;
    admin?: boolean;
 };
@@ -23,7 +23,7 @@ type StateType = {
 const REVIEW_URL = "/product-review-management";
 const REVIEW_URL_CLIENT = "/product-reviews";
 
-export default function useReview({ close, product_ascii, admin }: Props) {
+export default function useReview({ closeModal, product_ascii, admin }: Props) {
    const [state, setState] = useState<StateType>({
       status: "loading",
       reviews: [],
@@ -122,7 +122,7 @@ export default function useReview({ close, product_ascii, admin }: Props) {
          setErrorToast("Reply comment fail");
       } finally {
          setApiLoading(false);
-         close();
+         closeModal();
       }
    };
 
@@ -138,7 +138,7 @@ export default function useReview({ close, product_ascii, admin }: Props) {
          setErrorToast("Reply comment fail");
       } finally {
          setApiLoading(false);
-         close();
+         closeModal();
       }
    };
 
@@ -153,7 +153,7 @@ export default function useReview({ close, product_ascii, admin }: Props) {
          setErrorToast("Edit reply comment fail");
       } finally {
          setApiLoading(false);
-         close();
+         closeModal();
       }
    };
 
@@ -219,16 +219,18 @@ export default function useReview({ close, product_ascii, admin }: Props) {
          setErrorToast("Approve fail");
       } finally {
          setApiLoading(false);
-         // close(false);
+         // closeModal(false);
       }
    };
 
    //  run initial
    useEffect(() => {
       if (!ranEffect.current) {
+         ranEffect.current = true;
          if (product_ascii || admin) {
-            ranEffect.current = true;
             getReviews(1);
+         } else {
+            setState((prev) => ({ ...prev, status: "success" }));
          }
       }
    }, [product_ascii]);

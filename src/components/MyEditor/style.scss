@@ -30,9 +30,15 @@
    button {
       padding: 3px 6px;
       border-radius: 4px;
-      &.active {
+
+      @mixin active {
          background-color: white;
          color: #cd1818;
+      }
+
+      &.active,
+      &:hover {
+         @include active();
       }
    }
    .editor-container {

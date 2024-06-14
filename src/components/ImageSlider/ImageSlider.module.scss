@@ -24,9 +24,6 @@
 
    @media screen and (max-width: 768px) {
       border-radius: 8px;
-      .slider-control {
-         display: none;
-      }
    }
 }
 
@@ -55,10 +52,6 @@
    }
    i {
       user-select: none;
-   }
-
-   @media screen and (max-width: 768px) {
-      display: none;
    }
 }
 .right-arrow {

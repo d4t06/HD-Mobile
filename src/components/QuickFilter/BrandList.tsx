@@ -38,8 +38,8 @@ function BrandList({ data, handleFilter, filtersInStore, admin }: Props) {
                   {item.image_url ? (
                      <img src={item.image_url} alt="" />
                   ) : (
-                     <p className="text-[16px] md:text-[18px] font-[500]">
-                        {item.brand_name}
+                     <p className="font-[500] text-[#333]">
+                        {item.brand}
                      </p>
                   )}
                </div>

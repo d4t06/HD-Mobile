@@ -74,6 +74,47 @@ const categorySlice = createSlice({
          }
       },
 
+      setCategorySlider(
+         state: StateType,
+         action: PayloadAction<
+            | { type: "add"; categoryIndex: number; sliderImages: SliderImage[] }
+            | {
+                 type: "update";
+                 categoryIndex: number;
+                 sliderImage: Partial<SliderImage>;
+                 index: number;
+              }
+            | { type: "delete"; categoryIndex: number; index: number }
+         >
+      ) {
+         switch (action.payload.type) {
+            case "add": {
+               const { sliderImages, categoryIndex } = action.payload;
+               state.categories[categoryIndex].category_slider.slider.slider_images.push(
+                  ...sliderImages
+               );
+               break;
+            }
+            case "delete": {
+               const { categoryIndex, index } = action.payload;
+               state.categories[
+                  categoryIndex
+               ].category_slider.slider.slider_images.splice(index, 1);
+               break;
+            }
+            case "update": {
+               const { sliderImage, categoryIndex, index } = action.payload;
+               Object.assign(
+                  state.categories[categoryIndex].category_slider.slider.slider_images[
+                     index
+                  ],
+                  sliderImage
+               );
+               break;
+            }
+         }
+      },
+
       setPriceRanges(
          state: StateType,
          action: PayloadAction<
@@ -147,7 +188,7 @@ const categorySlice = createSlice({
 });
 
 export const selectCategory = (state: { category: StateType }) => state.category;
-export const { setAttributes, setBrand, setCategory, setPriceRanges } =
+export const { setAttributes, setBrand, setCategory, setPriceRanges, setCategorySlider } =
    categorySlice.actions;
 
 export default categorySlice.reducer;

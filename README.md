@@ -14,3 +14,7 @@ HD SHOP
 
 ### update thu 4 22/1/2024
 - Thêm bảng Price_Range để filter theo giá
+
+
+### update 16/4/2024
+- refactoring code

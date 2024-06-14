@@ -1,7 +1,5 @@
-import { useEffect, useState, useRef, Dispatch, SetStateAction, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import classNames from "classnames/bind";
-
-import { Button } from "../";
 
 import styles from "./Gallery.module.scss";
 import usePrivateRequest from "@/hooks/usePrivateRequest";
@@ -11,12 +9,13 @@ import { useImage } from "@/store/ImageContext";
 import Skeleton from "../Skeleton";
 import { ArrowPathIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import PushButton from "../ui/PushButton";
+import { Button } from "..";
 
 const cx = classNames.bind(styles);
 
 type Props = {
-   setImageUrl: (image_url: string[]) => void;
-   close: () => void;
+   setImageUrl: (image_url: ImageType[]) => void;
+   closeModal: () => void;
    multiple?: boolean;
 };
 
@@ -27,10 +26,10 @@ type getImagesRes = {
    count: number;
 };
 
-const IMAGE_URL = "/image-management/images";
+const IMAGE_URL = "/images";
 
-function Gallery({ setImageUrl, close, multiple = false }: Props) {
-   const [choseList, setChoseList] = useState<string[]>([]);
+function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
+   const [choseList, setChoseList] = useState<ImageType[]>([]);
    const [active, setActive] = useState<ImageType>();
    const [status, setStatus] = useState<
       "fetching" | "loadingImages" | "success" | "error"
@@ -64,16 +63,16 @@ function Gallery({ setImageUrl, close, multiple = false }: Props) {
             break;
          case false:
             if (!active) return;
-            setImageUrl([active.image_url]);
+            setImageUrl([active]);
       }
-      close();
+      closeModal();
    };
 
    const handleSelect = (image: ImageType) => {
       const newChoseList = [...choseList];
-      const index = newChoseList.indexOf(image.image_url);
+      const index = newChoseList.findIndex((i) => i.id === image.id);
 
-      if (index === -1) newChoseList.push(image.image_url);
+      if (index === -1) newChoseList.push(image);
       else newChoseList.splice(index, 1);
 
       setChoseList(newChoseList);
@@ -108,7 +107,7 @@ function Gallery({ setImageUrl, close, multiple = false }: Props) {
    const getImages = async (page: number) => {
       try {
          const res = await privateRequest.get(`${IMAGE_URL}?page=${page}`); //res.data
-         const data = res.data as getImagesRes;
+         const data = res.data.data as getImagesRes;
          const newImages = [...currentImages, ...data.images];
 
          storeImages({
@@ -138,7 +137,7 @@ function Gallery({ setImageUrl, close, multiple = false }: Props) {
 
    const renderImages = useMemo(() => {
       return currentImages.map((item, index) => {
-         const indexOf = choseList.indexOf(item.image_url);
+         const indexOf = choseList.findIndex((i) => i.id === item.id);
          const isInChoseList = indexOf !== -1;
 
          return (
@@ -212,23 +211,18 @@ function Gallery({ setImageUrl, close, multiple = false }: Props) {
             <div className={cx("left")}>
                <h1 className="text-[22px] font-semibold">Images ({count})</h1>
                <div>
-                  <label
-                     className={cx("input-label", {
-                        disable: isLoading,
-                     })}
-                     htmlFor="image_upload"
-                  >
-                     <span>
+                  <Button size={'clear'} colors={"second"}>
+                     <label className={"flex px-[12px] py-[4px]"} htmlFor="image_upload">
                         <ArrowUpTrayIcon className="w-[22px] mr-[6px]" />
                         Upload
-                     </span>
-                  </label>
+                     </label>
+                  </Button>
                </div>
             </div>
 
-            <PushButton disabled={!ableToChosenImage} onClick={handleSubmit}>
+            <Button colors={"third"} disabled={!ableToChosenImage} onClick={handleSubmit}>
                Chọn
-            </PushButton>
+            </Button>
          </div>
          <div className={cx("gallery__body", "flex mx-[-8px]")}>
             <div className={cx("w-2/3 px-[8px] no-scrollbar", "left")}>
@@ -256,23 +250,29 @@ function Gallery({ setImageUrl, close, multiple = false }: Props) {
             </div>
             <div className={cx("col w-1/3 px-[8px] overflow-hidden border-l-[2px]")}>
                {active && (
-                  <div className={cx("image-info")}>
+                  <div className={cx("image-info", "space-y-[20px]")}>
                      <h2 className="break-words">{active.name}</h2>
-                     <ul>
+                     <ul className="space-y-[10px]">
                         <li>
-                           <h4 className="font-semibold">Image path:</h4>{" "}
+                           <h4 className="font-[500] mb-[6px]">Image path:</h4>{" "}
                            <a target="blank" href={active.image_url}>
                               {active.image_url}
                            </a>
                         </li>
                         <li>
-                           <h4 className="font-semibold">Size:</h4>{" "}
+                           <h4 className="font-[500] mb-[6px]">Size:</h4>{" "}
                            {formatSize(active.size)}
                         </li>
                      </ul>
-                     <PushButton loading={apiLoading} onClick={handleDeleteImage}>
+                     <Button
+                        colors={"third"}
+                        size={"clear"}
+                        className="py-[5px] px-[40px]"
+                        loading={apiLoading}
+                        onClick={handleDeleteImage}
+                     >
                         Xóa
-                     </PushButton>
+                     </Button>
                   </div>
                )}
             </div>

@@ -14,7 +14,7 @@ export default function LoginLayout({ children }: { children: ReactNode }) {
 
    return (
       <div className="absolute inset-0">
-         <div className="container relative h-full">
+         <div className="container mx-auto relative h-full">
             <Button size={'clear'} to={from || "/"} className={`${classes.button}`}>
                <HomeIcon className="w-[22px]" />
             </Button>

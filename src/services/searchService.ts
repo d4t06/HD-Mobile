@@ -1,21 +1,22 @@
 import { Param } from "@/store/productsSlice";
 import { publicRequest } from "@/utils/request";
 
-export const searchService = async (query: Param & { q: string }, signal?: AbortSignal) => {
+export const searchService = async (
+   query: Param & { q: string },
+   signal?: AbortSignal
+) => {
    // phai xu li sort
    const { sort, ...rest } = query;
 
    try {
-      const response = await publicRequest.get(`/search`, {
+      const response = await publicRequest.get(`/products/search`, {
          params: {
             ...rest,
             ...sort,
          },
          signal: signal,
       });
-      console.log("searchService = ", response.data);
-      //   await sleep(1000);
-      return response.data;
+      return response.data.data;
    } catch (error) {
       console.log(">>> searchService", error);
    }

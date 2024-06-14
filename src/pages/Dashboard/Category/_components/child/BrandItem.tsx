@@ -75,7 +75,7 @@ export default function BrandItem({ brand, categoryIndex, index }: Props) {
                   title={`Edit brand '${brand.brand}'`}
                   initValue={brand.brand}
                   cbWhenSubmit={(value) => handleBrandActions({ type: "Edit", value })}
-                  close={closeModal}
+                  closeModal={closeModal}
                />
             );
 
@@ -84,7 +84,7 @@ export default function BrandItem({ brand, categoryIndex, index }: Props) {
                <ConfirmModal
                   callback={() => handleBrandActions({ type: "Delete" })}
                   loading={isFetching}
-                  close={closeModal}
+                  closeModal={closeModal}
                   label={`Delete category '${brand.brand}'`}
                />
             );
@@ -111,7 +111,7 @@ export default function BrandItem({ brand, categoryIndex, index }: Props) {
             />
          </Empty>
 
-         {openModal && <Modal close={closeModal}>{renderModal}</Modal>}
+         {openModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
       </>
    );
 }

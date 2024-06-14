@@ -9,7 +9,7 @@ import {
 } from "react";
 
 type ImageStore = {
-  tempImages: ImageType[];
+  tempImages: ImageTypeSchema[];
   page: number;
   count: number;
   pageSize: number;

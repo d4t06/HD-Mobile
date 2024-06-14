@@ -1,36 +1,39 @@
-
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { sleep } from "@/utils/appHelper";
 import { useParams } from "react-router-dom";
-import { useProductContext } from "@/store/ProductDataContext";
 import { publicRequest } from "@/utils/request";
+import { useDispatch, useSelector } from "react-redux";
+import {
+   runError,
+   selectProduct,
+   setProduct,
+   setProductStatus,
+} from "@/store/productSlice";
 
-const MANAGE_PRODUCT_URL = "/product-management/products";
+const PRODUCT_URL = "/products";
 
-export default function useEdit() {
-   const { setEditorData } = useProductContext();
-
-   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+export default function useGetProductDetail() {
+   const dispatch = useDispatch();
    const ranUseEffect = useRef(false);
+
+   const { status, product } = useSelector(selectProduct);
 
    //   hooks
    const { productAscii } = useParams();
 
    const getProductDetail = async () => {
       try {
-         setStatus("loading");
-
          if (!productAscii) throw new Error("missing params");
+
+         dispatch(setProductStatus("loading"));
          if (import.meta.env.DEV) await sleep(500);
 
-         const res = await publicRequest.get(`${MANAGE_PRODUCT_URL}/${productAscii}`);
-         const data = res.data as Product;
+         const res = await publicRequest.get(`${PRODUCT_URL}/${productAscii}`);
 
-         setStatus("success");
-         setEditorData(data);
+         dispatch(setProduct(res.data.data));
       } catch (error) {
          console.log({ message: error });
-         setStatus("error");
+         dispatch(runError());
       }
    };
 
@@ -39,9 +42,10 @@ export default function useEdit() {
          getProductDetail();
          ranUseEffect.current = true;
       }
-   }, []);
+   }, [productAscii]);
 
    return {
       status,
+      productDetail: product,
    };
 }

@@ -8,239 +8,168 @@ import { sleep } from "@/utils/appHelper";
 // import { usePrivateRequest } from "@/hooks";
 
 export type ProductState = {
-  products: Product[];
-  count: number;
-  pageSize: number;
-  variants_data: (ProductStorage & { product_ascii: string })[];
+   products: Product[];
+   count: number;
+   pageSize: number;
 };
 
 export type StateType = {
-  status: "" | "loading" | "more-loading" | "successful" | "error";
-  productState: ProductState;
-  category_id: number | undefined;
-  page: number;
+   status: "" | "loading" | "more-loading" | "successful" | "error";
+   productState: ProductState;
+   category_id: number | undefined;
+   page: number;
 };
 
 const initialState: StateType = {
-  status: "loading",
-  productState: {
-    products: [],
-    count: 0,
-    pageSize: 0,
-    variants_data: [],
-  },
-  category_id: undefined,
-  page: 1,
+   status: "loading",
+   productState: {
+      products: [],
+      count: 0,
+      pageSize: 0,
+   },
+   category_id: undefined,
+   page: 1,
 };
 
 export type Param = {
-  filters?: FilterType;
-  category_id: number | undefined;
-  page?: number;
-  sort?: SortType;
-  admin?: boolean;
-  search?: boolean;
-  replace?: boolean;
+   filters?: FilterType;
+   category_id: number | undefined;
+   page?: number;
+   sort?: SortType;
+   admin?: boolean;
+   replace?: boolean;
+   status?: StateType["status"];
+   page_size?: number;
 };
 
-export const fetchProducts = createAsyncThunk("/products/getProducts", async (param: Param) => {
-  console.log("fetch Products check param", param);
+export const fetchProducts = createAsyncThunk(
+   "/products/getProducts",
+   async (param: Param) => {
+      // console.log("fetch Products check param", param);
 
-  let response: ProductState;
-  const { admin, ...rest } = param;
+      console.log('check param', param);
+      
 
-  if (import.meta.env.DEV) await sleep(300);
+      const { admin, replace, status, ...rest } = param;
 
-  if (admin) {
-    response = await productServices.getProductsAdmin({
-      ...rest,
-    });
-  } else {
-    response = await productServices.getProducts({
-      ...rest,
-    });
-  }
-  // }
+      if (import.meta.env.DEV) await sleep(500);
 
-  return { productState: response, ...rest, admin };
-});
+      const data = (await productServices.getProducts({
+         ...rest,
+      })) as ProductState;
 
-// product.rows.push
-export const getMoreProducts = createAsyncThunk(
-  "/products/getMoreProducts",
-  async (param: Param) => {
-    let response: ProductState;
-    const { admin, ...rest } = param;
-
-    if (admin) {
-      response = await productServices.getProductsAdmin({
-        ...rest,
-      });
-    } else {
-      response = await productServices.getProducts({
-        ...rest,
-      });
-    }
-
-    if (import.meta.env.DEV) await sleep(300);
-
-    return { productState: response, ...param, admin };
-  }
+      return { ...data, ...rest, admin, replace, status };
+   }
 );
 
 export const searchProducts = createAsyncThunk(
-  "/search",
-  async (param: Param & { key: string }) => {
-    const { key, replace, ...rest } = param;
-    const response = await searchService({
-      q: key,
-      ...rest,
-    });
+   "/search",
+   async (param: Param & { key: string }) => {
+      const { key, replace, status, admin, ...rest } = param;
 
-    return { productState: response, ...rest, replace };
-  }
+      if (import.meta.env.DEV) await sleep(500);
+
+      const data = (await searchService({
+         q: key,
+         ...rest,
+      })) as ProductState;
+
+      return { ...data, ...rest, status, replace };
+   }
 );
 
-const mergeVariantToProduct = (
-  products: Product[],
-  variants_data: (ProductStorage & { product_ascii: string })[]
-) => {
-  const newProducts = [...products];
-
-  for (let i = 0; i < products.length; i++) {
-    const p = products[i];
-    const filteredStorages_data = variants_data.filter(
-      (v) => v.product_ascii === p.product_ascii
-    );
-
-    if (filteredStorages_data.length) {
-      const newP = { ...p, storages_data: filteredStorages_data } as Product;
-      newProducts[i] = newP;
-    }
-  }
-
-  return newProducts;
-};
-
 type PayLoadType = {
-  products: Product[];
+   products: Product[];
 };
 
 const productsSlice = createSlice({
-  name: "products",
-  initialState,
-  reducers: {
-    storingProducts(state, action: PayloadAction<PayLoadType>) {
-      const payload = action.payload;
-      state.productState.products.push(...payload.products);
-    },
-    setProducts(state, action: PayloadAction<PayLoadType>) {
-      const payload = action.payload;
-      state.productState.products = payload.products;
-    },
-  },
-  extraReducers: (builder) => {
-    builder
-      // fetchProducts
-      .addCase(fetchProducts.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
-        const payload = action.payload;
-        if (!payload) return state;
-        const productState = payload.productState;
+   name: "products",
+   initialState,
+   reducers: {
+      storingProducts(state, action: PayloadAction<PayLoadType>) {
+         const payload = action.payload;
+         state.productState.products.push(...payload.products);
+      },
+      setProducts(
+         state,
+         action: PayloadAction<
+            | {
+                 variant: "replace";
+                 products: Product[];
+              }
+            | {
+                 variant: "update";
+                 product: Partial<ProductSchema>;
+                 index: number;
+              }
+         >
+      ) {
+         const payload = action.payload;
 
-        console.log("check payload", payload);
+         switch (payload.variant) {
+            case "replace":
+               state.productState.products = payload.products;
+               break;
+            case "update": {
+               const { index, product } = payload;
+               Object.assign(state.productState.products[index], product);
+            }
+         }
+      },
+      setStatus(state, action: PayloadAction<StateType["status"]>) {
+         state.status = action.payload;
+      },
+   },
+   extraReducers: (builder) => {
+      builder
+         // fetchProducts
+         .addCase(fetchProducts.pending, (state, action) => {
+            state.status = action.meta.arg.status || "loading";
+         })
+         .addCase(fetchProducts.fulfilled, (state, action) => {
+            const { replace = true, ...payload } = action.payload;
+            if (!payload) return state;
 
-        state.status = "successful";
-        state.page = payload.page || 1;
-        state.category_id = payload.category_id || state.category_id;
-        state.productState.count = productState.count || 0;
-        state.productState.pageSize = payload.productState.pageSize;
+            state.status = "successful";
+            state.page = payload.page || 1;
+            state.category_id = payload.category_id;
+            state.productState.count = payload.count || 0;
+            state.productState.pageSize = payload.pageSize;
 
-        if (!payload.admin && !!productState.variants_data.length) {
-          const mergedProducts = mergeVariantToProduct(
-            productState.products,
-            productState.variants_data
-          );
+            if (replace) state.productState.products = payload.products;
+            else state.productState.products.push(...payload.products);
+         })
+         .addCase(fetchProducts.rejected, (state) => {
+            state.status = "error";
+         })
 
-          state.productState.products = mergedProducts;
-        } else {
-          state.productState.products = productState.products;
-        }
-      })
-      .addCase(fetchProducts.rejected, (state) => {
-        console.log("rejecrt case");
+         // search product
+         .addCase(searchProducts.pending, (state, action) => {
+            state.status = action.meta.arg.status || "loading";
+         })
 
-        state.status = "error";
-      })
+         .addCase(searchProducts.fulfilled, (state, action) => {
+            const { replace = true, ...payload } = action.payload;
+            if (!payload) return state;
 
-      // getMoreProducts
-      .addCase(getMoreProducts.pending, (state) => {
-        state.status = "more-loading";
-      })
-      .addCase(getMoreProducts.fulfilled, (state, action) => {
-        console.log("getMoreProducts =", action);
-        const payload = action.payload;
-        const productState = payload.productState;
-        if (!payload) return state;
+            state.status = "successful";
+            state.page = payload.page || 0;
+            state.productState.count = payload.count || 0;
 
-        state.productState.count = payload.productState.count || 0;
+            if (replace) state.productState.products = payload.products;
+            else state.productState.products.push(...payload.products);
+         })
 
-        if (!payload.admin) {
-          if (!!productState.variants_data.length) {
-            const mergedProducts = mergeVariantToProduct(
-              productState.products,
-              productState.variants_data
-            );
-            state.productState.products.push(...mergedProducts);
-          }
-        } else {
-          state.productState.products.push(...productState.products);
-        }
-
-        state.status = "successful";
-        state.page = payload.page || 0;
-        state.category_id = payload.category_id || 0;
-      })
-      .addCase(getMoreProducts.rejected, (state) => {
-        state.status = "error";
-      })
-
-      // search product
-      .addCase(searchProducts.pending, (state) => {
-        state.status = "loading";
-      })
-
-      .addCase(searchProducts.fulfilled, (state, action) => {
-        const payload = action.payload;
-        if (!payload) return state;
-
-        const productState = action.payload?.productState;
-
-        state.productState.count = payload.productState.count || 0;
-        const mergedProducts = mergeVariantToProduct(
-          productState.products,
-          productState.variants_data
-        );
-
-        if (payload.replace) state.productState.products = mergedProducts;
-        else state.productState.products.push(...mergedProducts);
-
-        state.status = "successful";
-        state.page = payload.page || 0;
-      })
-
-      .addCase(searchProducts.rejected, (state) => {
-        state.status = "error";
-      });
-  },
+         .addCase(searchProducts.rejected, (state) => {
+            state.status = "error";
+         });
+   },
 });
 
 export const selectedAllProduct = (state: { products: StateType }) => {
-  return state.products;
+   return state.products;
 };
 
-export const { storingProducts, setProducts } = productsSlice.actions;
+export const { storingProducts, setProducts, setStatus } = productsSlice.actions;
 
 export default productsSlice.reducer;

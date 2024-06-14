@@ -7,7 +7,6 @@ import styles from "./Header.module.scss";
 import Sidebar from "@/components/Sidebar";
 import MobileHeader from "./MobileHeader";
 import {
-   ArchiveBoxIcon,
    ShoppingBagIcon,
    Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
@@ -22,24 +21,32 @@ function Header() {
 
    const closeModal = () => setShowModal(false);
 
+   const closeSidebar = () => {
+      setIsOpenSidebar(false);
+      setShowModal(false);
+   };
+
    // use hooks
    const location = useLocation();
    const { categories, status } = useSelector(selectCategory);
 
    const renderCategories = useMemo(() => {
       if (!categories.length) return <h1>Not category found</h1>;
-      return categories.map((cat, index) => (
-         <li
-            key={index}
-            className={cx("nav-item", {
-               active: !showModal && location.pathname === `/${cat.category_ascii}`,
-            })}
-         >
-            <Link to={`/${cat.category_ascii}`}>
-               <p className={cx("nav-text")}>{cat.category}</p>
-            </Link>
-         </li>
-      ));
+      return categories.map(
+         (cat, index) =>
+            !cat.hidden && (
+               <li
+                  key={index}
+                  className={cx("nav-item", {
+                     active: !showModal && location.pathname === `/${cat.category_ascii}`,
+                  })}
+               >
+                  <Link to={`/${cat.category_ascii}`}>
+                     <p className={cx("nav-text")}>{cat.category}</p>
+                  </Link>
+               </li>
+            )
+      );
    }, [categories, location, showModal]);
 
    return (
@@ -51,7 +58,7 @@ function Header() {
                   alt=""
                />
             </div>
-            <div className="container">
+            <div className="container mx-auto">
                {/* mobile header */}
                <MobileHeader
                   isOpenSidebar={isOpenSidebar}
@@ -90,13 +97,6 @@ function Header() {
                                     <ShoppingBagIcon className="w-[24px]" />
                                  </Link>
                               </li>
-
-                              <li className={cx("nav-item")}>
-                                 <Link to={"/order"}>
-                                    <span className={cx("nav-text")}>Order</span>
-                                    <ArchiveBoxIcon className="w-[24px]" />
-                                 </Link>
-                              </li>
                            </>
                         )}
                         {auth?.role === "ADMIN" && (
@@ -113,9 +113,9 @@ function Header() {
             </div>
          </div>
 
-         <Sidebar isOpen={isOpenSidebar} close={closeModal} />
+         <Sidebar isOpen={isOpenSidebar} closeSidebar={closeSidebar} />
 
-         {showModal && <Modal close={closeModal}></Modal>}
+         {showModal && <Modal closeModal={closeModal}></Modal>}
       </>
    );
 }

@@ -29,7 +29,7 @@ function ImageSlider({ data, className = "pt-[25%]", autoSlide }: Props) {
                data.map((sliderImage, index) => {
                   return (
                      <div key={index} className={cx("slider-item")}>
-                        <Image src={sliderImage.image_url} />
+                        <Image src={sliderImage.image.image_url} />
                      </div>
                   );
                })}

@@ -1,5 +1,4 @@
-
-import { Link } from "react-router-dom";
+import { Button } from "@/components";
 
 type Props = {
    categories: Category[];
@@ -7,21 +6,23 @@ type Props = {
 
 export default function MobileCategories({ categories }: Props) {
    return (
-      <div className="hidden max-[768px]:block mt-[16px]">
-         <h5 className="text-[18px] mb-[6px] font-[500]">Danh mục sản phẩm</h5>
-         <div className="row overflow-auto !flex-nowrap">
-            {categories.map((c, index) => (
-               <div key={index} className="col flex-shrink-0 w-[120px]">
-                  <div className="bg-[#8f1313] rounded-[8px] overflow-hidden relative pt-[100%] ">
-                     <Link
-                        className="bg-[#cd1818] mt-[6px] absolute inset-0 flex flex-col items-center justify-center text-white translate-y-[-6px] rounded-[8px]"
-                        to={`/${c.category_ascii}`}
-                     >
-                        <span className="text-[14px] mt-[4px]">{c.category_name}</span>
-                     </Link>
-                  </div>
-               </div>
-            ))}
+      <div className="md:hidden">
+         <h5 className="text-[18px] font-[500] mb-[8px]">Danh mục sản phẩm</h5>
+         <div className="flex mx-[-4px] mt-[-8px] flex-wrap ">
+            {categories.map(
+               (c, index) =>
+                  !c.hidden && (
+                     <div key={index} className="px-[4px] mt-[8px] w-1/2">
+                        <Button
+                           colors={"third"}
+                           className="w-full h-[60px]"
+                           to={`/${c.category_ascii}`}
+                        >
+                           <span className="text-[14px] mt-[4px]">{c.category}</span>
+                        </Button>
+                     </div>
+                  )
+            )}
          </div>
       </div>
    );

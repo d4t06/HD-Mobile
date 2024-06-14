@@ -1,2 +1,2 @@
-export { fetchProducts, selectedAllProduct, getMoreProducts } from "./productsSlice";
+export { fetchProducts, selectedAllProduct } from "./productsSlice";
 export { selectedAllFilter, storingFilters } from "./filtersSlice";

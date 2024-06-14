@@ -4,30 +4,45 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 const classes = {
-   active: "before:shadow-none translate-y-[2px] text-[#cd1818]",
-   button: "inline-flex relative font-[500] items-center justify-center z-0",
+   active: "before:shadow-none font-[500] translate-y-[2px] text-[#cd1818]",
+   button: "inline-flex relative  items-center justify-center z-0",
 };
 
 const ButtonVariant = cva(classes.button, {
    variants: {
       variant: {
          primary:
-            "before:content-[''] before:absolute before:border-[2px] before:z-[-1] before:inset-0 before:rounded-[8px] rounded-[8px] bg-[#fff] active:translate-y-[2px] active:before:shadow-none",
+            "before:content-[''] before:absolute before:z-[-1] before:inset-0 before:rounded-[8px] rounded-[8px]  active:translate-y-[2px] active:before:shadow-none",
          clear: "",
       },
       size: {
          clear: "",
-         primary: "px-[12px] py-[4px]",
+         primary: "px-[15px] py-[5px]",
       },
       colors: {
-         primary: "before:border-[#cd1818] text-[#333] before:shadow-[0_2px_0_#cd1818]",
-         second: "before:border-[#ccc] text-[#333] before:shadow-[0_2px_0_#ccc]",
+         primary:
+            "before:border-[#cd1818] text-[#333] bg-[#fff] before:shadow-[0_2px_0_#cd1818]",
+         second:
+            "before:border-[#ccc] text-[#333] bg-[#f6f6f6] before:shadow-[0_2px_0_#ccc]",
+         third: "before:border-[#a00000] bg-[#cd1818] text-[#fff] before:shadow-[0_2px_0_#a00000]",
+         clear: "",
+      },
+      border: {
+         primary: "before:border-[2px]",
+         thin: "before:border-[1px]",
+         clear: "",
+      },
+      fontWeight: {
+         primary: "font-[500]",
+         thin: "",
       },
    },
    defaultVariants: {
       size: "primary",
       colors: "primary",
       variant: "primary",
+      border: "primary",
+      fontWeight: "primary",
    },
 });
 
@@ -53,6 +68,8 @@ export default function Button({
    colors,
    to,
    active,
+   fontWeight,
+   border,
 }: Props) {
    const content = (
       <>
@@ -66,9 +83,14 @@ export default function Button({
          {to ? (
             <Link
                to={to}
-               className={`${ButtonVariant({ variant, size, colors, className })} ${
-                  active ? classes.active : ""
-               }`}
+               className={`${ButtonVariant({
+                  variant,
+                  size,
+                  colors,
+                  border,
+                  fontWeight,
+                  className,
+               })} ${active ? classes.active : ""}`}
             >
                {content}
             </Link>
@@ -77,9 +99,14 @@ export default function Button({
                type={type || "button"}
                onClick={onClick}
                disabled={loading || disabled}
-               className={`${ButtonVariant({ variant, size, colors, className })} ${
-                  active ? classes.active : ""
-               }`}
+               className={`${ButtonVariant({
+                  variant,
+                  size,
+                  colors,
+                  border,
+                  fontWeight,
+                  className,
+               })} ${active ? classes.active : ""}`}
             >
                {content}
             </button>

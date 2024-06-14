@@ -1,8 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./Cart.module.scss";
 import { moneyFormat } from "@/utils/appHelper";
-// import { useRef, useState } from "react";
-import * as productServices from "@/services/productServices";
 
 const cx = classNames.bind(styles);
 
@@ -13,26 +11,14 @@ type Props = {
 function Cart({ data, onClose }: Props) {
    // const [cardData, setCardData] = useState({});
 
-   const handleSubmit = () => {
-      const data = {
-         // name: nameRef.current.value,
-         // gender: genderRef.current.value,
-         // phone: phoneRef.current.value,
-         // product: name,
-         // price: cur_price,
-         // href: href,
-      };
-      productServices.buyProduct(data);
-      onClose();
-      // console.log(data)
-   };
+   const handleSubmit = () => {};
 
    return (
       <>
          <div className={cx("product-cart")}>
             <div className={cx("cart-header")}>
                <h1>Có 1 sản phẩm trong giỏ hàng</h1>
-               <button className={cx("close-btn")} onClick={() => onClose()}>
+               <button className={cx("closeModal-btn")} onClick={() => onClose()}>
                   Đóng
                </button>
             </div>
@@ -49,8 +35,12 @@ function Cart({ data, onClose }: Props) {
                            <h2>Số lượng: 1</h2>
                         </div>
                         <div className={cx("item-price")}>
-                           <h2 className={cx("cur_price")}>{moneyFormat(data.cur_price)}đ</h2>
-                           <span className={cx("old_price")}>{moneyFormat(data.old_price)}đ</span>
+                           <h2 className={cx("cur_price")}>
+                              {moneyFormat(data.cur_price)}đ
+                           </h2>
+                           <span className={cx("old_price")}>
+                              {moneyFormat(data.old_price)}đ
+                           </span>
                         </div>
                      </div>
                      <form className={cx("form")}>

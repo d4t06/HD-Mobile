@@ -7,10 +7,10 @@ import useUserOrder from "@/hooks/useUserOrder";
 import { moneyFormat } from "@/utils/appHelper";
 import { ArchiveBoxIcon, CreditCardIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import { useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export default function UserOrderDetail() {
-   const statusWantToUpdate = useRef<Order["status"] | "">("");
+   const statusWantToUpdate = useRef<any["status"] | "">("");
 
    const { id } = useParams<{ id: string }>();
    const { orderDetail, status, updateStatus, apiLoading } = useUserOrder({ id });
@@ -120,7 +120,7 @@ export default function UserOrderDetail() {
             </PrimaryLabel>
             <PushFrame>
                <div className={`space-y-[20px]`}>
-                  {orderDetail.items.map((item, index) => (
+                  {/* {orderDetail.items.map((item, index) => (
                      <div key={index} className="flex items-center">
                         <div className="flex flex-grow">
                            <Link to={"/" + item.slug}>
@@ -148,7 +148,7 @@ export default function UserOrderDetail() {
                            </div>
                         </div>
                      </div>
-                  ))}
+                  ))} */}
                </div>
             </PushFrame>
          </div>

@@ -5,13 +5,12 @@ import {
    useRef,
    ReactNode,
 } from "react";
-import Button from "../ui/Button";
 import Input from "../ui/Input";
 import ModalHeader from "./ModalHeader";
 import PushButton from "../ui/PushButton";
 
 type Props = {
-   close: () => void;
+   closeModal: () => void;
    cbWhenSubmit: (value: string) => void;
    title: string;
    initValue?: string;
@@ -20,7 +19,7 @@ type Props = {
 };
 
 export default function AddItem({
-   close,
+   closeModal,
    cbWhenSubmit,
    title,
    initValue,
@@ -41,7 +40,7 @@ export default function AddItem({
 
    return (
       <div className="w-[400px] bg-[#fff]">
-         <ModalHeader close={close} title={title} />
+         <ModalHeader closeModal={closeModal} title={title} />
          <form action="" onSubmit={handleSubmit}>
             <Input
                className="w-full"

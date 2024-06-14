@@ -32,8 +32,8 @@ export default function SelectedSort({ data, handleFilter }: Props) {
                   className={cx("selected-item")}
                   key={index}
                >
-                  <p>{item.brand_name}</p>
-                  <TrashIcon className="w-[24px]" />
+                  <p>{item.brand}</p>
+                  <TrashIcon className="w-[24px] text-[#333]" />
                </div>
             );
          })}

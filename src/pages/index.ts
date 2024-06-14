@@ -16,7 +16,7 @@ export { default as Order } from "./UserOrder";
 export { default as Review } from "./Dashboard/Review";
 export { default as Message } from "./Dashboard/Message";
 
-export { default as Checkout } from "./Checkout/Checkout";
+export { default as Cart } from "./Cart";
 export { default as DashboardOrder } from "./Dashboard/DashboardOrder";
 export { default as DashboardOrderDetail } from "./Dashboard/DashboardOrderDetail";
 export { default as UserOrder } from "./UserOrder";

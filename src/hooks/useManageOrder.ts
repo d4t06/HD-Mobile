@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 const MANAGE_ORDER_URL = "/order-management";
 
 type StateType = {
-   orders: Order[];
+   orders: any;
    page_size: number;
    page: number;
    count: number;
@@ -14,14 +14,14 @@ type StateType = {
 export default function useManageOrder({
    currentTab,
 }: {
-   currentTab: Order["status"] | "";
+   currentTab: any;
 }) {
    const [state, setState] = useState<StateType>();
    const [status, setStatus] = useState<"loading" | "error" | "success" | "more-loading">(
       "loading"
    );
 
-   const prevTab = useRef<Order["status"] | "">("");
+   const prevTab = useRef<any["status"] | "">("");
 
    const ranEffect = useRef(false);
 
@@ -31,7 +31,7 @@ export default function useManageOrder({
       type,
    }: {
       page: number;
-      status: Order["status"] | "";
+      status: any["status"] | "";
       type: "replace" | "push";
    }) => {
       try {

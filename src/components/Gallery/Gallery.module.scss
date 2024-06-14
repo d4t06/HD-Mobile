@@ -22,7 +22,7 @@
       }
       h1 {
          margin-right: 30px;
-         font-size: 20px;
+         font-size: 24px;
       }
    }
    &__body {
@@ -66,12 +66,9 @@
 .image-info {
    h2 {
       font-size: 22px;
-      margin-bottom: 15px;
       font-weight: 500;
    }
    li {
-      font-size: 14px;
-      margin-bottom: 10px;
       a {
          &:hover {
             text-decoration: underline;
@@ -79,37 +76,6 @@
       }
       &:last-child {
          margin-bottom: 20px;
-      }
-   }
-}
-
-.input-label {
-   display: inline-block;
-   background-color: #8f1313;
-   font-size: 14px;
-   font-weight: 500;
-   border-radius: 8px;
-   cursor: pointer;
-   span {
-      min-width: 100px;
-      color: #fff;
-      display: inline-flex;
-      padding: 4px 16px;
-      align-items: center;
-      border-radius: 8px;
-      background-color: #cd1818;
-
-      transition: transform 0.1s linear;
-      transform: translateY(-2px);
-   }
-   &:hover {
-      span {
-         transform: translateY(-4px);
-      }
-   }
-   &:active {
-      span {
-         transform: translateY(0);
       }
    }
 }

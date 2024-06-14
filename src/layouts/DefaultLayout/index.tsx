@@ -17,17 +17,11 @@ export default function DefaultLayout({ children }: Props) {
    return (
       <div className={cx("app")}>
          <Header />
-         <div className={cx("page-wrapper", "container")}>
-            {status === "error" ? (
-               <h1 className="text-2xl">Something went wrong</h1>
-            ) : (
-               children
-            )}
-         </div>
+         <div className={cx("page-wrapper", "container mx-auto")}>{children}</div>
          <ScrollTop />
          <Footer />
 
-         <div className="container">
+         <div className="container mx-auto">
             <p className="py-[10px] text-[14px] text-[#333] font-[500]">
                Make with ❤️ by d4t06 <br />© All rights no reserved ¯\_(ツ)_/¯
             </p>

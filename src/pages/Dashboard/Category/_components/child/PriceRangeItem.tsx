@@ -5,8 +5,6 @@ import ConfirmModal from "@/components/Modal/Confirm";
 import usePriceRangeActions from "../../_hooks/usePriceRangeAction";
 import AddItemMulti, { FieldType } from "@/components/Modal/AddItemMulti";
 
-import "../../category.scss";
-
 type FIELD_KEYS = "Label" | "From" | "To";
 
 type Props = {
@@ -87,7 +85,7 @@ export default function PriceRangeItem({
                   loading={isFetching}
                   title="Add category"
                   cb={(value) => handlePriceRangeActions({ type: "Edit", value })}
-                  close={close}
+                  closeModal={closeModal}
                   intiFieldData={{
                      label: priceRange.label,
                      from: priceRange.from + "",
@@ -102,7 +100,7 @@ export default function PriceRangeItem({
                <ConfirmModal
                   callback={() => handlePriceRangeActions({ type: "Delete" })}
                   loading={isFetching}
-                  close={closeModal}
+                  closeModal={closeModal}
                   label={`Delete category '${priceRange.label}'`}
                />
             );
@@ -111,27 +109,41 @@ export default function PriceRangeItem({
       }
    }, [openModal, isFetching]);
 
+   const classes = {
+      container:
+         "flex px-[16px] py-[8px] bg-[#f1f1f1] select-none rounded-[8px] border border-black/15",
+      ctaContainer:
+         "flex items-center space-x-[6px] ml-[10px]  pl-[10px] border-l-[1px] border-black/15",
+      button: "text-[#3f3f3f] hover:text-[#cd1818] hover:scale-[1.1]",
+   };
+
    return (
       <>
-         <div className="attribute-item">
-            <div>
+         <div className={classes.container}>
+            <div className="text-center">
                <p>{priceRange.label}</p>
                <p className="font-[500] text-[#333]">
                   ({priceRange.from} - {priceRange.to})
                </p>
             </div>
 
-            <div className={"cta"}>
-               <button onClick={() => setOpenModal("edit")}>
+            <div className={classes.ctaContainer}>
+               <button
+                  className={classes.button}
+                  onClick={() => setOpenModal("edit")}
+               >
                   <PencilSquareIcon className="w-[22px]" />
                </button>
-               <button onClick={() => setOpenModal("delete")}>
+               <button
+                  className={classes.button}
+                  onClick={() => setOpenModal("delete")}
+               >
                   <TrashIcon className="w-[22px]" />
                </button>
             </div>
          </div>
 
-         {openModal && <Modal close={closeModal}>{renderModal}</Modal>}
+         {openModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
       </>
    );
 }

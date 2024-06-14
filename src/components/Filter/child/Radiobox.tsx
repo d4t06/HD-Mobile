@@ -1,17 +1,11 @@
 import { FilterType } from "@/store/filtersSlice";
-
-
-import style from "../ProductFilter.module.scss";
-import classNames from "classnames/bind";
-import PushFrame from "@/components/ui/PushFrame";
+import { Button } from "@/components";
 
 type Props = {
    handleFilter: (sort: PriceRange | undefined) => void;
    data: PriceRange[];
    filters: FilterType;
 };
-
-const cx = classNames.bind(style);
 
 export default function Radiobox({ filters, handleFilter, data }: Props) {
    const handleToggle = (item: PriceRange | "clear") => {
@@ -26,33 +20,35 @@ export default function Radiobox({ filters, handleFilter, data }: Props) {
 
    return (
       <>
-         <div className={cx("filter-item", { active: filters.price === undefined })}>
-            {/* <input
-               type="radio"
-               id={"all-price"}
-               checked={filters.price === undefined}
-               onChange={() => handleToggle("clear")}
-            />
-            <label className={cx("label")} htmlFor={"all-price"}>
-               All
-            </label> */}
-            <PushFrame active={filters.price === undefined} type="translate">
-               <button onClick={() => handleToggle("clear")}>Tất cả</button>
-            </PushFrame>
-         </div>
+         <Button
+            active={filters.price === undefined}
+            onClick={() => handleToggle("clear")}
+            colors={"second"}
+            size={"clear"}
+            fontWeight={"thin"}
+            border={"thin"}
+            className="py-[2px] px-[9px]"
+         >
+            Tất cả
+         </Button>
+
          {data.map((item, index) => {
-            const isChecked = filters.price === undefined ? false : item.id === filters.price.id;
+            const isChecked =
+               filters.price === undefined ? false : item.id === filters.price.id;
 
             return (
-               <div key={index} className={cx("filter-item", { active: isChecked })}>
-                  {/* <input type="radio" id={item.id + ""} checked={isChecked} onChange={() => handleToggle(item)} />
-                  <label className={cx("label")} htmlFor={item.id + ""}>
-                     {item.label}
-                  </label> */}
-                  <PushFrame active={isChecked} type="translate">
-                     <button onClick={() => handleToggle(item)}>{item.label}</button>
-                  </PushFrame>
-               </div>
+               <Button
+                  key={index}
+                  active={isChecked}
+                  onClick={() => handleToggle(item)}
+                  colors={"second"}
+                  size={"clear"}
+                  fontWeight={"thin"}
+                  border={"thin"}
+                  className="py-[2px] px-[9px]"
+               >
+                  {item.label}
+               </Button>
             );
          })}
       </>

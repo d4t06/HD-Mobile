@@ -5,11 +5,10 @@ import { SortType, selectedAllFilter, storingFilters } from "../../store/filters
 import classNames from "classnames/bind";
 import styles from "./ProductSort.module.scss";
 
-// import { getAll, getSearchPage } from '../../store/actions';
 import { fetchProducts, searchProducts } from "../../store/productsSlice";
 import { AppDispatch } from "@/store/store";
-import PushFrame from "../ui/PushFrame";
 import useCurrentCategory from "@/hooks/useCurrentCategory";
+import { Button } from "..";
 const cx = classNames.bind(styles);
 
 const continents = [
@@ -23,19 +22,13 @@ const continents = [
       id: 2,
       value: "Giá thấp",
       column: "price",
-      type: "asc",
+      type: "ASC",
    },
    {
       id: 3,
       value: "Giá cao",
       column: "price",
-      type: "desc",
-   },
-   {
-      id: 4,
-      value: "Trả góp 0%",
-      column: "installment",
-      type: "asc",
+      type: "DESC",
    },
 ];
 
@@ -83,6 +76,7 @@ function ProductSort({ searchKey }: Props) {
                fetchProducts({
                   page: 1,
                   category_id: currentCategory.id,
+                  replace: true,
                   filters,
                   sort: newSort,
                })
@@ -100,21 +94,25 @@ function ProductSort({ searchKey }: Props) {
    return (
       <div className={cx("product-sort")}>
          <p className="text-[16px] font-[500]">Xem theo</p>
-         <ul className={cx("btn-group", { disable: status === "loading" })}>
+
+         <div className={cx("btn-group", { disable: status === "loading" })}>
             {continents.map((item, index) => {
                return (
-                  <li
-                     className={cx("sort-btn", index + 1 === checked ? "active" : "")}
-                     key={item.id}
+                  <Button
+                     key={index}
+                     active={index + 1 === checked}
                      onClick={() => handleToggle(item.id)}
+                     colors={"second"}
+                     size={"clear"}
+                     fontWeight={"thin"}
+                     border={"thin"}
+                     className="py-[2px] px-[9px]"
                   >
-                     <PushFrame active={index + 1 === checked} type="translate">
-                        <span className="leading-[24px] px-[6px]">{item.value}</span>
-                     </PushFrame>
-                  </li>
+                     {item.value}
+                  </Button>
                );
             })}
-         </ul>
+         </div>
       </div>
    );
 }

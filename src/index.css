@@ -22,20 +22,11 @@ html {
    -ms-overflow-style: none; /* IE and Edge */
    scrollbar-width: none; /* Firefox */
 }
-.container {
-   margin: 0 auto;
-}
 
 button[disabled],
 .disable {
    opacity: 0.6;
    pointer-events: none;
-}
-
-@media screen and (max-width: 768px) {
-   .container {
-      padding: 0 10px;
-   }
 }
 
 @media screen and (min-width: 1100px) {

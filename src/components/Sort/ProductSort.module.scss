@@ -1,9 +1,6 @@
-.btn-group,
 .product-sort {
    display: flex;
-}
-.product-sort {
-   margin-top: 15px;
+   margin-top: 14px;
    align-items: center;
    h1 {
       margin-right: 20px;
@@ -13,6 +10,7 @@
       flex-direction: column;
       align-items: start;
       margin-top: 14px;
+
       h1 {
          margin: 0;
          margin-bottom: 6px;
@@ -20,44 +18,18 @@
       }
 
       .btn-group {
-         flex-wrap: nowrap;
+         display: flex;
+         flex-wrap: wrap;
          overflow: auto;
          padding: 4px 0;
-         padding-right: 20%;
          margin-left: 0;
-         .sort-btn {
-            flex-shrink: 0;
-         }
       }
    }
 }
+
 .btn-group {
    margin-left: 12px;
    * + * {
-      margin-left: 8px;
-   }
-   .sort-btn {
-      // border-radius: 99px;
-      // padding: 6px 10px;
-      line-height: 1.2;
-      font-size: 14px;
-      transform: translateY(2px);
-      // border: 1px solid rgba($color: #000000, $alpha: 0.1);
-      cursor: pointer;
-      span {
-         user-select: none;
-      }
-      &:hover {
-         border-color: #cd1818;
-      }
-   }
-   .sort-btn.active {
-      span {
-         color: #cd1818;
-         font-weight: 600;
-      }
-      // background-color: #cd1818;
-      // border-color: transparent;
-      // color: #fff;
+      margin-left: 12px;
    }
 }

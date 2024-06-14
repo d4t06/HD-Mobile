@@ -1,10 +1,7 @@
 import { inputClasses } from "@/components/ui/Input";
-import "../../layout.scss";
 import { useMemo, useRef, useState } from "react";
-import BrandItem from "./child/BrandItem";
-import useBrandAction from "../_hooks/uesBrandAction";
 import { generateId } from "@/utils/appHelper";
-import { DragAbleItem, Empty, Modal } from "@/components";
+import { DragAbleItem, Modal } from "@/components";
 import AddItem from "@/components/Modal/AddItem";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
@@ -12,7 +9,11 @@ import useAttributeActions from "../_hooks/useAttributeAction";
 import PushButton from "@/components/ui/PushButton";
 import AttributeItem from "./child/AttributeItem";
 
-export default function AttributeList() {
+type Props = {
+   mainClasses: LayoutClasses;
+};
+
+export default function AttributeList({ mainClasses }: Props) {
    const { categories } = useSelector(selectCategory);
    const [currentCategoryIndex, setCurrentCategoryIndex] = useState<number>();
 
@@ -22,7 +23,9 @@ export default function AttributeList() {
    const endIndexRef = useRef<number>(0);
 
    //    hooks
-   const { actions, isFetching, sortAttribute } = useAttributeActions({ currentCategoryIndex });
+   const { actions, isFetching, sortAttribute } = useAttributeActions({
+      currentCategoryIndex,
+   });
 
    const currentCategory = useMemo(
       () =>
@@ -58,10 +61,10 @@ export default function AttributeList() {
 
    return (
       <>
-         <h1 className="label">Attribute</h1>
-         <div className="group-container">
+         <h1 className={mainClasses.label}>Attribute</h1>
+         <div className={mainClasses.group}>
             <div className="flex justify-between">
-               <div className="flex-container inline-flex items-center">
+               <div className="inline-flex gap-[16px] items-center">
                   <span>Category: </span>
                   <select
                      className={`${inputClasses.input} min-w-[100px]`}
@@ -72,11 +75,14 @@ export default function AttributeList() {
                   >
                      <option value={undefined}>---</option>
                      {!!categories.length &&
-                        categories.map((category, index) => (
-                           <option key={index} value={index}>
-                              {category.category}
-                           </option>
-                        ))}
+                        categories.map(
+                           (category, index) =>
+                              !category.hidden && (
+                                 <option key={index} value={index}>
+                                    {category.category}
+                                 </option>
+                              )
+                        )}
                   </select>
                </div>
 
@@ -86,7 +92,7 @@ export default function AttributeList() {
             </div>
 
             {currentCategoryIndex !== undefined && currentCategory && (
-               <div className="flex-container mt-[16px]">
+               <div className="flex gap-[16px] mt-[16px]">
                   {attributeOrder.map((id, index) => {
                      const attributeIndex = currentCategory.attributes.findIndex(
                         (attr) => attr.id === +id
@@ -121,12 +127,12 @@ export default function AttributeList() {
          </div>
 
          {openModal && (
-            <Modal close={closeModal}>
+            <Modal closeModal={closeModal}>
                <AddItem
                   loading={isFetching}
                   title="Add attribute"
                   cbWhenSubmit={(value) => handleAddBrand(value)}
-                  close={closeModal}
+                  closeModal={closeModal}
                />
             </Modal>
          )}

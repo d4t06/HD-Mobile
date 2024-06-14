@@ -1,14 +1,14 @@
 import Skeleton from "@/components/Skeleton";
-import PushFrame from "@/components/ui/PushFrame";
+// import PushFrame from "@/components/ui/PushFrame";
 import useManageOrder from "@/hooks/useManageOrder";
 import emptyCart from "@/assets/images/empty-cart.png";
-import { moneyFormat } from "@/utils/appHelper";
+// import { moneyFormat } from "@/utils/appHelper";
 import { Button } from "@/components";
 import { useMemo, useState } from "react";
 
 import PushButton from "@/components/ui/PushButton";
 
-const tabs: Array<Order["status"]> = [
+const tabs: Array<any["status"]> = [
    "processing",
    "delivering",
    "completed",
@@ -16,7 +16,7 @@ const tabs: Array<Order["status"]> = [
 ];
 
 export default function DashboardOrder() {
-   const [currentTab, setCurrentTab] = useState<Order["status"] | "">("");
+   const [currentTab, setCurrentTab] = useState<any["status"] | "">("");
 
    const { state, getAllOrders, status } = useManageOrder({ currentTab });
    let remaining = useMemo(
@@ -97,7 +97,7 @@ export default function DashboardOrder() {
                <>
                   {state.orders.length ? (
                      <div className="space-y-[20px]">
-                        {state.orders.map((order, index) => (
+                        {/* {state.orders.map((order, index) => (
                            <PushFrame key={index}>
                               <h5 className={`${classes.h5} mb-[4px]`}>
                                  Đơn hàng #{order.id} -{" "}
@@ -172,7 +172,7 @@ export default function DashboardOrder() {
                                  </PushButton>
                               </div>
                            </PushFrame>
-                        ))}
+                        ))} */}
                      </div>
                   ) : (
                      Empty

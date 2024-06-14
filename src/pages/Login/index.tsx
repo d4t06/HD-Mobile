@@ -8,7 +8,7 @@ import axios from "axios";
 import PushButton from "@/components/ui/PushButton";
 
 const LOGIN_URL =
-   (import.meta.env.VITE_API_ENDPOINT || "https://hd-mobile-backend.vercel.app/api") +
+   (import.meta.env.VITE_API_ENDPOINT || "https://hd-mobile-backend-ts.vercel.app/api") +
    "/auth/login";
 const cx = classNames.bind(styles);
 

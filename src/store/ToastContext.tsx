@@ -1,7 +1,13 @@
 // init state
 
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
-import { Toast } from "../types";
+import {
+   Dispatch,
+   ReactNode,
+   SetStateAction,
+   createContext,
+   useContext,
+   useState,
+} from "react";
 import { nanoid } from "nanoid";
 
 type StateType = {
@@ -44,7 +50,9 @@ const ToastProvider = ({ children }: { children: ReactNode }) => {
       setToasts((t) => [...t, { title: "success", id: nanoid(4), desc: `${message}` }]);
 
    return (
-      <ToastContext.Provider value={{ state: { toasts }, setToasts, setErrorToast, setSuccessToast }}>
+      <ToastContext.Provider
+         value={{ state: { toasts }, setToasts, setErrorToast, setSuccessToast }}
+      >
          {children}
       </ToastContext.Provider>
    );

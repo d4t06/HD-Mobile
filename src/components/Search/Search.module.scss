@@ -67,12 +67,7 @@
 
    @media screen and (max-width: 768px) {
       width: calc(100vw - 20px);
-      border-radius: 0 0 6px 6px
-   }
-   &-title {
-      font-size: 16px;
-      font-weight: 500;
-      margin-bottom: 10px;
+      border-radius: 0 0 6px 6px;
    }
    .product {
       display: flex;
@@ -85,11 +80,11 @@
       }
       &-info {
          margin-left: 6px;
-         font-size: 14px;
          font-weight: 500;
          line-height: 20px;
          .price {
             color: #cd1818;
+            margin-top: 4px;
             font-size: 18px;
          }
       }

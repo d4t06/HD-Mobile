@@ -23,7 +23,7 @@ export default function Review() {
    const closeModal = () => setIsOpenModal(false);
 
    const { apiLoading, deleteReview, approveReview, state, setState } = useReview({
-      close: closeModal,
+      closeModal: closeModal,
       admin: true,
    });
 
@@ -48,17 +48,17 @@ export default function Review() {
       switch (openModalTarget.current) {
          // case "Add-Reply":
          //    return (
-         //       <AddCommentModal state={state} target="Add-Reply" close={close} comment={curReview} />
+         //       <AddCommentModal state={state} target="Add-Reply" closeModal={closeModal} comment={curReview} />
          //    );
          // case "Edit-Reply":
-         //    return <AddCommentModal target="Edit-Reply" close={close} comment={curReview} />;
+         //    return <AddCommentModal target="Edit-Reply" closeModal={closeModal} comment={curReview} />;
          case "Delete-Comment":
             return (
                <ConfirmModal
                   label={`Delete comment '${curReview.cus_name}'`}
                   callback={() => deleteReview(curReview)}
                   loading={apiLoading}
-                  setOpenModal={setIsOpenModal}
+                  closeModal={closeModal}
                />
             );
       }
@@ -150,7 +150,7 @@ export default function Review() {
                </PushButton>
             </p>
          )}
-         <>{isOpenModal && <Modal close={closeModal}>{renderModal}</Modal>}</>
+         <>{isOpenModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}</>
       </div>
    );
 }

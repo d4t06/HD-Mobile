@@ -23,8 +23,9 @@ export const countDayDiff = (dateString: string) => {
 };
 
 export const initImageObject = (data: Partial<ImageType>) => {
-   const newImage: ImageType = {
+   const newImage: ImageTypeSchema = {
       public_id: "",
+
       image_url: "",
       link_to: "",
       name: "",
@@ -48,76 +49,6 @@ export const initProductObject = (data: Partial<ProductSchema>) => {
    return newProduct;
 };
 
-export const initProductDetailObject = (data: Partial<Product>) => {
-   const newProduct: Product = {};
-
-   return newProduct;
-};
-
-export const initStorageObject = (data: Partial<ProductStorage>) => {
-   const initStorage: ProductStorage = {
-      id: undefined,
-      base_price: 0,
-      product_ascii: "",
-      default: false,
-      storage: "",
-      storage_ascii: "",
-      ...data,
-   };
-
-   return initStorage;
-};
-
-export const initColorObject = (data: Partial<ProductColor>) => {
-   const newColor: ProductColor = {
-      color: "",
-      id: undefined,
-      product_ascii: "",
-      color_ascii: "",
-      default: false,
-      ...data,
-   };
-
-   return newColor;
-};
-
-export function initCombineData(
-   data: Partial<ProductCombine>,
-   color: string,
-   storage: string
-) {
-   // eliminate in order to prevent replace data
-   const { storage_data, color_data, ...rest } = data;
-   const combineData: ProductCombine = {
-      id: undefined,
-      default: false,
-      price: 0,
-      color_id: 0,
-      storage_id: 0,
-      product_ascii: "",
-      quantity: 0,
-      color_data: { color, color_ascii: generateId(color) },
-      storage_data: { storage, storage_ascii: generateId(storage) },
-      ...rest,
-   };
-
-   return combineData;
-}
-
-export const initProductSlider = (data: Partial<ProductSlider>) => {
-   const productSlider: ProductSlider = {
-      color_id: 0,
-      id: 0,
-      product_ascii: "",
-      slider_id: 0,
-      color_data: { color: "", color_ascii: "" },
-      slider_data: { images: [], slider_name: "", id: 0 },
-      ...data,
-   };
-
-   return productSlider;
-};
-
 export const generateId = (name: string): string => {
    const convertToEn = (str: string) => {
       const newString = str
@@ -132,18 +63,6 @@ export const generateId = (name: string): string => {
       return newString;
    };
    return convertToEn(name).replaceAll(/[\W_]/g, "-");
-};
-
-export const initBrandObject = (data: Partial<Brand>) => {
-   const object: Brand = {
-      brand_name: "",
-      brand_ascii: "",
-      image_url: "",
-      category_id: 0,
-      ...data,
-   };
-
-   return object;
 };
 
 export const initLocalStorage: LCStorage = {
@@ -163,4 +82,15 @@ export const formatSize = (size: number) => {
    }
 
    return mb + "," + size + units[1];
+};
+
+
+export const getLocalStorage = () =>
+   JSON.parse(localStorage.getItem("HD-Mobile") || "{}") as Record<string, any>;
+
+export const setLocalStorage = (key: string, value: any) => {
+   const storage = getLocalStorage();
+   storage[key] = value;
+
+   return localStorage.setItem("HD-Mobile", JSON.stringify(storage));
 };

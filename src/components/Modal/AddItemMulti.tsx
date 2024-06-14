@@ -1,13 +1,24 @@
-import { FormEvent, useEffect, useState, useRef, useMemo, ReactNode } from "react";
+import {
+   FormEvent,
+   useEffect,
+   useState,
+   useRef,
+   useMemo,
+   ReactNode,
+   HTMLAttributes,
+} from "react";
 import Input from "../ui/Input";
 import ModalHeader from "./ModalHeader";
-import { generateId } from "@/utils/appHelper";
+import { generateId, moneyFormat } from "@/utils/appHelper";
 import PushButton from "../ui/PushButton";
 
-export type FieldType = (string | { label: string; placeholder: string })[];
+export type FieldType = (
+   | string
+   | { label: string; placeholder: string; type?: "price" | "text" }
+)[];
 
 type Props = {
-   close: () => void;
+   closeModal: () => void;
    cb: ({}: Record<string, string>) => void;
    title: string;
    fields: FieldType;
@@ -22,6 +33,7 @@ const initState = (
    name: string;
    name_ascii: string;
    placeholder: string;
+   type: "price" | "text";
 }[] => {
    return fields.map((f) => {
       if (typeof f === "object")
@@ -29,9 +41,10 @@ const initState = (
             name: f.label,
             name_ascii: generateId(f.label),
             placeholder: f.placeholder,
+            type: f.type || "text",
          };
 
-      return { name: f, name_ascii: generateId(f), placeholder: f };
+      return { name: f, name_ascii: generateId(f), placeholder: f, type: "text" };
    });
 };
 
@@ -45,7 +58,7 @@ const intiFieldDataState = (inputFields: ReturnType<typeof initState>) => {
 };
 
 export default function AddItemMulti({
-   close,
+   closeModal,
    cb,
    title,
    fields,
@@ -63,10 +76,6 @@ export default function AddItemMulti({
 
    const inputRef = useRef<HTMLInputElement>(null);
 
-   useEffect(() => {
-      inputRef.current?.focus();
-   }, []);
-
    const handleInput = (value: string, name: string) => {
       setFieldData({ ...fieldData, [name]: value });
    };
@@ -76,27 +85,56 @@ export default function AddItemMulti({
       cb(fieldData);
    };
 
+   const priceInputProps: HTMLAttributes<HTMLInputElement> = {
+      onBlur: (e) => {
+         // handleInput(moneyFormat(fieldData[itemAscii]), itemAscii);
+         e.target.value = e.target.value ? moneyFormat(e.target.value) : "";
+      },
+      onFocus: (e) => {
+         e.target.value = e.target.value ? e.target.value.replaceAll(",", "") : "";
+      },
+   };
+
+   useEffect(() => {
+      inputRef.current?.focus();
+   }, []);
+
    return (
-      <div className="w-[300px] bg-[#fff]">
-         <ModalHeader close={close} title={title} />
+      <div className="w-[400px] bg-[#fff]">
+         <ModalHeader closeModal={closeModal} title={title} />
          <form action="" onSubmit={handleSubmit}>
             {inputFields.map((item, index) => (
-               <div key={index} className=" mb-[15px]">
+               <div key={index} className="mb-[15px] space-y-[6px]">
                   <label
-                     className="font-semibold text-[16px] h-[30px] mb-[4px] flex items-end"
+                     className="font-semibold"
                      htmlFor={item.name_ascii}
                   >
                      {item.name}
                   </label>
-                  <Input
-                     key={index}
-                     className="w-full"
-                     ref={index === 0 ? inputRef : undefined}
-                     id={item.name_ascii}
-                     placeholder={item.placeholder}
-                     value={fieldData[item.name_ascii]}
-                     cb={(value) => handleInput(value, item.name_ascii)}
-                  />
+                  {item.type === "price" ? (
+                     <Input
+                        key={index}
+                        className="w-full"
+                        ref={index === 0 ? inputRef : undefined}
+                        id={item.name_ascii}
+                        placeholder={item.placeholder}
+                        value={fieldData[item.name_ascii]}
+                        cb={(value) =>
+                           Number.isNaN(+value) ? {} : handleInput(value, item.name_ascii)
+                        }
+                        {...priceInputProps}
+                     />
+                  ) : (
+                     <Input
+                        key={index}
+                        className="w-full"
+                        ref={index === 0 ? inputRef : undefined}
+                        id={item.name_ascii}
+                        placeholder={item.placeholder}
+                        value={fieldData[item.name_ascii]}
+                        cb={(value) => handleInput(value, item.name_ascii)}
+                     />
+                  )}
                </div>
             ))}
 

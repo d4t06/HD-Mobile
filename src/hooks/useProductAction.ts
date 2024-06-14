@@ -4,16 +4,18 @@ import { useToast } from "@/store/ToastContext";
 import { useDispatch, useSelector } from "react-redux";
 import { selectedAllProduct } from "@/store";
 import { setProducts, storingProducts } from "@/store/productsSlice";
+import { sleep } from "@/utils/appHelper";
+import { updateProduct } from "@/store/productSlice";
 
 type Props = {
-   close: () => void;
+   closeModal: () => void;
 };
 
-const PRODUCT_URL = "/products";
+const URL = "/products";
 
-export default function useProductAction({ close }: Props) {
+export default function useProductAction({ closeModal }: Props) {
    const dispatch = useDispatch();
-   const [apiLoading, setApiLoading] = useState(false);
+   const [isFetching, setIsFetching] = useState(false);
 
    // use hooks
    const {
@@ -22,97 +24,81 @@ export default function useProductAction({ close }: Props) {
    const privateRequest = usePrivateRequest();
    const { setErrorToast, setSuccessToast } = useToast();
 
-   const updateProducts = (
-      products: Product[],
-      product: ProductSchema,
-      index: number
-   ) => {
-      const newProducts = [...products];
-      newProducts[index] = { ...newProducts[index], ...product };
-
-      return newProducts;
-   };
-
    type AddProduct = {
-      type: "Add";
+      variant: "Add";
       product: ProductSchema;
    };
 
-   type EditProduct = {
-      type: "Edit";
-      product: ProductSchema;
-      currentIndex: number;
-      product_id: number;
+   type EditProductList = {
+      variant: "Edit";
+      product: Partial<ProductSchema>;
+      index: number;
+      productAscii: string;
+      target: "list";
    };
 
-   const addProduct = async ({ ...props }: AddProduct | EditProduct) => {
+   type EditProducDetail = {
+      variant: "Edit";
+      product: Partial<ProductSchema>;
+      productAscii: string;
+      target: "one";
+   };
+
+   const actions = async ({
+      ...props
+   }: AddProduct | EditProductList | EditProducDetail) => {
       try {
          if (!props.product) throw new Error("Product data error");
+         setIsFetching(true);
+         if (import.meta.env.DEV) await sleep(500);
 
-         switch (props.type) {
+         switch (props.variant) {
             case "Add":
-               setApiLoading(true);
-               const res = await privateRequest.post(`${PRODUCT_URL}`, props.product);
-
-               // const newProductData = {
-               //    ...res.data.data,
-               //    colors_data: [],
-               //    combines_data: [],
-               // } as Product;
-
+               const res = await privateRequest.post(`${URL}`, props.product);
                dispatch(storingProducts({ products: [res.data.data] }));
                break;
 
             case "Edit":
-               setApiLoading(true);
-               const { currentIndex, product, product_id } = props;
+               const { product, productAscii, target } = props;
 
-               await privateRequest.put(
-                  `${PRODUCT_URL}/products/${product_id}`,
-                  product,
-                  {
-                     headers: { "Content-Type": "application/json" },
-                  }
-               );
+               await privateRequest.put(`${URL}/${productAscii}`, product);
 
-               const newProductsUpdate: Product[] = updateProducts(
-                  products,
-                  product,
-                  currentIndex
-               );
-               dispatch(setProducts({ products: newProductsUpdate }));
+               if (target === "list") {
+                  dispatch(
+                     setProducts({ variant: "update", index: props.index, product })
+                  );
+               }
+               if (target === "one") dispatch(updateProduct(product));
          }
-         setSuccessToast(`${props.type} product successful`);
+         setSuccessToast(`${props.variant} product successful`);
+         closeModal();
       } catch (error) {
          console.log({ message: error });
-         setErrorToast(`${props.type} product fail`);
+         setErrorToast(`${props.variant} product fail`);
       } finally {
-         setApiLoading(false);
-         close();
+         setIsFetching(false);
       }
    };
 
-   const deleteProduct = async (id: number | undefined, proName: string) => {
+   const deleteProduct = async (productAscii: string) => {
       try {
-         if (id === undefined) throw new Error("Product data error");
-         setApiLoading(true);
+         setIsFetching(true);
+         if (import.meta.env.DEV) await sleep(500);
 
-         await privateRequest.delete(`${PRODUCT_URL}/products/${id}`);
-         // for await (const slider of product.sliders_data) {
-         //    await privateRequest.delete(`${SLIDER_URL}/${slider.slider_data.id}`);
-         // }
+         await privateRequest.delete(`${URL}/${productAscii}`);
 
-         const newProducts = products.filter((p) => p.id !== id);
-         dispatch(setProducts({ products: newProducts }));
-         setSuccessToast(`Delete '${proName}' successful`);
+         const newProducts = products.filter((p) => p.product_ascii !== productAscii);
+         dispatch(setProducts({ products: newProducts, variant: "replace" }));
+
+         setSuccessToast(`Delete product successful`);
+         closeModal();
       } catch (error) {
          console.log({ message: error });
          setErrorToast("Delete product fail");
       } finally {
-         setApiLoading(false);
-         close();
+         setIsFetching(false);
       }
    };
 
-   return { apiLoading, addProduct, deleteProduct };
+   return { isFetching, actions, deleteProduct };
 }

@@ -11,7 +11,7 @@ export default function Label({
    loading: boolean;
 }) {
    const labelSkeleton = useMemo(() => {
-      return <Skeleton className="w-[180px] h-[24px] rounded-[4px] mb-[6px]" />;
+      return <Skeleton className="w-[180px] h-[27px] rounded-[4px] mb-[6px]" />;
    }, []);
 
    if (loading) return labelSkeleton;

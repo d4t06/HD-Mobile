@@ -1,5 +1,4 @@
 import { ReactNode, useMemo } from "react";
-import { Button } from "..";
 
 type Props = {
    data: {

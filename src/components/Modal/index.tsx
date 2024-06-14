@@ -6,19 +6,19 @@ const cx = classNames.bind(styles);
 
 type Props = {
    children?: ReactNode;
-   close: () => void;
+   closeModal: () => void;
    child?: boolean;
    z?: string;
 };
 
-function Modal({ children, close, child, z }: Props) {
+function Modal({ children, closeModal, child, z }: Props) {
    return (
       <>
          {createPortal(
             <>
                <div
                   className={cx("overlay", { child }, `${z ?? ""}`)}
-                  onClick={close}
+                  onClick={closeModal}
                ></div>
                {children && <div className={cx("modal", z ?? "")}>{children}</div>}
             </>,

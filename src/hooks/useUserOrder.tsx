@@ -9,10 +9,10 @@ const USER_ORDER_URL = "/orders";
 type Props = { autoRun?: boolean; id?: string };
 
 export default function useUserOrder({ autoRun = false, id }: Props) {
-   const [orders, setOrders] = useState<Order[]>();
+   const [orders, setOrders] = useState<any[]>();
    const [status, setStatus] = useState<"loading" | "error" | "success">("loading");
    const [apiLoading, setApiLoading] = useState(false);
-   const [orderDetail, setOrderDetail] = useState<Order>();
+   const [orderDetail, setOrderDetail] = useState<any>();
 
    const ranEffect = useRef(false);
 
@@ -24,14 +24,14 @@ export default function useUserOrder({ autoRun = false, id }: Props) {
 
       const res = await privateRequest.get(`${USER_ORDER_URL}?username=${auth.username}`);
 
-      return res.data as Order[];
+      return res.data as any[];
    };
 
    // const apiGetOrderDetail = async () => {
    //    if (!auth?.username || !id || Number.isNaN(+id)) throw new Error("auth is undefined or is wrong");
    //    const res = await privateRequest.get(`${USER_ORDER_URL}/${+id}`);
 
-   //    return res.data as Order;
+   //    return res.data as any;
    // };
 
    const getAllUserOrders = async () => {
@@ -70,7 +70,7 @@ export default function useUserOrder({ autoRun = false, id }: Props) {
       }
    };
 
-   const addNewOrder = async (order: OrderSchema) => {
+   const addNewOrder = async (order: any) => {
       try {
          if (!auth?.username) throw new Error("auth is undefined");
 
@@ -85,12 +85,12 @@ export default function useUserOrder({ autoRun = false, id }: Props) {
       }
    };
 
-   const updateStatus = async (data: { id: number; status: Order["status"] }) => {
+   const updateStatus = async (data: { id: number; status: any["status"] }) => {
       try {
          setApiLoading(true);
          await privateRequest.put(USER_ORDER_URL, data);
 
-         setOrderDetail((prev) => ({ ...prev, status: data.status } as Order));
+         // setOrderDetail((prev) => ({ ...prev, status: data.status } as any));
 
          setSuccessToast(`Your order ${data.status}`);
       } catch (error) {

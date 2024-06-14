@@ -6,7 +6,7 @@ import { useLocalStorage, usePrivateRequest } from ".";
 import { initLocalStorage } from "@/utils/appHelper";
 
 type Props = {
-   close: () => void
+   closeModal: () => void;
    product_ascii?: string;
    admin?: boolean;
 };
@@ -32,7 +32,7 @@ const initialState: CommentStateType = {
 const COMMENT_URL = "/product-comment-management";
 const COMMENT_URL_CLIENT = "/product-comments";
 
-export default function useComment({ close, product_ascii, admin }: Props) {
+export default function useComment({ closeModal, product_ascii, admin }: Props) {
    const [state, setState] = useState<CommentStateType>(initialState);
    const [apiLoading, setApiLoading] = useState(false);
    const { setSuccessToast, setErrorToast } = useToast();
@@ -46,15 +46,20 @@ export default function useComment({ close, product_ascii, admin }: Props) {
       const newComments = [...state.comments];
 
       let myIndex = index;
-      if (myIndex === undefined) myIndex = newComments.findIndex((c) => c.id === comment.id);
+      if (myIndex === undefined)
+         myIndex = newComments.findIndex((c) => c.id === comment.id);
 
-      if (myIndex === -1 || myIndex === undefined) throw new Error("update comment index is undefined");
+      if (myIndex === -1 || myIndex === undefined)
+         throw new Error("update comment index is undefined");
 
       newComments[myIndex] = comment;
       setState((prev) => ({ ...prev, comments: newComments } as typeof state));
    };
 
-   const addComment = async (commentData: ProductComment, setShowConfirm: Dispatch<SetStateAction<boolean>>) => {
+   const addComment = async (
+      commentData: ProductComment,
+      setShowConfirm: Dispatch<SetStateAction<boolean>>
+   ) => {
       try {
          setApiLoading(true);
 
@@ -122,7 +127,7 @@ export default function useComment({ close, product_ascii, admin }: Props) {
          setErrorToast("Reply comment fail");
       } finally {
          setApiLoading(false);
-         close()
+         closeModal();
       }
    };
 
@@ -149,7 +154,7 @@ export default function useComment({ close, product_ascii, admin }: Props) {
          setErrorToast("Reply comment fail");
       } finally {
          setApiLoading(false);
-         close()
+         closeModal();
       }
    };
 
@@ -164,7 +169,8 @@ export default function useComment({ close, product_ascii, admin }: Props) {
          const newComments = [...state.comments];
          const target = { ...newComments[index] };
 
-         if (index === undefined || id === undefined || !target.reply_data) throw new Error("index is undefined");
+         if (index === undefined || id === undefined || !target.reply_data)
+            throw new Error("index is undefined");
          setApiLoading(true);
 
          // await privateRequest.put(`${COMMENT_URL}/replies/${id}`, { content });
@@ -182,7 +188,7 @@ export default function useComment({ close, product_ascii, admin }: Props) {
          setErrorToast("Edit reply comment fail");
       } finally {
          setApiLoading(false);
-         close()
+         closeModal();
       }
    };
 
@@ -229,9 +235,11 @@ export default function useComment({ close, product_ascii, admin }: Props) {
    //  run initial
    useEffect(() => {
       if (!ranEffect.current) {
+         ranEffect.current = true;
          if (product_ascii || admin) {
-            ranEffect.current = true;
             getComments(1);
+         } else {
+            setState((prev) => ({ ...prev, status: "success" }));
          }
       }
    }, [product_ascii]);

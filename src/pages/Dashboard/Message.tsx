@@ -1,4 +1,4 @@
-import { Button, Modal } from "@/components";
+import { Modal } from "@/components";
 import useComment from "@/hooks/useComment";
 import { useMemo, useRef, useState } from "react";
 import CommentItem, { AdminReply } from "@/components/CommentItem";
@@ -19,7 +19,7 @@ export default function Message() {
    // hooks
    const { deleteComment, apiLoading, state, setState } = useComment({
       admin: true,
-      close: closeModal,
+      closeModal: closeModal,
    });
 
    const { comments, status, count, page, page_size } = state;
@@ -48,7 +48,7 @@ export default function Message() {
                   state={state}
                   setState={setState}
                   target="Add-Reply"
-                  close={close}
+                  closeModal={closeModal}
                   comment={curComment}
                   index={curCommentIndex.current}
                />
@@ -60,7 +60,7 @@ export default function Message() {
                   setState={setState}
                   index={curCommentIndex.current}
                   target="Edit-Reply"
-                  close={close}
+                  closeModal={closeModal}
                   comment={curComment}
                />
             );
@@ -77,7 +77,7 @@ export default function Message() {
                      )
                   }
                   loading={apiLoading}
-                  setOpenModal={setIsOpenModal}
+                  closeModal={closeModal}
                />
             );
       }
@@ -162,7 +162,7 @@ export default function Message() {
             </p>
          )}
 
-         <>{isOpenModal && <Modal close={closeModal}>{renderModal}</Modal>}</>
+         <>{isOpenModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}</>
       </div>
    );
 }

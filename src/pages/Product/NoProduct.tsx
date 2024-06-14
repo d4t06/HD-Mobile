@@ -1,17 +1,15 @@
-import classNames from 'classnames/bind';
-import styles from './Products.module.scss';
+import classNames from "classnames/bind";
+import styles from "./Products.module.scss";
+import notfoundImage from "@/assets/images/not-found.png";
 const cx = classNames.bind(styles);
 
 const NoProduct = () => {
    return (
-      <div className={cx('no-product')}>
-         <div className={cx('image-frame')}>
-            <img
-               src="https://fptshop.com.vn/Content/v5d/images/noti-search.png"
-               alt=""
-            />
-         </div>
-         <h1 className='text-3xl mt-[30px]'>Rất tiếc chúng tôi không tìm thấy kết quả theo yêu cầu của bạn</h1>
+      <div className={cx("no-product")}>
+         <img src={notfoundImage} alt="" />
+         <p className="mt-[10px]">
+            Rất tiếc chúng tôi không tìm thấy kết quả theo yêu cầu của bạn
+         </p>
       </div>
    );
 };

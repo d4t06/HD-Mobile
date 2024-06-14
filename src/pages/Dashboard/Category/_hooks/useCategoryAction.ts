@@ -99,7 +99,6 @@ export default function useCategoryAction() {
          setErrorToast(`${props.type} category fail`);
       } finally {
          setIsFetching(false);
-         close();
       }
    };
 

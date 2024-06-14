@@ -5,14 +5,13 @@ import { MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
 function Footer() {
    return (
       <div className="footer">
-         <div className="container">
-            <PushFrame type="translate">
+         <div className="container mx-auto">
+            <PushFrame>
                <div className="flex flex-wrap text-[#333] p-[20px]">
                   <div className="w-full sm:w-1/2 flex flex-col items-center justify-center">
                      <h1 className="text-[22px] leading-[26px] text-[#000] font-semibold">
                         HD <span className="text-[#cd1818]">Mobile</span>
                      </h1>
-                     <i className="text-[14px]">'' Hắc đê mô bồ ''</i>
                   </div>
                   <div className="flex mt-[30px] md:mt-0 w-full sm:w-1/2">
                      <div className="w-1/2 md:w-1/3">

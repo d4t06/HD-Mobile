@@ -3,44 +3,39 @@ import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./Toolbar";
 import Image from "@tiptap/extension-image";
 import "./style.scss";
-import { Ref, forwardRef, useImperativeHandle } from "react";
+import { useState } from "react";
 
-export type EditorRef = {
-  getContent: () => string | undefined;
-};
-
-interface Props extends Partial<EditorOptions> {}
-
-function MyEditor({ extensions, ...props }: Props, ref: Ref<EditorRef>) {
-  const editor = useEditor({
-    extensions: [StarterKit, Image],
-    ...props,
-  });
-
-  const getContent = () => {
-    if (editor === null) throw new Error("edit is undefined");
-    return editor.getHTML();
-  };
-
-  useImperativeHandle(ref, () => ({ getContent }));
-
-  const classes = {
-    wrapper: "my-editor border border-black/10 bg-white rounded-[12px] overflow-hidden",
-    controlContainer:
-      "bg-[#cd1818] text-white flex gap-[12px] items-center h-[50px] px-[10px]",
-    editContainer: "max-h-[70vh] overflow-auto editor-container",
-  };
-
-  return (
-    <div className={classes.wrapper}>
-      <div className={classes.controlContainer}>
-        <Toolbar editor={editor} />
-      </div>
-      <div className={classes.editContainer}>
-        <EditorContent editor={editor} />
-      </div>
-    </div>
-  );
+interface Props extends Partial<EditorOptions> {
+   cb: (value: string, resetChange: () => void) => Promise<void>;
+   className: string;
 }
 
-export default forwardRef(MyEditor);
+export default function MyEditor({ extensions, className, cb, ...props }: Props) {
+   const [isChange, setIsChange] = useState(false);
+
+   const editor = useEditor({
+      extensions: [StarterKit, Image],
+      onUpdate: () => setIsChange(true),
+      ...props,
+   });
+
+   const restChangeState = () => setIsChange(false);
+
+   const handleSubmit = async (value: string) => {
+      await cb(value, restChangeState);
+   };
+
+   const classes = {
+      wrapper: "my-editor border border-black/10 bg-white rounded-[12px] overflow-hidden",
+      editContainer: "max-h-[70vh] overflow-auto editor-container",
+   };
+
+   return (
+      <div className={`${classes.wrapper} ${className || ""}`}>
+         <Toolbar isChange={isChange} cb={handleSubmit} editor={editor} />
+         <div className={classes.editContainer}>
+            <EditorContent editor={editor} />
+         </div>
+      </div>
+   );
+}

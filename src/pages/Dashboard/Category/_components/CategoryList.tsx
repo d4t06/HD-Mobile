@@ -6,14 +6,17 @@ import { generateId } from "@/utils/appHelper";
 import AddItem from "@/components/Modal/AddItem";
 import ConfirmModal from "@/components/Modal/Confirm";
 
-import "../../layout.scss";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 
 type Modal = "add" | "edit" | "delete";
 
-export default function CategoryList() {
+type Props = {
+   mainClasses: LayoutClasses;
+};
+
+export default function CategoryList({ mainClasses }: Props) {
    const { categories } = useSelector(selectCategory);
 
    const [openModal, setOpenModal] = useState<Modal | "">("");
@@ -117,7 +120,7 @@ export default function CategoryList() {
                   loading={isFetching}
                   title="Add category"
                   cbWhenSubmit={(value) => handleCategoryActions({ type: "Add", value })}
-                  close={closeModal}
+                  closeModal={closeModal}
                />
             );
          case "edit":
@@ -128,7 +131,7 @@ export default function CategoryList() {
                   title={`Edit '${categories[currentCategoryIndex.current].category}' `}
                   initValue={categories[currentCategoryIndex.current].category}
                   cbWhenSubmit={(value) => handleCategoryActions({ type: "Edit", value })}
-                  close={closeModal}
+                  closeModal={closeModal}
                />
             );
 
@@ -139,7 +142,7 @@ export default function CategoryList() {
                <ConfirmModal
                   callback={() => handleCategoryActions({ type: "Delete" })}
                   loading={isFetching}
-                  close={closeModal}
+                  closeModal={closeModal}
                   label={`Delete category '${
                      categories[currentCategoryIndex.current].category
                   }'`}
@@ -152,29 +155,36 @@ export default function CategoryList() {
 
    return (
       <>
-         <h1 className="label">Category</h1>
-         <div className="group-container">
-            <div className={`flex-container ${isFetching ? "disable" : ""}`}>
-               {categories.map((item, index) => (
-                  <div key={index} className="col w-2/12">
-                     <Empty fontClassName="bg-[#f6f6f6]">
-                        <span className="font-semibold">{item.category}</span>
-                        <OverlayCTA
-                           data={[
-                              {
-                                 cb: () => handleOpenModal({ modal: "edit", index }),
-                                 icon: <PencilIcon className="w-[24px]" />,
-                              },
-                              {
-                                 cb: () => handleOpenModal({ modal: "delete", index }),
-                                 icon: <TrashIcon className="w-[24px]" />,
-                              },
-                           ]}
-                        />
-                     </Empty>
-                  </div>
-               ))}
-               <div className="col w-2/12">
+         <h1 className={mainClasses.label}>Category</h1>
+         <div className={mainClasses.group}>
+            <div
+               className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}
+            >
+               {categories.map(
+                  (item, index) =>
+                     !item.hidden && (
+                        <div key={index} className={`${mainClasses.flexCol} w-2/12`}>
+                           <Empty fontClassName="bg-[#f6f6f6]">
+                              <span className="font-[500]">{item.category}</span>
+                              <OverlayCTA
+                                 data={[
+                                    {
+                                       cb: () =>
+                                          handleOpenModal({ modal: "edit", index }),
+                                       icon: <PencilIcon className="w-[24px]" />,
+                                    },
+                                    {
+                                       cb: () =>
+                                          handleOpenModal({ modal: "delete", index }),
+                                       icon: <TrashIcon className="w-[24px]" />,
+                                    },
+                                 ]}
+                              />
+                           </Empty>
+                        </div>
+                     )
+               )}
+               <div className={`${mainClasses.flexCol} w-2/12`}>
                   <Empty
                      fontClassName="bg-[#f1f1f1]"
                      onClick={() => handleOpenModal({ modal: "add" })}
@@ -183,7 +193,7 @@ export default function CategoryList() {
             </div>
          </div>
 
-         {!!openModal && <Modal close={closeModal}>{renderModal}</Modal>}
+         {!!openModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
       </>
    );
 }

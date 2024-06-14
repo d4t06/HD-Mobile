@@ -6,7 +6,7 @@ import ConfirmModal from "@/components/Modal/Confirm";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Modal } from "@/components";
 
-import "../../category.scss";
+// import "../../category.scss";
 
 type Props = {
    categoryIndex: number;
@@ -78,7 +78,7 @@ export default function AttributeItem({ attribute, categoryIndex, index }: Props
                   title={`Edit attribute '${attribute.attribute}'`}
                   initValue={attribute.attribute}
                   cbWhenSubmit={(value) => handleBrandActions({ type: "Edit", value })}
-                  close={closeModal}
+                  closeModal={closeModal}
                />
             );
 
@@ -87,7 +87,7 @@ export default function AttributeItem({ attribute, categoryIndex, index }: Props
                <ConfirmModal
                   callback={() => handleBrandActions({ type: "Delete" })}
                   loading={isFetching}
-                  close={closeModal}
+                  closeModal={closeModal}
                   label={`Delete category '${attribute.attribute}'`}
                />
             );
@@ -96,21 +96,28 @@ export default function AttributeItem({ attribute, categoryIndex, index }: Props
       }
    }, [openModal, isFetching]);
 
+   const classes = {
+      container: "flex px-[16px] py-[8px] bg-[#f1f1f1] select-none ",
+      ctaContainer:
+         "flex items-center space-x-[6px] ml-[10px]  pl-[10px] border-l-[1px] border-black/15",
+      button: "text-[#3f3f3f] hover:text-[#cd1818] hover:scale-[1.1]",
+   };
+
    return (
       <>
-         <div className="attribute-item">
+         <div className={classes.container}>
             <p>{attribute.attribute}</p>
-            <div className={"cta"}>
-               <button onClick={() => setOpenModal("edit")}>
+            <div className={classes.ctaContainer}>
+               <button className={classes.button} onClick={() => setOpenModal("edit")}>
                   <PencilSquareIcon className="w-[22px]" />
                </button>
-               <button onClick={() => setOpenModal("delete")}>
+               <button className={classes.button} onClick={() => setOpenModal("delete")}>
                   <TrashIcon className="w-[22px]" />
                </button>
             </div>
          </div>
 
-         {openModal && <Modal close={closeModal}>{renderModal}</Modal>}
+         {openModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
       </>
    );
 }

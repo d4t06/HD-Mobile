@@ -7,55 +7,31 @@ type AuthResponse = {
 };
 
 interface ProductCombine {
-   id?: number;
+   id: number;
    product_ascii: string;
    color_id: number;
-   storage_id: number;
+   variant_id: number;
    quantity: number;
    price: number;
-   default: boolean;
-   color_data: {
-      color: string;
-      color_ascii: string;
-   };
-   storage_data: {
-      storage: string;
-      storage_ascii: string;
-   };
 }
-
-type ProductCombineSchema = Omit<
-   ProductCombine,
-   "color_data" | "storage_data" | "color_id" | "storage_id" | "id"
-> & {
-   color_id: number;
-   // id: number;
-   storage_id: number;
-};
 
 interface ProductSlider {
    id: number;
    product_ascii: string;
    slider_id: number;
    color_id: number;
-   color_data: {
-      color: string;
-      color_ascii: string;
-   };
-   slider_data: Slider;
+   slider: Slider;
 }
 
-type ProductSliderSchema = Omit<ProductSlider, "color_data" | "slider_data">;
-
 type SliderImage = {
-   image_url: string;
-   link_to: string;
-   id?: number;
-};
-type SliderImageSchema = {
+   id: number;
    slider_id: number;
-   image_url: string;
+   image_id: number;
+   link_to: string;
+   image: ImageType;
 };
+
+type SliderImageSchema = Omit<SliderImage, "id" | "image">;
 
 type Slider = {
    id: number;
@@ -63,39 +39,98 @@ type Slider = {
    slider_name: string;
 };
 
-type SliderSchema = Omit<Slider, "images" | "id">;
-
-type ProductStorage = {
-   id?: number;
+type ProductVariantDetail = {
+   id: number;
    product_ascii: string;
-   storage_ascii: string;
-   storage: string;
-   default: boolean;
-   base_price: number;
+   variant_ascii: string;
+   variant: string;
+   default_combine: DefaultVariantCombineDetail;
 };
 
+type ProductVariant = Omit<ProductVariantDetail, "default_combine"> & {
+   default_combine: DefaultVariantCombine;
+};
+
+type ProductVariantSchema = Omit<ProductVariantDetail, "id" | "default_combine">;
+
 type ProductColor = {
-   id?: number;
+   id: number;
    product_ascii: string;
    color_ascii: string;
    color: string;
-   default: boolean;
+   product_slider: ProductSlider;
 };
 
-interface Product {
+type ProductColorSchema = Omit<ProductColor, "id" | "product_slider">;
+
+type DefaultVariantDetail = {
+   id: number;
+   product_ascii: string;
+   variant_id: number;
+   variant: ProductVariantDetail;
+};
+
+type DefaultVariant = Omit<DefaultVariantDetail, "variant">;
+
+type DefaultVariantSchema = Omit<DefaultVariant, "id">;
+
+type DefaultVariantCombineDetail = {
+   id: number;
+   variant_id: number;
+   combine_id: number;
+   combine: ProductCombine;
+};
+
+type DefaultVariantCombine = Omit<DefaultVariantCombineDetail, "combine">;
+
+type DefaultVariantCombineSchema = Omit<DefaultVariantCombineDetail, "combine" | "id">;
+
+type Product = {
    id: number;
    product: string;
    product_ascii: string;
    category_id: number;
    brand_id: number;
    image_url: string;
-   description: ProductDetail | null;
-   storages: ProductStorage[];
+   variants: ProductVariantDetail[];
+   default_variant: DefaultVariant;
+};
+
+type Description = {
+   id: number;
+   product_ascii: string;
+   content: string;
+};
+
+type DescriptionSchema = Omit<Description, "id">;
+
+type CartProduct = Omit<Product, "default_variant"> & {
+   colors: ProductColor[];
+};
+
+type ProductDetail = {
+   id: number;
+   product: string;
+   product_ascii: string;
+   category_id: number;
+   category: Category;
+   brand_id: number;
+   image_url: string;
+   description: Description;
+   variants: ProductVariant[];
    colors: ProductColor[];
    combines: ProductCombine[];
    attributes: ProductAttribute[];
    comments_data: ProductComment[];
-}
+   default_variant: DefaultVariant;
+};
+
+type ProductSearch = Omit<
+   ProductDetail,
+   "comments_data" | "combines" | "colors" | "variants" | "default_variant"
+> & {
+   default_variant: DefaultVariantDetail;
+};
 
 type ProductSchema = Omit<
    Product,
@@ -106,17 +141,13 @@ type ProductSchema = Omit<
    | "comments_data"
    | "id"
    | "attributes"
+   | "default_variant"
+   | "variants"
 >;
-
-type ProductDetail = {
-   id?: number;
-   product_ascii: string;
-   content: string;
-};
 
 type ProductAttribute = {
    id: number;
-   category_attr_id: number;
+   category_attribute_id: number;
    product_ascii: string;
    value: string;
 };
@@ -170,13 +201,15 @@ type Brand = {
 type BrandSchema = Omit<Brand, "id">;
 
 type ImageType = {
-   id?: number;
+   id: number;
    image_url: string;
    public_id: string;
    name: string;
    size: number;
    link_to: string;
 };
+
+type ImageTypeSchema = Omit<ImageType, "id">;
 
 type Toast = {
    title?: "success" | "error" | "warning";
@@ -220,86 +253,27 @@ type PriceRange = {
 
 type PriceRangeSchema = Omit<PriceRange, "id">;
 
-type Cart = {
-   id: number;
-   username: string;
-   count: number;
-   total_price: number;
-   items: CartItem[];
-};
-type CartSchema = Omit<Cart, "id" | "items">;
-
 type CartItem = {
    id: number;
    username: string;
    product_ascii: string;
    amount: number;
    color_id: number;
-   storage_id: number;
-   product_data: {
-      product_name: string;
-      image_url: string;
-      combines_data: ProductCombine[];
-      colors_data: { color: string; id: number }[];
-      storages_data: { storage: string; id: number }[];
-      category_data: {
-         category_ascii: string;
-      };
-   };
-   updatedAt: string;
-   createdAt: string;
-};
-
-type Order = {
-   id: number;
-   username: string;
-   status: "completed" | "canceled" | "processing" | "delivering";
-
-   items: OrderItem[];
-
-   discount: number;
-   purchase_price: number;
-   total_price: number;
-
-   purchase_type: string;
-
-   recipient_name: string;
-   recipient_phone_number: string;
-   recipient_address: string;
-
-   deliveredAt: string;
-   canceledAt: string;
-   createdAt: string;
-};
-
-type OrderSchema = Omit<
-   Order,
-   "createdAt" | "items" | "id" | "deliveredAt" | "canceledAt" | "createdAt"
->;
-
-type OrderDetail = Omit<
-   Order,
-   "" & {
-      purchase_type: string;
-      recipient_name: string;
-      recipient_phone_number: string;
-      deliveredAt: string;
-      canceledAt: string;
-   }
->;
-
-type OrderItem = {
-   id?: number;
-   order_id: number;
-   product_name: string;
+   variant_id: number;
    amount: number;
-   color: string;
-   storage: string;
-   image_url: string;
-   slug: string;
+   product: CartProduct;
+};
+
+type cartItemDetail = {
+   item: CartItem;
    price: number;
 };
 
-type CartItemSchema = Omit<CartItem, "id" | "product_data" | "updatedAt" | "createdAt">;
+type CartItemSchema = Omit<CartItem, "id" | "product">;
 
-type GetArrayType<T extends any[]> = T extends (infer U)[] ? U : never;
+type LayoutClasses = {
+   flexContainer: string;
+   flexCol: string;
+   group: string;
+   label: string;
+};

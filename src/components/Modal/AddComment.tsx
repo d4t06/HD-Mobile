@@ -1,4 +1,4 @@
-import { Button, Input } from "@/components";
+import { Input } from "@/components";
 
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import ModalHeader from "./ModalHeader";
@@ -8,7 +8,7 @@ import PushButton from "../ui/PushButton";
 
 type Props = {
    product?: Product;
-   close: () => void;
+   closeModal: () => void;
    target: "Add-Comment" | "Add-Reply" | "Edit-Reply" | "Edit-Reply";
    comment?: ProductComment;
    index?: number;
@@ -31,7 +31,7 @@ const initComment = (product?: Product) => {
 
 export default function AddCommentModal({
    product,
-   close,
+   closeModal,
    target,
    comment,
    index,
@@ -46,7 +46,7 @@ export default function AddCommentModal({
 
    // hooks
    const { addComment, apiLoading, replyComment, editReply } = useComment({
-      close,
+      closeModal,
    });
 
    const handleCommentData = (field: keyof typeof commentData, value: string) => {
@@ -106,20 +106,20 @@ export default function AddCommentModal({
       <div className="w-[700px] max-w-[85vw]">
          {showConfirm && (
             <>
-               <ModalHeader title={"Gửi thành công"} close={close} />
+               <ModalHeader title={"Gửi thành công"} closeModal={closeModal} />
                <p className="text-[16px] text-[#333]">
                   Chúng tôi đã nhận được câu hỏi của bạn và sẽ lời trong thời gian sớm
                   nhất hihi
                </p>
                <div className="text-center mt-[30px]">
-                  <PushButton onClick={close}>Ok</PushButton>
+                  <PushButton onClick={closeModal}>Ok</PushButton>
                </div>
             </>
          )}
 
          {!showConfirm && (
             <>
-               <ModalHeader title={titleMap[target]} close={close} />
+               <ModalHeader title={titleMap[target]} closeModal={closeModal} />
 
                {target === "Add-Comment" && (
                   <div className="flex gap-[20px] mb-[20px]">

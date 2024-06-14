@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { routes } from "@/routes";
 import defaultUser from "@/assets/images/user-default.png";
 import Image from "../ui/Image";
-import { Button } from "..";
 
 const cx = classNames.bind(styles);
 
@@ -38,9 +37,11 @@ export default function Avatar({ revert }: { revert?: boolean }) {
                {auth?.username ? (
                   <h5 className={cx("user-name")}>{auth.username}</h5>
                ) : (
-                  <Button variant={"clear"} to={routes.LOGIN}>
+                  <Link
+                     to={routes.LOGIN}
+                  >
                      Đăng nhập
-                  </Button>
+                  </Link>
                )}
             </>
          )}

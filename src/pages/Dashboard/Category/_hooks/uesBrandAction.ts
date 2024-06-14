@@ -69,7 +69,6 @@ export default function useBrandAction() {
          setErrorToast(`${props.type} brand fail`);
       } finally {
          setIsFetching(false);
-         close();
       }
    };
 

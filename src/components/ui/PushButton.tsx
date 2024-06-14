@@ -1,3 +1,4 @@
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { VariantProps, cva } from "class-variance-authority";
 import { ButtonHTMLAttributes, MouseEventHandler, ReactNode } from "react";
 import { Link } from "react-router-dom";
@@ -54,6 +55,7 @@ interface Props
       VariantProps<typeof FontVariant> {
    children: ReactNode;
    loading?: boolean;
+   active?: boolean;
    onClick?: MouseEventHandler;
    baseClassName?: string;
    to?: string;
@@ -73,24 +75,28 @@ export default function PushButton({
    to,
 }: Props) {
    return (
-      <button
-         onClick={onClick}
-         type={type || "button"}
-         disabled={loading || disabled}
-         className={`${BaseVariant({ colors, className: baseClassName })}`}
-      >
+      <>
          {to ? (
             <Link
-               className={`${FontVariant({ colors, size, weight, className })}`}
+               className={`${BaseVariant({ colors, className: baseClassName })}`}
                to={to}
             >
-               {children}
+               <span className={`${FontVariant({ colors, size, weight, className })}`}>
+                  {children}
+               </span>
             </Link>
          ) : (
-            <span className={`${FontVariant({ colors, size, weight, className })}`}>
-               {children}
-            </span>
+            <button
+               onClick={onClick}
+               type={type || "button"}
+               disabled={loading || disabled}
+               className={`${BaseVariant({ colors, className: baseClassName })}`}
+            >
+               <span className={`${FontVariant({ colors, size, weight, className })}`}>
+                  {loading ? <ArrowPathIcon className="w-[24px] animate-spin" /> : children}
+               </span>
+            </button>
          )}
-      </button>
+      </>
    );
 }

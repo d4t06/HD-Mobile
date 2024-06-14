@@ -1,10 +1,5 @@
-import classNames from "classnames/bind";
-import styles from "../ProductFilter.module.scss";
 import { FilterType } from "@/store/filtersSlice";
-
-import PushFrame from "@/components/ui/PushFrame";
-
-const cx = classNames.bind(styles);
+import { Button } from "@/components";
 
 type Props = {
    handleFilter: (brand: FilterType["brands"]) => void;
@@ -27,24 +22,36 @@ export default function Checkbox({ handleFilter, filters, data }: Props) {
       handleFilter(newBrands);
    };
 
-   if (!data) return "Data it not array";
-
    return (
       <>
-         <div className={cx("filter-item", { active: !filters.brands.length })}>
-            <PushFrame active={!filters.brands.length} type="translate">
-               <button onClick={() => handleToggle("clear")}>Tất cả</button>
-            </PushFrame>
-         </div>
+         <Button
+            active={!filters.brands.length}
+            onClick={() => handleToggle("clear")}
+            colors={"second"}
+            size={"clear"}
+            fontWeight={"thin"}
+            border={"thin"}
+            className="py-[2px] px-[9px]"
+         >
+            Tất cả
+         </Button>
+         {/* </div> */}
          {data.map((item, index) => {
             const i = filters.brands.findIndex((b) => b.id === item.id);
             const isChecked = i !== -1;
             return (
-               <div key={index} className={cx("filter-item", { active: isChecked })}>
-                  <PushFrame active={isChecked} type="translate">
-                     <button onClick={() => handleToggle(item)}>{item.brand_name}</button>
-                  </PushFrame>
-               </div>
+               <Button
+                  colors={"second"}
+                  border={"thin"}
+                  size={"clear"}
+                  fontWeight={"thin"}
+                  className="py-[2px] px-[9px]"
+                  key={index}
+                  onClick={() => handleToggle(item)}
+                  active={isChecked}
+               >
+                  {item.brand}
+               </Button>
             );
          })}
       </>

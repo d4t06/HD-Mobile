@@ -15,15 +15,15 @@ export default function PushFrame({
 }: Props) {
   if (type === "border")
     return (
-      <div className="bg-[#e1e1e1] p-[4px] pb-[8px] rounded-[14px] w-full h-full">
-        <div className="bg-[#fff] rounded-[12px] overflow-hidden p-[10px] h-full w-full">{children}</div>
+      <div className="bg-[#e1e1e1] p-[2px] pb-[6px] rounded-[14px] ">
+        <div className="bg-[#fff] rounded-[12px] overflow-hidden p-[10px]">{children}</div>
       </div>
     );
 
   return (
-    <div className={`bg-[#ccc] ${rounded}`}>
+    <div className={`bg-[#e1e1e1] ${rounded}`}>
       <div
-        className={`bg-[#f6f6f6] active:translate-y-[-1px] transition-transform border border-[#ccc] ${rounded} translate-y-[-4px] ${
+        className={`bg-[#fff] active:translate-y-[-1px] transition-transform border-[2px] border-[#ccc] ${rounded} translate-y-[-4px] ${
           active ? "!translate-y-[-2px]" : ""
         }`}
       >

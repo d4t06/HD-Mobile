@@ -9,10 +9,10 @@ import { selectCategory } from "@/store/categorySlice";
 
 type Props = {
    isOpen: boolean;
-   close: () => void;
+   closeSidebar: () => void;
 };
 
-export default function Sidebar({ isOpen, close }: Props) {
+export default function Sidebar({ isOpen, closeSidebar }: Props) {
    const { categories } = useSelector(selectCategory);
    const { auth } = useAuth();
 
@@ -20,7 +20,7 @@ export default function Sidebar({ isOpen, close }: Props) {
 
    const singOut = async () => {
       await logout();
-      close();
+      closeSidebar();
    };
 
    const classes = {
@@ -34,9 +34,9 @@ export default function Sidebar({ isOpen, close }: Props) {
       <>
          <div className={`${classes.container} ${isOpen ? classes.open : classes.hide}`}>
             <ul className="py-[14px] px-[10px]">
-               {categories.map((c, index) => (
+               {categories.map((c, index) => !c.hidden && (
                   <Link
-                     onClick={close}
+                     onClick={closeSidebar}
                      key={index}
                      to={`/${c.category_ascii}`}
                      className="flex items-center space-x-[4px] h-[34px] text-[#333]"
@@ -48,7 +48,7 @@ export default function Sidebar({ isOpen, close }: Props) {
 
                {auth?.username && (
                   <Link
-                     onClick={close}
+                     onClick={closeSidebar}
                      to={`/order`}
                      className="flex items-center  space-x-[4px] h-[34px] text-[#333]"
                   >
@@ -67,7 +67,7 @@ export default function Sidebar({ isOpen, close }: Props) {
             </div>
          </div>
 
-         {isOpen && <Modal close={close} />}
+         {isOpen && <Modal closeModal={closeSidebar} />}
       </>
    );
 }

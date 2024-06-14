@@ -1,80 +1,55 @@
-import { useState, useEffect, useMemo, useRef } from "react";
-import { Link } from "react-router-dom";
-import { moneyFormat } from "@/utils/appHelper";
-
-import { Button, Input, Modal, QuickFilter } from "@/components";
-import { useDispatch, useSelector } from "react-redux";
-import {
-   fetchProducts,
-   getMoreProducts,
-   selectedAllFilter,
-   selectedAllProduct,
-   storingFilters,
-} from "@/store";
-import { AppDispatch } from "@/store/store";
+import { useState, useMemo, useRef } from "react";
+import { Button, Input, Modal } from "@/components";
 import Table from "@/components/Table";
 
 import AddProductModal from "@/components/Modal/AddProductModal";
-import { Cog6ToothIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import PushButton from "@/components/ui/PushButton";
-import useCurrentCategory from "@/hooks/useCurrentCategory";
-import { selectCategory } from "@/store/categorySlice";
+import { ArrowPathIcon } from "@heroicons/react/16/solid";
+import useDashBoardProduct from "./_hooks/useDashboardProduct";
+import ConfirmModal from "@/components/Modal/Confirm";
+import useProductAction from "@/hooks/useProductAction";
 
-type ModelTarget = "Add" | "Edit";
+type ModelTarget = "Add" | "Edit" | "Delete";
 
 type OpenAddModal = {
    type: "Add";
 };
 
 type OpenEditModal = {
-   type: "Edit";
+   type: "Edit" | "Delete";
    product: Product;
    currentIndex: number;
 };
 
 export default function Dashboard() {
-   const dispatch = useDispatch<AppDispatch>();
-
    const [isOpenModal, setIsOpenModal] = useState(false);
    const [curCategory, setCurCategory] = useState<Category>();
 
    const currentProduct = useRef<Product>();
    const currentProductIndex = useRef<number>();
-   const firstTimeRender = useRef(true);
    const openModalTarget = useRef<ModelTarget | "">("");
-   const ranEffect = useRef(false);
 
    // hooks
-   const {
-      page,
-      productState: { count, products },
-      status,
-      category_id,
-   } = useSelector(selectedAllProduct);
-   const { filters, sort } = useSelector(selectedAllFilter);
-   const { categories } = useSelector(selectCategory);
-
-   // hooks
-   const { currentCategory } = useCurrentCategory();
+   const { categories, getMore, count, products, status } = useDashBoardProduct({
+      setCurCategory,
+      curCategory,
+   });
+   const closeModal = () => setIsOpenModal(false);
+   const { isFetching, deleteProduct } = useProductAction({ closeModal });
 
    const remaining = useMemo(() => count - products.length, [products]);
 
-   const closeModal = () => setIsOpenModal(false);
-
    const handleGetMore = () => {
-      dispatch(
-         getMoreProducts({ category_id, sort, filters, page: page + 1, admin: true })
-      );
+      getMore();
    };
 
    const handleOpenModal = ({ ...props }: OpenAddModal | OpenEditModal) => {
+      openModalTarget.current = props.type;
       switch (props.type) {
-         case "Add":
-            openModalTarget.current = props.type;
-            break;
+         case "Delete":
          case "Edit":
-            openModalTarget.current = props.type;
             currentProduct.current = props.product;
             currentProductIndex.current = props.currentIndex;
       }
@@ -115,6 +90,20 @@ export default function Dashboard() {
                                  >
                                     <Cog6ToothIcon className="w-[24px]" />
                                  </Button>
+                                 <Button
+                                    onClick={() =>
+                                       handleOpenModal({
+                                          type: "Delete",
+                                          currentIndex: index,
+                                          product: productItem,
+                                       })
+                                    }
+                                    size={"clear"}
+                                    className="p-[4px] ml-[8px]"
+                                    colors={"second"}
+                                 >
+                                    <TrashIcon className="w-[24px]" />
+                                 </Button>
                               </td>
                            </tr>
                         );
@@ -122,8 +111,8 @@ export default function Dashboard() {
                   </>
                ) : (
                   <tr>
-                     <td>
-                        <h1>No product jet...</h1>
+                     <td colSpan={2}>
+                        <p className="text-center">¯\_(ツ)_/¯</p>
                      </td>
                   </tr>
                )}
@@ -137,7 +126,11 @@ export default function Dashboard() {
       switch (openModalTarget.current) {
          case "Add":
             return (
-               <AddProductModal type="Add" curCategory={curCategory} close={closeModal} />
+               <AddProductModal
+                  type="Add"
+                  curCategory={curCategory}
+                  closeModal={closeModal}
+               />
             );
          case "Edit":
             if (!currentProduct.current || currentProductIndex.current === undefined)
@@ -146,48 +139,33 @@ export default function Dashboard() {
             return (
                <AddProductModal
                   type="Edit"
-                  close={closeModal}
+                  closeModal={closeModal}
                   product={currentProduct.current}
                   currentIndex={currentProductIndex.current}
+               />
+            );
+         case "Delete":
+            if (!currentProduct.current || currentProductIndex.current === undefined)
+               return <p>Some thing went wrong</p>;
+
+            return (
+               <ConfirmModal
+                  label={`Delete '${currentProduct.current!.product}' ?`}
+                  callback={() => deleteProduct(currentProduct.current!.product_ascii)}
+                  closeModal={closeModal}
+                  loading={isFetching}
                />
             );
          default:
             return <h1 className="text-2xl">Noting to show</h1>;
       }
-   }, [isOpenModal, curCategory]);
-
-   useEffect(() => {
-      if (!ranEffect.current)
-         dispatch(
-            fetchProducts({
-               category_id: curCategory?.id || undefined,
-               filters,
-               page: 1,
-               sort,
-               admin: true,
-            })
-         );
-
-      return () => {
-         dispatch(storingFilters());
-         ranEffect.current = true;
-      };
-   }, [curCategory]);
-
-   useEffect(() => {
-      if (!categories.length) return;
-
-      if (firstTimeRender.current) {
-         firstTimeRender.current = false;
-         setCurCategory(categories[0]);
-      }
-   }, []);
+   }, [isOpenModal, curCategory, isFetching]);
 
    const classes = {
       tab: "px-[24px] py-[8px]",
    };
 
-   if (status === "error") return <h1 className="text-2xl">Some thing went wrong</h1>;
+   if (status === "error") return <p className="text-center">Some thing went wrong</p>;
 
    return (
       <>
@@ -202,6 +180,7 @@ export default function Dashboard() {
                All
             </Button>
             {categories.map((cat, index) => {
+               if (cat.hidden) return;
                const active = curCategory?.category_ascii === cat.category_ascii;
                return (
                   <Button
@@ -219,25 +198,33 @@ export default function Dashboard() {
             })}
          </div>
 
-         {curCategory && <QuickFilter admin />}
+         {/* {curCategory && <QuickFilter admin />} */}
 
          <div className="flex items-center justify-between mt-[30px]">
             <div className="flex items-start">
-               <Input placeholder="Product..." cb={(key) => console.log(key)} />
+               <Input
+                  className="bg-[#fff]"
+                  placeholder="Product..."
+                  cb={(key) => console.log(key)}
+               />
                <p className="ml-[8px]">
-                  <PushButton>Tìm</PushButton>
+                  <Button colors={"third"}>Tìm</Button>
                </p>
             </div>
 
-            <PushButton onClick={() => handleOpenModal({ type: "Add" })}>
+            <Button colors={"third"} onClick={() => handleOpenModal({ type: "Add" })}>
                <PlusIcon className="w-[24px]" />
                Thêm sản phẩm
-            </PushButton>
+            </Button>
          </div>
 
          <div className="mt-[10px]">
             {renderProducts}
-            {status === "loading" && <h1 className="text-3xl text-center">Loading...</h1>}
+            {status === "loading" && (
+               <p className="mt-[30px] text-center w-full">
+                  <ArrowPathIcon className="w-[24px] animate-spin inline-block" />
+               </p>
+            )}
             {status !== "loading" && !!products.length && (
                <p className="text-center my-[15px]">
                   <PushButton
@@ -251,7 +238,7 @@ export default function Dashboard() {
             )}
          </div>
 
-         {isOpenModal && <Modal close={closeModal}>{renderModal}</Modal>}
+         {isOpenModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
       </>
    );
 }

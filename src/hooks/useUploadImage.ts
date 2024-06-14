@@ -6,7 +6,7 @@ import { useToast } from "@/store/ToastContext";
 
 import { usePrivateRequest } from ".";
 
-const IMAGE_URL = "/image-management/images";
+const IMAGE_URL = "/images";
 
 export default function useUploadImage() {
    // hooks
@@ -20,10 +20,10 @@ export default function useUploadImage() {
          const fileLists = inputEle.files;
 
          // init tempImage
-         const processImageList: ImageType[] = [];
+         const processImageList: ImageTypeSchema[] = [];
          const fileNeedToUploadIndexes: number[] = [];
 
-         const checkDuplicateImage = (ob: ImageType) => {
+         const checkDuplicateImage = (ob: ImageTypeSchema) => {
             return processImageList.some(
                (image) => image.name === ob.name && image.size == ob.size
             );
@@ -31,7 +31,7 @@ export default function useUploadImage() {
 
          let i = 0;
          for (const file of fileLists) {
-            const imageObject: ImageType = initImageObject({
+            const imageObject: ImageTypeSchema = initImageObject({
                name: generateId(file.name),
                image_url: URL.createObjectURL(file),
                size: file.size,

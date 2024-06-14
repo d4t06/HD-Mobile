@@ -3,81 +3,75 @@ import classNames from "classnames/bind";
 import styles from "./ProductItem.module.scss";
 import { moneyFormat } from "../../utils/appHelper";
 
-import { useState } from "react";
-import PushFrame from "../ui/PushFrame";
-//
+import { useEffect, useState } from "react";
+import { Button } from "..";
 
 const cx = classNames.bind(styles);
 
 type Props = {
-  data: Product;
+   product: Product;
 };
 
-const findActiveVar = (
-  storages: ProductStorage[] | undefined,
-  combines: ProductCombine[] | undefined
-) => {
-  if (!storages || !combines) return undefined;
-  return storages.find((s) => s.id === combines[0].storage_id);
-};
+export default function ProductItem({ product }: Props) {
+   const [activeVariant, setActiveVariant] = useState<ProductVariantDetail>();
 
-export default function ProductItem({ data }: Props) {
-  const [activeVar, setActiveVar] = useState(findActiveVar(data.storages_data, data.combines_data));
+   const findDefaultStorage = (): ProductVariantDetail | undefined => {
+      return product.variants.find((v) => v.id === product.default_variant.variant_id);
+   };
 
-  return (
-    <div className={cx("product-item")}>
-      <Link
-        to={`/${data.category_data.category_ascii}/${data.product_ascii}?${
-          activeVar?.storage_ascii || ""
-        }`}
-        className={cx("product-item-frame")}
-      >
-        <img
-          className={cx("product-item-image")}
-          src={data.image_url || "https://placehold.co/300X400"}
-        />
-      </Link>
+   useEffect(() => {
+      const founded = findDefaultStorage();
+      setActiveVariant(founded);
+   }, []);
 
-      {data.installment && (
-        <div className={cx("product-item-installment")}>
-          <span>Trả góp 0%</span>
-        </div>
-      )}
-      <div className={cx("product-item-body", "space-y-[14px]")}>
-        <h4 className={cx("product-item_name")}>{data.product_name || "Example"}</h4>
+   return (
+      <div className={cx("product-item")}>
+         <Link
+            to={`/product/${product.product_ascii}`}
+            className={cx("product-item-frame")}
+         >
+            <img
+               className={cx("product-item-image")}
+               src={product.image_url || "https://placehold.co/300X400"}
+            />
+         </Link>
 
-        {data.storages_data ? (
-          <>
-            <div className={cx("variant-box", 'mx-[-4px]')}>
-              {data.storages_data.map((v, index) => {
-                const isActive = activeVar?.storage_ascii === v.storage_ascii;
-                return (
-                  <div key={index} className="w-[50%] sm:w-1/3 px-[4px]">
-                    <div
-                      className={cx("item", { active: isActive })}
-                      key={index}
-                      onClick={() => setActiveVar(v)}
-                    >
-                      <PushFrame active={isActive} type="translate">
-                        <p>{v.storage}</p>
-                      </PushFrame>
-                    </div>
+         <div className={cx("product-item-body", "space-y-[14px]")}>
+            <h4 className={cx("product-item_name")}>{product.product}</h4>
+
+            {!!product.variants.length ? (
+               <>
+                  <div className={cx("variant-box", "mx-[-2px] md:mx-[-4px]")}>
+                     {product.variants.map((v, index) => {
+                        const isActive = activeVariant?.id === v.id;
+                        return (
+                           <div key={index} className="w-[50%] sm:w-1/3 px-[2px] md:px-[4px]">
+                              <Button
+                                 onClick={() => setActiveVariant(v)}
+                                 className={`text-[14px] w-full ${
+                                    isActive ? "active" : ""
+                                 }`}
+                                 colors={"second"}
+                                 active={isActive}
+                              >
+                                 {v.variant}
+                              </Button>
+                           </div>
+                        );
+                     })}
                   </div>
-                );
-              })}
-            </div>
-            <div className={cx("product-item_price")}>
-              <h1 className={cx("product-item_price--current")}>
-                {moneyFormat(activeVar!.base_price)}đ
-              </h1>
-            </div>
-          </>
-        ) : (
-          <div className={cx("product-item_price")}>
-            <h1 className={cx("product-item_price--current")}>Contact</h1>
-          </div>
-        )}
+                  <div className={cx("product-item_price")}>
+                     <h1 className={cx("product-item_price--current")}>
+                        {moneyFormat(activeVariant?.default_combine.combine.price || "")}đ
+                     </h1>
+                  </div>
+               </>
+            ) : (
+               <div className={cx("product-item_price")}>
+                  <h1 className={cx("product-item_price--current")}>Contact</h1>
+               </div>
+            )}
+         </div>
       </div>
-    </div>
-  );
+   );
 }

@@ -12,12 +12,7 @@ import {
 } from "../../components";
 import NoProduct from "./NoProduct";
 
-import {
-   fetchProducts,
-   selectedAllProduct,
-   getMoreProducts,
-   selectedAllFilter,
-} from "../../store";
+import { fetchProducts, selectedAllProduct, selectedAllFilter } from "../../store";
 import ProductSkeleton from "@/components/Skeleton/ProductSkeleton";
 import { AppDispatch } from "@/store/store";
 import Skeleton from "@/components/Skeleton";
@@ -43,15 +38,16 @@ export default function Product() {
 
    const handleGetMore = () => {
       if (!category_id) return;
-      dispatchRedux(getMoreProducts({ category_id, sort, filters, page: page + 1 }));
-   };
-
-   const renderProducts = () => {
-      return products.map((product, index) => (
-         <div key={index} className={cx("col w-1/2 lg:w-1/3")}>
-            <ProductItem data={product} />
-         </div>
-      ));
+      dispatchRedux(
+         fetchProducts({
+            category_id,
+            sort,
+            filters,
+            page: page + 1,
+            replace: false,
+            status: "more-loading",
+         })
+      );
    };
 
    const sliderSkeleton = useMemo(
@@ -69,8 +65,8 @@ export default function Product() {
 
    const ProductsSkeletons = useMemo(
       () =>
-         [...Array(6).keys()].map((index) => (
-            <div key={index} className={cx("col w-1/2 md:w-1/3")}>
+         [...Array(3).keys()].map((index) => (
+            <div key={index} className={cx("px-[4px] mt-[8px] w-1/2 md:w-1/3")}>
                <ProductSkeleton />
             </div>
          )),
@@ -81,12 +77,15 @@ export default function Product() {
       if (!currentCategory) return;
 
       dispatchRedux(
-         fetchProducts({ category_id: currentCategory.id, filters, page: 1, sort })
+         fetchProducts({
+            page: 1,
+            category_id: currentCategory.id,
+            replace: true,
+         })
       );
    }, [currentCategory]);
 
-   if (categoriesStatus === "error" || !currentCategory || !currentCategory.id)
-      return <h1>Category not found</h1>;
+   if (categoriesStatus === "error") return <h1>Category not found</h1>;
 
    return (
       <div className={cx("product-container")}>
@@ -95,13 +94,15 @@ export default function Product() {
          {categoriesStatus === "loading" ? (
             sliderSkeleton
          ) : (
-            <ImageSlider data={currentCategory.category_slider.slider.slider_images} />
+            <ImageSlider
+               data={currentCategory?.category_slider.slider.slider_images || []}
+            />
          )}
 
-         <div className={cx("product-body", "row")}>
-            <div className="col w-full md:w-3/4 ">
+         <div className={cx("product-body", "flex mx-[-8px]")}>
+            <div className="px-[8px] w-full md:w-3/4 ">
                <Label
-                  categoryName={currentCategory?.category_name}
+                  categoryName={currentCategory?.category}
                   count={count}
                   loading={status === "loading"}
                />
@@ -116,19 +117,40 @@ export default function Product() {
                <Sort />
 
                <div className={"mt-[15px]"}>
-                  <div className={cx("row", "product-list")}>
+                  <div className={cx("product-list flex mx-[-4px] mt-[-8px] flex-wrap")}>
                      {/* init loading is category loading */}
                      {/* loading is first get product (at page 1) */}
-                     {categoriesStatus === "success" && status !== "loading" && (
+
+                     {status !== "loading" && (
                         <>
-                           {!!products.length && renderProducts()}
-                           {((!products.length && status === "successful") ||
-                              status === "error") && <NoProduct />}
+                           {status === "error" ? (
+                              <p className="text-center w-full my-[30px]">
+                                 Some things went wrong
+                              </p>
+                           ) : (
+                              <>
+                                 {!!products.length ? (
+                                    products.map((product, index) => (
+                                       <div
+                                          key={index}
+                                          className={cx(
+                                             "px-[4px] w-1/2 lg:w-1/3 mt-[8px]"
+                                          )}
+                                       >
+                                          <ProductItem product={product} />
+                                       </div>
+                                    ))
+                                 ) : (
+                                    <NoProduct />
+                                 )}
+                              </>
+                           )}
                         </>
                      )}
+
                      {isLoading && ProductsSkeletons}
                   </div>
-                  {status !== "loading" && !!products.length && (
+                  {status !== "error" && status != "loading" && !!products.length && (
                      <div className={cx("pagination", { disable: remaining === 0 })}>
                         <PushButton
                            disabled={status === "more-loading"}
@@ -141,7 +163,7 @@ export default function Product() {
                </div>
             </div>
 
-            <div className="col w-1/4 max-[768px]:hidden">{<Filter />}</div>
+            <div className="px-[8px] w-1/4 max-[768px]:hidden">{<Filter />}</div>
          </div>
       </div>
    );

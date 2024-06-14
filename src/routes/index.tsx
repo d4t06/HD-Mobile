@@ -1,4 +1,4 @@
-import CheckoutLayout from "@/layouts/CheckoutLayout";
+import CartLayout from "@/layouts/CartLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import {
@@ -16,7 +16,7 @@ import {
    Login,
    Register,
    Unauthorized,
-   Checkout,
+   Cart,
    DashboardOrder,
    DashboardOrderDetail,
    UserOrder,
@@ -30,7 +30,7 @@ const routes = {
    LOGIN: "/login",
    REGISTER: "/register",
    SEARCH: "/search/:key",
-   DETAIL: "/:category/:key",
+   DETAIL: "/product/:productAscii",
    UNAUTHORIZED: "/unauthorized",
    ACCOUNT: "/account",
    CHECKOUT: "/check-out",
@@ -47,7 +47,7 @@ const publicRoutes = [
    {
       path: routes.REGISTER,
       component: Register,
-   layout: AuthLayout,
+      layout: AuthLayout,
    },
    {
       path: routes.HOME,
@@ -90,21 +90,21 @@ const publicRoutes = [
 const privateRoutes = [
    {
       path: routes.CHECKOUT,
-      component: Checkout,
+      component: Cart,
       role: [],
-      layout: CheckoutLayout,
+      layout: CartLayout,
    },
    {
       path: routes.USER_ORDER,
       component: UserOrder,
       role: [],
-      layout: CheckoutLayout,
+      layout: CartLayout,
    },
    {
       path: routes.USER_ORDER_DETAIL,
       component: UserOrderDetail,
       role: [],
-      layout: CheckoutLayout,
+      layout: CartLayout,
    },
    {
       path: "/dashboard",

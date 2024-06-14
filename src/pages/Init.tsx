@@ -14,7 +14,6 @@ export default function Init() {
    const [step, setStep] = useState(0);
 
    const [isFetching, setIsFetching] = useState(false);
-   const [username, setUsername] = useState("");
    const [password, setPassword] = useState("");
 
    const inputRef = useRef<HTMLInputElement>(null);
@@ -27,7 +26,7 @@ export default function Init() {
          if (import.meta.env.DEV) await sleep(500);
 
          await publicRequest.post(INIT_URL, {
-            username: username,
+            username: "admin",
             password: password,
          });
 
@@ -42,7 +41,7 @@ export default function Init() {
 
    const classes = {
       container:
-         "rounded-[24px] w-[90vw] md:flex-grow md:w-auto mx-auto my-auto md:mx-[100px] bg-white p-[20px] md:px-[30px] md:pt-[calc(40px+30px+10px)]",
+         "rounded-[24px] w-[90vw] md:flex-grow md:w-auto mx-auto my-auto md:mx-[100px] bg-white p-[20px] pb-[30px] md:px-[30px] md:pt-[calc(40px+30px+10px)]",
       form: "flex flex-col md:flex-row justify-between",
       myChat: "text-[26px] leading-[40px] font-[600]",
       right: "space-y-[16px] mt-[20px] md:mt-0",
@@ -53,7 +52,7 @@ export default function Init() {
          "relative font-[500] text-white rounded-[8px] px-[12px] py-[4px] before:absolute before:contents-[''] z-0 before:inset-0 before:bg-[#cd1818]  before:shadow-[0_4px_0_#a00000] before:rounded-[8px] before:z-[-1] active:translate-y-[4px] active:before:shadow-none",
    };
 
-   const ableToSubmit = useMemo(() => !!username && !!password, [username, password]);
+   const ableToSubmit = useMemo(() => !!password, [password]);
 
    const renderStep = useMemo(() => {
       switch (step) {
@@ -81,7 +80,7 @@ export default function Init() {
                            <h1 className={classes.myChat}>
                               HD <span className="text-[#cd1818]">Mobile</span>
                            </h1>
-                           <h1 className="text-[26px] font-[500] mt-[10px] text-[#1f1f1f]">
+                           <h1 className="text-[32px] mt-[10px] text-[#1f1f1f]">
                               Welcome
                            </h1>
                         </div>
@@ -92,9 +91,8 @@ export default function Init() {
                               </label>
                               <input
                                  ref={inputRef}
-                                 className={classes.input}
-                                 value={username}
-                                 onChange={(e) => setUsername(e.target.value)}
+                                 className={`${classes.input} disable`}
+                                 value={"admin"}
                                  id="username"
                                  type="text"
                               />
@@ -137,7 +135,7 @@ export default function Init() {
                </>
             );
       }
-   }, [step, username, password, isFetching]);
+   }, [step, password, isFetching]);
 
    useEffect(() => {
       if (step === 1) {

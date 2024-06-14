@@ -1,8 +1,6 @@
 import { useMemo, useRef, useState } from "react";
-
 import { generateId, initProductObject } from "@/utils/appHelper";
 import { Gallery, Modal } from "@/components";
-
 import { Empty, Input } from "@/components";
 import { inputClasses } from "@/components/ui/Input";
 import ModalHeader from "./ModalHeader";
@@ -14,17 +12,15 @@ import PushButton from "../ui/PushButton";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 
-type OpenType = "Edit" | "Add";
-
 type AddProduct = {
    type: "Add";
-   close: () => void;
+   closeModal: () => void;
    curCategory?: Category;
 };
 
 type EditProduct = {
    type: "Edit";
-   close: () => void;
+   closeModal: () => void;
    product: Product;
    currentIndex: number;
 };
@@ -67,11 +63,20 @@ export default function AddProductModal({ ...props }: Props) {
    const nameRef = useRef<HTMLInputElement>(null);
 
    const { setErrorToast } = useToast();
-   const { addProduct, apiLoading } = useProductAction({
-      close: props.close,
+   const { actions, isFetching } = useProductAction({
+      closeModal: props.closeModal,
    });
 
-   const brandsByCategory = useMemo(() => selectedCat?.brands || [], [selectedCat]);
+   const brandsByCategory = useMemo(() => {
+      if (props.type === "Edit") {
+         const foundedCategory = categories.find((c) => c.id === productData.category_id);
+
+         if (foundedCategory) return foundedCategory.brands;
+         else return [];
+      } else {
+         return selectedCat?.brands || [];
+      }
+   }, [selectedCat]);
 
    const localCloseModal = () => setIsOpenModal(false);
 
@@ -95,8 +100,8 @@ export default function AddProductModal({ ...props }: Props) {
       setProductData({ ...productData, [field]: value });
    };
 
-   const handleChoseProductImage = (image_url: string[]) => {
-      handleInput("image_url", image_url[0]);
+   const handleChoseProductImage = (images: ImageType[]) => {
+      handleInput("image_url", images[0].image_url);
    };
 
    const ableToCreateProduct = useMemo(
@@ -114,29 +119,29 @@ export default function AddProductModal({ ...props }: Props) {
       }
       switch (props.type) {
          case "Add":
-            await addProduct({ type: "Add", product: productData });
+            await actions({ variant: "Add", product: productData });
             break;
          case "Edit":
-            await addProduct({
-               type: "Edit",
-               currentIndex: 1,
+            const { currentIndex, product } = props;
+            await actions({
+               variant: "Edit",
+               target: "list",
+               productAscii: product.product_ascii,
+               index: currentIndex,
                product: productData,
-               product_id: props.product.id,
             });
             break;
-         default:
-            console.log("click");
       }
    };
 
-   const tileMap: Record<OpenType, string> = {
+   const tileMap: Record<typeof props.type, string> = {
       Add: "Thêm sản phẩm mới",
-      Edit: `Chỉnh sửa sản phẩm '${productData?.product}'`,
+      Edit: `Chỉnh sửa sản phẩm '${props.type === "Edit" && props.product.product}'`,
    };
 
    return (
       <div className="w-[700px] max-w-[90vw]">
-         <ModalHeader close={props.close} title={`${tileMap[props.type]}`} />
+         <ModalHeader closeModal={props.closeModal} title={`${tileMap[props.type]}`} />
          <div>
             <div className="flex gap-[16px] mb-[30px]">
                <div className="w-1/3">
@@ -179,38 +184,30 @@ export default function AddProductModal({ ...props }: Props) {
                      />
                   </div>
 
-                  {/* <div className="flex flex-col">
-                     <label className={"text-[18px] mb-[4px]"} htmlFor="">
-                        IMEI
-                     </label>
-                     <Input
-                        ref={nameRef}
-                        name="imei"
-                        type="text"
-                        value={productData.imei}
-                        cb={(value) => handleInput("imei", value)}
-                     />
-                  </div> */}
-
-                  <div className="flex flex-col">
-                     <label className={"text-[18px] mb-[4px]"} htmlFor="">
-                        Danh mục
-                     </label>
-                     <select
-                        name="category"
-                        value={productData.category_id}
-                        onChange={(e) => handleInput("category_id", +e.target.value)}
-                        className={inputClasses.input}
-                     >
-                        <option value={undefined}>- - -</option>
-                        {!!categories.length &&
-                           categories.map((category, index) => (
-                              <option key={index} value={category.id}>
-                                 {category.category}
-                              </option>
-                           ))}
-                     </select>
-                  </div>
+                  {props.type === "Add" && (
+                     <div className="flex flex-col">
+                        <label className={"text-[18px] mb-[4px]"} htmlFor="">
+                           Danh mục
+                        </label>
+                        <select
+                           name="category"
+                           value={productData.category_id}
+                           onChange={(e) => handleInput("category_id", +e.target.value)}
+                           className={inputClasses.input}
+                        >
+                           <option value={undefined}>- - -</option>
+                           {!!categories.length &&
+                              categories.map(
+                                 (category, index) =>
+                                    !category.hidden && (
+                                       <option key={index} value={category.id}>
+                                          {category.category}
+                                       </option>
+                                    )
+                              )}
+                        </select>
+                     </div>
+                  )}
 
                   <div className="flex flex-col">
                      <label className={"text-[18px] mb-[4px]"} htmlFor="">
@@ -236,7 +233,7 @@ export default function AddProductModal({ ...props }: Props) {
             <p className="text-center">
                <PushButton
                   disabled={!ableToCreateProduct}
-                  loading={apiLoading}
+                  loading={isFetching}
                   className="font-[600]"
                   onClick={handleSubmit}
                >
@@ -246,8 +243,11 @@ export default function AddProductModal({ ...props }: Props) {
          </div>
 
          {isOpenModal && (
-            <Modal close={localCloseModal}>
-               <Gallery close={localCloseModal} setImageUrl={handleChoseProductImage} />
+            <Modal closeModal={localCloseModal}>
+               <Gallery
+                  closeModal={localCloseModal}
+                  setImageUrl={handleChoseProductImage}
+               />
             </Modal>
          )}
       </div>

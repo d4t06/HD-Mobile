@@ -7,8 +7,11 @@ import searchService from "../../services/searchService";
 import useDebounce from "../../hooks/useDebounce";
 import Popup from "../ui/Popup";
 
-import { ArrowPathIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
-
+import {
+   ArrowPathIcon,
+   MagnifyingGlassIcon,
+   XMarkIcon,
+} from "@heroicons/react/24/outline";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -16,10 +19,10 @@ type Props = {
    setOpenSidebar?: Dispatch<SetStateAction<boolean>>;
 };
 
-function Search({ setShowModal,setOpenSidebar }: Props) {
+function Search({ setShowModal, setOpenSidebar }: Props) {
    const [loading, setLoading] = useState(false);
    const [query, setQuery] = useState("");
-   const [searchResult, setSearchResult] = useState<Product[]>([]);
+   const [searchResult, setSearchResult] = useState<ProductSearch[]>([]);
    const [show, setShow] = useState(false);
    const [someThingToAbortApi, setSomeThingToAbortApi] = useState(0);
 
@@ -44,12 +47,12 @@ function Search({ setShowModal,setOpenSidebar }: Props) {
    const handleShow = (value: any) => {
       setShow(value);
       setShowModal && setShowModal(value);
-      setOpenSidebar && setOpenSidebar(false)
+      setOpenSidebar && setOpenSidebar(false);
    };
 
-   const handleDetailPage = (item: Product) => {
+   const handleDetailPage = (item: ProductSearch) => {
       handleShow(false);
-      navigate(`/${item.category_data.category_ascii}/${item.product_ascii}`);
+      navigate(`/product/${item.product_ascii}`);
    };
 
    const handleSubmit = (e: FormEvent) => {
@@ -61,7 +64,10 @@ function Search({ setShowModal,setOpenSidebar }: Props) {
       navigate(`/search/${query}`);
    };
 
-   const isShowResult = useMemo(() => !!query && !!searchResult && !!show, [show, searchResult, query]);
+   const isShowResult = useMemo(
+      () => !!query && !!searchResult && !!show,
+      [show, searchResult, query]
+   );
 
    useEffect(() => {
       if (!debounceValue.trim()) return;
@@ -71,10 +77,13 @@ function Search({ setShowModal,setOpenSidebar }: Props) {
          try {
             console.log("get data");
             setLoading(true);
-            const result = await searchService({ q: debounceValue, category_id: undefined }, controller.signal);
+            const data = await searchService(
+               { q: debounceValue, category_id: undefined },
+               controller.signal
+            );
 
-            if (result) {
-               setSearchResult(result);
+            if (data.products) {
+               setSearchResult(data.products);
             }
          } catch (error) {
             console.log(error);
@@ -102,13 +111,23 @@ function Search({ setShowModal,setOpenSidebar }: Props) {
                   {searchResult.length &&
                      searchResult?.map((p, index) => {
                         return (
-                           <li onClick={() => handleDetailPage(p)} className={cx("product")} key={index}>
+                           <li
+                              onClick={() => handleDetailPage(p)}
+                              className={cx("product")}
+                              key={index}
+                           >
                               <div className={cx("product-img")}>
                                  <img src={p.image_url} alt="" />
                               </div>
                               <div className={cx("product-info")}>
-                                 <h2 className={cx("title")}>{p.product_name}</h2>
-                                 <p className={cx("price")}>{moneyFormat(p.combines_data[0].price)}₫</p>
+                                 <h2 className={cx("title")}>{p.product}</h2>
+                                 <p className={cx("price")}>
+                                    {moneyFormat(
+                                       p.default_variant.variant.default_combine.combine
+                                          .price || ""
+                                    )}
+                                    ₫
+                                 </p>
                               </div>
                            </li>
                         );
@@ -138,7 +157,11 @@ function Search({ setShowModal,setOpenSidebar }: Props) {
                   </button>
                )}
                {!loading && query && (
-                  <button type="button" className={cx("clear-btn", "btn")} onClick={(e) => handleClear(e)}>
+                  <button
+                     type="button"
+                     className={cx("clear-btn", "btn")}
+                     onClick={(e) => handleClear(e)}
+                  >
                      <XMarkIcon className="w-[24px]" />
                   </button>
                )}

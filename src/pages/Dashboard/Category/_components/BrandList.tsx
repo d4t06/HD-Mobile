@@ -1,6 +1,5 @@
 import { inputClasses } from "@/components/ui/Input";
-import "../../layout.scss";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import BrandItem from "./child/BrandItem";
 import useBrandAction from "../_hooks/uesBrandAction";
 import { generateId } from "@/utils/appHelper";
@@ -9,7 +8,11 @@ import AddItem from "@/components/Modal/AddItem";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 
-export default function BrandList() {
+type Props = {
+   mainClasses: LayoutClasses;
+};
+
+export default function BrandList({ mainClasses }: Props) {
    const { categories } = useSelector(selectCategory);
    const [currentCategoryIndex, setCurrentCategoryIndex] = useState<number>();
 
@@ -46,9 +49,9 @@ export default function BrandList() {
 
    return (
       <>
-         <h1 className="label">Brand</h1>
-         <div className="group-container">
-            <div className="flex-container inline-flex items-center">
+         <h1 className={mainClasses.label}>Brand</h1>
+         <div className={mainClasses.group}>
+            <div className="inline-flex gap-[16px] items-center">
                <span>Category: </span>
                <select
                   className={`${inputClasses.input} min-w-[100px]`}
@@ -59,18 +62,21 @@ export default function BrandList() {
                >
                   <option value={undefined}>---</option>
                   {!!categories.length &&
-                     categories.map((category, index) => (
-                        <option key={index} value={index}>
-                           {category.category}
-                        </option>
-                     ))}
+                     categories.map(
+                        (category, index) =>
+                           !category.hidden && (
+                              <option key={index} value={index}>
+                                 {category.category}
+                              </option>
+                           )
+                     )}
                </select>
             </div>
 
             {currentCategoryIndex !== undefined && currentCategory && (
-               <div className="flex-container mt-[16px]">
+               <div className={`${mainClasses.flexContainer} mt-[16px]`}>
                   {currentCategory.brands.map((item, index) => (
-                     <div key={index} className="w-2/12">
+                     <div key={index} className={`${mainClasses.flexCol} w-2/12`}>
                         <BrandItem
                            brand={item}
                            index={index}
@@ -79,7 +85,7 @@ export default function BrandList() {
                      </div>
                   ))}
 
-                  <div className="w-2/12">
+                  <div className={`${mainClasses.flexCol} w-2/12`}>
                      <Empty
                         fontClassName="bg-[#f1f1f1]"
                         onClick={() => setOpenModal(true)}
@@ -90,12 +96,12 @@ export default function BrandList() {
          </div>
 
          {openModal && (
-            <Modal close={closeModal}>
+            <Modal closeModal={closeModal}>
                <AddItem
                   loading={isFetching}
                   title="Add brand"
                   cbWhenSubmit={(value) => handleAddBrand(value)}
-                  close={closeModal}
+                  closeModal={closeModal}
                />
             </Modal>
          )}

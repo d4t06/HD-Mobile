@@ -14,7 +14,7 @@ const usePrivateRequest = () => {
             // Do something before request is sent
             //  console.log("handle before request sent");
             if (!config.headers["Authorization"]) {
-               config.headers["Authorization"] = `bearer ${auth?.token}`;
+               config.headers["Authorization"] = `Bearer ${auth?.token}`;
             }
 
             // console.log("private request auth =", auth)
@@ -34,7 +34,7 @@ const usePrivateRequest = () => {
                // console.log("handle response err");
                prevRequest.sent = true;
                const newToken = await refresh();
-               prevRequest.headers["Authorization"] = `bearer ${newToken}`;
+               prevRequest.headers["Authorization"] = `Bearer ${newToken}`;
 
                return privateRequest(prevRequest);
             }

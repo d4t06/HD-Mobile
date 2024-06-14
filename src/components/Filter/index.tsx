@@ -31,7 +31,7 @@ function ProductFilter() {
    );
 
    const showFilteredResults = (filters: FilterType) => {
-      dispatch(fetchProducts({ page: 1, sort, category_id, filters }));
+      dispatch(fetchProducts({ page: 1, sort, category_id, filters, replace: true }));
    };
 
    interface FilterField {
@@ -80,9 +80,6 @@ function ProductFilter() {
          <div className={cx("filter-section")}>
             <h1 className={cx("filter-title")}>Hãng sản xuất</h1>
             <div className={cx("filter-list")}>
-               {/* phai render data lay ra tu checkbox component
-                  ban đầu render nhiều checkbox
-                  fix: chỉ có mỗi checkbox nhưng trong checkbox có nhiều item */}
                {categoryStatus === "loading" ? (
                   BrandSkeleton
                ) : (

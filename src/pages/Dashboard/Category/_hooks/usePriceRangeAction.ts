@@ -3,6 +3,7 @@ import { useToast } from "@/store/ToastContext";
 import { usePrivateRequest } from "@/hooks";
 import { useDispatch } from "react-redux";
 import { setPriceRanges } from "@/store/categorySlice";
+import { sleep } from "@/utils/appHelper";
 
 const URL = "/category-price-ranges";
 
@@ -39,6 +40,9 @@ export default function usePriceRangeActions() {
 
    const actions = async ({ ...props }: Props) => {
       try {
+         setIsFetching(true);
+         if (import.meta.env.DEV) await sleep(5000);
+
          switch (props.type) {
             case "Add":
                const { priceRange, categoryIndex } = props;
@@ -76,7 +80,6 @@ export default function usePriceRangeActions() {
          setErrorToast(`${props.type} price range fail`);
       } finally {
          setIsFetching(false);
-         close();
       }
    };
 

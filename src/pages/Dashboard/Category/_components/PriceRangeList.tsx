@@ -1,5 +1,4 @@
 import { inputClasses } from "@/components/ui/Input";
-import "../../layout.scss";
 import { useMemo, useState } from "react";
 import { generateId } from "@/utils/appHelper";
 import { Modal } from "@/components";
@@ -18,7 +17,11 @@ const PRICE_FIELDS: FieldType = [
    { label: "To", placeholder: "1 = 1.000.000đ" },
 ];
 
-export default function PriceRangeList() {
+type Props = {
+   mainClasses: LayoutClasses;
+};
+
+export default function PriceRangeList({ mainClasses }: Props) {
    const { categories } = useSelector(selectCategory);
    const [currentCategoryIndex, setCurrentCategoryIndex] = useState<number>();
 
@@ -59,10 +62,10 @@ export default function PriceRangeList() {
 
    return (
       <>
-         .<h1 className="label">Price Range</h1>
-         <div className="group-container">
+         .<h1 className={mainClasses.label}>Price Range</h1>
+         <div className={mainClasses.group}>
             <div className="flex justify-between">
-               <div className="flex-container inline-flex items-center">
+               <div className="inline-flex gap-[16px] items-center">
                   <span>Category: </span>
                   <select
                      className={`${inputClasses.input} min-w-[100px]`}
@@ -73,23 +76,27 @@ export default function PriceRangeList() {
                   >
                      <option value={undefined}>---</option>
                      {!!categories.length &&
-                        categories.map((category, index) => (
-                           <option key={index} value={index}>
-                              {category.category}
-                           </option>
-                        ))}
+                        categories.map(
+                           (category, index) =>
+                              !category.hidden && (
+                                 <option key={index} value={index}>
+                                    {category.category}
+                                 </option>
+                              )
+                        )}
                   </select>
                </div>
 
                <PushButton disabled={!currentCategory} onClick={() => setOpenModal(true)}>
-                Add Price Range
+                  Add Price Range
                </PushButton>
             </div>
 
             {currentCategoryIndex !== undefined && currentCategory && (
-               <div className="flex-container mt-[16px]">
+               <div className="flex gap-[16px] mt-[16px]">
                   {currentCategory.price_ranges.map((item, index) => (
                      <PriceRangeItem
+                        key={index}
                         priceRange={item}
                         index={index}
                         categoryIndex={currentCategoryIndex}
@@ -100,13 +107,13 @@ export default function PriceRangeList() {
             )}
          </div>
          {openModal && (
-            <Modal close={closeModal}>
+            <Modal closeModal={closeModal}>
                <AddItemMulti
                   loading={isFetching}
                   title="Add price range"
                   fields={PRICE_FIELDS}
                   cb={(value) => handleAddPriceRange(value)}
-                  close={close}
+                  closeModal={closeModal}
                />
             </Modal>
          )}
