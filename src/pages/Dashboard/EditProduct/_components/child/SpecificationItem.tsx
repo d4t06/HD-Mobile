@@ -105,6 +105,7 @@ export default function SpecificationItem({ categoryAttributeId }: Props) {
          {openModal && foundedAttribute && (
             <Modal closeModal={closeModal}>
                <AddItem
+                  variant="text-area"
                   loading={isFetching}
                   cbWhenSubmit={(value) => handleUpdateAttribute(value)}
                   closeModal={closeModal}

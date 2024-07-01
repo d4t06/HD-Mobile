@@ -19,11 +19,13 @@ export default function DetailBody({ loading, product }: Props) {
             <DescSection loading={loading} product={product} />
          </div>
          <div className="md:mt-0 md:w-1/3 flex-shrink-0 md:px-[12px]">
-            <Title className="mb-[20px]">
-               <Cog6ToothIcon className="w-[24px]" />
-               <span>Thông số</span>
-            </Title>
-            <SpecSection loading={loading} product={product} />
+            <div className="sm:sticky top-[10px]">
+               <Title className="mb-[20px]">
+                  <Cog6ToothIcon className="w-[24px]" />
+                  <span>Thông số</span>
+               </Title>
+               <SpecSection loading={loading} product={product} />
+            </div>
          </div>
       </div>
    );

@@ -5,7 +5,7 @@ import {
    useRef,
    ReactNode,
 } from "react";
-import Input from "../ui/Input";
+import Input, { inputClasses } from "../ui/Input";
 import ModalHeader from "./ModalHeader";
 import PushButton from "../ui/PushButton";
 
@@ -16,6 +16,7 @@ type Props = {
    initValue?: string;
    children?: ReactNode;
    loading?: boolean;
+   variant?: "input" | "text-area";
 };
 
 export default function AddItem({
@@ -24,6 +25,7 @@ export default function AddItem({
    title,
    initValue,
    loading,
+   variant = "input",
    children,
 }: Props) {
    const [value, setValue] = useState(initValue || "");
@@ -42,13 +44,23 @@ export default function AddItem({
       <div className="w-[400px] bg-[#fff]">
          <ModalHeader closeModal={closeModal} title={title} />
          <form action="" onSubmit={handleSubmit}>
-            <Input
-               className="w-full"
-               ref={inputRef}
-               placeholder="name..."
-               value={value}
-               cb={(value) => setValue(value)}
-            />
+            {variant === "input" && (
+               <Input
+                  className="w-full"
+                  ref={inputRef}
+                  placeholder="name..."
+                  value={value}
+                  cb={(value) => setValue(value)}
+               />
+            )}
+
+            {variant === "text-area" && (
+               <textarea
+                  className={`${inputClasses.input} w-full min-h-[100px]`}
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+               />
+            )}
 
             {children}
 

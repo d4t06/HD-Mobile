@@ -100,7 +100,12 @@ export default function DetailTop({ loading, product }: Props) {
          <div className="md:w-7/12 md:px-[12px]">
             {loading && <Skeleton className="w-full pt-[50%] rounded-[16px]" />}
             {!loading && (
-               <ImageSlider className="pt-[60%] md:pt-[50%]" data={currentSliderImages} />
+               <div className="relative sm:sticky top-[10px]">
+                  <ImageSlider
+                     className="pt-[60%] md:pt-[50%]"
+                     data={currentSliderImages}
+                  />
+               </div>
             )}
          </div>
 
