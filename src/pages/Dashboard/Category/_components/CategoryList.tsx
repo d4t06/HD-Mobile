@@ -163,7 +163,7 @@ export default function CategoryList({ mainClasses }: Props) {
                {categories.map(
                   (item, index) =>
                      !item.hidden && (
-                        <div key={index} className={`${mainClasses.flexCol} w-2/12`}>
+                        <div key={index} className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
                            <Empty fontClassName="bg-[#f6f6f6]">
                               <span className="font-[500]">{item.category}</span>
                               <OverlayCTA
@@ -184,7 +184,7 @@ export default function CategoryList({ mainClasses }: Props) {
                         </div>
                      )
                )}
-               <div className={`${mainClasses.flexCol} w-2/12`}>
+               <div className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
                   <Empty
                      fontClassName="bg-[#f1f1f1]"
                      onClick={() => handleOpenModal({ modal: "add" })}

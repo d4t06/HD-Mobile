@@ -1,9 +1,13 @@
 import { useState, useMemo, useRef } from "react";
-import { Button, Input, Modal } from "@/components";
+import { Button, Modal, Search } from "@/components";
 import Table from "@/components/Table";
 
 import AddProductModal from "@/components/Modal/AddProductModal";
-import { Cog6ToothIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+   Cog6ToothIcon,
+   PencilSquareIcon,
+   TrashIcon,
+} from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import PushButton from "@/components/ui/PushButton";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
@@ -198,23 +202,11 @@ export default function Dashboard() {
             })}
          </div>
 
-         {/* {curCategory && <QuickFilter admin />} */}
-
-         <div className="flex items-center justify-between mt-[30px]">
-            <div className="flex items-start">
-               <Input
-                  className="bg-[#fff]"
-                  placeholder="Product..."
-                  cb={(key) => console.log(key)}
-               />
-               <p className="ml-[8px]">
-                  <Button colors={"third"}>Tìm</Button>
-               </p>
-            </div>
-
-            <Button colors={"third"} onClick={() => handleOpenModal({ type: "Add" })}>
+         <div className="flex items-start justify-between mt-[30px]">
+            <Search variant="dashboard" />
+            <Button className="flex-shrink-0 ml-[10px] px-[12px] py-[7px]" colors={"third"} size={'clear'} onClick={() => handleOpenModal({ type: "Add" })}>
                <PlusIcon className="w-[24px]" />
-               Thêm sản phẩm
+               <span className="hidden sm:block ml-[6px]">Thêm sản phẩm</span>
             </Button>
          </div>
 
@@ -238,7 +230,7 @@ export default function Dashboard() {
             )}
          </div>
 
-         {isOpenModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
+         {isOpenModal && <Modal z="z-[200]" closeModal={closeModal}>{renderModal}</Modal>}
       </>
    );
 }

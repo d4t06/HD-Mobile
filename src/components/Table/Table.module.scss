@@ -20,6 +20,14 @@
       text-transform: uppercase;
       font-weight: 500;
    }
+
+   @media screen and (max-width: 639px) {
+      th, td {
+         font-size: 14px;
+         padding: 4px 6px;
+      }
+   }
+
    .product-image {
       width: 90px;
       img {

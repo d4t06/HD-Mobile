@@ -24,4 +24,9 @@
    padding: 20px;
    background: #fff;
    border-radius: 14px;
+
+
+   @media screen and (max-width: 639px) {
+      padding: 15px;
+   }
 }

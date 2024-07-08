@@ -127,8 +127,8 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
 
    const imageSkeleton = useMemo(
       () =>
-         [...Array(8).keys()].map((item) => (
-            <div key={item} className={cx("w-1/5", "px-[4px] gallery-item")}>
+         [...Array(10).keys()].map((item) => (
+            <div key={item} className={cx("w-1/3 sm:w-1/5", "px-[4px] gallery-item")}>
                <Skeleton className="pt-[100%] w-[100% rounded-[6px]" />
             </div>
          )),
@@ -141,7 +141,7 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
          const isInChoseList = indexOf !== -1;
 
          return (
-            <div key={index} className={cx("w-1/5 px-[4px]")}>
+            <div key={index} className={cx("w-1/3 sm:w-1/5 px-[4px]")}>
                <div className={cx("image-container", "group")}>
                   <div
                      onClick={() => setActive(item)}
@@ -178,7 +178,7 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
          !!tempImages.length &&
          tempImages?.map((item, index) => {
             return (
-               <div key={index} className={cx("w-1/5")}>
+               <div key={index} className={cx("w-1/3 sm:w-1/5")}>
                   <div className={cx("image-container")}>
                      <div className={cx("image-frame", "relative")}>
                         <img className="opacity-[.4]" src={item.image_url} alt="img" />
@@ -209,12 +209,12 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
       <div className={cx("gallery")}>
          <div className={cx("gallery__top")}>
             <div className={cx("left")}>
-               <h1 className="text-[22px] font-semibold">Images ({count})</h1>
+               <h1 className="text-[22px] font-[500]">Images ({count})</h1>
                <div>
-                  <Button size={'clear'} colors={"second"}>
+                  <Button size={"clear"} colors={"second"}>
                      <label className={"flex px-[12px] py-[4px]"} htmlFor="image_upload">
-                        <ArrowUpTrayIcon className="w-[22px] mr-[6px]" />
-                        Upload
+                        <ArrowUpTrayIcon className="w-[22px]" />
+                        <span className="hidden sm:inline ml-[6px]">Upload</span>
                      </label>
                   </Button>
                </div>
@@ -225,7 +225,7 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
             </Button>
          </div>
          <div className={cx("gallery__body", "flex mx-[-8px]")}>
-            <div className={cx("w-2/3 px-[8px] no-scrollbar", "left")}>
+            <div className={cx("px-[8px] no-scrollbar", "left")}>
                <div className="flex flex-wrap gap-y-[8px]">
                   {status === "error" && <p>Some thing went wrong</p>}
                   {status !== "error" && (
@@ -248,7 +248,7 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
                   </div>
                )}
             </div>
-            <div className={cx("col w-1/3 px-[8px] overflow-hidden border-l-[2px]")}>
+            <div className={cx("col hidden sm:block w-1/3 px-[8px] overflow-hidden border-l-[2px]")}>
                {active && (
                   <div className={cx("image-info", "space-y-[20px]")}>
                      <h2 className="break-words">{active.name}</h2>

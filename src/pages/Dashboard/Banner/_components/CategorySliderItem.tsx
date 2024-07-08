@@ -146,12 +146,12 @@ export default function CategorySliderItem({ category, categoryIndex }: Props) {
    return (
       <>
          <div className="flex items-center">
-            <div className="px-[4px] w-2/12">
+            <div className="mr-[10px] w-1/6">
                <p className="text-center font-[500]">{category.category}</p>
             </div>
-            <div className="flex flex-wrap gap-y-[16px] flex-1">
+            <div className="flex flex-wrap space-y-[16px] flex-grow">
                {category.category_slider.slider.slider_images.map((sI, index) => (
-                  <div key={index} className="px-[8px] w-1/2">
+                  <div key={index} className="w-full">
                      <Empty
                         className={`pt-[55%] ${
                            isEditingSliderImages &&
@@ -184,7 +184,7 @@ export default function CategorySliderItem({ category, categoryIndex }: Props) {
                   </div>
                ))}
 
-               <div className="px-[8px] w-1/2">
+               <div className="w-full">
                   <Empty
                      className="pt-[55%]"
                      fontClassName="bg-[#f1f1f1]"

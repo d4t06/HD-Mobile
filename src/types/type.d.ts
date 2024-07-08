@@ -93,7 +93,18 @@ type Product = {
    brand_id: number;
    image_url: string;
    variants: ProductVariantDetail[];
-   default_variant: DefaultVariant;
+   default_variant: DefaultVariantDetail;
+};
+
+type ProductResponse = {
+   products: Product[];
+   count: number;
+   page: number;
+   pageSize: number;
+   sort: boolean;
+   category_id: number | null;
+   column: number | null;
+   type: number | null;
 };
 
 type Description = {
@@ -130,6 +141,10 @@ type ProductSearch = Omit<
    "comments_data" | "combines" | "colors" | "variants" | "default_variant"
 > & {
    default_variant: DefaultVariantDetail;
+};
+
+type ProductSearchResponse = Omit<ProductResponse, "products"> & {
+   products: ProductSearch[];
 };
 
 type ProductSchema = Omit<

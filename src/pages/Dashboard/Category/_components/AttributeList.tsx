@@ -8,6 +8,7 @@ import { selectCategory } from "@/store/categorySlice";
 import useAttributeActions from "../_hooks/useAttributeAction";
 import PushButton from "@/components/ui/PushButton";
 import AttributeItem from "./child/AttributeItem";
+import { PlusIcon } from "@heroicons/react/16/solid";
 
 type Props = {
    mainClasses: LayoutClasses;
@@ -86,13 +87,19 @@ export default function AttributeList({ mainClasses }: Props) {
                   </select>
                </div>
 
-               <PushButton disabled={!currentCategory} onClick={() => setOpenModal(true)}>
-                  Add Attribute
+               <PushButton
+                  size={"clear"}
+                  className="py-[4px] px-[12px]"
+                  disabled={!currentCategory}
+                  onClick={() => setOpenModal(true)}
+               >
+                  <PlusIcon className="w-[20px]" />
+                  <span className="hidden sm:inline-block ml-[6p]">Add Price Range</span>
                </PushButton>
             </div>
 
             {currentCategoryIndex !== undefined && currentCategory && (
-               <div className="flex gap-[16px] mt-[16px]">
+               <div className="flex flex-wrap ml-[-8px] mt-[6px]">
                   {attributeOrder.map((id, index) => {
                      const attributeIndex = currentCategory.attributes.findIndex(
                         (attr) => attr.id === +id
@@ -108,7 +115,7 @@ export default function AttributeList({ mainClasses }: Props) {
                            key={foundedCatAttribute.attribute_ascii}
                            className={`${
                               isFetching ? "opacity-60 pointer-events-none" : ""
-                           } border border-black/15 rounded-[8px] overflow-hidden`}
+                           } border border-black/15 rounded-[8px] overflow-hidden ml-[8px] mt-[8px]`}
                            setIsDrag={setIsDrag}
                            isDrag={isDrag}
                            handleDragEnd={() => sortAttribute(index, endIndexRef.current)}

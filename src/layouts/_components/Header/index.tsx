@@ -1,15 +1,12 @@
 import { useAuth } from "@/store/AuthContext";
 import { useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search, Modal, Avatar } from "@/components";
+import { Search, Avatar } from "@/components";
 import classNames from "classnames/bind";
 import styles from "./Header.module.scss";
 import Sidebar from "@/components/Sidebar";
 import MobileHeader from "./MobileHeader";
-import {
-   ShoppingBagIcon,
-   Cog6ToothIcon,
-} from "@heroicons/react/24/outline";
+import { ShoppingBagIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 const cx = classNames.bind(styles);
@@ -17,13 +14,11 @@ const cx = classNames.bind(styles);
 function Header() {
    const { auth } = useAuth();
    const [isOpenSidebar, setIsOpenSidebar] = useState(false);
-   const [showModal, setShowModal] = useState(false);
-
-   const closeModal = () => setShowModal(false);
+   const [showSearchModal, setShowSearchModal] = useState(false);
 
    const closeSidebar = () => {
       setIsOpenSidebar(false);
-      setShowModal(false);
+      setShowSearchModal(false);
    };
 
    // use hooks
@@ -38,7 +33,9 @@ function Header() {
                <li
                   key={index}
                   className={cx("nav-item", {
-                     active: !showModal && location.pathname === `/${cat.category_ascii}`,
+                     active:
+                        !showSearchModal &&
+                        location.pathname === `/${cat.category_ascii}`,
                   })}
                >
                   <Link to={`/${cat.category_ascii}`}>
@@ -47,7 +44,7 @@ function Header() {
                </li>
             )
       );
-   }, [categories, location, showModal]);
+   }, [categories, location, showSearchModal]);
 
    return (
       <>
@@ -58,7 +55,7 @@ function Header() {
                   alt=""
                />
             </div>
-            <div className="container mx-auto">
+            <div className="container mx-auto relative">
                {/* mobile header */}
                <MobileHeader
                   isOpenSidebar={isOpenSidebar}
@@ -72,10 +69,7 @@ function Header() {
                            HD <span className="text-[#cd1818]">Mobile</span>
                         </Link>
                      </div>
-                     <Search
-                        setOpenSidebar={setIsOpenSidebar}
-                        setShowModal={setShowModal}
-                     />
+                     <Search variant="home" closeSidebar={closeSidebar} />
 
                      <div className="w-1/4 max-[768px]:hidden">
                         <Avatar revert />
@@ -114,8 +108,6 @@ function Header() {
          </div>
 
          <Sidebar isOpen={isOpenSidebar} closeSidebar={closeSidebar} />
-
-         {showModal && <Modal closeModal={closeModal}></Modal>}
       </>
    );
 }

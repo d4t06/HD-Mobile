@@ -12,6 +12,8 @@ import Policy from "./Policy";
 import { TagIcon } from "@heroicons/react/16/solid";
 import useCartAction from "@/hooks/useCartAction";
 import { useAuth } from "@/store/AuthContext";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -95,6 +97,24 @@ export default function DetailTop({ loading, product }: Props) {
       price: "text-[30px] md:text-[34px] text-[#cd1818] font-[600] leading-[1.4]",
    };
 
+   const productName = useMemo(() => {
+      if (!product) return;
+
+      const content = (
+         <h1 className={classes.proName}>
+            {product.product}
+            {auth && auth.role === "ADMIN" && (
+               <PencilSquareIcon className="w-[24px] inline-block ml-[6px]" />
+            )}
+         </h1>
+      );
+
+      if (auth?.role === "ADMIN")
+         return <Link target="_blank" to={`/dashboard/product/${product.product_ascii}`}>{content}</Link>;
+
+      return content;
+   }, [product]);
+
    return (
       <div className="md:flex flex-wrap md:mx-[-12px]">
          <div className="md:w-7/12 md:px-[12px]">
@@ -114,7 +134,7 @@ export default function DetailTop({ loading, product }: Props) {
                {loading && ProductInfoSkeleton}
                {!loading && product && (
                   <>
-                     <h1 className={classes.proName}>{product.product}</h1>
+                     {productName}
 
                      {currentCombine && (
                         <>

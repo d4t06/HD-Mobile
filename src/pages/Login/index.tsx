@@ -27,19 +27,23 @@ export default function LoginPage() {
    //  const [persist, setPersist] = useState(JSON.parse(localStorage.getItem("persist") || "false"));
    const navigate = useNavigate();
    const location = useLocation();
-   const from = location?.state?.from?.pathname || "/";
+   const from = useRef(location?.state?.from || "/");
 
    const handleSubmit = async (e: FormEvent) => {
       e.preventDefault();
       try {
          setApiLoading(true);
 
-         const response = await axios.post(LOGIN_URL, {
-            username: username,
-            password: password,
-         }, {
-            withCredentials: true
-         });
+         const response = await axios.post(
+            LOGIN_URL,
+            {
+               username: username,
+               password: password,
+            },
+            {
+               withCredentials: true,
+            }
+         );
 
          const data = response.data.data as AuthResponse;
 
@@ -52,7 +56,8 @@ export default function LoginPage() {
 
             setUsername("");
             setPassword("");
-            navigate(from, { replace: true });
+
+            navigate(from.current);
          }
       } catch (error: any) {
          if (!error?.response) {
@@ -71,7 +76,7 @@ export default function LoginPage() {
    useEffect(() => {
       if (loading) return;
 
-      if (auth) from ? navigate(from) : navigate("/");
+      if (auth) from ? navigate(from.current) : navigate("/");
       else setRunCheckAuth(true);
    }, [loading]);
 

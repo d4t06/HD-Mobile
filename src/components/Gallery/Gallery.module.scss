@@ -1,16 +1,21 @@
 .gallery {
-   height: 80vh;
-   width: 90vw;
+   height: 500px;
+   max-height: 80vh;
+   width: 700px;
+   max-width: 85vw;
    position: relative;
    background-color: #fff;
    overflow: hidden;
+
+   display: flex;
+   flex-direction: column;
+
    &__top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 2px dashed #ccc;
       padding-bottom: 10px;
-      padding-top: 6px;
       margin-bottom: 10px;
 
       .left {
@@ -26,8 +31,10 @@
       }
    }
    &__body {
+      flex-grow: 1;
+      overflow: hidden;
       .left {
-         height: calc(80vh - 61px);
+         flex-grow: 1;
          overflow-y: auto;
       }
    }

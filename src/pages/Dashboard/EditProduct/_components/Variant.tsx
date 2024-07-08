@@ -44,11 +44,11 @@ export default function Variant({ mainClasses }: Props) {
          <div className={mainClasses.group}>
             <div className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}>
                {product.variants.map((item, index) => (
-                  <div key={index} className={`${mainClasses.flexCol} w-1/6`}>
+                  <div key={index} className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
                      <VariantItem index={index} variant={item} />
                   </div>
                ))}
-               <div className={`${mainClasses.flexCol} w-1/6`}>
+               <div className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
                   <Empty
                      fontClassName="bg-[#f1f1f1]"
                      onClick={() => setOpenModal(true)}

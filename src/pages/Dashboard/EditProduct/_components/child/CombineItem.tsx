@@ -9,7 +9,10 @@ import useCombineAction from "../../_hooks/useCombineAction";
 
 type FIELD_KEYS = "Quantity" | "Price";
 
-const PRICE_FIELDS: FieldType = ["Quantity", {label: 'Price', placeholder: "Price", type: 'price'}];
+const PRICE_FIELDS: FieldType = [
+   "Quantity",
+   { label: "Price", placeholder: "Price", type: "price" },
+];
 
 const getFieldValue = (value: Record<string, string>, name: FIELD_KEYS) => {
    return value[generateId(name)];
@@ -87,11 +90,12 @@ export default function CombineItem({ color, variant, variantIndex }: Props) {
             <td className="!text-right">
                <Button
                   onClick={() => setOpenModal(true)}
-                  className="`px-[14px]`"
+                  className="p-[4px] sm:px-[14px]"
                   colors={"second"}
+                  size={'clear'}
                >
-                  <PencilSquareIcon className="w-[20px] mr-[6px]" />
-                  Change
+                  <PencilSquareIcon className="w-[20px]" />
+                  <span className="ml-[6px] hidden sm:block">Change</span>
                </Button>
             </td>
          </tr>
@@ -104,8 +108,10 @@ export default function CombineItem({ color, variant, variantIndex }: Props) {
                   cb={(value) => handleUpdateCombine(value)}
                   closeModal={closeModal}
                   intiFieldData={{
-                     quantity: foundedCombine.quantity ? foundedCombine.quantity + "" : '',
-                     price: foundedCombine.price ? foundedCombine.price + "" : '',
+                     quantity: foundedCombine.quantity
+                        ? foundedCombine.quantity + ""
+                        : "",
+                     price: foundedCombine.price ? foundedCombine.price + "" : "",
                   }}
                   fields={PRICE_FIELDS}
                />

@@ -16,7 +16,7 @@ export const searchService = async (
          },
          signal: signal,
       });
-      return response.data.data;
+      return response.data.data as ProductResponse;
    } catch (error) {
       console.log(">>> searchService", error);
    }

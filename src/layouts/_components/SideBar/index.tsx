@@ -127,18 +127,15 @@ function Sidebar() {
             </Link>
          </div>
 
-         <PushButton
-            onClick={handleExpand}
-            baseClassName="absolute bottom-[20px] right-0 translate-x-[50%] z-[10]"
-            size={"clear"}
-            className="p-[4px]"
-         >
-            {expand ? (
-               <ChevronLeftIcon className="w-[24px] " />
-            ) : (
-               <ChevronRightIcon className="w-[24px]" />
-            )}
-         </PushButton>
+         <div className="hidden sm:block absolute bottom-[20px] right-0 translate-x-[50%] z-[10]">
+            <PushButton onClick={handleExpand} size={"clear"} className="p-[4px]">
+               {expand ? (
+                  <ChevronLeftIcon className="w-[24px] " />
+               ) : (
+                  <ChevronRightIcon className="w-[24px]" />
+               )}
+            </PushButton>
+         </div>
       </div>
    );
 }

@@ -1,14 +1,17 @@
 import { Editor } from "@tiptap/react";
-import { Gallery, Modal } from "..";
+import { Button, Gallery, Modal } from "..";
 import { useState } from "react";
+import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/16/solid";
 
 type Props = {
    editor: Editor | null;
    isChange: boolean;
+   isLock: boolean;
+   toggleIsLock: () => void;
    cb: (value: string) => Promise<void>;
 };
 
-export default function Toolbar({ editor, cb, isChange }: Props) {
+export default function Toolbar({ editor, cb, isChange, isLock, toggleIsLock }: Props) {
    if (!editor) return <></>;
 
    const [isOpenModal, setIsOpenModal] = useState(false);
@@ -27,26 +30,17 @@ export default function Toolbar({ editor, cb, isChange }: Props) {
       await cb(content);
    };
 
+   const classes = {
+      left: "flex mt-[-8px] ml-[-8px] flex-wrap [&_button]:px-[6px] [&_button]:mt-[8px] [&_button]:ml-[8px] [&_button]:font-[500] [&_button]:py-[3px] [&_button.active]:bg-white [&_button.active]:text-[#cd1818] [&_button.active]:rounded-[6px] ",
+      right: "right flex flex-col space-y-[8px] sm:space-x-[8px] sm:space-y-0 sm:flex-row items-center",
+   };
+
    return (
       <>
          <div
-            className={`bg-[#cd1818] text-white flex  justify-between items-center h-[50px] px-[10px] `}
+            className={`bg-[#cd1818] text-white flex  justify-between items-center p-[10px] `}
          >
-            <div className="left flex gap-[8px]">
-               <button
-                  onClick={() => editor.chain().focus().toggleBold().run()}
-                  disabled={!editor.can().chain().focus().toggleBold().run()}
-                  className={editor.isActive("bold") ? "active" : ""}
-               >
-                  bold
-               </button>
-               <button
-                  onClick={() => editor.chain().focus().toggleItalic().run()}
-                  disabled={!editor.can().chain().focus().toggleItalic().run()}
-                  className={editor.isActive("italic") ? "active" : ""}
-               >
-                  italic
-               </button>
+            <div className={`${classes.left} ${isLock ? "disable" : ""}`}>
                <button
                   onClick={() => editor.chain().focus().setParagraph().run()}
                   className={editor.isActive("paragraph") ? "active" : ""}
@@ -73,9 +67,17 @@ export default function Toolbar({ editor, cb, isChange }: Props) {
                   redo
                </button>
             </div>
-            <div className="right flex gap-[8px]">
-               <button onClick={handleSubmit} disabled={!isChange}>
+            <div className={classes.right}>
+               <Button colors={"second"} onClick={handleSubmit} disabled={!isChange}>
                   save
+               </Button>
+
+               <button onClick={toggleIsLock}>
+                  {isLock ? (
+                     <LockClosedIcon className="w-[20px]" />
+                  ) : (
+                     <LockOpenIcon className="w-[20px]" />
+                  )}
                </button>
             </div>
          </div>

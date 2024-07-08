@@ -41,7 +41,7 @@ export default function AddItem({
    };
 
    return (
-      <div className="w-[400px] bg-[#fff]">
+      <div className="w-[400px] max-w-[85vw] bg-[#fff]">
          <ModalHeader closeModal={closeModal} title={title} />
          <form action="" onSubmit={handleSubmit}>
             {variant === "input" && (

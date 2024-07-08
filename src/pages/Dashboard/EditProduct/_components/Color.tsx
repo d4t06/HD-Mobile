@@ -47,11 +47,11 @@ export default function Color({ mainClasses }: Props) {
                className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}
             >
                {product.colors.map((item, index) => (
-                  <div key={index} className={`${mainClasses.flexCol} w-1/6`}>
+                  <div key={index} className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
                      <ColorItem index={index} color={item} />
                   </div>
                ))}
-               <div className={`${mainClasses.flexCol} w-1/6`}>
+               <div className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
                   <Empty
                      fontClassName="bg-[#f1f1f1]"
                      onClick={() => setOpenModal(true)}

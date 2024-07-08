@@ -8,6 +8,7 @@ import AddItemMulti, { FieldType } from "@/components/Modal/AddItemMulti";
 import PriceRangeItem from "./child/PriceRangeItem";
 import usePriceRangeActions from "../_hooks/usePriceRangeAction";
 import PushButton from "@/components/ui/PushButton";
+import { PlusIcon } from "@heroicons/react/16/solid";
 
 type FIELD_KEYS = "Label" | "From" | "To";
 
@@ -87,22 +88,31 @@ export default function PriceRangeList({ mainClasses }: Props) {
                   </select>
                </div>
 
-               <PushButton disabled={!currentCategory} onClick={() => setOpenModal(true)}>
-                  Add Price Range
+               <PushButton
+                  size={"clear"}
+                  className="p-[4px] px-[12px]"
+                  disabled={!currentCategory}
+                  onClick={() => setOpenModal(true)}
+               >
+                  <PlusIcon className="w-[20px]" />
+                  <span className="hidden sm:inline-block ml-[6p]">Add Price Range</span>
                </PushButton>
             </div>
 
             {currentCategoryIndex !== undefined && currentCategory && (
-               <div className="flex gap-[16px] mt-[16px]">
-                  {currentCategory.price_ranges.map((item, index) => (
-                     <PriceRangeItem
-                        key={index}
-                        priceRange={item}
-                        index={index}
-                        categoryIndex={currentCategoryIndex}
-                        getValue={getFieldValue}
-                     />
-                  ))}
+               <div className="mt-[14px]">
+                  <div className={`${mainClasses.flexContainer}`}>
+                     {currentCategory.price_ranges.map((item, index) => (
+                        <div key={index} className={`${mainClasses.flexCol}`}>
+                           <PriceRangeItem
+                              priceRange={item}
+                              index={index}
+                              categoryIndex={currentCategoryIndex}
+                              getValue={getFieldValue}
+                           />
+                        </div>
+                     ))}
+                  </div>
                </div>
             )}
          </div>

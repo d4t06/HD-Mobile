@@ -140,14 +140,15 @@ export default function AddProductModal({ ...props }: Props) {
    };
 
    return (
-      <div className="w-[700px] max-w-[90vw]">
+      <div className="w-[700px] max-h-[90vh] max-w-[80vw] flex flex-col">
          <ModalHeader closeModal={props.closeModal} title={`${tileMap[props.type]}`} />
-         <div>
-            <div className="flex gap-[16px] mb-[30px]">
-               <div className="w-1/3">
+         <div className="flex-grow overflow-auto">
+            <div className="flex flex-col sm:flex-row">
+               <div className="sm:w-1/3 sm:mr-[16px]">
                   <div className="group relative">
                      {!productData.image_url && (
                         <Empty
+                           className="pt-[50%] sm:pt-[100%]"
                            fontClassName="bg-[#f1f1f1]"
                            onClick={() => setIsOpenModal(true)}
                         ></Empty>
@@ -170,7 +171,7 @@ export default function AddProductModal({ ...props }: Props) {
                      )}
                   </div>
                </div>
-               <div className="w-2/3 space-y-[14px]">
+               <div className="mt-[16px] sm:mt-0 flex-grow space-y-[14px]">
                   <div className="flex flex-col">
                      <label className={"text-[18px] mb-[4px]"} htmlFor="">
                         Tên sản phẩm
@@ -230,7 +231,7 @@ export default function AddProductModal({ ...props }: Props) {
                </div>
             </div>
 
-            <p className="text-center">
+            <p className="text-center mt-[16px] pb-[4px]">
                <PushButton
                   disabled={!ableToCreateProduct}
                   loading={isFetching}

@@ -45,11 +45,6 @@ export type Param = {
 export const fetchProducts = createAsyncThunk(
    "/products/getProducts",
    async (param: Param) => {
-      // console.log("fetch Products check param", param);
-
-      console.log('check param', param);
-      
-
       const { admin, replace, status, ...rest } = param;
 
       if (import.meta.env.DEV) await sleep(500);
@@ -69,12 +64,12 @@ export const searchProducts = createAsyncThunk(
 
       if (import.meta.env.DEV) await sleep(500);
 
-      const data = (await searchService({
+      const payload = await searchService({
          q: key,
          ...rest,
-      })) as ProductState;
+      });
 
-      return { ...data, ...rest, status, replace };
+      return { ...payload, ...rest, status, replace };
    }
 );
 
@@ -156,8 +151,10 @@ const productsSlice = createSlice({
             state.page = payload.page || 0;
             state.productState.count = payload.count || 0;
 
-            if (replace) state.productState.products = payload.products;
-            else state.productState.products.push(...payload.products);
+            const products = payload.products || [];
+
+            if (replace) state.productState.products = products;
+            else state.productState.products.push(...products);
          })
 
          .addCase(searchProducts.rejected, (state) => {

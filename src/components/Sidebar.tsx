@@ -24,7 +24,7 @@ export default function Sidebar({ isOpen, closeSidebar }: Props) {
    };
 
    const classes = {
-      container: `fixed z-[299] top-[105px] left-0 bottom-0 w-[260px] max-w-[60vw] bg-[#fff] hidden max-[768px]:block transition-[transform, opacity] duration-[.3s]`,
+      container: `fixed z-[299] px-[10px] top-[105px] left-0 bottom-0 w-[260px] max-w-[60vw] bg-[#fff] hidden max-[768px]:block transition-[transform, opacity] duration-[.3s]`,
       open: "translate-x-0 opacity-[1]",
       hide: "translate-x-[-100%] opacity-[.5]",
       closeBtn: "absolute right-[10px] top-[10px]",
@@ -33,18 +33,21 @@ export default function Sidebar({ isOpen, closeSidebar }: Props) {
    return (
       <>
          <div className={`${classes.container} ${isOpen ? classes.open : classes.hide}`}>
-            <ul className="py-[14px] px-[10px]">
-               {categories.map((c, index) => !c.hidden && (
-                  <Link
-                     onClick={closeSidebar}
-                     key={index}
-                     to={`/${c.category_ascii}`}
-                     className="flex items-center space-x-[4px] h-[34px] text-[#333]"
-                  >
-                     <TagIcon className="w-[24px]" />
-                     <span className="text-[16px] font-[500]">{c.category}</span>
-                  </Link>
-               ))}
+            <div className="pt-[14px]">
+               {categories.map(
+                  (c, index) =>
+                     !c.hidden && (
+                        <Link
+                           onClick={closeSidebar}
+                           key={index}
+                           to={`/${c.category_ascii}`}
+                           className="flex items-center space-x-[4px] h-[34px] text-[#333]"
+                        >
+                           <TagIcon className="w-[24px]" />
+                           <span className="text-[16px] font-[500]">{c.category}</span>
+                        </Link>
+                     )
+               )}
 
                {auth?.username && (
                   <Link
@@ -56,15 +59,28 @@ export default function Sidebar({ isOpen, closeSidebar }: Props) {
                      <span className="text-[16px] font-[500]">My order</span>
                   </Link>
                )}
-            </ul>
+            </div>
 
-            <div className="text-center mt-auto absolute bottom-[30px] left-[50%] translate-x-[-50%]">
-               {auth?.token ? (
-                  <PushButton onClick={singOut}>Log out</PushButton>
-               ) : (
-                  <PushButton to="/login">Login</PushButton>
+            <div className="mt-[10px] pt-[10px] border-t">
+               {auth?.role === "ADMIN" && (
+                  <Link
+                     onClick={closeSidebar}
+                     to={`/dashboard`}
+                     className="flex items-center  space-x-[4px] h-[34px] text-[#333]"
+                  >
+                     <ArchiveBoxIcon className="w-[24px]" />
+                     <span className="text-[16px] font-[500]">Dashboard</span>
+                  </Link>
                )}
             </div>
+         </div>
+
+         <div className="text-center mt-auto absolute bottom-[30px] left-[50%] translate-x-[-50%]">
+            {auth?.token ? (
+               <PushButton onClick={singOut}>Log out</PushButton>
+            ) : (
+               <PushButton to="/login">Login</PushButton>
+            )}
          </div>
 
          {isOpen && <Modal closeModal={closeSidebar} />}

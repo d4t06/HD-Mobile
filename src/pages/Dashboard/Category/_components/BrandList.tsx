@@ -76,7 +76,7 @@ export default function BrandList({ mainClasses }: Props) {
             {currentCategoryIndex !== undefined && currentCategory && (
                <div className={`${mainClasses.flexContainer} mt-[16px]`}>
                   {currentCategory.brands.map((item, index) => (
-                     <div key={index} className={`${mainClasses.flexCol} w-2/12`}>
+                     <div key={index} className={`${mainClasses.flexCol}  w-1/2 sm:w-1/6`}>
                         <BrandItem
                            brand={item}
                            index={index}
@@ -85,7 +85,7 @@ export default function BrandList({ mainClasses }: Props) {
                      </div>
                   ))}
 
-                  <div className={`${mainClasses.flexCol} w-2/12`}>
+                  <div className={`${mainClasses.flexCol}  w-1/2 sm:w-1/6`}>
                      <Empty
                         fontClassName="bg-[#f1f1f1]"
                         onClick={() => setOpenModal(true)}

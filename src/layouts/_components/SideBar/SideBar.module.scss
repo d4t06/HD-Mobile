@@ -20,7 +20,12 @@
 
       .logo-image {
          width: 50px;
+         padding: 4px;
       }
+   }
+
+   @media screen and (max-width: 639px) {
+      width: 55px;
    }
 
    &.expand {
@@ -42,7 +47,6 @@
       display: flex;
       align-items: center;
       padding: 10px 0;
-;
       justify-content: center;
       font-weight: 500;
       transition: padding linear 0.15s;

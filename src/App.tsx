@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { privateRoutes, publicRoutes } from "./routes";
 import DashboardLayout from "./layouts/DashboardLayout";
 import RequireAuth from "./routes/RequireAuth";
@@ -8,7 +8,7 @@ import { Init } from "./pages";
 
 function App() {
    return (
-      <Router basename="/HD-Mobile">
+      <Router basename="/">
          <Routes>
             <Route
                path="*"
