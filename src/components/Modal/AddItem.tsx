@@ -7,7 +7,7 @@ import {
 } from "react";
 import Input, { inputClasses } from "../ui/Input";
 import ModalHeader from "./ModalHeader";
-import PushButton from "../ui/PushButton";
+import Button from "../ui/Button";
 
 type Props = {
    closeModal: () => void;
@@ -65,9 +65,9 @@ export default function AddItem({
             {children}
 
             <p className="text-right mt-[20px]">
-               <PushButton loading={loading} type="submit">
+               <Button colors={'third'} loading={loading} type="submit">
                   Save
-               </PushButton>
+               </Button>
             </p>
          </form>
       </div>

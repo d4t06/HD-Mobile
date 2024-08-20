@@ -34,9 +34,9 @@ export default function ColorItem({ color, index }: Props) {
       switch (props.type) {
          case "Edit": {
             const schema: ProductColorSchema = {
-               ...color,
-               color: props.value,
-               color_ascii: generateId(props.value),
+               name: props.value,
+               name_ascii: generateId(props.value),
+               product_id: color.product_id,
             };
 
             await actions({
@@ -67,8 +67,8 @@ export default function ColorItem({ color, index }: Props) {
             return (
                <AddItem
                   loading={isFetching}
-                  title={`Edit color '${color}'`}
-                  initValue={color.color}
+                  title={`Edit color '${color.name}'`}
+                  initValue={color.name}
                   cbWhenSubmit={(value) => handleBrandActions({ type: "Edit", value })}
                   closeModal={closeModal}
                />
@@ -80,7 +80,7 @@ export default function ColorItem({ color, index }: Props) {
                   callback={() => handleBrandActions({ type: "Delete" })}
                   loading={isFetching}
                   closeModal={closeModal}
-                  label={`Delete color '${color.color}'`}
+                  label={`Delete color '${color.name}'`}
                />
             );
          default:
@@ -91,7 +91,7 @@ export default function ColorItem({ color, index }: Props) {
    return (
       <>
          <Empty fontClassName="bg-[#f6f6f6]">
-            <span className="font-semibold">{color.color}</span>
+            <span className="font-semibold">{color.name}</span>
             <OverlayCTA
                data={[
                   {

@@ -65,7 +65,7 @@ export default function DetailTop({ loading, product }: Props) {
       const schema: CartItemSchema = {
          amount: 1,
          color_id: color?.id,
-         product_ascii: product.product_ascii,
+         product_id: product.id,
          username: auth.username,
          variant_id: variant.id,
       };
@@ -110,7 +110,7 @@ export default function DetailTop({ loading, product }: Props) {
 
       const content = (
          <h1 className={classes.proName}>
-            {product.product}
+            {product.name}
             {auth && auth.role === "ADMIN" && (
                <PencilSquareIcon className="w-[24px] inline-block ml-[6px]" />
             )}
@@ -119,7 +119,7 @@ export default function DetailTop({ loading, product }: Props) {
 
       if (auth?.role === "ADMIN")
          return (
-            <Link target="_blank" to={`/dashboard/product/${product.product_ascii}`}>
+            <Link target="_blank" to={`/dashboard/product/${product.id}`}>
                {content}
             </Link>
          );
@@ -168,7 +168,7 @@ export default function DetailTop({ loading, product }: Props) {
                                                          currentCombine.variant_id
                                                       }
                                                    >
-                                                      <span>{variant.variant}</span>
+                                                      <span>{variant.name}</span>
                                                       <span className="text-[14px] font-[500]">
                                                          {moneyFormat(
                                                             defaultCombine.price
@@ -195,7 +195,7 @@ export default function DetailTop({ loading, product }: Props) {
                                                    color.id === currentCombine.color_id
                                                 }
                                              >
-                                                <span>{color.color}</span>
+                                                <span>{color.name}</span>
                                              </Button>
                                           </div>
                                        ))}
@@ -226,7 +226,7 @@ export default function DetailTop({ loading, product }: Props) {
                         )}
                         {!currentCombine && (
                            <div className={cx("price")}>
-                              <p className={cx("label")}>Giá bán</p>
+                              <p className={cx("label")}>Price</p>
                               <p className={cx("cur-price")}>Contact</p>
                            </div>
                         )}

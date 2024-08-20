@@ -78,8 +78,8 @@ export default function CategoryList({ mainClasses }: Props) {
          case "Add": {
             const categorySchema: CategorySchema = {
                attribute_order: "",
-               category: props.value,
-               category_ascii: generateId(props.value),
+               name: props.value,
+               name_ascii: generateId(props.value),
                hidden: false,
             };
 
@@ -94,8 +94,8 @@ export default function CategoryList({ mainClasses }: Props) {
             const categorySchema: CategorySchema = {
                attribute_order: target.attribute_order,
                hidden: false,
-               category: props.value,
-               category_ascii: generateId(props.value),
+               name: props.value,
+               name_ascii: generateId(props.value),
             };
 
             await actions({
@@ -128,8 +128,8 @@ export default function CategoryList({ mainClasses }: Props) {
             return (
                <AddItem
                   loading={isFetching}
-                  title={`Edit '${categories[currentCategoryIndex.current].category}' `}
-                  initValue={categories[currentCategoryIndex.current].category}
+                  title={`Edit '${categories[currentCategoryIndex.current].name}' `}
+                  initValue={categories[currentCategoryIndex.current].name}
                   cbWhenSubmit={(value) => handleCategoryActions({ type: "Edit", value })}
                   closeModal={closeModal}
                />
@@ -144,7 +144,7 @@ export default function CategoryList({ mainClasses }: Props) {
                   loading={isFetching}
                   closeModal={closeModal}
                   label={`Delete category '${
-                     categories[currentCategoryIndex.current].category
+                     categories[currentCategoryIndex.current].name
                   }'`}
                />
             );
@@ -168,7 +168,7 @@ export default function CategoryList({ mainClasses }: Props) {
                            className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}
                         >
                            <Empty>
-                              <span className="font-[500]">{item.category}</span>
+                              <span className="font-[500]">{item.name}</span>
                               <OverlayCTA
                                  data={[
                                     {

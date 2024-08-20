@@ -33,14 +33,14 @@ export default function useProductAction({ closeModal }: Props) {
       variant: "Edit";
       product: Partial<ProductSchema>;
       index: number;
-      productAscii: string;
+      productId: number;
       target: "list";
    };
 
    type EditProducDetail = {
       variant: "Edit";
       product: Partial<ProductSchema>;
-      productAscii: string;
+      productId: number;
       target: "one";
    };
 
@@ -59,9 +59,9 @@ export default function useProductAction({ closeModal }: Props) {
                break;
 
             case "Edit":
-               const { product, productAscii, target } = props;
+               const { product, productId, target } = props;
 
-               await privateRequest.put(`${URL}/${productAscii}`, product);
+               await privateRequest.put(`${URL}/${productId}`, product);
 
                if (target === "list") {
                   dispatch(
@@ -80,14 +80,14 @@ export default function useProductAction({ closeModal }: Props) {
       }
    };
 
-   const deleteProduct = async (productAscii: string) => {
+   const deleteProduct = async (id: number) => {
       try {
          setIsFetching(true);
          if (import.meta.env.DEV) await sleep(500);
 
-         await privateRequest.delete(`${URL}/${productAscii}`);
+         await privateRequest.delete(`${URL}/${id}`);
 
-         const newProducts = products.filter((p) => p.product_ascii !== productAscii);
+         const newProducts = products.filter((p) => p.id !== id);
          dispatch(setProducts({ products: newProducts, variant: "replace" }));
 
          setSuccessToast(`Delete product successful`);

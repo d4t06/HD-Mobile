@@ -12,7 +12,7 @@ export default function CartItemList() {
       <>
          <Title>
             <ShoppingBagIcon className="w-[22px] md:w-[24px]" />
-            <span>Tất cả sản phẩm ({cartItems.length})</span>
+            <span>Products ({cartItems.length})</span>
          </Title>
          <PushFrame>
             <div className={`space-y-[20px] ${false ? "disable" : ""}`}>

@@ -33,7 +33,7 @@ export default function Checkbox({ handleFilter, filters, data }: Props) {
             border={"thin"}
             className="py-[2px] px-[9px]"
          >
-            Tất cả
+            All
          </Button>
          {/* </div> */}
          {data.map((item, index) => {
@@ -50,7 +50,7 @@ export default function Checkbox({ handleFilter, filters, data }: Props) {
                   onClick={() => handleToggle(item)}
                   active={isChecked}
                >
-                  {item.brand}
+                  {item.name}
                </Button>
             );
          })}

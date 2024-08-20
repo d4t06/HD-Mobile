@@ -36,8 +36,8 @@ export default function BrandItem({ brand, categoryIndex, index }: Props) {
          case "Edit": {
             const brandSchema: BrandSchema = {
                ...brand,
-               brand: props.value,
-               brand_ascii: generateId(props.value),
+               name: props.value,
+               name_ascii: generateId(props.value),
             };
 
             await actions({
@@ -72,8 +72,8 @@ export default function BrandItem({ brand, categoryIndex, index }: Props) {
             return (
                <AddItem
                   loading={isFetching}
-                  title={`Edit brand '${brand.brand}'`}
-                  initValue={brand.brand}
+                  title={`Edit brand '${brand.name}'`}
+                  initValue={brand.name}
                   cbWhenSubmit={(value) => handleBrandActions({ type: "Edit", value })}
                   closeModal={closeModal}
                />
@@ -85,7 +85,7 @@ export default function BrandItem({ brand, categoryIndex, index }: Props) {
                   callback={() => handleBrandActions({ type: "Delete" })}
                   loading={isFetching}
                   closeModal={closeModal}
-                  label={`Delete category '${brand.brand}'`}
+                  label={`Delete category '${brand.name}'`}
                />
             );
          default:
@@ -96,7 +96,7 @@ export default function BrandItem({ brand, categoryIndex, index }: Props) {
    return (
       <>
          <Empty fontClassName="bg-[#f6f6f6]">
-            <span className="font-semibold">{brand.brand}</span>
+            <span className="font-semibold">{brand.name}</span>
             <OverlayCTA
                data={[
                   {

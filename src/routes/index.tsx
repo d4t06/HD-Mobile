@@ -11,7 +11,6 @@ import {
    DashboardProduct,
    EditProduct,
    Search,
-   Message,
    Review,
    Login,
    Register,
@@ -30,7 +29,7 @@ const routes = {
    LOGIN: "/login",
    REGISTER: "/register",
    SEARCH: "/search/:key",
-   DETAIL: "/product/:productAscii",
+   DETAIL: "/product/:productId",
    UNAUTHORIZED: "/unauthorized",
    ACCOUNT: "/account",
    CHECKOUT: "/check-out",
@@ -127,7 +126,7 @@ const privateRoutes = [
       component: Banner,
    },
    {
-      path: "/dashboard/product/:productAscii",
+      path: "/dashboard/product/:productId",
       role: ["ADMIN"],
       component: EditProduct,
    },
@@ -140,11 +139,6 @@ const privateRoutes = [
       path: "/dashboard/order/:id",
       role: ["ADMIN"],
       component: DashboardOrderDetail,
-   },
-   {
-      path: "/dashboard/message",
-      role: ["ADMIN"],
-      component: Message,
    },
    {
       path: "/dashboard/review",

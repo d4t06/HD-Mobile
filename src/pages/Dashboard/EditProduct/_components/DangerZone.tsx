@@ -1,28 +1,30 @@
 import { Modal } from "@/components";
 import ConfirmModal from "@/components/Modal/Confirm";
-import PushButton from "@/components/ui/PushButton";
+import Button from "@/components/ui/Button";
 import useProductAction from "@/hooks/useProductAction";
 import { useState } from "react";
 
 type Props = {
-   productAscii: string;
+   productId: number;
 };
 
-export default function DangerZone({ productAscii }: Props) {
+export default function DangerZone({ productId }: Props) {
    const [openModal, setOpenModal] = useState(false);
    const closeModal = () => setOpenModal(false);
 
-   const { deleteProduct, isFetching } = useProductAction({closeModal});
+   const { deleteProduct, isFetching } = useProductAction({ closeModal });
 
    const handleDeleteProduct = async () => {
-      await deleteProduct(productAscii);
+      await deleteProduct(productId);
    };
 
    return (
       <>
          <h5 className={` text-red-500 mt-[30px] label font-semibold`}>DANGER ZONE</h5>
          <div className="border-red-500 border rounded-[16px] p-[14px]">
-            <PushButton onClick={() => setOpenModal(true)}>Delete Product</PushButton>
+            <Button colors={"third"} onClick={() => setOpenModal(true)}>
+               Delete Product
+            </Button>
          </div>
 
          {openModal && (

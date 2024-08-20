@@ -16,9 +16,9 @@ export default function MobileCategories({ categories }: Props) {
                         <Button
                            colors={"third"}
                            className="w-full h-[60px]"
-                           to={`/${c.category_ascii}`}
+                           to={`/${c.name_ascii}`}
                         >
-                           <span className="text-[14px] mt-[4px]">{c.category}</span>
+                           <span className="text-[14px] mt-[4px]">{c.name}</span>
                         </Button>
                      </div>
                   )

@@ -29,7 +29,7 @@ export default function Radiobox({ filters, handleFilter, data }: Props) {
             border={"thin"}
             className="py-[2px] px-[9px]"
          >
-            Tất cả
+            All
          </Button>
 
          {data.map((item, index) => {

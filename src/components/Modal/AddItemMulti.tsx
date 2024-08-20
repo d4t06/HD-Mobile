@@ -10,7 +10,7 @@ import {
 import Input from "../ui/Input";
 import ModalHeader from "./ModalHeader";
 import { generateId, moneyFormat } from "@/utils/appHelper";
-import PushButton from "../ui/PushButton";
+import Button from "../ui/Button";
 
 export type FieldType = (
    | string
@@ -141,9 +141,9 @@ export default function AddItemMulti({
             {children}
 
             <p className="text-right mt-[20px]">
-               <PushButton loading={loading} type="submit">
+               <Button colors={'third'} loading={loading} type="submit">
                   Save
-               </PushButton>
+               </Button>
             </p>
          </form>
       </div>

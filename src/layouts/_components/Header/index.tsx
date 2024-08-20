@@ -26,7 +26,7 @@ function Header() {
    const { categories, status } = useSelector(selectCategory);
 
    const renderCategories = useMemo(() => {
-      if (!categories.length) return <h1>Not category found</h1>;
+      if (!categories.length) return;
       return categories.map(
          (cat, index) =>
             !cat.hidden && (
@@ -34,12 +34,11 @@ function Header() {
                   key={index}
                   className={cx("nav-item", {
                      active:
-                        !showSearchModal &&
-                        location.pathname === `/${cat.category_ascii}`,
+                        !showSearchModal && location.pathname === `/${cat.name_ascii}`,
                   })}
                >
-                  <Link to={`/${cat.category_ascii}`}>
-                     <p className={cx("nav-text")}>{cat.category}</p>
+                  <Link to={`/${cat.name_ascii}`}>
+                     <p className={cx("nav-text")}>{cat.name}</p>
                   </Link>
                </li>
             )

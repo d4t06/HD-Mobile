@@ -5,7 +5,7 @@ import { SortType, selectedAllFilter, storingFilters } from "../../store/filters
 import classNames from "classnames/bind";
 import styles from "./ProductSort.module.scss";
 
-import { fetchProducts, searchProducts } from "../../store/productsSlice";
+import { fetchProducts, searchProducts, selectedAllProduct } from "../../store/productsSlice";
 import { AppDispatch } from "@/store/store";
 import useCurrentCategory from "@/hooks/useCurrentCategory";
 import { Button } from "..";
@@ -38,8 +38,11 @@ function ProductSort({ searchKey }: Props) {
    const { filters } = useSelector(selectedAllFilter);
    const [checked, setChecked] = useState(1);
 
+   const {status} = useSelector(selectedAllProduct)
+
    // hooks
-   const { currentCategory, status } = useCurrentCategory();
+   const { currentCategory } = useCurrentCategory();
+
 
    useEffect(() => {
       if (checked === 1) return;
@@ -93,7 +96,7 @@ function ProductSort({ searchKey }: Props) {
 
    return (
       <div className={cx("product-sort")}>
-         <p className="text-[16px] font-[500]">Xem theo</p>
+         <p className="font-medium">Sort</p>
 
          <div className={cx("btn-group", { disable: status === "loading" })}>
             {continents.map((item, index) => {

@@ -1,4 +1,4 @@
-import PushButton from "@/components/ui/PushButton";
+import { Button } from "@/components";
 import { selectCart } from "@/store/cartSlice";
 import { moneyFormat } from "@/utils/appHelper";
 import { useMemo } from "react";
@@ -25,32 +25,33 @@ export default function PriceGroup() {
             <div className="flex flex-col md:flex-row items-start mx-[-8px]">
                <div className="w-full md:w-1/2 px-[8px]">
                   <div className="flex items-center leading-[30px]">
-                     <p className={classes.h5}>Tổng tiền:</p>
+                     <p className={classes.h5}>Subtotal:</p>
                      <p className={`${classes.h5} ml-auto text-black`}>
-                        {moneyFormat(totalPrice)}đ
+                        {moneyFormat(totalPrice) || "0"} đ
                      </p>
                   </div>
 
                   <div className="flex items-center leading-[30px]">
-                     <p className={classes.h5}>Giảm giá voucher:</p>
+                     <p className={classes.h5}>Voucher:</p>
                      <p className={`${classes.h5} ml-auto`}>- 0đ</p>
                   </div>
                </div>
                <div className="w-full md:w-1/2 px-[8px]">
                   <div className="flex items-center leading-[30px]">
-                     <p className={classes.h5}>Cần thanh toán:</p>
+                     <p className={classes.h5}>Total:</p>
                      <p className="text-[20px] text-[#cd1818] font-[600] ml-auto">
-                        {moneyFormat(totalPrice)}đ
+                     {moneyFormat(totalPrice) || "0"} đ
                      </p>
                   </div>
-                  <PushButton
+                  <Button
+                     colors={"third"}
                      loading={false}
                      disabled={!selectedCartItemId.length}
                      onClick={() => {}}
-                     baseClassName="w-full mt-[10px]"
+                     className="w-full mt-[10px]"
                   >
-                     Thanh toán
-                  </PushButton>
+                     Place Order
+                  </Button>
                </div>
             </div>
          </div>

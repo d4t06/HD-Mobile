@@ -5,7 +5,7 @@ import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
 import emptyCart from "@/assets/images/empty-cart.png";
 import Skeleton from "@/components/Skeleton";
 import { moneyFormat } from "@/utils/appHelper";
-import PushButton from "@/components/ui/PushButton";
+import { Button } from "@/components";
 
 export default function UserOrder() {
    const { status, orders } = useUserOrder({ autoRun: true });
@@ -101,14 +101,14 @@ export default function UserOrder() {
                               </div>
                            </div>
 
-                           <PushButton
+                           <Button
+                              colors={"third"}
                               size="clear"
-                              baseClassName="mx-auto mt-[10px] sm:mx-0 sm:mt-0"
-                              className="px-[12px] py-[2px] sm:px-[16px] sm:py-[4px]"
+                              className="mx-auto mt-[10px] sm:mx-0 sm:mt-0 px-[12px] py-[2px] sm:px-[16px] sm:py-[4px]"
                               to={`/order/${order.id}`}
                            >
                               Chi tiết
-                           </PushButton>
+                           </Button>
                         </div>
                      </div>
                   </PushFrame>

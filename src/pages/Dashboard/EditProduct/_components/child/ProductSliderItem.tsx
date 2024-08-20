@@ -143,7 +143,7 @@ export default function ProductSliderItem({ color, colorIndex }: Props) {
          <div className="flex items-center">
             <div className="w-2/6 sm:w-1/6">
                <p className="text-center font-[500]">
-                  {color.color}
+                  {color.name}
                </p>
             </div>
             <div className="flex flex-wrap flex-grow mt-[-8px]">

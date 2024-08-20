@@ -1,4 +1,4 @@
-import { ProductItem } from "@/components";
+import { Button, ProductItem } from "@/components";
 import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
@@ -10,7 +10,6 @@ import NoProduct from "./Product/NoProduct";
 import ProductSkeleton from "@/components/Skeleton/ProductSkeleton";
 import { AppDispatch } from "@/store/store";
 import { searchProducts } from "@/store/productsSlice";
-import PushButton from "@/components/ui/PushButton";
 import { selectCategory } from "@/store/categorySlice";
 import Skeleton from "@/components/Skeleton";
 
@@ -108,13 +107,14 @@ export default function SearchResultPage() {
                </div>
                {!!products.length && (
                   <p className="text-center mt-[30px]">
-                     <PushButton
+                     <Button
+                        colors={"third"}
                         loading={status === "more-loading"}
                         disabled={status === "loading" || remaining === 0}
                         onClick={() => handleGetMore()}
                      >
                         Xem thêm
-                     </PushButton>
+                     </Button>
                   </p>
                )}
             </div>

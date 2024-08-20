@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { generateId, initProductObject } from "@/utils/appHelper";
-import { Gallery, Modal } from "@/components";
+import { Button, Gallery, Modal } from "@/components";
 import { Empty, Input } from "@/components";
 import { inputClasses } from "@/components/ui/Input";
 import ModalHeader from "./ModalHeader";
@@ -8,7 +8,6 @@ import useProductAction from "@/hooks/useProductAction";
 import { useToast } from "@/store/ToastContext";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import OverlayCTA from "../ui/OverlayCTA";
-import PushButton from "../ui/PushButton";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 
@@ -35,8 +34,8 @@ const runInitProductData = (props: Props) => {
          const { product } = props;
          return initProductObject({
             image_url: product.image_url,
-            product: product.product,
-            product_ascii: product.product_ascii,
+            name: product.name,
+            name_ascii: product.name_ascii,
             brand_id: product.brand_id,
             category_id: product.category_id,
          });
@@ -81,12 +80,12 @@ export default function AddProductModal({ ...props }: Props) {
    const localCloseModal = () => setIsOpenModal(false);
 
    const handleInput = (field: keyof ProductSchema, value: any) => {
-      // also set product_ascii
-      if (field === "product") {
+      // also set name_ascii
+      if (field === "name") {
          return setProductData({
             ...productData,
             [field]: value,
-            product_ascii: generateId(value),
+            name_ascii: generateId(value),
          });
       }
 
@@ -106,7 +105,7 @@ export default function AddProductModal({ ...props }: Props) {
 
    const ableToCreateProduct = useMemo(
       () =>
-         !!productData.product &&
+         !!productData.name &&
          productData.category_id !== undefined &&
          productData.brand_id !== undefined,
       [productData]
@@ -126,7 +125,7 @@ export default function AddProductModal({ ...props }: Props) {
             await actions({
                variant: "Edit",
                target: "list",
-               productAscii: product.product_ascii,
+               productId: product.id,
                index: currentIndex,
                product: productData,
             });
@@ -136,7 +135,7 @@ export default function AddProductModal({ ...props }: Props) {
 
    const tileMap: Record<typeof props.type, string> = {
       Add: "Thêm sản phẩm mới",
-      Edit: `Chỉnh sửa sản phẩm '${props.type === "Edit" && props.product.product}'`,
+      Edit: `Chỉnh sửa sản phẩm '${props.type === "Edit" && props.product.name}'`,
    };
 
    return (
@@ -180,8 +179,8 @@ export default function AddProductModal({ ...props }: Props) {
                         ref={nameRef}
                         name="name"
                         type="text"
-                        value={productData.product}
-                        cb={(value) => handleInput("product", value)}
+                        value={productData.name}
+                        cb={(value) => handleInput("name", value)}
                      />
                   </div>
 
@@ -202,7 +201,7 @@ export default function AddProductModal({ ...props }: Props) {
                                  (category, index) =>
                                     !category.hidden && (
                                        <option key={index} value={category.id}>
-                                          {category.category}
+                                          {category.name}
                                        </option>
                                     )
                               )}
@@ -223,7 +222,7 @@ export default function AddProductModal({ ...props }: Props) {
                         <option value={undefined}>- - -</option>
                         {brandsByCategory.map((brand, index) => (
                            <option key={index} value={brand.id}>
-                              {brand.brand}
+                              {brand.name}
                            </option>
                         ))}
                      </select>
@@ -232,14 +231,15 @@ export default function AddProductModal({ ...props }: Props) {
             </div>
 
             <p className="text-center mt-[16px] pb-[4px]">
-               <PushButton
+               <Button
+                  colors={"third"}
                   disabled={!ableToCreateProduct}
                   loading={isFetching}
                   className="font-[600]"
                   onClick={handleSubmit}
                >
                   Save
-               </PushButton>
+               </Button>
             </p>
          </div>
 

@@ -1,7 +1,6 @@
 import {
    CreditCardIcon,
    MapPinIcon,
-   TruckIcon,
    BanknotesIcon,
 } from "@heroicons/react/24/outline";
 import PushFrame from "@/components/ui/PushFrame";
@@ -55,31 +54,12 @@ export default function Cart() {
                <CartItemList />
             </div>
 
-            <div className={classes.container}>
-               <Title>
-                  <TruckIcon className="w-[22px] md:w-[24px]" />
-                  <span>Hình thức nhận hàng</span>
-               </Title>
-
-               <div className=" flex flex-col items-start sm:flex-row space-y-[10px] sm:space-y-0 sm:items-center sm:space-x-[10px]">
-                  <Button
-                     className="text-[15px]"
-                     colors="second"
-                     active={true}
-                     onClick={() => {}}
-                  >
-                     Giao hàng tận nơi
-                  </Button>
-                  <Button className="text-[15px]" colors={"second"} onClick={() => {}}>
-                     Nhận tại của hàng
-                  </Button>
-               </div>
-            </div>
+       
 
             <div className={classes.container}>
                <Title>
                   <MapPinIcon className="w-[22px] md:w-[24px]" />
-                  <span>Địa chỉ</span>
+                  <span>Address</span>
                </Title>
                <PushFrame>
                   <AddressGroup ref={AddressGroupRef} />
@@ -89,7 +69,7 @@ export default function Cart() {
             <div className={classes.container}>
                <Title>
                   <CreditCardIcon className="w-[22px] md:w-[24px]" />
-                  <span>Hình thức thanh toán</span>
+                  <span>Payment Method</span>
                </Title>
 
                <div className=" flex flex-col items-start sm:flex-row space-y-[10px] sm:space-y-0 sm:items-center sm:space-x-[10px]">
@@ -100,17 +80,16 @@ export default function Cart() {
                      onClick={() => {}}
                   >
                      <BanknotesIcon className="w-[22px] md:w-[24px] mr-[6px]" />
-                     Thanh toán khi nhận hàng
+                     Cash on delivery
                   </Button>
                   <Button className="text-[15px]" colors={"second"} onClick={() => {}}>
                      <CreditCardIcon className="w-[22px] md:w-[24px] mr-[6px]" />
-                     Chuyển khoản ngân hàng
+                     Credit card
                   </Button>
                </div>
             </div>
-
-            <PriceGroup />
          </div>
+         <PriceGroup />
       </>
    );
 }

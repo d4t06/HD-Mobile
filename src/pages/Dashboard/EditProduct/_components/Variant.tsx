@@ -24,9 +24,9 @@ export default function Variant({ mainClasses }: Props) {
       if (!product) return;
 
       const schema: ProductVariantSchema = {
-         variant: value,
-         variant_ascii: generateId(value),
-         product_ascii: product?.product_ascii,
+         name: value,
+         name_ascii: generateId(value),
+         product_id: product.id,
       };
 
       await actions({
@@ -42,7 +42,9 @@ export default function Variant({ mainClasses }: Props) {
       <>
          <h1 className={mainClasses.label}>Variant</h1>
          <div className={mainClasses.group}>
-            <div className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}>
+            <div
+               className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}
+            >
                {product.variants.map((item, index) => (
                   <div key={index} className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
                      <VariantItem index={index} variant={item} />

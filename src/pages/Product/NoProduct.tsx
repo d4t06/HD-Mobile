@@ -7,7 +7,7 @@ const NoProduct = () => {
    return (
       <div className={cx("no-product")}>
          <img src={notfoundImage} alt="" />
-         <p className="mt-[10px]">No product found, ¯\_(ツ)_/¯</p>
+         <p className="mt-2 font-medium">No product found, ¯\_(ツ)_/¯</p>
       </div>
    );
 };

@@ -1,6 +1,6 @@
+import { Button } from "@/components";
 import Skeleton from "@/components/Skeleton";
 import PrimaryLabel from "@/components/ui/PrimaryLabel";
-import PushButton from "@/components/ui/PushButton";
 import PushFrame from "@/components/ui/PushFrame";
 import useUserOrder from "@/hooks/useUserOrder";
 
@@ -200,19 +200,21 @@ export default function DashboardOrderDetail() {
          <div className="mt-[30px] flex flex-col space-y-[14px] sm:flex-row sm:space-y-0 sm:space-x-[14px] justify-center ">
             {orderDetail.status !== "canceled" && orderDetail.status !== "completed" && (
                <>
-                  <PushButton
+                  <Button
+                     colors={"third"}
                      loading={apiLoading && statusWantToUpdate.current === "canceled"}
                      onClick={() => handleUpdateOrderStatus("canceled")}
                   >
                      Huỷ
-                  </PushButton>
+                  </Button>
 
-                  <PushButton
+                  <Button
+                     colors={"third"}
                      loading={apiLoading && statusWantToUpdate.current === "delivering"}
                      onClick={() => handleUpdateOrderStatus("delivering")}
                   >
                      Đã chuẩn bị hàng
-                  </PushButton>
+                  </Button>
                </>
             )}
          </div>

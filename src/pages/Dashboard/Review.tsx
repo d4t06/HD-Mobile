@@ -1,4 +1,4 @@
-import { Modal } from "@/components";
+import { Button, Modal } from "@/components";
 import { useMemo, useRef, useState } from "react";
 import { AdminReply } from "@/components/CommentItem";
 import ConfirmModal from "@/components/Modal/Confirm";
@@ -6,7 +6,6 @@ import ConfirmModal from "@/components/Modal/Confirm";
 import useReview from "@/hooks/useReview";
 import Skeleton from "@/components/Skeleton";
 import ReviewItem from "@/components/ReviewItem";
-import PushButton from "@/components/ui/PushButton";
 
 type ModalTarget = "Add-Comment" | "Add-Reply" | "Edit-Reply" | "Delete-Comment";
 
@@ -74,29 +73,32 @@ export default function Review() {
 
    const Cta = (index: number, comment: ProductComment) => (
       <>
-         <PushButton
+         <Button
+            colors={"third"}
             className={classes.button}
             onClick={() => handleOpenModal("Add-Reply", index)}
             size={"clear"}
          >
             Reply
-         </PushButton>
-         <PushButton
+         </Button>
+         <Button
+            colors={"third"}
             className={classes.button}
             onClick={() => handleOpenModal("Delete-Comment", index)}
             size={"clear"}
          >
             Delete
-         </PushButton>
+         </Button>
          {!comment.approve && (
-            <PushButton
+            <Button
+               colors={"third"}
                loading={apiLoading && curReviewIndex.current === index}
                onClick={() => handleApproveReview(index)}
                size={"clear"}
                className={classes.button}
             >
                Approve
-            </PushButton>
+            </Button>
          )}
       </>
    );
@@ -121,7 +123,8 @@ export default function Review() {
                            <div className="ml-[74px] mt-[14px]">
                               <AdminReply
                                  cta={
-                                    <PushButton
+                                    <Button
+                                       colors={"third"}
                                        onClick={() =>
                                           handleOpenModal("Edit-Reply", index)
                                        }
@@ -129,7 +132,7 @@ export default function Review() {
                                        size={"clear"}
                                     >
                                        Edit
-                                    </PushButton>
+                                    </Button>
                                  }
                                  reply={r.reply_data}
                               />
@@ -145,9 +148,9 @@ export default function Review() {
 
          {!!reviews.length && (
             <p className="mt-[30px] text-center">
-               <PushButton disabled={remaining <= 0}>
+               <Button colors={"third"} disabled={remaining <= 0}>
                   Xem thêm ({remaining > 0 ? remaining : 0}) đánh giá
-               </PushButton>
+               </Button>
             </p>
          )}
          <>{isOpenModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}</>

@@ -64,7 +64,7 @@ export default function Dashboard() {
                      {products.map((productItem, index) => {
                         return (
                            <tr key={index}>
-                              <td className="font-[500]">{productItem.product}</td>
+                              <td className="font-[500]">{productItem.name}</td>
                               {/* loop here */}
                               <td className="!text-right">
                                  <Button
@@ -82,7 +82,7 @@ export default function Dashboard() {
                                     <PencilSquareIcon className="w-[24px]" />
                                  </Button>
                                  <Button
-                                    to={`${productItem.product_ascii}`}
+                                    to={`${productItem.id}`}
                                     size={"clear"}
                                     className="p-[4px] ml-[8px]"
                                     colors={"second"}
@@ -143,18 +143,20 @@ export default function Dashboard() {
                   currentIndex={currentProductIndex.current}
                />
             );
-         case "Delete":
-            if (!currentProduct.current || currentProductIndex.current === undefined)
-               return <p>Some thing went wrong</p>;
+         case "Delete": {
+            const p = currentProduct.current;
+            if (p)
+               return (
+                  <ConfirmModal
+                     label={`Delete '${currentProduct.current!.name}' ?`}
+                     callback={() => deleteProduct(p.id)}
+                     closeModal={closeModal}
+                     loading={isFetching}
+                  />
+               );
 
-            return (
-               <ConfirmModal
-                  label={`Delete '${currentProduct.current!.product}' ?`}
-                  callback={() => deleteProduct(currentProduct.current!.product_ascii)}
-                  closeModal={closeModal}
-                  loading={isFetching}
-               />
-            );
+            break;
+         }
          default:
             return <h1 className="text-2xl">Noting to show</h1>;
       }
@@ -168,36 +170,7 @@ export default function Dashboard() {
 
    return (
       <>
-         <div className="flex flex-wrap mt-[-8px] ml-[-8px] mb-[10px]">
-            <Button
-               colors={"second"}
-               onClick={() => setCurCategory(undefined)}
-               active={!curCategory}
-               size={"clear"}
-               className={classes.tab}
-            >
-               All
-            </Button>
-            {categories.map((cat, index) => {
-               if (cat.hidden) return;
-               const active = curCategory?.category_ascii === cat.category_ascii;
-               return (
-                  <Button
-                     colors={"second"}
-                     key={index}
-                     size={"clear"}
-                     className={classes.tab}
-                     onClick={() => setCurCategory(cat)}
-                     active={active}
-                  >
-                     {cat.category}
-                     {status === "successful" && active && " (" + count + ")"}
-                  </Button>
-               );
-            })}
-         </div>
-
-         <div className="flex items-start justify-between mt-[30px]">
+         <div className="flex items-start justify-between ">
             <Search variant="dashboard" />
             <Button
                className="flex-shrink-0 ml-[10px] px-[12px] py-[7px]"
@@ -210,7 +183,36 @@ export default function Dashboard() {
             </Button>
          </div>
 
-         <div className="mt-[10px]">
+         <div className="flex flex-wrap mt-3 ml-[-8px] mb-[10px]">
+            <Button
+               colors={"second"}
+               onClick={() => setCurCategory(undefined)}
+               active={!curCategory}
+               size={"clear"}
+               className={classes.tab}
+            >
+               All
+            </Button>
+            {categories.map((cat, index) => {
+               if (cat.hidden) return;
+               const active = curCategory?.name_ascii === cat.name_ascii;
+               return (
+                  <Button
+                     colors={"second"}
+                     key={index}
+                     size={"clear"}
+                     className={classes.tab}
+                     onClick={() => setCurCategory(cat)}
+                     active={active}
+                  >
+                     {cat.name}
+                     {status === "successful" && active && " (" + count + ")"}
+                  </Button>
+               );
+            })}
+         </div>
+
+         <div className="mt-4">
             {renderProducts}
             {status === "loading" && (
                <p className="mt-[30px] text-center w-full">
@@ -231,11 +233,7 @@ export default function Dashboard() {
             )}
          </div>
 
-         {isOpenModal && (
-            <Modal closeModal={closeModal}>
-               {renderModal}
-            </Modal>
-         )}
+         {isOpenModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
       </>
    );
 }

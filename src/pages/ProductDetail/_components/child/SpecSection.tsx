@@ -31,37 +31,50 @@ export default function SpecSection({ product, loading }: Props) {
          {loading && SpecSkeleton}
          {!loading && product && (
             <div className={"spec-table"}>
-               <Image
-                  classNames="max-w-[60%] w-[250px] mx-auto"
-                  src={product.image_url}
-               />
+               {product.image_url ? (
+                  <Image
+                     classNames="max-w-[60%] w-[250px] mx-auto"
+                     src={product.image_url}
+                  />
+               ) : (
+                  <img
+                     src="https://d4t06.github.io/Vue-Mobile/assets/search-empty-ChRLxitn.png"
+                     className="mx-auto"
+                     alt=""
+                  />
+               )}
                <div className="mt-[20px] mb-[10px]">
                   <table className={cx("table")}>
                      <tbody>
-                        {attributeOrder.length ? attributeOrder.map((id, index) => {
-                           const foundedCategoryAttribute =
-                              product.category.attributes.find(
-                                 (catAttr) => catAttr.id === +id
+                        {attributeOrder.length ? (
+                           attributeOrder.map((id, index) => {
+                              const foundedCategoryAttribute =
+                                 product.category.attributes.find(
+                                    (catAttr) => catAttr.id === +id
+                                 );
+
+                              if (!foundedCategoryAttribute) return <p>Wrong index</p>;
+
+                              const foundedProductAttribute = product.attributes.find(
+                                 (attr) =>
+                                    attr.category_attribute_id ==
+                                    foundedCategoryAttribute.id
                               );
 
-                           if (!foundedCategoryAttribute) return <p>Wrong index</p>;
-
-                           const foundedProductAttribute = product.attributes.find(
-                              (attr) =>
-                                 attr.category_attribute_id == foundedCategoryAttribute.id
-                           );
-
-                           return (
-                              <tr key={index}>
-                                 <td className="w-[40%]">
-                                    {foundedCategoryAttribute.attribute}
-                                 </td>
-                                 <td className="leading-[1.6]">
-                                    {foundedProductAttribute?.value || "..."}
-                                 </td>
-                              </tr>
-                           );
-                        }) : <p className="text-center">¯\_(ツ)_/¯</p>}
+                              return (
+                                 <tr key={index}>
+                                    <td className="w-[40%]">
+                                       {foundedCategoryAttribute.name}
+                                    </td>
+                                    <td className="leading-[1.6]">
+                                       {foundedProductAttribute?.value || "..."}
+                                    </td>
+                                 </tr>
+                              );
+                           })
+                        ) : (
+                           <p className="text-center">¯\_(ツ)_/¯</p>
+                        )}
                      </tbody>
                   </table>
                </div>

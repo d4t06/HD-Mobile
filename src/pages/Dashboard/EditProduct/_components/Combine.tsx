@@ -3,14 +3,11 @@ import { useSelector } from "react-redux";
 import Table from "@/components/Table";
 import CombineItem from "./child/CombineItem";
 
-
-
 type Props = {
    mainClasses: LayoutClasses;
 };
 
-
-export default function Combine({mainClasses}: Props) {
+export default function Combine({ mainClasses }: Props) {
    const { product } = useSelector(selectProduct);
 
    if (!product) return <></>;
@@ -23,7 +20,7 @@ export default function Combine({mainClasses}: Props) {
                   product.variants.map((item, index) =>
                      product.colors.map((color) => (
                         <CombineItem
-                           key={item.variant_ascii + color.color_ascii}
+                           key={item.name_ascii + color.name_ascii}
                            color={color}
                            variantIndex={index}
                            variant={item}

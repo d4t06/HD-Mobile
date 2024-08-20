@@ -44,7 +44,7 @@ function AddressGroup({}, ref: Ref<AddressGroupRef>) {
       <div className="space-y-[14px]">
          <div className="space-y-[6px]">
             <label className={classes.formLabel} htmlFor="name">
-               Họ và tên
+               Full name
             </label>
             <Input
                value={address.name}
@@ -55,7 +55,7 @@ function AddressGroup({}, ref: Ref<AddressGroupRef>) {
          </div>
          <div className="space-y-[6px]">
             <label className={classes.formLabel} htmlFor="phone-number">
-               Số điện thoại
+               Phone number
             </label>
             <Input
                id="phone-number"
@@ -65,7 +65,7 @@ function AddressGroup({}, ref: Ref<AddressGroupRef>) {
          </div>
          <div className="space-y-[6px]">
             <label className={classes.formLabel} htmlFor="location">
-               Địa chỉ
+               Address
             </label>
             <textarea
                onChange={(e) => handleAddress(e.target.value, "address")}

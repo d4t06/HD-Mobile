@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
-import useAttributeActions from "../../_hooks/useAttributeAction";
 import { generateId } from "@/utils/appHelper";
 import AddItem from "@/components/Modal/AddItem";
 import ConfirmModal from "@/components/Modal/Confirm";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Modal } from "@/components";
+import useAttributeActions from "../../_hooks/useAttributeAction";
 
 // import "../../category.scss";
 
@@ -16,7 +16,7 @@ type Props = {
 
 type Modal = "edit" | "delete";
 
-export default function AttributeItem({ attribute, categoryIndex, index }: Props) {
+export default function nameItem({ attribute, categoryIndex, index }: Props) {
    const [openModal, setOpenModal] = useState<Modal | "">("");
 
    const { actions, isFetching } = useAttributeActions({
@@ -39,8 +39,8 @@ export default function AttributeItem({ attribute, categoryIndex, index }: Props
          case "Edit": {
             const schema: CategoryAttributeSchema = {
                ...attribute,
-               attribute: props.value,
-               attribute_ascii: generateId(props.value),
+               name: props.value,
+               name_ascii: generateId(props.value),
             };
 
             await actions({
@@ -75,8 +75,8 @@ export default function AttributeItem({ attribute, categoryIndex, index }: Props
             return (
                <AddItem
                   loading={isFetching}
-                  title={`Edit attribute '${attribute.attribute}'`}
-                  initValue={attribute.attribute}
+                  title={`Edit name '${attribute.name}'`}
+                  initValue={attribute.name}
                   cbWhenSubmit={(value) => handleBrandActions({ type: "Edit", value })}
                   closeModal={closeModal}
                />
@@ -88,7 +88,7 @@ export default function AttributeItem({ attribute, categoryIndex, index }: Props
                   callback={() => handleBrandActions({ type: "Delete" })}
                   loading={isFetching}
                   closeModal={closeModal}
-                  label={`Delete category '${attribute.attribute}'`}
+                  label={`Delete category '${attribute.name}'`}
                />
             );
          default:
@@ -106,7 +106,7 @@ export default function AttributeItem({ attribute, categoryIndex, index }: Props
    return (
       <>
          <div className={classes.container}>
-            <p>{attribute.attribute}</p>
+            <p>{attribute.name}</p>
             <div className={classes.ctaContainer}>
                <button className={classes.button} onClick={() => setOpenModal("edit")}>
                   <PencilSquareIcon className="w-[22px]" />

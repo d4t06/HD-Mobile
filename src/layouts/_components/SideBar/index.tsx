@@ -6,7 +6,6 @@ import {
    ArchiveBoxArrowDownIcon,
    BookmarkSquareIcon,
    BuildingStorefrontIcon,
-   ChatBubbleBottomCenterIcon,
    ComputerDesktopIcon,
    DevicePhoneMobileIcon,
    PhotoIcon,
@@ -14,7 +13,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import logo from "@/assets/images/logo.png";
-import PushButton from "@/components/ui/PushButton";
+import Button from "@/components/ui/Button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 
 const cx = classNames.bind(styles);
@@ -93,19 +92,6 @@ function Sidebar() {
                {expand && <>Order</>}
             </Link>
 
-            {/* <div className="m-[10px] border-t border-black/10"></div> */}
-
-            <Link
-               className={cx(
-                  { active: location.pathname === "/dashboard/message" },
-                  "sidebar__item"
-               )}
-               to="/dashboard/message"
-            >
-               <ChatBubbleBottomCenterIcon className="w-[24px]" />
-               {expand && <>Message</>}
-            </Link>
-
             <Link
                className={cx(
                   { active: location.pathname === "/dashboard/review" },
@@ -114,7 +100,7 @@ function Sidebar() {
                to="/dashboard/review"
             >
                <StarIcon className="w-[24px]" />
-               {expand && <>Review</>}
+               {expand && <>Rating</>}
             </Link>
 
             <Link
@@ -128,13 +114,18 @@ function Sidebar() {
          </div>
 
          <div className="hidden sm:block absolute bottom-[20px] right-0 translate-x-[50%] z-[10]">
-            <PushButton onClick={handleExpand} size={"clear"} className="p-[4px]">
+            <Button
+               colors={"third"}
+               onClick={handleExpand}
+               size={"clear"}
+               className="p-[4px]"
+            >
                {expand ? (
                   <ChevronLeftIcon className="w-[24px] " />
                ) : (
                   <ChevronRightIcon className="w-[24px]" />
                )}
-            </PushButton>
+            </Button>
          </div>
       </div>
    );

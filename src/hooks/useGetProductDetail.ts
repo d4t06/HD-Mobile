@@ -19,16 +19,16 @@ export default function useGetProductDetail() {
    const { status, product } = useSelector(selectProduct);
 
    //   hooks
-   const { productAscii } = useParams();
+   const { productId } = useParams();
 
    const getProductDetail = async () => {
       try {
-         if (!productAscii) throw new Error("missing params");
+         if (!productId) throw new Error("missing params");
 
          dispatch(setProductStatus("loading"));
          if (import.meta.env.DEV) await sleep(500);
 
-         const res = await publicRequest.get(`${PRODUCT_URL}/${productAscii}`);
+         const res = await publicRequest.get(`${PRODUCT_URL}/${productId}`);
 
          dispatch(setProduct(res.data.data));
       } catch (error) {
@@ -42,7 +42,7 @@ export default function useGetProductDetail() {
          getProductDetail();
          ranUseEffect.current = true;
       }
-   }, [productAscii]);
+   }, [productId]);
 
    return {
       status,

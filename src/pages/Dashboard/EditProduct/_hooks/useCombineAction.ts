@@ -89,7 +89,7 @@ export default function useCombineAction() {
 
       const newDefaultVariant: DefaultVariant = {
          id: product.default_variant.id,
-         product_ascii: product.product_ascii,
+         product_id: product.id,
          variant_id: lowestPriceStorageId,
       };
 

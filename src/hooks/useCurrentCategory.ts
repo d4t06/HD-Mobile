@@ -9,13 +9,13 @@ export default function useCurrentCategory() {
    const { category_ascii } = useParams<{ category_ascii: string }>();
 
    const currentCategory = useMemo(
-      () => categories.find((c) => c.category_ascii === category_ascii),
+      () => categories.find((c) => c.name_ascii === category_ascii),
       [category_ascii, categories]
    );
 
    const getHomeSliderImages = () => {
       return (
-         categories.find((c) => c.category_ascii === "home")?.category_slider.slider
+         categories.find((c) => c.name_ascii === "home")?.category_slider.slider
             .slider_images || []
       );
    };

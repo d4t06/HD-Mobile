@@ -76,8 +76,8 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
 
                const newCategory: CategorySchema = {
                   attribute_order: newAttributeOrder,
-                  category_ascii: currentCategory.category_ascii,
-                  category: currentCategory.category,
+                  name_ascii: currentCategory.name_ascii,
+                  name: currentCategory.name,
                   hidden: false,
                };
 
@@ -122,8 +122,8 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
 
                const newCategory: CategorySchema = {
                   attribute_order: newAttributeOrder,
-                  category_ascii: currentCategory.category_ascii,
-                  category: currentCategory.category,
+                  name_ascii: currentCategory.name_ascii,
+                  name: currentCategory.name,
                   hidden: false,
                };
 
@@ -169,8 +169,8 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
          const newOrder = newOrderArray.join("_");
          const newCategory: CategorySchema = {
             attribute_order: newOrder,
-            category_ascii: currentCategory.category_ascii,
-            category: currentCategory.category,
+            name_ascii: currentCategory.name_ascii,
+            name: currentCategory.name,
             hidden: false,
          };
 

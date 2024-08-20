@@ -2,7 +2,7 @@ import { Param } from "@/store/productsSlice";
 import { publicRequest } from "@/utils/request";
 
 export const getProducts = async (props: Param) => {
-   const { filters, sort, category_id, page, size } = props;
+   const { filters, sort, category_id, page, size, admin } = props;
    const params: Record<string, string | string[] | number[] | number | undefined> = {
       page: page || 1,
       category_id,
@@ -21,7 +21,10 @@ export const getProducts = async (props: Param) => {
       params["price"] = [filters.price.from, filters.price.to];
    }
 
-   const response = await publicRequest.get(`/products`, {
+   let url = "/products";
+   if (admin) url = "/product-management/products";
+
+   const response = await publicRequest.get(url, {
       params,
       paramsSerializer: {
          indexes: false,

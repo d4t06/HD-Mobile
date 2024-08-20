@@ -45,7 +45,10 @@ export default function CartItem({ cartItem, isChecked, index }: Props) {
             <div className="flex flex-grow">
                <div className={classes.imageFrame}>
                   <img
-                     src={cartItem.item.product.image_url}
+                     src={
+                        cartItem.item.product.image_url ||
+                        "https://d4t06.github.io/Vue-Mobile/assets/search-empty-ChRLxitn.png"
+                     }
                      className="w-full h-auto"
                      alt=""
                   />
@@ -65,7 +68,7 @@ export default function CartItem({ cartItem, isChecked, index }: Props) {
                <div className={classes.variant}>
                   <div className="h-full">
                      <h5 className="text-[18px] font-[500] mb-[14px] md:mb-[4px]">
-                        {cartItem.item.product.product}
+                        {cartItem.item.product.name}
                      </h5>
                      <VariantList
                         index={index}
@@ -100,12 +103,15 @@ export default function CartItem({ cartItem, isChecked, index }: Props) {
                <ConfirmModal
                   callback={handleDeleteCartItem}
                   loading={isFetching}
-                  desc={'Định xóa hả gì ?'}
-                  label={`Xóa '${cartItem.item.product.product}'`}
+                  desc={"Định xóa hả gì ?"}
+                  label={`Xóa '${cartItem.item.product.name}'`}
                   closeModal={closeModal}
                >
-                  <img src="https://zalo-api.zadn.vn/api/emoticon/sticker/webpc?eid=46991&size=130" className="w-auto h-auto mx-auto"  />
-                  </ConfirmModal>
+                  <img
+                     src="https://zalo-api.zadn.vn/api/emoticon/sticker/webpc?eid=46991&size=130"
+                     className="w-auto h-auto mx-auto"
+                  />
+               </ConfirmModal>
             </Modal>
          )}
       </>

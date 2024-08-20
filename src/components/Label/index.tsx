@@ -17,7 +17,7 @@ export default function Label({
    if (loading) return labelSkeleton;
 
    return (
-      <h1 className="mb-[6px] text-[18px] font-[500]">
+      <h1 className="text-xl font-[500]">
          {categoryName} {`( `}
          <span style={{ color: "#cd1818" }}>{!loading ? count : "- -"}</span>
          {` )`} sản phẩm

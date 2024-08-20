@@ -21,7 +21,7 @@ export default function NewProduct({ loading }: Props) {
    const ProductsSkeletons = useMemo(
       () =>
          [...Array(6).keys()].map((index) => (
-            <div key={index} className="px-[4px] mt-[8px] w-1/2 md:w-1/3">
+            <div key={index} className="px-[4px] mt-[8px] w-1/2 md:w-1/4">
                <ProductSkeleton />
             </div>
          )),
@@ -36,7 +36,7 @@ export default function NewProduct({ loading }: Props) {
 
    return (
       <div className="">
-         <h5 className="text-[18px] font-[500] mb-[8px]">New Products</h5>
+         <p className="text-xl font-medium mb-2">New Products</p>
          <div className="flex mx-[-4px] mt-[-8px] flex-wrap">
             {status === "loading" && ProductsSkeletons}
 
@@ -44,7 +44,7 @@ export default function NewProduct({ loading }: Props) {
                <>
                   {products.length ? (
                      products.map((product, index) => (
-                        <div key={index} className="px-[4px] w-1/2 lg:w-1/3 mt-[8px]">
+                        <div key={index} className="px-[4px] w-1/2 md:w-1/4 mt-[8px]">
                            <ProductItem product={product} />
                         </div>
                      ))

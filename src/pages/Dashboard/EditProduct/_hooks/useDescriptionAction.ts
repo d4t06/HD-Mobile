@@ -14,14 +14,14 @@ export default function useDescriptionAction() {
 
    const update = async (
       desc: DescriptionSchema,
-      productAscii: string,
+      productId: number,
       restChange: () => void
    ) => {
       try {
          setIsFetching(true);
          if (import.meta.env.DEV) await sleep(500);
 
-         await privateRequest.put(`${URL}/${productAscii}`, desc);
+         await privateRequest.put(`${URL}/${productId}`, desc);
          setSuccessToast("Update description successful");
 
          restChange();

@@ -45,7 +45,7 @@ export type Param = {
 export const fetchProducts = createAsyncThunk(
    "/products/getProducts",
    async (param: Param) => {
-      const { admin, replace, status, ...rest } = param;
+      const { replace, status, ...rest } = param;
 
       if (import.meta.env.DEV) await sleep(500);
 
@@ -53,7 +53,7 @@ export const fetchProducts = createAsyncThunk(
          ...rest,
       })) as ProductResponse;
 
-      return { ...data, ...rest, admin, replace, status };
+      return { ...data, ...rest, replace, status };
    }
 );
 

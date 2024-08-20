@@ -147,7 +147,7 @@ export default function CategorySliderItem({ category, categoryIndex }: Props) {
       <>
          <div className="flex items-center">
             <div className="mr-[10px] w-1/6">
-               <p className="text-center font-[500]">{category.category}</p>
+               <p className="text-center font-[500]">{category.name}</p>
             </div>
             <div className="flex flex-wrap space-y-[16px] flex-grow">
                {category.category_slider.slider.slider_images.map((sI, index) => (

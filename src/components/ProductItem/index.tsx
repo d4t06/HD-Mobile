@@ -26,26 +26,40 @@ export default function ProductItem({ product }: Props) {
 
    return (
       <div className={cx("product-item")}>
-         <Link
-            to={`/product/${product.product_ascii}`}
-            className={cx("product-item-frame")}
-         >
-            <img
-               className={cx("product-item-image")}
-               src={product.image_url || "https://placehold.co/300X400"}
-            />
+         <Link to={`/product/${product.id}`} className={cx("product-item-frame")}>
+            {product.image_url ? (
+               <img
+                  className={cx("product-item-image")}
+                  src={
+                     product.image_url ||
+                     "https://d4t06.github.io/Vue-Mobile/assets/search-empty-ChRLxitn.png"
+                  }
+               />
+            ) : (
+               <img
+                  // className={cx("product-item-image")}
+
+                  className="m-auto"
+                  src={
+                     "https://d4t06.github.io/Vue-Mobile/assets/search-empty-ChRLxitn.png"
+                  }
+               />
+            )}
          </Link>
 
          <div className={cx("product-item-body", "space-y-[14px]")}>
-            <h4 className={cx("product-item_name")}>{product.product}</h4>
+            <h4 className={cx("product-item_name")}>{product.name}</h4>
 
-            {!!product.variants.length ? (
+            {!!product.variants.length && product.default_variant.variant ? (
                <>
                   <div className={cx("variant-box", "mx-[-2px] md:mx-[-4px]")}>
                      {product.variants.map((v, index) => {
                         const isActive = activeVariant?.id === v.id;
                         return (
-                           <div key={index} className="w-[50%] sm:w-1/3 px-[2px] md:px-[4px]">
+                           <div
+                              key={index}
+                              className="w-[50%] sm:w-1/3 px-[2px] md:px-[4px]"
+                           >
                               <Button
                                  onClick={() => setActiveVariant(v)}
                                  className={`text-[14px] w-full ${
@@ -54,7 +68,7 @@ export default function ProductItem({ product }: Props) {
                                  colors={"second"}
                                  active={isActive}
                               >
-                                 {v.variant}
+                                 {v.name}
                               </Button>
                            </div>
                         );

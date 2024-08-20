@@ -5,7 +5,7 @@ import useDescriptionAction from "../_hooks/useDescriptionAction";
 
 type Props = {
    mainClasses: LayoutClasses;
-};
+};''
 
 export default function Description({ mainClasses }: Props) {
    const { product } = useSelector(selectProduct);
@@ -17,10 +17,10 @@ export default function Description({ mainClasses }: Props) {
 
       const newDescription: DescriptionSchema = {
          content: value,
-         product_ascii: product.product_ascii,
+         product_id: product.id,
       };
 
-      await update(newDescription, product.product_ascii, restChange);
+      await update(newDescription, product.id, restChange);
    };
 
    return (

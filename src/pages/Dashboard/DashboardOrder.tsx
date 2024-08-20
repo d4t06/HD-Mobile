@@ -1,19 +1,10 @@
 import Skeleton from "@/components/Skeleton";
-// import PushFrame from "@/components/ui/PushFrame";
 import useManageOrder from "@/hooks/useManageOrder";
 import emptyCart from "@/assets/images/empty-cart.png";
-// import { moneyFormat } from "@/utils/appHelper";
 import { Button } from "@/components";
 import { useMemo, useState } from "react";
 
-import PushButton from "@/components/ui/PushButton";
-
-const tabs: Array<any["status"]> = [
-   "processing",
-   "delivering",
-   "completed",
-   "canceled",
-];
+const tabs: Array<any["status"]> = ["processing", "delivering", "completed", "canceled"];
 
 export default function DashboardOrder() {
    const [currentTab, setCurrentTab] = useState<any["status"] | "">("");
@@ -162,14 +153,14 @@ export default function DashboardOrder() {
                                     </h5>
                                  </div>
 
-                                 <PushButton
+                                 <Button
                                     size={"clear"}
                                     baseClassName="mx-auto mt-[10px] sm:mx-0 sm:mt-0"
                                     className="px-[12px] py-[2px] sm:px-[16px] sm:py-[4px]"
                                     to={`${order.id}`}
                                  >
                                     Chi tiết
-                                 </PushButton>
+                                 </Button>
                               </div>
                            </PushFrame>
                         ))} */}
@@ -184,13 +175,14 @@ export default function DashboardOrder() {
 
          <div className="text-center">
             {status !== "loading" && state && !!state.orders.length && (
-               <PushButton
+               <Button
+                  colors={"third"}
                   disabled={status === "more-loading" || remaining <= 0}
                   className="text-[16px]"
                   onClick={handleGetMore}
                >
                   Xem thêm ({remaining <= 0 ? 0 : remaining}) sản phẩm
-               </PushButton>
+               </Button>
             )}
          </div>
       </div>

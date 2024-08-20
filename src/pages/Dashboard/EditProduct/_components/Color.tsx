@@ -24,9 +24,9 @@ export default function Color({ mainClasses }: Props) {
       if (!product) return;
 
       const schema: ProductColorSchema = {
-         color: value,
-         color_ascii: generateId(value),
-         product_ascii: product?.product_ascii,
+         name: value,
+         name_ascii: generateId(value),
+         product_id: product.id,
       };
 
       await actions({

@@ -38,9 +38,9 @@ export const initImageObject = (data: Partial<ImageType>) => {
 
 export const initProductObject = (data: Partial<ProductSchema>) => {
    const newProduct: ProductSchema = {
-      product_ascii: "",
       image_url: "",
-      product: "",
+      name: "",
+      name_ascii: "",
       brand_id: 0,
       category_id: 0,
       ...data,
@@ -83,7 +83,6 @@ export const formatSize = (size: number) => {
 
    return mb + "," + size + units[1];
 };
-
 
 export const getLocalStorage = () =>
    JSON.parse(localStorage.getItem("HD-Mobile") || "{}") as Record<string, any>;

@@ -31,7 +31,7 @@ function EditProductMain() {
 
    return (
       <div className="space-y-[30px]">
-         <h1 className={`${classes.proName}`}>{productDetail.product}</h1>
+         <h1 className={`${classes.proName}`}>{productDetail.name}</h1>
 
          <ProductImage />
          <Variant mainClasses={mainClasses} />
@@ -40,7 +40,7 @@ function EditProductMain() {
          <Combine mainClasses={mainClasses} />
          <Specification mainClasses={mainClasses} />
          <Description mainClasses={mainClasses} />
-         <DangerZone productAscii={productDetail.product_ascii} />
+         <DangerZone productId={productDetail.id} />
       </div>
    );
 }

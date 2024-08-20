@@ -63,7 +63,7 @@ function Search(props: Props) {
             break;
       }
 
-      navigate(`${prefix}/${item.product_ascii}`);
+      navigate(`${prefix}/${item.id}`);
    };
 
    const handleSubmit = (e: FormEvent) => {
@@ -101,7 +101,7 @@ function Search(props: Props) {
                                     <img src={p.image_url} alt="" />
                                  </div>
                                  <div className={cx("product-info")}>
-                                    <h2 className={cx("title")}>{p.product}</h2>
+                                    <h2 className={cx("title")}>{p.name}</h2>
                                     <p className={cx("price")}>
                                        {moneyFormat(
                                           p.default_variant.variant.default_combine

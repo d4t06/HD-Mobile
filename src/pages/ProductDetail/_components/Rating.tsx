@@ -6,7 +6,7 @@ import NotFound from "./child/NotFound";
 import ReviewItem from "@/components/ReviewItem";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { HeartIcon, StarIcon } from "@heroicons/react/16/solid";
-import PushButton from "@/components/ui/PushButton";
+import Button from "@/components/ui/Button";
 import Title from "@/components/Title";
 
 type Props = {
@@ -23,8 +23,6 @@ export default function Rating({ loading }: Props) {
    } = useReview({ closeModal: () => {}, product_ascii: "" });
 
    const currentCommentIndex = useRef(0);
-
-   // const [_localVal, _setLocalVal] = useLocalStorage("HD-Mobile", initLocalStorage);
 
    const handleGetMore = async () => {
       await getReviews(page + 1);
@@ -55,7 +53,8 @@ export default function Rating({ loading }: Props) {
 
             return (
                <ReviewItem key={index} review={r}>
-                  <PushButton
+                  <Button
+                     colors={"third"}
                      disabled={isLoading}
                      onClick={() => handleLike(r, index)}
                      className="px-[5px] py-[0px] group"
@@ -67,7 +66,7 @@ export default function Rating({ loading }: Props) {
                         <HeartIcon className="w-[20px] mr-[4px]" />
                      )}
                      {r.total_like}
-                  </PushButton>
+                  </Button>
                </ReviewItem>
             );
          }),
@@ -82,7 +81,9 @@ export default function Rating({ loading }: Props) {
                <span>Rating</span>
             </Title>
 
-            <PushButton baseClassName="w-full md:w-auto">Viết đánh giá</PushButton>
+            <Button colors={"third"} className="w-full md:w-auto">
+               Write rating
+            </Button>
          </div>
 
          <div className="space-y-[20px]">
@@ -94,21 +95,25 @@ export default function Rating({ loading }: Props) {
                      <>
                         <div className="text-center mb-[30px]">
                            <h2 className="text-[20px] text-[#333] font-[600] ">
-                              Đánh giá trung bình
+                              Average rating
                            </h2>
                            <h1 className="text-[70px] font-[600] leading-[80px] text-[#cd1818]">
                               {average.toFixed(1)} /5
                            </h1>
                            <p className="text-[#495057] text-[16px] leading-[20px]">
-                              {count} đánh giá
+                              {count} ratings
                            </p>
                         </div>
                         {renderReview}
 
                         <p className="text-center mt-[20px]">
-                           <PushButton onClick={handleGetMore} disabled={remaining <= 0}>
-                              Xem thêm ({remaining > 0 ? remaining : 0}) đánh giá
-                           </PushButton>
+                           <Button
+                              colors={"third"}
+                              onClick={handleGetMore}
+                              disabled={remaining <= 0}
+                           >
+                              More ({remaining > 0 ? remaining : 0}) ratings
+                           </Button>
                         </p>
                      </>
                   ) : (

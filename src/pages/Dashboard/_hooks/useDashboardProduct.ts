@@ -33,7 +33,14 @@ export default function useDashBoardProduct({ setCurCategory, curCategory }: Pro
 
    const getMore = () => {
       dispatch(
-         fetchProducts({ category_id, sort, filters, page: page + 1, replace: false })
+         fetchProducts({
+            category_id,
+            sort,
+            filters,
+            page: page + 1,
+            replace: false,
+            admin: true,
+         })
       );
    };
 
@@ -51,6 +58,7 @@ export default function useDashBoardProduct({ setCurCategory, curCategory }: Pro
                category_id: curCategory?.id || undefined,
                filters,
                page: 1,
+               admin: true,
             })
          );
       } else {

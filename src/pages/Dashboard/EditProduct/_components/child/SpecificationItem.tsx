@@ -63,7 +63,7 @@ export default function SpecificationItem({ categoryAttributeId }: Props) {
          const schema: ProductAttributeSchema = {
             value,
             category_attribute_id: foundedCatAttribute.id,
-            product_ascii: product.product_ascii,
+            product_id: product.id,
          };
 
          await actions({
@@ -82,7 +82,7 @@ export default function SpecificationItem({ categoryAttributeId }: Props) {
          <tr>
             <td className="w-[30%]">
                <span className="font-[500] text-[#cd1818]">
-                  {foundedCatAttribute.attribute}
+                  {foundedCatAttribute.name}
                </span>
             </td>
             <td>
@@ -95,7 +95,7 @@ export default function SpecificationItem({ categoryAttributeId }: Props) {
                   onClick={() => setOpenModal(true)}
                   className="p-[4px] sm:px-[14px]"
                   colors={"second"}
-                  size={'clear'}
+                  size={"clear"}
                >
                   <PencilSquareIcon className="w-[20px]" />
                   <span className="ml-[6px] hidden sm:inline-block">Change</span>
@@ -110,7 +110,7 @@ export default function SpecificationItem({ categoryAttributeId }: Props) {
                   loading={isFetching}
                   cbWhenSubmit={(value) => handleUpdateAttribute(value)}
                   closeModal={closeModal}
-                  title={`Edit '${foundedCatAttribute.attribute}'`}
+                  title={`Edit '${foundedCatAttribute.name}'`}
                   initValue={foundedAttribute.attribute?.value || ""}
                />
             </Modal>

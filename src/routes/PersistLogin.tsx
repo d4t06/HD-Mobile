@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
 // import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { useLocalStorage, useRefreshToken } from "@/hooks";
+import { useRefreshToken } from "@/hooks";
 import { useAuth } from "@/store/AuthContext";
 
 export default function PersistLogin() {
    const { auth, setLoading } = useAuth();
    const refresh = useRefreshToken();
-   const [persist] = useLocalStorage("persist", false); //[persist, setPersist]
+   // const [persist] = useLocalStorage("persist", false); //[persist, setPersist]
    const ranEffect = useRef(false);
    const runCB = useRef(false);
 
@@ -23,7 +23,7 @@ export default function PersistLogin() {
          }
       };
 
-      if (!ranEffect.current && !auth && persist) verifyRefreshToken();
+      if (!ranEffect.current && !auth) verifyRefreshToken();
       else if (!runCB.current) setLoading(false);
 
       return () => {

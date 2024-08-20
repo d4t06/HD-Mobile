@@ -33,8 +33,8 @@ export default function BrandList({ mainClasses }: Props) {
       if (currentCategoryIndex === undefined) return;
 
       const schema: BrandSchema = {
-         brand: value,
-         brand_ascii: generateId(value),
+         name: value,
+         name_ascii: generateId(value),
          category_id: currentCategory!.id,
          image_url: "",
       };
@@ -66,7 +66,7 @@ export default function BrandList({ mainClasses }: Props) {
                         (category, index) =>
                            !category.hidden && (
                               <option key={index} value={index}>
-                                 {category.category}
+                                 {category.name}
                               </option>
                            )
                      )}
@@ -76,7 +76,10 @@ export default function BrandList({ mainClasses }: Props) {
             {currentCategoryIndex !== undefined && currentCategory && (
                <div className={`${mainClasses.flexContainer} mt-[16px]`}>
                   {currentCategory.brands.map((item, index) => (
-                     <div key={index} className={`${mainClasses.flexCol}  w-1/2 sm:w-1/6`}>
+                     <div
+                        key={index}
+                        className={`${mainClasses.flexCol}  w-1/2 sm:w-1/6`}
+                     >
                         <BrandItem
                            brand={item}
                            index={index}

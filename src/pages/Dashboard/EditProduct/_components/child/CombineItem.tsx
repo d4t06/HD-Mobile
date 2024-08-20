@@ -82,8 +82,8 @@ export default function CombineItem({ color, variant, variantIndex }: Props) {
       <>
          <tr>
             <td>
-               <span className="font-[500] text-[#cd1818]"> {variant.variant}</span>
-               {` / ${color.color} ${isDefaultCombineOfProduct ? "(default)" : ""}`}
+               <span className="font-[500] text-[#cd1818]"> {variant.name}</span>
+               {` / ${color.name} ${isDefaultCombineOfProduct ? "(default)" : ""}`}
             </td>
             <td>{foundedCombine.quantity}</td>
             <td>{moneyFormat(foundedCombine.price)}</td>
@@ -104,7 +104,7 @@ export default function CombineItem({ color, variant, variantIndex }: Props) {
             <Modal closeModal={closeModal}>
                <AddItemMulti
                   loading={isFetching}
-                  title={`Edit '${variant.variant}/${color.color}'`}
+                  title={`Edit '${variant.name}/${color.name}'`}
                   cb={(value) => handleUpdateCombine(value)}
                   closeModal={closeModal}
                   intiFieldData={{

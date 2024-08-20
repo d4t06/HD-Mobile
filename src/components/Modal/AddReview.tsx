@@ -1,25 +1,24 @@
-import { Input } from "@/components";
+import { Button, Input } from "@/components";
 
 import { useMemo, useState } from "react";
 import ModalHeader from "./ModalHeader";
 import { inputClasses } from "../ui/Input";
 import useReview from "@/hooks/useReview";
 import { StarIcon } from "@heroicons/react/16/solid";
-import PushButton from "../ui/PushButton";
 
 type Props = {
-   product?: Product;
+   product: Product;
    closeModal: () => void;
    target: "Add-Review" | "Add-Reply" | "Edit-Reply";
    comment?: ProductComment;
 };
 
-const initReview = (product?: Product) => {
+const initReview = (product: Product) => {
    const data: ProductReview = {
       content: "",
       cus_name: "",
       approve: 0,
-      product_ascii: product?.product_ascii || "",
+      product_id: product.id,
       phone_number: "",
       date_convert: "",
       total_like: 0,
@@ -67,7 +66,7 @@ export default function AddReviewModal({ product, closeModal, target, comment }:
             if (comment?.id === undefined) return;
             const replyData: Reply = {
                q_id: comment.id,
-               product_ascii: comment.product_ascii,
+               product_id: comment.product_id,
                content: replyContent,
                total_like: 0,
                date_convert: "",
@@ -82,7 +81,7 @@ export default function AddReviewModal({ product, closeModal, target, comment }:
    };
 
    const titleMap: Record<typeof target, string> = {
-      "Add-Review": `Review '${product?.product}'`,
+      "Add-Review": `Review '${product?.name}'`,
       "Add-Reply": `Reply review '${comment?.cus_name ?? undefined}'`,
       "Edit-Reply": `Edit reply '${comment?.cus_name ?? undefined}'`,
    };
@@ -109,9 +108,9 @@ export default function AddReviewModal({ product, closeModal, target, comment }:
                   Chúng tôi đã nhận được đánh giá của bạn
                </p>
                <div className="text-center mt-[30px]">
-                  <PushButton loading={false} onClick={closeModal}>
+                  <Button colors={"third"} loading={false} onClick={closeModal}>
                      Cút
-                  </PushButton>
+                  </Button>
                </div>
             </>
          )}
@@ -173,9 +172,9 @@ export default function AddReviewModal({ product, closeModal, target, comment }:
                   ></textarea>
                </div>
                <div className="text-right mt-[30px]">
-                  <PushButton loading={apiLoading} onClick={handleSubmit}>
+                  <Button colors={"third"} loading={apiLoading} onClick={handleSubmit}>
                      Post
-                  </PushButton>
+                  </Button>
                </div>
             </>
          )}

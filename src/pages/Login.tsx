@@ -58,9 +58,9 @@ export default function LoginPage() {
          if (!error?.response) {
             setErrorMsg("No server response");
          } else if (error?.response.status === 401) {
-            setErrorMsg("Tên hoặc mật khẩu không chính xác");
+            setErrorMsg("User name or password is incorrect !");
          } else {
-            setErrorMsg("Đăng nhâp thất bại");
+            setErrorMsg("Sign in fail");
          }
          console.log(">>> error", error);
       } finally {

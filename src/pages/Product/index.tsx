@@ -2,21 +2,14 @@ import { useEffect, useMemo } from "react";
 import classNames from "classnames/bind";
 import styles from "./Products.module.scss";
 import { useSelector, useDispatch } from "react-redux";
-import {
-   ProductItem,
-   QuickFilter,
-   Sort,
-   Filter,
-   Label,
-   ImageSlider,
-} from "../../components";
+import { ProductItem, Sort, Filter, Label, ImageSlider } from "../../components";
 import NoProduct from "./NoProduct";
 
 import { fetchProducts, selectedAllProduct, selectedAllFilter } from "../../store";
 import ProductSkeleton from "@/components/Skeleton/ProductSkeleton";
 import { AppDispatch } from "@/store/store";
 import Skeleton from "@/components/Skeleton";
-import PushButton from "@/components/ui/PushButton";
+import Button from "@/components/ui/Button";
 import useCurrentCategory from "@/hooks/useCurrentCategory";
 
 const cx = classNames.bind(styles);
@@ -101,13 +94,10 @@ export default function Product() {
          <div className={cx("product-body", "flex mx-[-8px]")}>
             <div className="px-[8px] w-full md:w-3/4 ">
                <Label
-                  categoryName={currentCategory?.category}
+                  categoryName={currentCategory?.name}
                   count={count}
                   loading={status === "loading"}
                />
-               <div className="hidden md:block">
-                  <QuickFilter />
-               </div>
 
                <div className="block md:hidden">
                   <Filter />
@@ -151,12 +141,13 @@ export default function Product() {
                   </div>
                   {status !== "error" && status != "loading" && !!products.length && (
                      <div className={cx("pagination", { disable: remaining === 0 })}>
-                        <PushButton
+                        <Button
+                           colors={"third"}
                            disabled={status === "more-loading"}
                            onClick={() => handleGetMore()}
                         >
-                           Xem thêm ({remaining}) sản phẩm
-                        </PushButton>
+                           More ({remaining}) products
+                        </Button>
                      </div>
                   )}
                </div>

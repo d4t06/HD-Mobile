@@ -72,7 +72,7 @@ const useApp = () => {
    const { category_ascii } = useParams<{ category_ascii: string }>();
 
    const currentCategory = useMemo(
-      () => categories.find((c) => c.category_ascii === category_ascii),
+      () => categories.find((c) => c.name_ascii === category_ascii),
       [category_ascii, categories]
    );
 

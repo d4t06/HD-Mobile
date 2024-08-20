@@ -34,9 +34,9 @@ export default function VariantItem({ variant, index }: Props) {
       switch (props.type) {
          case "Edit": {
             const schema: ProductVariantSchema = {
-               product_ascii: variant.product_ascii,
-               variant: props.value,
-               variant_ascii: generateId(props.value),
+               product_id: variant.id,
+               name: props.value,
+               name_ascii: generateId(props.value),
             };
 
             await actions({
@@ -69,8 +69,8 @@ export default function VariantItem({ variant, index }: Props) {
             return (
                <AddItem
                   loading={isFetching}
-                  title={`Edit variant '${variant.variant}'`}
-                  initValue={variant.variant}
+                  title={`Edit variant '${variant.name}'`}
+                  initValue={variant.name}
                   cbWhenSubmit={(value) => handleBrandActions({ type: "Edit", value })}
                   closeModal={closeModal}
                />
@@ -82,7 +82,7 @@ export default function VariantItem({ variant, index }: Props) {
                   callback={() => handleBrandActions({ type: "Delete" })}
                   loading={isFetching}
                   closeModal={closeModal}
-                  label={`Delete variant '${variant.variant}'`}
+                  label={`Delete variant '${variant.name}'`}
                />
             );
          default:
@@ -93,7 +93,7 @@ export default function VariantItem({ variant, index }: Props) {
    return (
       <>
          <Empty fontClassName="bg-[#f6f6f6]">
-            <span className="font-semibold">{variant.variant}</span>
+            <span className="font-semibold">{variant.name}</span>
             <OverlayCTA
                data={[
                   {

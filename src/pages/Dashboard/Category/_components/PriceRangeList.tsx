@@ -7,7 +7,7 @@ import { selectCategory } from "@/store/categorySlice";
 import AddItemMulti, { FieldType } from "@/components/Modal/AddItemMulti";
 import PriceRangeItem from "./child/PriceRangeItem";
 import usePriceRangeActions from "../_hooks/usePriceRangeAction";
-import PushButton from "@/components/ui/PushButton";
+import Button from "@/components/ui/Button";
 import { PlusIcon } from "@heroicons/react/16/solid";
 
 type FIELD_KEYS = "Label" | "From" | "To";
@@ -63,7 +63,7 @@ export default function PriceRangeList({ mainClasses }: Props) {
 
    return (
       <>
-         .<h1 className={mainClasses.label}>Price Range</h1>
+         <h1 className={mainClasses.label}>Price Range</h1>
          <div className={mainClasses.group}>
             <div className="flex justify-between">
                <div className="inline-flex gap-[16px] items-center">
@@ -81,14 +81,15 @@ export default function PriceRangeList({ mainClasses }: Props) {
                            (category, index) =>
                               !category.hidden && (
                                  <option key={index} value={index}>
-                                    {category.category}
+                                    {category.name}
                                  </option>
                               )
                         )}
                   </select>
                </div>
 
-               <PushButton
+               <Button
+                  colors={"third"}
                   size={"clear"}
                   className="p-[4px] px-[12px]"
                   disabled={!currentCategory}
@@ -96,7 +97,7 @@ export default function PriceRangeList({ mainClasses }: Props) {
                >
                   <PlusIcon className="w-[20px]" />
                   <span className="hidden sm:inline-block ml-[6p]">Add Price Range</span>
-               </PushButton>
+               </Button>
             </div>
 
             {currentCategoryIndex !== undefined && currentCategory && (

@@ -123,7 +123,7 @@ function VariantList({ cartItem, actions, isFetching, index }: Props) {
             >
                {cartItem.item.product.colors.map((cl, index) => (
                   <option key={index} value={cl.id}>
-                     {cl.color}
+                     {cl.name}
                   </option>
                ))}
             </select>
@@ -145,7 +145,7 @@ function VariantList({ cartItem, actions, isFetching, index }: Props) {
             >
                {cartItem.item.product.variants.map((s, index) => (
                   <option key={index} value={s.id}>
-                     {s.variant}
+                     {s.name}
                   </option>
                ))}
             </select>

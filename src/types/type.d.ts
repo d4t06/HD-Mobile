@@ -8,7 +8,7 @@ type AuthResponse = {
 
 interface ProductCombine {
    id: number;
-   product_ascii: string;
+   product_id: number;
    color_id: number;
    variant_id: number;
    quantity: number;
@@ -17,7 +17,7 @@ interface ProductCombine {
 
 interface ProductSlider {
    id: number;
-   product_ascii: string;
+   product_id: number;
    slider_id: number;
    color_id: number;
    slider: Slider;
@@ -41,9 +41,9 @@ type Slider = {
 
 type ProductVariantDetail = {
    id: number;
-   product_ascii: string;
-   variant_ascii: string;
-   variant: string;
+   product_id: number;
+   name_ascii: string;
+   name: string;
    default_combine: DefaultVariantCombineDetail;
 };
 
@@ -55,9 +55,9 @@ type ProductVariantSchema = Omit<ProductVariantDetail, "id" | "default_combine">
 
 type ProductColor = {
    id: number;
-   product_ascii: string;
-   color_ascii: string;
-   color: string;
+   product_id: number;
+   name_ascii: string;
+   name: string;
    product_slider: ProductSlider;
 };
 
@@ -65,7 +65,7 @@ type ProductColorSchema = Omit<ProductColor, "id" | "product_slider">;
 
 type DefaultVariantDetail = {
    id: number;
-   product_ascii: string;
+   product_id: number;
    variant_id: number;
    variant: ProductVariantDetail;
 };
@@ -85,17 +85,6 @@ type DefaultVariantCombine = Omit<DefaultVariantCombineDetail, "combine">;
 
 type DefaultVariantCombineSchema = Omit<DefaultVariantCombineDetail, "combine" | "id">;
 
-type Product = {
-   id: number;
-   product: string;
-   product_ascii: string;
-   category_id: number;
-   brand_id: number;
-   image_url: string;
-   variants: ProductVariantDetail[];
-   default_variant: DefaultVariantDetail;
-};
-
 type ProductResponse = {
    products: Product[];
    count: number;
@@ -109,7 +98,7 @@ type ProductResponse = {
 
 type Description = {
    id: number;
-   product_ascii: string;
+   product_id: number;
    content: string;
 };
 
@@ -121,8 +110,8 @@ type CartProduct = Omit<Product, "default_variant"> & {
 
 type ProductDetail = {
    id: number;
-   product: string;
-   product_ascii: string;
+   name: string;
+   name_ascii: string;
    category_id: number;
    category: Category;
    brand_id: number;
@@ -136,9 +125,38 @@ type ProductDetail = {
    default_variant: DefaultVariant;
 };
 
+// type Product = {
+//    id: number;
+//    name: string;
+//    name_ascii: string;
+//    category_id: number;
+//    brand_id: number;
+//    image_url: string;
+//    variants: ProductVariantDetail[];
+//    default_variant: DefaultVariantDetail;
+// };
+
+type Product = Omit<
+   ProductDetail,
+   | "comments_data"
+   | "combines"
+   | "colors"
+   | "variants"
+   | "default_variant"
+   | "description"
+> & {
+   default_variant: DefaultVariantDetail;
+   variants: ProductVariantDetail[];
+};
+
 type ProductSearch = Omit<
    ProductDetail,
-   "comments_data" | "combines" | "colors" | "variants" | "default_variant"
+   | "comments_data"
+   | "combines"
+   | "colors"
+   | "variants"
+   | "default_variant"
+   | "description"
 > & {
    default_variant: DefaultVariantDetail;
 };
@@ -151,6 +169,7 @@ type ProductSchema = Omit<
    Product,
    | "storages"
    | "colors"
+   | "category"
    | "combines"
    | "description"
    | "comments_data"
@@ -163,7 +182,7 @@ type ProductSchema = Omit<
 type ProductAttribute = {
    id: number;
    category_attribute_id: number;
-   product_ascii: string;
+   product_id: number;
    value: string;
 };
 
@@ -172,16 +191,16 @@ type ProductAttributeSchema = Omit<ProductAttribute, "attribute_data" | "id">;
 type CategoryAttribute = {
    id: number;
    category_id: number;
-   attribute: string;
-   attribute_ascii: string;
+   name: string;
+   name_ascii: string;
 };
 
 type CategoryAttributeSchema = Omit<CategoryAttribute, "id">;
 
 type Category = {
    id: number;
-   category_ascii: string;
-   category: string;
+   name_ascii: string;
+   name: string;
    attribute_order: string;
    hidden: boolean;
    brands: Brand[];
@@ -207,8 +226,8 @@ type CategorySliderSchema = {
 
 type Brand = {
    id: number;
-   brand_ascii: string;
-   brand: string;
+   name_ascii: string;
+   name: string;
    image_url: string;
    category_id: number;
 };
@@ -235,7 +254,7 @@ type Toast = {
 type ProductComment = {
    id?: number;
    q_id?: number;
-   product_ascii: string;
+   product_id: number;
    cus_name: string;
    content: string;
    approve: number;
@@ -271,7 +290,7 @@ type PriceRangeSchema = Omit<PriceRange, "id">;
 type CartItem = {
    id: number;
    username: string;
-   product_ascii: string;
+   product_id: number;
    amount: number;
    color_id: number;
    variant_id: number;

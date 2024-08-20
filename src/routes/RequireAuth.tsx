@@ -9,7 +9,7 @@ export default function RequireAuth({ allowedRole }: { allowedRole: string[] }) 
 
    const location = useLocation();
 
-   console.log("require auth check ", location.pathname);
+   // console.log("require auth check ", location.pathname);
 
    const decode: { username: ""; role: "" } = auth
       ? jwt_decode(auth.token)

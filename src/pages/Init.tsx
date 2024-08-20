@@ -1,4 +1,4 @@
-import PushButton from "@/components/ui/PushButton";
+import { Button } from "@/components";
 import { useToast } from "@/store/ToastContext";
 import { sleep } from "@/utils/appHelper";
 import { publicRequest } from "@/utils/request";
@@ -61,9 +61,13 @@ export default function Init() {
                <>
                   <h1 className="text-[40px] font-[500] text-[#333]">Welcome</h1>
 
-                  <PushButton onClick={next} baseClassName="absolute bottom-[60px]">
+                  <Button
+                     colors={"third"}
+                     onClick={next}
+                     className="!absolute bottom-[60px]"
+                  >
                      Next
-                  </PushButton>
+                  </Button>
                </>
             );
          case 1:
@@ -115,23 +119,28 @@ export default function Init() {
                      </form>
                   </div>
 
-                  <PushButton
+                  <Button
+                     colors={"third"}
                      disabled={!ableToSubmit}
                      loading={isFetching}
                      onClick={handleSubmit}
-                     baseClassName="absolute bottom-[60px]"
+                     className="!absolute bottom-[60px]"
                   >
                      Submit
-                  </PushButton>
+                  </Button>
                </>
             );
          case 2:
             return (
                <>
                   <h1 className="text-[40px] font-[500] text-[#333]">Finish</h1>
-                  <PushButton baseClassName={"absolute bottom-[60px]"} to="/dashboard">
+                  <Button
+                     colors={"third"}
+                     className={"!absolute bottom-[60px]"}
+                     to="/dashboard"
+                  >
                      Go to Dashboard
-                  </PushButton>
+                  </Button>
                </>
             );
       }

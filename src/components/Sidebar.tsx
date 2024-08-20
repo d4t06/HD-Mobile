@@ -1,9 +1,8 @@
-import { Modal } from ".";
+import { Button, Modal } from ".";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/store/AuthContext";
 import useLogout from "@/hooks/useLogout";
 import { ArchiveBoxIcon, TagIcon } from "@heroicons/react/24/outline";
-import PushButton from "./ui/PushButton";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 
@@ -40,11 +39,11 @@ export default function Sidebar({ isOpen, closeSidebar }: Props) {
                         <Link
                            onClick={closeSidebar}
                            key={index}
-                           to={`/${c.category_ascii}`}
+                           to={`/${c.name_ascii}`}
                            className="flex items-center space-x-[4px] h-[34px] text-[#333]"
                         >
                            <TagIcon className="w-[24px]" />
-                           <span className="text-[16px] font-[500]">{c.category}</span>
+                           <span className="text-[16px] font-[500]">{c.name}</span>
                         </Link>
                      )
                )}
@@ -76,9 +75,9 @@ export default function Sidebar({ isOpen, closeSidebar }: Props) {
 
             <div className="text-center mt-auto absolute bottom-[30px] left-[50%] translate-x-[-50%]">
                {auth?.token ? (
-                  <PushButton onClick={singOut}>Log out</PushButton>
+                  <Button colors={'third'} onClick={singOut}>Log out</Button>
                ) : (
-                  <PushButton to="/login">Login</PushButton>
+                  <Button colors={'third'} to="/login">Login</Button>
                )}
             </div>
          </div>

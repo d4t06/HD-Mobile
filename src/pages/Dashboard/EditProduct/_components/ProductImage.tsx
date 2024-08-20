@@ -21,7 +21,7 @@ export default function ProductImage() {
 
       await actions({
          variant: "Edit",
-         productAscii: product.product_ascii,
+         productId: product.id,
          target: "one",
          product: { image_url: image.image_url },
       });

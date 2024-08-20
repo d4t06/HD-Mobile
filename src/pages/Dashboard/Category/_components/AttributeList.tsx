@@ -6,7 +6,7 @@ import AddItem from "@/components/Modal/AddItem";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 import useAttributeActions from "../_hooks/useAttributeAction";
-import PushButton from "@/components/ui/PushButton";
+import Button from "@/components/ui/Button";
 import AttributeItem from "./child/AttributeItem";
 import { PlusIcon } from "@heroicons/react/16/solid";
 
@@ -47,8 +47,8 @@ export default function AttributeList({ mainClasses }: Props) {
       if (currentCategoryIndex === undefined) return;
 
       const schema: CategoryAttributeSchema = {
-         attribute: value,
-         attribute_ascii: generateId(value),
+         name: value,
+         name_ascii: generateId(value),
          category_id: currentCategory!.id,
       };
 
@@ -80,22 +80,23 @@ export default function AttributeList({ mainClasses }: Props) {
                            (category, index) =>
                               !category.hidden && (
                                  <option key={index} value={index}>
-                                    {category.category}
+                                    {category.name}
                                  </option>
                               )
                         )}
                   </select>
                </div>
 
-               <PushButton
+               <Button
+                  colors={"third"}
                   size={"clear"}
                   className="py-[4px] px-[12px]"
                   disabled={!currentCategory}
                   onClick={() => setOpenModal(true)}
                >
                   <PlusIcon className="w-[20px]" />
-                  <span className="hidden sm:inline-block ml-[6p]">Add Price Range</span>
-               </PushButton>
+                  <span className="hidden sm:inline-block ml-[6p]">Add Attribute</span>
+               </Button>
             </div>
 
             {currentCategoryIndex !== undefined && currentCategory && (
@@ -112,7 +113,7 @@ export default function AttributeList({ mainClasses }: Props) {
                      return (
                         <DragAbleItem
                            index={index}
-                           key={foundedCatAttribute.attribute_ascii}
+                           key={foundedCatAttribute.name_ascii}
                            className={`${
                               isFetching ? "opacity-60 pointer-events-none" : ""
                            } border border-black/15 rounded-[8px] overflow-hidden ml-[8px] mt-[8px]`}

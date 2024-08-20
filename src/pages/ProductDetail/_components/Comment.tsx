@@ -1,18 +1,15 @@
 import CommentItem, { CommentSkeleton } from "@/components/CommentItem";
 import useComment from "@/hooks/useComment";
-
 import { useMemo, useRef } from "react";
 import logo from "@/assets/images/logo.jpg";
 import NotFound from "./child/NotFound";
-// import { useLocalStorage } from "@/hooks";
-// import { initLocalStorage } from "@/utils/appHelper";
 import PushFrame from "@/components/ui/PushFrame";
 import {
    ArrowPathIcon,
    HeartIcon,
    QuestionMarkCircleIcon,
 } from "@heroicons/react/16/solid";
-import PushButton from "@/components/ui/PushButton";
+import Button from "@/components/ui/Button";
 import Title from "@/components/Title";
 
 type Props = {
@@ -59,7 +56,8 @@ export default function Comment({ loading }: Props) {
             return (
                <div key={index}>
                   <CommentItem comment={c}>
-                     <PushButton
+                     <Button
+                        colors={"third"}
                         disabled={isLoading}
                         onClick={() => handleLike(c, index)}
                         className="px-[5px] py-[0px]"
@@ -71,7 +69,7 @@ export default function Comment({ loading }: Props) {
                            <HeartIcon className="w-[20px] mr-[4px]" />
                         )}
                         {c.total_like}
-                     </PushButton>
+                     </Button>
                   </CommentItem>
                   <div className="ml-[54px] mt-[14px] bg-[#ccc] rounded-[12px]">
                      <PushFrame type="translate">
@@ -103,7 +101,9 @@ export default function Comment({ loading }: Props) {
                <span>Q & A</span>
             </Title>
 
-            <PushButton baseClassName="w-full md:w-auto">Viết Câu hỏi</PushButton>
+            <Button colors={"third"} className="w-full md:w-auto">
+               Write question
+            </Button>
          </div>
 
          <div className="space-y-[20px]">
@@ -115,9 +115,13 @@ export default function Comment({ loading }: Props) {
                      <>
                         {renderComments}
                         <p className="text-center mt-[20px]">
-                           <PushButton onClick={handleGetMore} disabled={remaining <= 0}>
-                              Xem thêm ({remaining > 0 ? remaining : 0}) hỏi đáp
-                           </PushButton>
+                           <Button
+                              colors={"third"}
+                              onClick={handleGetMore}
+                              disabled={remaining <= 0}
+                           >
+                              More ({remaining > 0 ? remaining : 0}) questions
+                           </Button>
                         </p>
                      </>
                   ) : (
