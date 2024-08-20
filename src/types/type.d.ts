@@ -100,7 +100,7 @@ type ProductResponse = {
    products: Product[];
    count: number;
    page: number;
-   pageSize: number;
+   page_size: number;
    sort: boolean;
    category_id: number | null;
    column: number | null;

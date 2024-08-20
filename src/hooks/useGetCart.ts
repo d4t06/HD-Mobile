@@ -26,6 +26,7 @@ export default function useGetCart() {
          );
 
          setStatus("successful");
+
       } catch (error) {
          console.log({ message: error });
          setStatus("error");

@@ -14,19 +14,19 @@ const cx = classNames.bind(styles);
 const continents = [
    {
       id: 1,
-      value: "Mới nhất",
+      value: "Newest",
       column: "",
       type: "asc",
    },
    {
       id: 2,
-      value: "Giá thấp",
+      value: "Low price",
       column: "price",
       type: "ASC",
    },
    {
       id: 3,
-      value: "Giá cao",
+      value: "Hight price",
       column: "price",
       type: "DESC",
    },

@@ -39,7 +39,7 @@ export type Param = {
    admin?: boolean;
    replace?: boolean;
    status?: StateType["status"];
-   page_size?: number;
+   size?: number;
 };
 
 export const fetchProducts = createAsyncThunk(
@@ -51,7 +51,7 @@ export const fetchProducts = createAsyncThunk(
 
       const data = (await productServices.getProducts({
          ...rest,
-      })) as ProductState;
+      })) as ProductResponse;
 
       return { ...data, ...rest, admin, replace, status };
    }
@@ -128,8 +128,8 @@ const productsSlice = createSlice({
             state.status = "successful";
             state.page = payload.page || 1;
             state.category_id = payload.category_id;
-            state.productState.count = payload.count || 0;
-            state.productState.pageSize = payload.pageSize;
+            state.productState.count = payload.count;
+            state.productState.pageSize = payload.page_size;
 
             if (replace) state.productState.products = payload.products;
             else state.productState.products.push(...payload.products);
@@ -148,7 +148,7 @@ const productsSlice = createSlice({
             if (!payload) return state;
 
             state.status = "successful";
-            state.page = payload.page || 0;
+            state.page = payload.page || 1;
             state.productState.count = payload.count || 0;
 
             const products = payload.products || [];

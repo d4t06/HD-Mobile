@@ -141,14 +141,14 @@ export default function ProductSliderItem({ color, colorIndex }: Props) {
    return (
       <>
          <div className="flex items-center">
-            <div className="w-2/12">
+            <div className="w-2/6 sm:w-1/6">
                <p className="text-center font-[500]">
                   {color.color}
                </p>
             </div>
-            <div className="flex flex-wrap gap-y-[16px] flex-1">
+            <div className="flex flex-wrap flex-grow mt-[-8px]">
                {color.product_slider.slider.slider_images.map((sI, index) => (
-                  <div key={index} className="px-[4px] w-1/2">
+                  <div key={index} className="px-[4px] w-full sm:w-1/2 mt-[8px]">
                      <Empty
                         className={`pt-[55%] ${
                            isEditingSliderImages &&
@@ -181,7 +181,7 @@ export default function ProductSliderItem({ color, colorIndex }: Props) {
                   </div>
                ))}
 
-               <div className="flex-col w-1/2">
+               <div className="w-full sm:w-1/2 mt-[8px] px-[4px]">
                   <Empty
                      className="pt-[55%]"
                      fontClassName="bg-[#f1f1f1]"

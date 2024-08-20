@@ -30,7 +30,7 @@ const ButtonVariant = cva(classes.button, {
       border: {
          primary: "before:border-[2px]",
          thin: "before:border-[1px]",
-         clear: "",
+         clear: "before:border-b-[2px]",
       },
       fontWeight: {
          primary: "font-[500]",

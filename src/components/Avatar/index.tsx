@@ -38,9 +38,10 @@ export default function Avatar({ revert }: { revert?: boolean }) {
                   <h5 className={cx("user-name")}>{auth.username}</h5>
                ) : (
                   <Link
+                  className="font-medium text-[#3f3f3f]"
                      to={routes.LOGIN}
                   >
-                     Đăng nhập
+                     Sign In
                   </Link>
                )}
             </>

@@ -19,8 +19,8 @@ function EditProductMain() {
    };
 
    const mainClasses: LayoutClasses = {
-      flexContainer: "flex gap-y-[8px] mx-[-4px] flex-wrap",
-      flexCol: "px-[4px]",
+      flexContainer: "flex mt-[-8px] mx-[-4px] flex-wrap",
+      flexCol: "px-[4px] mt-[8px]",
       group: "p-[20px] rounded-[12px] bg-[#fff]",
       label: "text-[24px]",
    };

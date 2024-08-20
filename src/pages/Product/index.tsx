@@ -63,15 +63,14 @@ export default function Product() {
       [status, categoriesStatus]
    );
 
-   const ProductsSkeletons = useMemo(
-      () =>
-         [...Array(3).keys()].map((index) => (
-            <div key={index} className={cx("px-[4px] mt-[8px] w-1/2 md:w-1/3")}>
-               <ProductSkeleton />
-            </div>
-         )),
-      []
-   );
+   const ProductsSkeletons = useMemo(() => {
+      const count = window.innerWidth < 1024 ? 2 : 3;
+      return [...Array(count).keys()].map((index) => (
+         <div key={index} className={cx("px-[4px] mt-[8px] w-1/2 lg:w-1/3")}>
+            <ProductSkeleton />
+         </div>
+      ));
+   }, []);
 
    useEffect(() => {
       if (!currentCategory) return;

@@ -11,9 +11,9 @@ type Props = {
 
 const classes = {
    container:
-      "transition-[opacity,transform] flex absolute bottom-0 w-full h-[40%] items-center justify-center gap-[12px]",
+      "transition-[opacity,transform] flex absolute bottom-0 w-full h-[40%] items-center justify-center space-x-[12px]",
    button:
-      "text-[#333] bg-[#ccc] hover:text-white hover:bg-[#cd1818] hover:scale-[1.1] rounded-[6px] p-[6px] transition-transform",
+      "text-[#333] bg-[#fff] shadow-[2px_2px_5px_rgba(0,0,0,0.15)] hover:text-white hover:bg-[#cd1818] hover:scale-[1.1] rounded-[6px] p-[5px] transition-transform",
    hide: "opacity-0 translate-y-[10px]",
    show: "group-hover:!translate-y-[0] group-hover:!opacity-[1]",
 };

@@ -65,7 +65,7 @@ function Header() {
                <div className={cx("header-top")}>
                   <div className={cx("header-top-wrap")}>
                      <div className="left w-1/4 max-[768px]:hidden">
-                        <Link className={cx("brand")} to={"/"}>
+                        <Link className={"text-2xl font-medium"} to={"/"}>
                            HD <span className="text-[#cd1818]">Mobile</span>
                         </Link>
                      </div>

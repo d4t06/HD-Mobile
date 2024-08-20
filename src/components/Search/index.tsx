@@ -87,7 +87,7 @@ function Search(props: Props) {
       <>
          <Popup
             content={
-               <div className={cx("search-result")}>
+               <div className={cx("search-result", props.variant)}>
                   <ul>
                      {searchResult.length &&
                         searchResult?.map((p, index) => {
@@ -119,6 +119,7 @@ function Search(props: Props) {
             opts={{
                visible: isShowResult,
                appendTo: () => document.body,
+               placement: props.variant === 'home' ? 'auto' : "bottom-start"
             }}
          >
             <div className={cx("wrap")}>
@@ -152,7 +153,7 @@ function Search(props: Props) {
             </div>
          </Popup>
 
-         {show && <Modal closeModal={() => setShow(false)} />}
+         {props.variant !== 'dashboard' && show && <Modal z="z-[10]" closeModal={() => setShow(false)} />}
       </>
    );
 }

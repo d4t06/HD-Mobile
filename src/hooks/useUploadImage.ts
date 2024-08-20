@@ -11,7 +11,7 @@ const IMAGE_URL = "/images";
 export default function useUploadImage() {
    // hooks
    const { setTempImages, addImage } = useImage();
-   const { setErrorToast, setSuccessToast } = useToast();
+   const { setErrorToast } = useToast();
    const privateRequest = usePrivateRequest();
 
    const handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -54,8 +54,6 @@ export default function useUploadImage() {
             i++;
          }
 
-         console.log("check temp images list", processImageList);
-
          setTempImages(processImageList);
 
          for (const val of fileNeedToUploadIndexes.reverse()) {
@@ -77,7 +75,6 @@ export default function useUploadImage() {
             setTempImages([...processImageList]);
             addImage(newImage);
          }
-         setSuccessToast("Upload images successful");
       } catch (error) {
          console.log(error);
          setErrorToast("Upload images failed");

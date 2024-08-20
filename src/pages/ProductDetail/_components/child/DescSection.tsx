@@ -1,12 +1,11 @@
 import HTMLReactParser from "html-react-parser/lib/index";
 import { useEffect, useRef, useState } from "react";
 
-// import "../styles.scss";
 import Skeleton from "@/components/Skeleton";
-import PushButton from "@/components/ui/PushButton";
 
 import styles from "./DescSection.module.scss";
 import classNames from "classnames/bind";
+import { Button } from "@/components";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -69,7 +68,9 @@ export default function DescSection({ product, loading }: Props) {
 
          {!loading && updatedHeight && !isShowMore && (
             <p className="text-center">
-               <PushButton onClick={handleShowMore}>Xêm thêm</PushButton>
+               <Button colors={"third"} onClick={handleShowMore}>
+                  Expand
+               </Button>
             </p>
          )}
       </>

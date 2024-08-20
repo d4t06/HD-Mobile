@@ -6,7 +6,6 @@
    position: relative;
    overflow: hidden;
    z-index: 200;
-   // box-shadow: 2px 2px 8px rgba($color: #000000, $alpha: 0.15);
    border: 1px solid rgba($color: #000000, $alpha: 0.1);
 
    @media screen and (max-width: 768px) {
@@ -48,7 +47,7 @@
 .clear-btn,
 .loading-btn {
    position: absolute;
-   right: 60px;
+   right: 44px;
    height: 100%;
    background-color: transparent;
    top: 0;
@@ -58,11 +57,16 @@
 .search-result {
    background-color: #fff;
    width: 500px;
-   max-width: 90vw;
+   max-width: 70vw;
    border-radius: 8px;
    padding: 10px 6px;
    max-height: 60vh;
    overflow: auto;
+   box-shadow: 2px 2px 8px rgba($color: #000000, $alpha: 0.15);
+
+   &.dashboard {
+      width: 300px;
+   }
 
    .product {
       display: flex;

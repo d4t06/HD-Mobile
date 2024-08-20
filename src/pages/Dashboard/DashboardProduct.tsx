@@ -3,13 +3,8 @@ import { Button, Modal, Search } from "@/components";
 import Table from "@/components/Table";
 
 import AddProductModal from "@/components/Modal/AddProductModal";
-import {
-   Cog6ToothIcon,
-   PencilSquareIcon,
-   TrashIcon,
-} from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
-import PushButton from "@/components/ui/PushButton";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import useDashBoardProduct from "./_hooks/useDashboardProduct";
 import ConfirmModal from "@/components/Modal/Confirm";
@@ -166,14 +161,14 @@ export default function Dashboard() {
    }, [isOpenModal, curCategory, isFetching]);
 
    const classes = {
-      tab: "px-[24px] py-[8px]",
+      tab: "px-[12px] sm:px-[24px] py-[8px] ml-[8px] mt-[8px]",
    };
 
    if (status === "error") return <p className="text-center">Some thing went wrong</p>;
 
    return (
       <>
-         <div className="flex gap-[8px] mb-[10px]">
+         <div className="flex flex-wrap mt-[-8px] ml-[-8px] mb-[10px]">
             <Button
                colors={"second"}
                onClick={() => setCurCategory(undefined)}
@@ -204,7 +199,12 @@ export default function Dashboard() {
 
          <div className="flex items-start justify-between mt-[30px]">
             <Search variant="dashboard" />
-            <Button className="flex-shrink-0 ml-[10px] px-[12px] py-[7px]" colors={"third"} size={'clear'} onClick={() => handleOpenModal({ type: "Add" })}>
+            <Button
+               className="flex-shrink-0 ml-[10px] px-[12px] py-[7px]"
+               colors={"third"}
+               size={"clear"}
+               onClick={() => handleOpenModal({ type: "Add" })}
+            >
                <PlusIcon className="w-[24px]" />
                <span className="hidden sm:block ml-[6px]">Thêm sản phẩm</span>
             </Button>
@@ -218,19 +218,24 @@ export default function Dashboard() {
                </p>
             )}
             {status !== "loading" && !!products.length && (
-               <p className="text-center my-[15px]">
-                  <PushButton
+               <p className="text-center mt-[30px]">
+                  <Button
+                     colors={"second"}
                      disabled={remaining <= 0 || status === "more-loading"}
                      loading={status === "more-loading"}
                      onClick={() => handleGetMore()}
                   >
-                     Xem thêm ({remaining <= 0 ? 0 : remaining}) sản phẩm
-                  </PushButton>
+                     Xem thêm
+                  </Button>
                </p>
             )}
          </div>
 
-         {isOpenModal && <Modal z="z-[200]" closeModal={closeModal}>{renderModal}</Modal>}
+         {isOpenModal && (
+            <Modal closeModal={closeModal}>
+               {renderModal}
+            </Modal>
+         )}
       </>
    );
 }

@@ -9,12 +9,10 @@ export default function LoginLayout({ children }: { children: ReactNode }) {
 
    return (
       <div className="absolute inset-0">
-         <div className="container mx-auto relative h-full">
-            <Button colors={'third'} size={"clear"} to={"/"} className={`${classes.button}`}>
-               <HomeIcon className="w-[22px]" />
-            </Button>
-            {children}
-         </div>
+         <div className="container mx-auto relative h-full">{children}</div>
+         <Button colors={"third"} size={"clear"} to={"/"} className={`${classes.button}`}>
+            <HomeIcon className="w-6" />
+         </Button>
       </div>
    );
 }

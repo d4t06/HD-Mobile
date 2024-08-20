@@ -31,12 +31,12 @@ export default function NewProduct({ loading }: Props) {
    useEffect(() => {
       if (loading) return;
 
-      dispatch(fetchProducts({ category_id: undefined, page_size: 6 }));
+      dispatch(fetchProducts({ category_id: undefined, size: 6 }));
    }, [loading]);
 
    return (
       <div className="">
-         <h5 className="text-[18px] font-[500] mb-[8px]">Sản phẩm mới</h5>
+         <h5 className="text-[18px] font-[500] mb-[8px]">New Products</h5>
          <div className="flex mx-[-4px] mt-[-8px] flex-wrap">
             {status === "loading" && ProductsSkeletons}
 

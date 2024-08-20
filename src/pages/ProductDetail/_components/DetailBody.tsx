@@ -14,7 +14,7 @@ export default function DetailBody({ loading, product }: Props) {
          <div className={"mt-[40px] md:mt-0 md:w-2/3 flex-shrink-0 md:px-[12px]"}>
             <Title className="mb-[20px]">
                <DocumentTextIcon className="w-[24px]" />
-               <span>Chi tiết</span>
+               <span>Description</span>
             </Title>
             <DescSection loading={loading} product={product} />
          </div>
@@ -22,7 +22,7 @@ export default function DetailBody({ loading, product }: Props) {
             <div className="sm:sticky top-[10px]">
                <Title className="mb-[20px]">
                   <Cog6ToothIcon className="w-[24px]" />
-                  <span>Thông số</span>
+                  <span>SpecSection</span>
                </Title>
                <SpecSection loading={loading} product={product} />
             </div>

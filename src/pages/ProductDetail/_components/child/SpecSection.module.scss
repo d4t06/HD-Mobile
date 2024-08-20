@@ -3,14 +3,14 @@
    tr {
       td {
          font-size: 14px;
+         color: #3f3f3f;
          padding: 12px 8px;
-
+         font-weight: 500;
          white-space: pre-line;
 
          &:first-child {
             border-radius: 8px 0 0 8px;
             color: #808080;
-            font-weight: 500;
          }
 
          &:last-child {

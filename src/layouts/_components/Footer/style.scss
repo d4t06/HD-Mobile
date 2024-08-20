@@ -5,18 +5,4 @@
    h5 {
       color: #cd1818;
    }
-   .list {
-      margin-top: 10px;
-      li {
-         font-size: 14px;
-         display: flex;
-         align-items: center;
-         * + * {
-            margin-left: 4px;
-         }
-         & + li {
-            margin-top: 8px;
-         }
-      }
-   }
 }

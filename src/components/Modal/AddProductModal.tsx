@@ -156,7 +156,7 @@ export default function AddProductModal({ ...props }: Props) {
                      {productData.image_url && (
                         <>
                            <img
-                              className="rounded-[8px] border border-black/15"
+                              className="rounded-[8px] max-h-[200px] mx-auto border border-black/15"
                               src={productData.image_url}
                            />
                            <OverlayCTA

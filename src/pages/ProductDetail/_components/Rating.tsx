@@ -79,7 +79,7 @@ export default function Rating({ loading }: Props) {
          <div className="md:flex justify-between items-center mb-[20px]">
             <Title className="mb-[10px] md:mb-0">
                <StarIcon className="w-[24px]" />
-               <span>Đánh giá</span>
+               <span>Rating</span>
             </Title>
 
             <PushButton baseClassName="w-full md:w-auto">Viết đánh giá</PushButton>
@@ -112,7 +112,7 @@ export default function Rating({ loading }: Props) {
                         </p>
                      </>
                   ) : (
-                     <NotFound title="Chưa có đánh giá" />
+                     <NotFound title="" />
                   )}
                </>
             )}

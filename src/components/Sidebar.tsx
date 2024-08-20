@@ -73,14 +73,14 @@ export default function Sidebar({ isOpen, closeSidebar }: Props) {
                   </Link>
                )}
             </div>
-         </div>
 
-         <div className="text-center mt-auto absolute bottom-[30px] left-[50%] translate-x-[-50%]">
-            {auth?.token ? (
-               <PushButton onClick={singOut}>Log out</PushButton>
-            ) : (
-               <PushButton to="/login">Login</PushButton>
-            )}
+            <div className="text-center mt-auto absolute bottom-[30px] left-[50%] translate-x-[-50%]">
+               {auth?.token ? (
+                  <PushButton onClick={singOut}>Log out</PushButton>
+               ) : (
+                  <PushButton to="/login">Login</PushButton>
+               )}
+            </div>
          </div>
 
          {isOpen && <Modal closeModal={closeSidebar} />}

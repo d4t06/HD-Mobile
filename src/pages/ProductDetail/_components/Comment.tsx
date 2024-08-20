@@ -100,7 +100,7 @@ export default function Comment({ loading }: Props) {
          <div className="md:flex justify-between items-center mb-[20px]">
             <Title className="mb-[10px] md:mb-0">
                <QuestionMarkCircleIcon className="w-[24px]" />
-               <span>Hỏi đáp</span>
+               <span>Q & A</span>
             </Title>
 
             <PushButton baseClassName="w-full md:w-auto">Viết Câu hỏi</PushButton>
@@ -121,7 +121,7 @@ export default function Comment({ loading }: Props) {
                         </p>
                      </>
                   ) : (
-                     <NotFound title="Chưa có câu hỏi" />
+                     <NotFound title="" />
                   )}
                </>
             )}

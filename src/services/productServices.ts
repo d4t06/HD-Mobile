@@ -2,13 +2,13 @@ import { Param } from "@/store/productsSlice";
 import { publicRequest } from "@/utils/request";
 
 export const getProducts = async (props: Param) => {
-   const { filters, sort, category_id, page, page_size } = props;
+   const { filters, sort, category_id, page, size } = props;
    const params: Record<string, string | string[] | number[] | number | undefined> = {
       page: page || 1,
       category_id,
    };
 
-   if (page_size) params["page_size"] = page_size;
+   if (size) params["size"] = size;
 
    if (filters && filters.brands.length)
       params["brand_id"] = filters.brands.map((b) => b.id) as number[];

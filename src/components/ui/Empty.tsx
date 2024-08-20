@@ -21,7 +21,7 @@ export default function Empty({
       container: `group relative pt-[100%] rounded-[12px] border-[2px] border-[#ccc] overflow-hidden bg-[#ccc] ${
          !children ? "cursor-pointer hover:bg-black/15" : ""
       }`,
-      font: "absolute inset-0 flex transition-transform rounded-[12px] items-center justify-center bg-[#f1f1f1]",
+      font: "absolute inset-0 flex transition-transform rounded-[12px] items-center justify-center bg-[#f9f9f9]",
       pushAble: "translate-y-[-4px] group-active:translate-y-[-2x]",
    };
 

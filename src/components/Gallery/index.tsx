@@ -1,15 +1,13 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useState, useMemo } from "react";
 import classNames from "classnames/bind";
-
 import styles from "./Gallery.module.scss";
-import usePrivateRequest from "@/hooks/usePrivateRequest";
-
-import { formatSize, sleep } from "@/utils/appHelper";
 import { useImage } from "@/store/ImageContext";
 import Skeleton from "../Skeleton";
-import { ArrowPathIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
-import PushButton from "../ui/PushButton";
+import { ArrowPathIcon, ArrowUpTrayIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Button } from "..";
+import useGalleryAction from "@/hooks/useGalleryActiont";
+import ImageList from "./ImageList";
+import ImageInfo from "./ImageInfo";
 
 const cx = classNames.bind(styles);
 
@@ -19,40 +17,22 @@ type Props = {
    multiple?: boolean;
 };
 
-type getImagesRes = {
-   page: number;
-   images: ImageType[];
-   pageSize: number;
-   count: number;
-};
-
-const IMAGE_URL = "/images";
-
 function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
-   const [choseList, setChoseList] = useState<ImageType[]>([]);
-   const [active, setActive] = useState<ImageType>();
-   const [status, setStatus] = useState<
-      "fetching" | "loadingImages" | "success" | "error"
-   >("loadingImages");
-   const [apiLoading, setApiLoading] = useState(false);
+   const { currentImages, tempImages, page, count, page_size } = useImage();
 
-   const ranUseEffect = useRef(false);
+   const [choseList, setChoseList] = useState<ImageType[]>([]);
+   const [active, setActive] = useState<ImageType | null>(null);
 
    // hooks
-   const privateRequest = usePrivateRequest();
-   const {
-      imageStore: { currentImages, tempImages, page, count, pageSize },
-      storeImages,
-   } = useImage();
+   const { deleteImage, getImages, fetching, imageStatus } = useGalleryAction();
 
-   const isLoading = status === "fetching" || status === "loadingImages";
-
-   const ableToChosenImage = useMemo(
-      () => (multiple ? !!choseList.length : !!active) && !isLoading,
+   const ableToSubmit = useMemo(
+      () => (multiple ? !!choseList.length : !!active),
       [active, choseList]
    );
-   const isRemaining = useMemo(() => count - page * pageSize > 0, [currentImages]);
-   const isNoHaveImage = !currentImages.length && !tempImages.length && !isLoading;
+   const isRemaining = useMemo(() => count - page * page_size > 0, [currentImages]);
+   const isNoHaveImage =
+      !currentImages.length && !tempImages.length && imageStatus !== "fetching";
 
    const handleSubmit = () => {
       switch (multiple) {
@@ -79,106 +59,32 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
    };
 
    const handleDeleteImage = async () => {
-      try {
-         if (!active || !active.public_id) return;
-
-         setApiLoading(true);
-         const controller = new AbortController();
-
-         await privateRequest.delete(
-            `${IMAGE_URL}/${encodeURIComponent(active.public_id)}`
-         );
-
-         const newImages = currentImages.filter(
-            (image) => image.public_id !== active.public_id
-         );
-         storeImages({ currentImages: newImages });
-
-         return () => {
-            controller.abort();
-         };
-      } catch (error) {
-         console.log({ message: error });
-      } finally {
-         setApiLoading(false);
-      }
-   };
-
-   const getImages = async (page: number) => {
-      try {
-         const res = await privateRequest.get(`${IMAGE_URL}?page=${page}`); //res.data
-         const data = res.data.data as getImagesRes;
-         const newImages = [...currentImages, ...data.images];
-
-         storeImages({
-            count: data.count,
-            pageSize: data.pageSize,
-            page: data.page,
-            currentImages: newImages,
-         });
-
-         if (import.meta.env.DEV) await sleep(300);
-         setStatus("success");
-      } catch (error) {
-         console.log({ message: error });
-         setStatus("error");
-      }
+      if (!active || !active.public_id) return;
+      await deleteImage(active.public_id);
    };
 
    const imageSkeleton = useMemo(
       () =>
-         [...Array(10).keys()].map((item) => (
-            <div key={item} className={cx("w-1/3 sm:w-1/5", "px-[4px] gallery-item")}>
+         [...Array(6).keys()].map((item) => (
+            <div
+               key={item}
+               className={cx("w-1/3 sm:w-1/5 mt-[8px]", "px-[4px] gallery-item")}
+            >
                <Skeleton className="pt-[100%] w-[100% rounded-[6px]" />
             </div>
          )),
       []
    );
 
-   const renderImages = useMemo(() => {
-      return currentImages.map((item, index) => {
-         const indexOf = choseList.findIndex((i) => i.id === item.id);
-         const isInChoseList = indexOf !== -1;
-
-         return (
-            <div key={index} className={cx("w-1/3 sm:w-1/5 px-[4px]")}>
-               <div className={cx("image-container", "group")}>
-                  <div
-                     onClick={() => setActive(item)}
-                     className={cx("image-frame", {
-                        active: active ? active.id === item.id : false,
-                     })}
-                  >
-                     <img src={item.image_url} alt="img" />
-                  </div>
-                  {multiple && (
-                     <button
-                        onClick={() => handleSelect(item)}
-                        className={`${
-                           isInChoseList
-                              ? "bg-[#cd1818] "
-                              : "bg-[#ccc] hover:bg-[#cd1818]"
-                        } z-10 h-[24px] w-[24px] absolute rounded-[6px] text-[white] left-[10px] bottom-[10px]`}
-                     >
-                        {isInChoseList && (
-                           <span className="text-[18px] font-semibold leading-[1]">
-                              {indexOf + 1}
-                           </span>
-                        )}
-                     </button>
-                  )}
-               </div>
-            </div>
-         );
-      });
-   }, [active, currentImages, choseList]);
-
    const renderTempImages = useMemo(
       () =>
          !!tempImages.length &&
-         tempImages?.map((item, index) => {
+         tempImages?.map((item) => {
             return (
-               <div key={index} className={cx("w-1/3 sm:w-1/5")}>
+               <div
+                  key={item.image_url}
+                  className={cx("w-1/3 sm:w-1/5 mt-[8px] px-[4px]")}
+               >
                   <div className={cx("image-container")}>
                      <div className={cx("image-frame", "relative")}>
                         <img className="opacity-[.4]" src={item.image_url} alt="img" />
@@ -191,91 +97,94 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
       [tempImages]
    );
 
-   useEffect(() => {
-      if (currentImages.length) {
-         setTimeout(() => {
-            setStatus("success");
-         }, 300);
-         return;
-      }
-
-      if (!ranUseEffect.current) {
-         ranUseEffect.current = true;
-         getImages(1);
-      }
-   }, []);
+   const classes = {
+      galleryTop: "flex justify-between border-b border-[#ccc] mb-[10px] pb-[10px]",
+   };
 
    return (
       <div className={cx("gallery")}>
-         <div className={cx("gallery__top")}>
-            <div className={cx("left")}>
-               <h1 className="text-[22px] font-[500]">Images ({count})</h1>
-               <div>
-                  <Button size={"clear"} colors={"second"}>
-                     <label className={"flex px-[12px] py-[4px]"} htmlFor="image_upload">
-                        <ArrowUpTrayIcon className="w-[22px]" />
-                        <span className="hidden sm:inline ml-[6px]">Upload</span>
-                     </label>
-                  </Button>
-               </div>
+         <div className={classes.galleryTop}>
+            <div className={"flex items-center"}>
+               <p className="text-[18px] sm:text-[22px] font-[500]">Gallery</p>
+               <Button
+                  disabled={!!tempImages.length}
+                  colors={"second"}
+                  size="clear"
+                  className="ml-[10px] h-full"
+               >
+                  <label
+                     className="flex items-center px-[10px] h-full cursor-pointer"
+                     htmlFor="image_upload"
+                  >
+                     <ArrowUpTrayIcon className="w-[20px]" />
+                     <span className="hidden sm:block ml-[6px]">Upload</span>
+                  </label>
+               </Button>
             </div>
 
-            <Button colors={"third"} disabled={!ableToChosenImage} onClick={handleSubmit}>
-               Chọn
-            </Button>
+            <div className="flex">
+               <Button
+                  className="mr-[10px]"
+                  colors={"third"}
+                  disabled={!ableToSubmit}
+                  onClick={handleSubmit}
+               >
+                  Select
+               </Button>
+
+               <Button
+                  size={"clear"}
+                  className="px-[6px]"
+                  colors={"second"}
+                  onClick={closeModal}
+               >
+                  <XMarkIcon className="w-[20px]" />
+               </Button>
+            </div>
          </div>
          <div className={cx("gallery__body", "flex mx-[-8px]")}>
             <div className={cx("px-[8px] no-scrollbar", "left")}>
-               <div className="flex flex-wrap gap-y-[8px]">
-                  {status === "error" && <p>Some thing went wrong</p>}
-                  {status !== "error" && (
+               <div className="flex flex-wrap mt-[-8px]">
+                  {imageStatus === "error" && <p>Some thing went wrong</p>}
+                  {imageStatus !== "error" && (
                      <>
                         {renderTempImages}
                         {isNoHaveImage ? (
                            <p className="text-[16px]">No have image jet...</p>
                         ) : (
-                           renderImages
+                           <ImageList
+                              active={active}
+                              choseList={choseList}
+                              handleSelect={handleSelect}
+                              images={currentImages}
+                              setActive={setActive}
+                              multiple={multiple}
+                           />
                         )}
                      </>
                   )}
 
-                  {status === "loadingImages" && imageSkeleton}
+                  {imageStatus === "fetching" && imageSkeleton}
                </div>
 
                {!!currentImages.length && isRemaining && (
-                  <div className="text-center mt-[14px]">
-                     <PushButton onClick={() => getImages(page + 1)}>Thêm</PushButton>
-                  </div>
-               )}
-            </div>
-            <div className={cx("col hidden sm:block w-1/3 px-[8px] overflow-hidden border-l-[2px]")}>
-               {active && (
-                  <div className={cx("image-info", "space-y-[20px]")}>
-                     <h2 className="break-words">{active.name}</h2>
-                     <ul className="space-y-[10px]">
-                        <li>
-                           <h4 className="font-[500] mb-[6px]">Image path:</h4>{" "}
-                           <a target="blank" href={active.image_url}>
-                              {active.image_url}
-                           </a>
-                        </li>
-                        <li>
-                           <h4 className="font-[500] mb-[6px]">Size:</h4>{" "}
-                           {formatSize(active.size)}
-                        </li>
-                     </ul>
+                  <div className="text-center mt-[30px]">
                      <Button
-                        colors={"third"}
-                        size={"clear"}
-                        className="py-[5px] px-[40px]"
-                        loading={apiLoading}
-                        onClick={handleDeleteImage}
+                        disabled={!!tempImages.length}
+                        loading={imageStatus === "fetching"}
+                        colors={"second"}
+                        onClick={() => getImages(page + 1)}
                      >
-                        Xóa
+                        Thêm
                      </Button>
                   </div>
                )}
             </div>
+            <ImageInfo
+               fetching={fetching}
+               handleDeleteImage={handleDeleteImage}
+               image={active}
+            />
          </div>
       </div>
    );

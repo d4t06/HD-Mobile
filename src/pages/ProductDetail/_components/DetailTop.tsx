@@ -1,8 +1,7 @@
-import { Button, ImageSlider } from "@/components";
+import { Button, ImageSlider, Modal } from "@/components";
 import Skeleton from "@/components/Skeleton";
 import { useMemo, useState } from "react";
 import useGetDefaultCombine from "../_hooks/useGetDefaultCombine";
-import PushButton from "@/components/ui/PushButton";
 import { moneyFormat } from "@/utils/appHelper";
 
 import styles from "./DetailTop.module.scss";
@@ -14,6 +13,7 @@ import useCartAction from "@/hooks/useCartAction";
 import { useAuth } from "@/store/AuthContext";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import ModalHeader from "@/components/Modal/ModalHeader";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -26,6 +26,7 @@ export default function DetailTop({ loading, product }: Props) {
 
    const [color, setColor] = useState<ProductColor>();
    const [variant, setVariant] = useState<ProductVariant>();
+   const [isOpenModal, setIsOpenModal] = useState(false);
 
    // hooks
    const { actions, isFetching } = useCartAction();
@@ -45,6 +46,8 @@ export default function DetailTop({ loading, product }: Props) {
       return color.product_slider.slider.slider_images;
    }, [color]);
 
+   const closeModal = () => setIsOpenModal(false);
+
    const findDefaultCombineOfVariant = (variant: ProductVariant) => {
       if (!product) return;
 
@@ -52,6 +55,11 @@ export default function DetailTop({ loading, product }: Props) {
    };
 
    const handleAddCartItem = async () => {
+      if (!auth) {
+         setIsOpenModal(true);
+         return;
+      }
+
       if (!color || !variant || !auth || !product) return;
 
       const schema: CartItemSchema = {
@@ -110,130 +118,149 @@ export default function DetailTop({ loading, product }: Props) {
       );
 
       if (auth?.role === "ADMIN")
-         return <Link target="_blank" to={`/dashboard/product/${product.product_ascii}`}>{content}</Link>;
+         return (
+            <Link target="_blank" to={`/dashboard/product/${product.product_ascii}`}>
+               {content}
+            </Link>
+         );
 
       return content;
    }, [product]);
 
    return (
-      <div className="md:flex flex-wrap md:mx-[-12px]">
-         <div className="md:w-7/12 md:px-[12px]">
-            {loading && <Skeleton className="w-full pt-[50%] rounded-[16px]" />}
-            {!loading && (
-               <div className="relative sm:sticky top-[10px]">
-                  <ImageSlider
-                     className="pt-[60%] md:pt-[50%]"
-                     data={currentSliderImages}
-                  />
-               </div>
-            )}
-         </div>
-
-         <div className={"mt-[40px] md:mt-0 md:w-5/12 md:px-[12px]"}>
-            <div className="space-y-[20px]">
-               {loading && ProductInfoSkeleton}
-               {!loading && product && (
-                  <>
-                     {productName}
-
-                     {currentCombine && (
-                        <>
-                           <div className="space-y-[14px]">
-                              <div className="space-y-[4px]">
-                                 <h5 className={cx("label")}>Phiên bản</h5>
-                                 <div className={cx("list")}>
-                                    {product.variants.map((variant, index) => {
-                                       const defaultCombine =
-                                          findDefaultCombineOfVariant(variant);
-
-                                       if (defaultCombine)
-                                          return (
-                                             <div key={index} className={cx("item")}>
-                                                <Button
-                                                   colors={"second"}
-                                                   className="h-[60px] !flex-col px-[4px] w-full"
-                                                   onClick={() => setVariant(variant)}
-                                                   active={
-                                                      variant.id ===
-                                                      currentCombine.variant_id
-                                                   }
-                                                >
-                                                   <span>{variant.variant}</span>
-                                                   <span className="text-[14px] font-[500]">
-                                                      {moneyFormat(defaultCombine.price)}đ
-                                                   </span>
-                                                </Button>
-                                             </div>
-                                          );
-                                       else return <></>;
-                                    })}
-                                 </div>
-                              </div>
-
-                              <div className="space-y-[4px]">
-                                 <h5 className={cx("label")}>Màu</h5>
-                                 <div className={cx("list")}>
-                                    {product.colors.map((color, index) => (
-                                       <div key={index} className={cx("item")}>
-                                          <Button
-                                             colors={"second"}
-                                             className="h-[60px] !flex-col px-[4px] w-full"
-                                             onClick={() => setColor(color)}
-                                             active={color.id === currentCombine.color_id}
-                                          >
-                                             <span>{color.color}</span>
-                                          </Button>
-                                       </div>
-                                    ))}
-                                 </div>
-                              </div>
-                           </div>
-
-                           <div className={cx("price")}>
-                              <p className={cx("label")}>Giá bán</p>
-                              <p className={cx("cur-price")}>
-                                 {currentCombine.price
-                                    ? moneyFormat(currentCombine.price) + "₫"
-                                    : "Liên hệ"}
-                              </p>
-                              <span className={cx("vat-tag")}>
-                                 {currentCombine.price ? "Đã bao gồm 10% VAT" : "---"}
-                              </span>
-                           </div>
-
-                           <PushButton
-                              disabled={isFetching}
-                              baseClassName="w-full"
-                              className="h-[40px]"
-                              size={"clear"}
-                              loading={isFetching}
-                              onClick={handleAddCartItem}
-                           >
-                              Mua Ngay
-                           </PushButton>
-                        </>
-                     )}
-
-                     {!currentCombine && (
-                        <div className={cx("price")}>
-                           <p className={cx("label")}>Giá bán</p>
-                           <p className={cx("cur-price")}>Contact</p>
-                        </div>
-                     )}
-                  </>
+      <>
+         <div className="md:flex flex-wrap md:mx-[-12px]">
+            <div className="md:w-7/12 md:px-[12px]">
+               {loading && <Skeleton className="w-full pt-[50%] rounded-[16px]" />}
+               {!loading && (
+                  <div className="relative sm:sticky top-[10px]">
+                     <ImageSlider
+                        className="pt-[60%] md:pt-[50%]"
+                        data={currentSliderImages}
+                     />
+                  </div>
                )}
             </div>
-
-            {currentCombine && (
-               <div className="mt-[30px]">
-                  <Title className="mb-[10px]">
-                     <TagIcon className="w-[24px]" />
-                     <span>Chính sách bảo hành</span>
-                  </Title>
-                  <Policy loading={loading} />
+            <div className={"mt-[40px] md:mt-0 md:w-5/12 md:px-[12px]"}>
+               <div className="space-y-[20px]">
+                  {loading && ProductInfoSkeleton}
+                  {!loading && product && (
+                     <>
+                        {productName}
+                        {currentCombine && (
+                           <>
+                              <div className="space-y-[14px]">
+                                 <div className="space-y-[4px]">
+                                    <h5 className={cx("label")}>Variant</h5>
+                                    <div className={cx("list")}>
+                                       {product.variants.map((variant, index) => {
+                                          const defaultCombine =
+                                             findDefaultCombineOfVariant(variant);
+                                          if (defaultCombine)
+                                             return (
+                                                <div key={index} className={cx("item")}>
+                                                   <Button
+                                                      colors={"second"}
+                                                      className="h-[60px] !flex-col px-[4px] w-full"
+                                                      onClick={() => setVariant(variant)}
+                                                      active={
+                                                         variant.id ===
+                                                         currentCombine.variant_id
+                                                      }
+                                                   >
+                                                      <span>{variant.variant}</span>
+                                                      <span className="text-[14px] font-[500]">
+                                                         {moneyFormat(
+                                                            defaultCombine.price
+                                                         )}
+                                                         đ
+                                                      </span>
+                                                   </Button>
+                                                </div>
+                                             );
+                                          else return <></>;
+                                       })}
+                                    </div>
+                                 </div>
+                                 <div className="space-y-[4px]">
+                                    <h5 className={cx("label")}>Color</h5>
+                                    <div className={cx("list")}>
+                                       {product.colors.map((color, index) => (
+                                          <div key={index} className={cx("item")}>
+                                             <Button
+                                                colors={"second"}
+                                                className="h-[60px] !flex-col px-[4px] w-full"
+                                                onClick={() => setColor(color)}
+                                                active={
+                                                   color.id === currentCombine.color_id
+                                                }
+                                             >
+                                                <span>{color.color}</span>
+                                             </Button>
+                                          </div>
+                                       ))}
+                                    </div>
+                                 </div>
+                              </div>
+                              <div className={cx("price")}>
+                                 <p className={cx("label")}>Price</p>
+                                 <p className={cx("cur-price")}>
+                                    {currentCombine.price
+                                       ? moneyFormat(currentCombine.price) + "₫"
+                                       : "Contact"}
+                                 </p>
+                                 <span className={cx("vat-tag")}>
+                                    {currentCombine.price ? "VAT included" : "---"}
+                                 </span>
+                              </div>
+                              <Button
+                                 disabled={isFetching}
+                                 className="h-[40px] w-full font-semibold"
+                                 colors={"third"}
+                                 loading={isFetching}
+                                 onClick={handleAddCartItem}
+                              >
+                                 BUY NOW
+                              </Button>
+                           </>
+                        )}
+                        {!currentCombine && (
+                           <div className={cx("price")}>
+                              <p className={cx("label")}>Giá bán</p>
+                              <p className={cx("cur-price")}>Contact</p>
+                           </div>
+                        )}
+                     </>
+                  )}
                </div>
-            )}
+               {currentCombine && (
+                  <div className="mt-[30px]">
+                     <Title className="mb-[10px]">
+                        <TagIcon className="w-[24px]" />
+                        <span>Policy</span>
+                     </Title>
+                     <Policy loading={loading} />
+                  </div>
+               )}
+            </div>
          </div>
-      </div>
+
+         {isOpenModal && (
+            <Modal z="z-[999]" closeModal={closeModal}>
+               <div className="w-[400px] ">
+                  <ModalHeader title="SOS!" closeModal={closeModal} />
+                  <img
+                     className="mx-auto"
+                     src="https://zalo-api.zadn.vn/api/emoticon/sticker/webpc?eid=46970&size=130"
+                     alt=""
+                  />
+                  <p className="font-medium mt-3">Không đăng nhập rối sao mua hả ?</p>
+                  <Button className="mt-5" colors={"third"}>
+                     Cút
+                  </Button>
+               </div>
+            </Modal>
+         )}
+      </>
    );
 }

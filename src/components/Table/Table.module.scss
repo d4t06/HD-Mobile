@@ -1,7 +1,7 @@
 .table {
    width: 100%;
    border-collapse: collapse;
-   border-radius: 12px;
+   border-radius: 10px;
    overflow: hidden;
    background-color: #fff;
    tr {
@@ -24,7 +24,7 @@
    @media screen and (max-width: 639px) {
       th, td {
          font-size: 14px;
-         padding: 4px 6px;
+         padding: 8px 6px;
       }
    }
 

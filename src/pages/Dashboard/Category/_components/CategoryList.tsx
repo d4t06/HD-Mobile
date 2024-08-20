@@ -163,8 +163,11 @@ export default function CategoryList({ mainClasses }: Props) {
                {categories.map(
                   (item, index) =>
                      !item.hidden && (
-                        <div key={index} className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
-                           <Empty fontClassName="bg-[#f6f6f6]">
+                        <div
+                           key={index}
+                           className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}
+                        >
+                           <Empty>
                               <span className="font-[500]">{item.category}</span>
                               <OverlayCTA
                                  data={[
