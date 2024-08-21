@@ -2,6 +2,7 @@ import useGetProductDetail from "@/hooks/useGetProductDetail";
 import DetailTop from "./_components/DetailTop";
 import DetailBody from "./_components/DetailBody";
 import Rating from "./_components/Rating";
+import RatingContextProvider from "@/store/ratingContext";
 
 export default function DetailPage() {
    // hooks
@@ -14,7 +15,10 @@ export default function DetailPage() {
       <>
          <DetailTop loading={status === "loading"} product={productDetail} />
          <DetailBody loading={status === "loading"} product={productDetail} />
-         <Rating loading={status === "loading"} product_ascii={""} />
+
+         <RatingContextProvider>
+            <Rating loading={status === "loading"} product={productDetail} />
+         </RatingContextProvider>
       </>
    );
 }

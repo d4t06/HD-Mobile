@@ -13,7 +13,6 @@ export { default as EditProduct } from "./Dashboard/EditProduct";
 export { default as Category } from "./Dashboard/Category";
 export { default as Register } from "./Register";
 export { default as Order } from "./UserOrder";
-export { default as Review } from "./Dashboard/Review";
 
 export { default as Cart } from "./Cart";
 export { default as DashboardOrder } from "./Dashboard/DashboardOrder";

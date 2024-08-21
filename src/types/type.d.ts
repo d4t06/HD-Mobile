@@ -251,31 +251,18 @@ type Toast = {
    id: string;
 };
 
-type ProductComment = {
-   id?: number;
-   q_id?: number;
+type Rating = {
+   id: number;
    product_id: number;
-   cus_name: string;
+   username: string;
    content: string;
    approve: number;
    date_convert: string;
-   phone_number: string;
    total_like: number;
-   reply_data?: Reply;
-   product_data?: {
-      product_name: string;
-   };
+   rate: number;
 };
 
-type ProductReview = ProductComment & { rate: number };
-
-type Reply = Omit<ProductComment, "cus_name" | "phone_number" | "approve">;
-
-type LCStorage = {
-   like_review_ids: number[];
-   like_comment_ids: number[];
-   product_history_ids: number[];
-};
+type RatingSchema = Omit<Rating, "id" | "total_like" | "approve" | 'date_convert'>;
 
 type PriceRange = {
    id: number;

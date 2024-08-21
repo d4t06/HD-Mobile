@@ -65,12 +65,6 @@ export const generateId = (name: string): string => {
    return convertToEn(name).replaceAll(/[\W_]/g, "-");
 };
 
-export const initLocalStorage: LCStorage = {
-   like_comment_ids: [],
-   like_review_ids: [],
-   product_history_ids: [],
-};
-
 export const formatSize = (size: number) => {
    const units = ["Kb", "Mb"];
    let mb = 0;

@@ -94,10 +94,10 @@ function Sidebar() {
 
             <Link
                className={cx(
-                  { active: location.pathname === "/dashboard/review" },
+                  { active: location.pathname === "/dashboard/rating" },
                   "sidebar__item"
                )}
-               to="/dashboard/review"
+               to="/dashboard/rating"
             >
                <StarIcon className="w-[24px]" />
                {expand && <>Rating</>}

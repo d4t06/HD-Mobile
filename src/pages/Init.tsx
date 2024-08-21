@@ -97,6 +97,7 @@ export default function Init() {
                                  ref={inputRef}
                                  className={`${classes.input} disable`}
                                  value={"admin"}
+                                 readOnly
                                  id="username"
                                  type="text"
                               />

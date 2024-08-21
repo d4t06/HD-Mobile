@@ -6,7 +6,7 @@ import { StarIcon } from "@heroicons/react/16/solid";
 
 type Props = {
    className?: string;
-   review: ProductReview;
+   review: Rating;
    admin?: boolean;
    children?: ReactNode;
 };
@@ -16,9 +16,9 @@ const classes = {
    comment: "text-[#495057] text-[16px] leading-[20px] mt-[4px]",
 };
 
-export default function ReviewItem({ className, review, admin, children }: Props) {
+export default function RatingItem({ className, review, admin, children }: Props) {
    const firstName = useMemo(() => {
-      const arr = review?.cus_name.split(" ");
+      const arr = review?.username.split(" ");
       return arr ? arr[arr.length - 1] : "X";
    }, []);
 
@@ -30,32 +30,10 @@ export default function ReviewItem({ className, review, admin, children }: Props
          />
 
          <div className="ml-[10px]">
-            {!admin && <h5 className={classes.userName}>{review.cus_name}</h5>}
-            {admin && (
-               <div className="flex items-end gap-[8px]">
-                  <h5 className={classes.userName}>{review.cus_name}</h5>
-
-                  <>
-                     <span className="text-[#808080] text-[16px]">
-                        {review.date_convert}
-                     </span>
-                     {!!review.approve && (
-                        <span className="text-emerald-500 font-[600] text-[16px]">
-                           (Approved)
-                        </span>
-                     )}
-                  </>
-               </div>
-            )}
+            {!admin && <h5 className={classes.userName}>{review.username}</h5>}
 
             {review.rate && (
                <>
-                  {admin && (
-                     <p className={classes.comment}>
-                        Đã đánh giá '{review.product_data?.product_name}'
-                     </p>
-                  )}
-
                   <div className="flex space-x-[4px]  mt-[4px]">
                      {[...Array(5).keys()].map((index) => {
                         const active = index <= review.rate;
@@ -84,20 +62,6 @@ export default function ReviewItem({ className, review, admin, children }: Props
                </div>
             )}
          </div>
-      </div>
-   );
-}
-
-export function AdminReply({ reply, cta }: { reply: Reply; cta: ReactNode }) {
-   return (
-      <div className="">
-         <div className="flex items-end gap-[8px]">
-            <h5 className={classes.userName}>Đã trả lời</h5>
-            <span className="text-[#808080] text-[16px]">({reply.date_convert})</span>
-            {cta}
-         </div>
-
-         <p className={classes.comment}>{reply.content}</p>
       </div>
    );
 }

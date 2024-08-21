@@ -1,129 +1,125 @@
-import useReview from "@/hooks/useReview";
-import { useMemo, useRef } from "react";
+// import useRating from "@/hooks/useRating";
+import { useEffect, useMemo, useState } from "react";
 import { CommentSkeleton } from "@/components/CommentItem";
 import NotFound from "./child/NotFound";
 
-import ReviewItem from "@/components/ReviewItem";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import { HeartIcon, StarIcon } from "@heroicons/react/16/solid";
+import RatingItem from "@/components/RatingItem";
+import { StarIcon } from "@heroicons/react/16/solid";
 import Button from "@/components/ui/Button";
 import Title from "@/components/Title";
+import { Modal } from "@/components";
+import AddRating from "@/components/Modal/AddRating";
+import { useAuth } from "@/store/AuthContext";
+import { useRating } from "@/store/ratingContext";
+import useRatingAction from "@/hooks/useRatingAction";
 
 type Props = {
    loading: boolean;
-   product_ascii: string | null;
+   product: ProductDetail | null;
 };
 
-export default function Rating({ loading }: Props) {
-   const {
-      state: { count, page, reviews, page_size, status, average },
-      getReviews,
-      likeReview,
-      apiLoading,
-   } = useReview({ closeModal: () => {}, product_ascii: "" });
+export default function Rating({ loading, product }: Props) {
+   const { count, page, ratings, size, status, average } = useRating();
 
-   const currentCommentIndex = useRef(0);
+   const { getRatings } = useRatingAction();
+
+   const { auth } = useAuth();
+
+   const [isOpenModal, setIsOpenModal] = useState(false);
+
+   const closeModal = () => setIsOpenModal(false);
 
    const handleGetMore = async () => {
-      await getReviews(page + 1);
+      if (!product) return;
+      await getRatings({ variant: "client", page: page + 1, productId: product.id });
    };
 
-   const handleLike = async (r: ProductReview, index: number) => {
-      currentCommentIndex.current = index;
-      await likeReview(r);
-   };
-
-   const remaining = useMemo(() => count - page * page_size, [reviews]);
+   const remaining = useMemo(() => count - page * size, [ratings]);
 
    const renderSkeleton = useMemo(
       () =>
          [...Array(2).keys()].map((item) => (
             <div key={item} className="comment-item mt-[5px]">
                {CommentSkeleton}
-               {/* <div className="mt-[14px] ml-[64px]">{CommentSkeleton}</div> */}
             </div>
          )),
       []
    );
 
-   const renderReview = useMemo(
-      () =>
-         reviews.map((r, index) => {
-            const isLoading = apiLoading && currentCommentIndex.current === index;
+   useEffect(() => {
+      if (loading) return;
 
-            return (
-               <ReviewItem key={index} review={r}>
-                  <Button
-                     colors={"third"}
-                     disabled={isLoading}
-                     onClick={() => handleLike(r, index)}
-                     className="px-[5px] py-[0px] group"
-                     size={"clear"}
-                  >
-                     {isLoading ? (
-                        <ArrowPathIcon className="w-[20px] mr-[4px] animate-spin" />
-                     ) : (
-                        <HeartIcon className="w-[20px] mr-[4px]" />
-                     )}
-                     {r.total_like}
-                  </Button>
-               </ReviewItem>
-            );
-         }),
-      [reviews, apiLoading]
-   );
+      if (product) {
+         getRatings({ variant: "client", replace: true, productId: product.id });
+      }
+   }, [loading]);
 
    return (
-      <div className="mt-[30px]">
-         <div className="md:flex justify-between items-center mb-[20px]">
-            <Title className="mb-[10px] md:mb-0">
-               <StarIcon className="w-[24px]" />
-               <span>Rating</span>
-            </Title>
+      <>
+         <div className="mt-[30px]">
+            <div className="md:flex justify-between items-center mb-[20px]">
+               <Title className="mb-[10px] md:mb-0">
+                  <StarIcon className="w-[24px]" />
+                  <span>Rating</span>
+               </Title>
 
-            <Button colors={"third"} className="w-full md:w-auto">
-               Write rating
-            </Button>
-         </div>
+               <Button
+                  onClick={() => setIsOpenModal(true)}
+                  colors={"third"}
+                  className="w-full md:w-auto"
+               >
+                  Write rating
+               </Button>
+            </div>
 
-         <div className="space-y-[20px]">
-            {(loading || status === "loading") && renderSkeleton}
+            <div className="space-y-[20px]">
+               {(loading || status === "loading") && renderSkeleton}
 
-            {status === "success" && (
-               <>
-                  {!!reviews.length ? (
-                     <>
-                        <div className="text-center mb-[30px]">
-                           <h2 className="text-[20px] text-[#333] font-[600] ">
-                              Average rating
-                           </h2>
-                           <h1 className="text-[70px] font-[600] leading-[80px] text-[#cd1818]">
-                              {average.toFixed(1)} /5
-                           </h1>
-                           <p className="text-[#495057] text-[16px] leading-[20px]">
-                              {count} ratings
+               {status === "success" && (
+                  <>
+                     {!!ratings.length ? (
+                        <>
+                           <div className="text-center mb-[30px]">
+                              <h2 className="text-[20px] text-[#333] font-[600] ">
+                                 Average rating
+                              </h2>
+                              <h1 className="text-[70px] font-[600] leading-[80px] text-[#cd1818]">
+                                 {average.toFixed(1)} /5
+                              </h1>
+                              <p className="text-[#495057] text-[16px] leading-[20px]">
+                                 {count} ratings
+                              </p>
+                           </div>
+
+                           {ratings.map((r, index) => {
+                              return <RatingItem key={index} review={r} />;
+                           })}
+
+                           <p className="text-center mt-[20px]">
+                              <Button
+                                 colors={"third"}
+                                 onClick={handleGetMore}
+                                 disabled={remaining <= 0}
+                              >
+                                 More ({remaining > 0 ? remaining : 0}) ratings
+                              </Button>
                            </p>
-                        </div>
-                        {renderReview}
+                        </>
+                     ) : (
+                        <NotFound title="" />
+                     )}
+                  </>
+               )}
 
-                        <p className="text-center mt-[20px]">
-                           <Button
-                              colors={"third"}
-                              onClick={handleGetMore}
-                              disabled={remaining <= 0}
-                           >
-                              More ({remaining > 0 ? remaining : 0}) ratings
-                           </Button>
-                        </p>
-                     </>
-                  ) : (
-                     <NotFound title="" />
-                  )}
-               </>
-            )}
-
-            {status === "error" && <p>Some thing went wrong ¯\_(ツ)_/¯</p>}
+               {status === "error" && <p>Some thing went wrong ¯\_(ツ)_/¯</p>}
+            </div>
          </div>
-      </div>
+
+         {isOpenModal && product && auth && (
+            <Modal closeModal={closeModal}>
+               <AddRating close={closeModal} username={auth.username} product={product} />
+            </Modal>
+         )}
+      </>
    );
 }

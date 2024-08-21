@@ -11,7 +11,6 @@ import {
    DashboardProduct,
    EditProduct,
    Search,
-   Review,
    Login,
    Register,
    Unauthorized,
@@ -22,6 +21,7 @@ import {
    UserOrderDetail,
    Dashboard,
 } from "@/pages";
+import DashboardRating from "@/pages/Dashboard/DashboardRating";
 
 const routes = {
    HOME: "",
@@ -141,9 +141,9 @@ const privateRoutes = [
       component: DashboardOrderDetail,
    },
    {
-      path: "/dashboard/review",
+      path: "/dashboard/rating",
       role: ["ADMIN"],
-      component: Review,
+      component: DashboardRating,
    },
 ];
 export { publicRoutes, privateRoutes, routes };
