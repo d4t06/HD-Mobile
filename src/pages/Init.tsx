@@ -5,7 +5,7 @@ import { publicRequest } from "@/utils/request";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 const INIT_URL = `${
-   import.meta.env.VITE_API_ENDPOINT || "https://spring-mobile-latest.onrender.com/api"
+   import.meta.env.VITE_API_ENDPOINT || "https://hd-mobile-backend-ts.vercel.app/api"
 }/init`;
 
 export default function Init() {

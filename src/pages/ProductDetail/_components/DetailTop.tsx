@@ -6,9 +6,6 @@ import { moneyFormat } from "@/utils/appHelper";
 
 import styles from "./DetailTop.module.scss";
 import classNames from "classnames/bind";
-import Title from "@/components/Title";
-import Policy from "./Policy";
-import { TagIcon } from "@heroicons/react/16/solid";
 import useCartAction from "@/hooks/useCartAction";
 import { useAuth } from "@/store/AuthContext";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
@@ -233,15 +230,6 @@ export default function DetailTop({ loading, product }: Props) {
                      </>
                   )}
                </div>
-               {currentCombine && (
-                  <div className="mt-[30px]">
-                     <Title className="mb-[10px]">
-                        <TagIcon className="w-[24px]" />
-                        <span>Policy</span>
-                     </Title>
-                     <Policy loading={loading} />
-                  </div>
-               )}
             </div>
          </div>
 
@@ -255,7 +243,7 @@ export default function DetailTop({ loading, product }: Props) {
                      alt=""
                   />
                   <p className="font-medium mt-3">Không đăng nhập rối sao mua hả ?</p>
-                  <Button className="mt-5" colors={"third"}>
+                  <Button onClick={closeModal} className="mt-5" colors={"third"}>
                      Cút
                   </Button>
                </div>

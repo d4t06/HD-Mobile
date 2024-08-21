@@ -6,12 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectedAllProduct, selectedAllFilter } from "@/store";
 
 import { Sort } from "@/components";
-import NoProduct from "./Product/NoProduct";
 import ProductSkeleton from "@/components/Skeleton/ProductSkeleton";
 import { AppDispatch } from "@/store/store";
 import { searchProducts } from "@/store/productsSlice";
 import { selectCategory } from "@/store/categorySlice";
 import Skeleton from "@/components/Skeleton";
+import NoResult from "@/components/NoResult";
 
 export default function SearchResultPage() {
    const dispatch = useDispatch<AppDispatch>();
@@ -99,7 +99,7 @@ export default function SearchResultPage() {
                <div className="products-container mt-[14px]">
                   <div className="flex mx-[-4px] mt-[-8px] flex-wrap">
                      {status !== "loading" && (
-                        <>{!!products.length ? renderProducts() : <NoProduct />}</>
+                        <>{!!products.length ? renderProducts() : <NoResult />}</>
                      )}
                      {(status === "loading" || status === "more-loading") &&
                         renderSkeletons()}

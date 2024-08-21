@@ -1,71 +1,74 @@
-import classNames from "classnames/bind";
-import styles from "./Avatar.module.scss";
 import { useAuth } from "@/store/AuthContext";
-import Skeleton from "../Skeleton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { routes } from "@/routes";
-import defaultUser from "@/assets/images/user-default.png";
-import Image from "../ui/Image";
+import { ArrowRightStartOnRectangleIcon, UserIcon } from "@heroicons/react/24/outline";
+import useLogout from "@/hooks/useLogout";
+import Modal from "../Modal";
+import ConfirmModal from "../Modal/Confirm";
+import { useState } from "react";
 
-const cx = classNames.bind(styles);
-
-export default function Avatar({ revert }: { revert?: boolean }) {
+export default function Avatar() {
    const { auth, loading } = useAuth();
 
+   const [isOpenModal, setIsOpenModal] = useState(false);
+
+   const navigate = useNavigate();
+
+   const closeModal = () => {
+      setIsOpenModal(false);
+   };
+
+   const { logout, isFetching } = useLogout();
+
+   const handleLogout = async () => {
+      await logout();
+
+      navigate("/");
+
+      closeModal();
+   };
+
    return (
-      <div className={cx("user-cta", { revert })}>
-         {loading && (
-            <>
-               <Skeleton className="h-[44px] w-[44px] rounded-full" />
-               <Skeleton className="h-[24px] w-[100px] rounded-[4px]" />
-            </>
-         )}
-         {!loading && (
-            <>
-               <div className={cx("image-frame")}>
+      <>
+         <div className="flex items-center justify-end space-x-1">
+            {!loading && (
+               <>
                   {auth?.username ? (
-                     <Link to="/account">
-                        <div className={cx("avatar-placeholder")}>
-                           <p>{auth.username.charAt(0).toUpperCase() || ""}</p>
-                        </div>
-                     </Link>
+                     <>
+                        <h5 className="font-medium">{auth.username}</h5>
+
+                        <button
+                           className="hover:text-[#cd1818]"
+                           onClick={() => setIsOpenModal(true)}
+                        >
+                           <ArrowRightStartOnRectangleIcon className="w-6" />
+                        </button>
+                     </>
                   ) : (
-                     <Image classNames="rounded-full" src={defaultUser} />
+                     <>
+                        <Link
+                           className="font-medium flex space-x-1 hover:text-[#cd1818]"
+                           to={routes.LOGIN}
+                        >
+                           Sign In
+                        </Link>
+                        <UserIcon className="w-6" />
+                     </>
                   )}
-               </div>
+               </>
+            )}
+         </div>
 
-               {auth?.username ? (
-                  <h5 className={cx("user-name")}>{auth.username}</h5>
-               ) : (
-                  <Link
-                  className="font-medium text-[#3f3f3f]"
-                     to={routes.LOGIN}
-                  >
-                     Sign In
-                  </Link>
-               )}
-            </>
+         {isOpenModal && (
+            <Modal z="z-[999]" closeModal={closeModal}>
+               <ConfirmModal
+                  callback={handleLogout}
+                  closeModal={closeModal}
+                  loading={isFetching}
+                  label="Sign out ?"
+               />
+            </Modal>
          )}
-      </div>
-   );
-}
-
-export function AvatarPlaceholder({
-   firstChar,
-   image_url,
-}: {
-   firstChar: string;
-   image_url?: string;
-}) {
-   return (
-      <div className={cx("image-frame", "bg-white")}>
-         {image_url ? (
-            <img src={image_url} className="w-full h-full rounded-full" alt="" />
-         ) : (
-            <div className={cx("avatar-placeholder")}>
-               <p>{firstChar}</p>
-            </div>
-         )}
-      </div>
+      </>
    );
 }

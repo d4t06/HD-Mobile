@@ -6,7 +6,6 @@ import {
    Home,
    Category,
    Banner,
-   Account,
    ProductDetail,
    DashboardProduct,
    EditProduct,
@@ -15,8 +14,6 @@ import {
    Register,
    Unauthorized,
    Cart,
-   DashboardOrder,
-   DashboardOrderDetail,
    UserOrder,
    UserOrderDetail,
    Dashboard,
@@ -64,11 +61,6 @@ const publicRoutes = [
       layout: DefaultLayout,
    },
 
-   {
-      path: routes.ACCOUNT,
-      component: Account,
-      layout: DefaultLayout,
-   },
    {
       path: routes.CATEGORY,
       component: Product,
@@ -129,16 +121,6 @@ const privateRoutes = [
       path: "/dashboard/product/:productId",
       role: ["ADMIN"],
       component: EditProduct,
-   },
-   {
-      path: "/dashboard/order",
-      role: ["ADMIN"],
-      component: DashboardOrder,
-   },
-   {
-      path: "/dashboard/order/:id",
-      role: ["ADMIN"],
-      component: DashboardOrderDetail,
    },
    {
       path: "/dashboard/rating",

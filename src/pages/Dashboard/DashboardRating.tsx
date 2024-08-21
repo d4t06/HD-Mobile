@@ -1,4 +1,4 @@
-import { Button, Empty, Modal } from "@/components";
+import { Button, Modal } from "@/components";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ConfirmModal from "@/components/Modal/Confirm";
 
@@ -8,6 +8,7 @@ import RatingItem from "@/components/RatingItem";
 import { useRating } from "@/store/ratingContext";
 import { CheckIcon, TrashIcon } from "@heroicons/react/16/solid";
 import PushFrame from "@/components/ui/PushFrame";
+import NoResult from "@/components/NoResult";
 
 type Modal = "delete" | "approve";
 
@@ -24,8 +25,6 @@ export default function DashboardRating() {
 
    const currentRatingIndex = useRef<number>();
    const ranEffect = useRef(false);
-
-   // const { action, isFetching } = useRatingAction();
 
    const remaining = useMemo(() => count - page * size, [ratings]);
    const closeModal = () => setIsOpenModal("");
@@ -118,7 +117,7 @@ export default function DashboardRating() {
       if (!ranEffect.current) {
          ranEffect.current = true;
 
-         getRatings({ replace: true, variant: "admin" });
+         getRatings({ replace: true, variant: "admin", size: 1 });
       }
    }, []);
 
@@ -127,10 +126,9 @@ export default function DashboardRating() {
 
    return (
       <div className="">
-         <div className="text-[22px] font-[600] mb-[20px]">Review</div>
-         {status === "loading" && renderSkeleton}
-         <div className="space-y-4">
-            {status === "success" &&
+         <div className="text-lg sm:text-xl font-medium">Review</div>
+         <div className="space-y-4 mt-5">
+            {status !== "loading" &&
                !!ratings.length &&
                ratings.map((r, index) => {
                   return (
@@ -162,9 +160,11 @@ export default function DashboardRating() {
                      </PushFrame>
                   );
                })}
+
+            {(status === "loading" || status === "more-loading") && renderSkeleton}
          </div>
 
-         {status === "success" && !ratings.length && <Empty />}
+         {status === "success" && !ratings.length && <NoResult />}
 
          {!!ratings.length && (
             <p className="mt-[30px] text-center">

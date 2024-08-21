@@ -1,22 +1,20 @@
-import { AvatarPlaceholder } from "@/components/Avatar";
-
-import { ReactNode, useMemo } from "react";
+import { useMemo } from "react";
 import Skeleton from "./Skeleton";
 import { StarIcon } from "@heroicons/react/16/solid";
+import AvatarPlaceholder from "@/shares/components/AvartarPlaceholder";
 
 type Props = {
    className?: string;
    review: Rating;
-   admin?: boolean;
-   children?: ReactNode;
 };
 
 const classes = {
-   userName: "text-[18px] leading-[24px] font-[500]",
-   comment: "text-[#495057] text-[16px] leading-[20px] mt-[4px]",
+   userName: "font-medium",
+   comment: "text-[#3f3f3f] font-medium mt-2",
+   time: "text-sm text-[#3f3f3f] ml-2",
 };
 
-export default function RatingItem({ className, review, admin, children }: Props) {
+export default function RatingItem({ className, review }: Props) {
    const firstName = useMemo(() => {
       const arr = review?.username.split(" ");
       return arr ? arr[arr.length - 1] : "X";
@@ -24,13 +22,14 @@ export default function RatingItem({ className, review, admin, children }: Props
 
    return (
       <div className={`flex comment-item rounded-[12px] ${className}`}>
-         <AvatarPlaceholder
-            image_url={""}
-            firstChar={firstName.charAt(0).toLocaleUpperCase()}
-         />
+         <AvatarPlaceholder firstChar={firstName.charAt(0).toLocaleUpperCase()} />
 
          <div className="ml-[10px]">
-            {!admin && <h5 className={classes.userName}>{review.username}</h5>}
+            <h5 className={classes.userName}>
+               {review.username}
+
+               <span className={classes.time}>({review.date_convert})</span>
+            </h5>
 
             {review.rate && (
                <>
@@ -51,16 +50,7 @@ export default function RatingItem({ className, review, admin, children }: Props
                </>
             )}
 
-            <p className={`${classes.comment} mt-[8px]`}>{review.content}</p>
-
-            {children && (
-               <div className="h-[30px] text-[16px] mt-[4px] flex items-center gap-[8px]">
-                  {!admin && (
-                     <span className="text-[#808080] text-[16px]">{review.approve}</span>
-                  )}{" "}
-                  {children}
-               </div>
-            )}
+            <p className={`${classes.comment}`}>{review.content}</p>
          </div>
       </div>
    );

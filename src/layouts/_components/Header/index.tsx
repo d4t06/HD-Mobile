@@ -71,7 +71,7 @@ function Header() {
                      <Search variant="home" closeSidebar={closeSidebar} />
 
                      <div className="w-1/4 max-[768px]:hidden">
-                        <Avatar revert />
+                        <Avatar />
                      </div>
                   </div>
                </div>

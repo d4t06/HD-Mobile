@@ -1,4 +1,5 @@
 import { useAuth } from "@/store/AuthContext";
+import { sleep } from "@/utils/appHelper";
 import axios from "axios";
 
 const REFRESH_URL =
@@ -10,6 +11,8 @@ const useRefreshToken = () => {
 
    const refresh = async () => {
       try {
+         if (import.meta.env.DEV) await sleep(600);
+
          const response = await axios.get(REFRESH_URL, { withCredentials: true });
 
          const data = response.data.data as AuthResponse;

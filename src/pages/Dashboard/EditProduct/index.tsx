@@ -15,14 +15,14 @@ function EditProductMain() {
    const { status, productDetail } = useGetProductDetail();
 
    const classes = {
-      proName: "text-[26px] font-[500]",
+      proName: "text-lg sm:text-2xl font-[500]",
    };
 
    const mainClasses: LayoutClasses = {
       flexContainer: "flex mt-[-8px] mx-[-4px] flex-wrap",
       flexCol: "px-[4px] mt-[8px]",
       group: "p-[20px] rounded-[12px] bg-[#fff]",
-      label: "text-[24px]",
+      label: "text-lg sm:text-2xl font-medium",
    };
 
    if (status === "loading") return <ArrowPathIcon className="w-[24px] animate-spin" />;

@@ -73,7 +73,9 @@ export default function SpecSection({ product, loading }: Props) {
                               );
                            })
                         ) : (
-                           <p className="text-center">¯\_(ツ)_/¯</p>
+                           <tr className="text-center">
+                              <td colSpan={2}>¯\_(ツ)_/¯</td>
+                           </tr>
                         )}
                      </tbody>
                   </table>

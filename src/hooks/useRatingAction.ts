@@ -2,6 +2,7 @@ import { publicRequest } from "@/utils/request";
 import { useState } from "react";
 import { usePrivateRequest } from ".";
 import { RatingStateType, useRating } from "@/store/ratingContext";
+import { sleep } from "@/utils/appHelper";
 
 const RATING_URL = "/product-ratings";
 const MANAGEMENT_RATING_URL = "/product-rating-management";
@@ -9,7 +10,7 @@ const MANAGEMENT_RATING_URL = "/product-rating-management";
 export default function useRatingAction() {
    const [isFetching, setIsFetching] = useState(false);
 
-   const { storingRatings, approveRating, deleteRating } = useRating();
+   const { storingRatings, approveRating, deleteRating, size } = useRating();
 
    const privateRequest = usePrivateRequest();
 
@@ -30,28 +31,35 @@ export default function useRatingAction() {
       index: number;
    };
 
-   type Admin = {
-      variant: "admin";
+   type GetRatings = {
       replace?: boolean;
       page?: number;
+      size?: number;
+      productId?: number;
    };
 
-   type Client = {
+   interface Admin extends GetRatings {
+      variant: "admin";
+   }
+
+   type Client = GetRatings & {
       variant: "client";
       productId: number;
-      replace?: boolean;
-      page?: number;
    };
 
    const getRatings = async (props: Admin | Client) => {
       try {
-         storingRatings({ status: "loading" });
+         const { variant, replace, ...params } = props;
 
+         if (replace) storingRatings({ status: "loading", ratings: [] });
+         else storingRatings({ status: "more-loading" });
+
+         if (import.meta.env.DEV) await sleep(600);
          let url = "";
 
-         const params: any = { page: props.page };
+         if (!params.size) params.size = size || 1;
 
-         switch (props.variant) {
+         switch (variant) {
             case "admin":
                url = MANAGEMENT_RATING_URL;
 
@@ -68,21 +76,10 @@ export default function useRatingAction() {
 
          const payload = res.data.data as RatingStateType;
 
-         // let ratingAvg = 0;
-
-         // if (replace) {
-         //    const averageRes = await publicRequest.get(`${RATING_URL}/avg/${productId}`);
-         //    ratingAvg = +averageRes.data;
-         // }
-
-         // if (replace) {
-         //    payload["average"] = ratingAvg;
-         // }
-
          storingRatings({
             ...payload,
             status: "success",
-            replace: props.replace,
+            replace,
          });
       } catch (error) {
          console.log(error);
@@ -93,6 +90,8 @@ export default function useRatingAction() {
    const action = async (props: Add | Approve | Delete) => {
       try {
          setIsFetching(true);
+
+         if (import.meta.env.DEV) await sleep(600);
 
          switch (props.variant) {
             case "add": {

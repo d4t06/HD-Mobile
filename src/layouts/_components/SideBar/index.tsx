@@ -83,17 +83,6 @@ function Sidebar() {
 
             <Link
                className={cx(
-                  { active: location.pathname === "/dashboard/order" },
-                  "sidebar__item"
-               )}
-               to="/dashboard/order"
-            >
-               <ArchiveBoxArrowDownIcon className="w-[24px]" />
-               {expand && <>Order</>}
-            </Link>
-
-            <Link
-               className={cx(
                   { active: location.pathname === "/dashboard/rating" },
                   "sidebar__item"
                )}

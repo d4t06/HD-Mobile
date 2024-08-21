@@ -20,7 +20,7 @@ export default function Label({
       <h1 className="text-xl font-[500]">
          {categoryName} {`( `}
          <span style={{ color: "#cd1818" }}>{!loading ? count : "- -"}</span>
-         {` )`} sản phẩm
+         {` )`} products
       </h1>
    );
 }

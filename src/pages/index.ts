@@ -1,4 +1,3 @@
-export { default as Account } from "./Account";
 export { default as Product } from "./Product";
 export { default as Home } from "./Home";
 export { default as Login } from "./Login";
@@ -15,8 +14,6 @@ export { default as Register } from "./Register";
 export { default as Order } from "./UserOrder";
 
 export { default as Cart } from "./Cart";
-export { default as DashboardOrder } from "./Dashboard/DashboardOrder";
-export { default as DashboardOrderDetail } from "./Dashboard/DashboardOrderDetail";
 export { default as UserOrder } from "./UserOrder";
 export { default as UserOrderDetail } from "./UserOrderDetail";
 export { default as Init } from "./Init";

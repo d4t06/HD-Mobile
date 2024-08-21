@@ -1,6 +1,6 @@
 import { ProductItem } from "@/components";
+import NoResult from "@/components/NoResult";
 import ProductSkeleton from "@/components/Skeleton/ProductSkeleton";
-import NoProduct from "@/pages/Product/NoProduct";
 import { fetchProducts, selectedAllProduct } from "@/store";
 import { AppDispatch } from "@/store/store";
 import { useEffect, useMemo } from "react";
@@ -49,7 +49,7 @@ export default function NewProduct({ loading }: Props) {
                         </div>
                      ))
                   ) : (
-                     <NoProduct />
+                     <NoResult />
                   )}
                </>
             )}

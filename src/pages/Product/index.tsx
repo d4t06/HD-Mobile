@@ -3,7 +3,6 @@ import classNames from "classnames/bind";
 import styles from "./Products.module.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { ProductItem, Sort, Filter, Label, ImageSlider } from "../../components";
-import NoProduct from "./NoProduct";
 
 import { fetchProducts, selectedAllProduct, selectedAllFilter } from "../../store";
 import ProductSkeleton from "@/components/Skeleton/ProductSkeleton";
@@ -11,6 +10,7 @@ import { AppDispatch } from "@/store/store";
 import Skeleton from "@/components/Skeleton";
 import Button from "@/components/ui/Button";
 import useCurrentCategory from "@/hooks/useCurrentCategory";
+import NoResult from "@/components/NoResult";
 
 const cx = classNames.bind(styles);
 
@@ -130,7 +130,7 @@ export default function Product() {
                                        </div>
                                     ))
                                  ) : (
-                                    <NoProduct />
+                                    <NoResult />
                                  )}
                               </>
                            )}

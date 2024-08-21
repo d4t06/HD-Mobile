@@ -1,8 +1,5 @@
 // import useRating from "@/hooks/useRating";
 import { useEffect, useMemo, useState } from "react";
-import { CommentSkeleton } from "@/components/CommentItem";
-import NotFound from "./child/NotFound";
-
 import RatingItem from "@/components/RatingItem";
 import { StarIcon } from "@heroicons/react/16/solid";
 import Button from "@/components/ui/Button";
@@ -12,6 +9,9 @@ import AddRating from "@/components/Modal/AddRating";
 import { useAuth } from "@/store/AuthContext";
 import { useRating } from "@/store/ratingContext";
 import useRatingAction from "@/hooks/useRatingAction";
+import useGetRatingAverage from "@/hooks/useGetRatingAverage";
+import Skeleton from "@/components/Skeleton";
+import NoResult from "@/components/NoResult";
 
 type Props = {
    loading: boolean;
@@ -19,13 +19,13 @@ type Props = {
 };
 
 export default function Rating({ loading, product }: Props) {
-   const { count, page, ratings, size, status, average } = useRating();
-
-   const { getRatings } = useRatingAction();
-
+   const { count, page, ratings, size, status } = useRating();
    const { auth } = useAuth();
 
    const [isOpenModal, setIsOpenModal] = useState(false);
+
+   const { avg, status: getAvgStatus, getAverage } = useGetRatingAverage();
+   const { getRatings } = useRatingAction();
 
    const closeModal = () => setIsOpenModal(false);
 
@@ -39,8 +39,13 @@ export default function Rating({ loading, product }: Props) {
    const renderSkeleton = useMemo(
       () =>
          [...Array(2).keys()].map((item) => (
-            <div key={item} className="comment-item mt-[5px]">
-               {CommentSkeleton}
+            <div className="flex" key={item}>
+               <Skeleton className="w-[44px] h-[44px] rounded-full flex-shrink-0" />
+               <div className="ml-[10px]">
+                  <Skeleton className="h-[20px] w-[200px] max-w-[30vw] rounded-[4px]" />
+                  <Skeleton className="h-[24px] mt-[10px] w-[400px] max-w-[50vw] rounded-[4px]" />
+                  <Skeleton className="h-[18px] mt-[10px] w-[100px] max-w-[30vw] rounded-[4px]" />
+               </div>
             </div>
          )),
       []
@@ -51,6 +56,7 @@ export default function Rating({ loading, product }: Props) {
 
       if (product) {
          getRatings({ variant: "client", replace: true, productId: product.id });
+         getAverage(product.id);
       }
    }, [loading]);
 
@@ -63,50 +69,64 @@ export default function Rating({ loading, product }: Props) {
                   <span>Rating</span>
                </Title>
 
-               <Button
-                  onClick={() => setIsOpenModal(true)}
-                  colors={"third"}
-                  className="w-full md:w-auto"
-               >
-                  Write rating
-               </Button>
+               {auth && (
+                  <Button
+                     onClick={() => setIsOpenModal(true)}
+                     colors={"third"}
+                     className="w-full md:w-auto"
+                  >
+                     Write rating
+                  </Button>
+               )}
             </div>
 
             <div className="space-y-[20px]">
-               {(loading || status === "loading") && renderSkeleton}
+               {!!ratings.length && (
+                  <div className="flex flex-col items-center mb-[30px]">
+                     <h2 className="text-lg text-[#3f3f3f] font-medium ">
+                        Average rating
+                     </h2>
+                     {getAvgStatus === "loading" && (
+                        <Skeleton className="h-[52px] my-1 w-[200px] rounded-md" />
+                     )}
 
-               {status === "success" && (
+                     {getAvgStatus !== "loading" && (
+                        <h1 className="text-[50px] leading-[60px] font-[600] text-[#cd1818]">
+                           {getAvgStatus === "success" && avg ? (
+                              <span>{avg.toFixed(0)} / 5</span>
+                           ) : (
+                              <span>0 /0</span>
+                           )}
+                        </h1>
+                     )}
+
+                     <p className="text-[#3f3f3f]">{count} ratings</p>
+                  </div>
+               )}
+
+               {status !== "error" && (
                   <>
                      {!!ratings.length ? (
-                        <>
-                           <div className="text-center mb-[30px]">
-                              <h2 className="text-[20px] text-[#333] font-[600] ">
-                                 Average rating
-                              </h2>
-                              <h1 className="text-[70px] font-[600] leading-[80px] text-[#cd1818]">
-                                 {average.toFixed(1)} /5
-                              </h1>
-                              <p className="text-[#495057] text-[16px] leading-[20px]">
-                                 {count} ratings
-                              </p>
-                           </div>
-
-                           {ratings.map((r, index) => {
-                              return <RatingItem key={index} review={r} />;
-                           })}
-
-                           <p className="text-center mt-[20px]">
-                              <Button
-                                 colors={"third"}
-                                 onClick={handleGetMore}
-                                 disabled={remaining <= 0}
-                              >
-                                 More ({remaining > 0 ? remaining : 0}) ratings
-                              </Button>
-                           </p>
-                        </>
+                        ratings.map((r, index) => {
+                           return <RatingItem key={index} review={r} />;
+                        })
                      ) : (
-                        <NotFound title="" />
+                        <>{status === "success" && <NoResult />}</>
+                     )}
+
+                     {(loading || status === "loading" || status === "more-loading") &&
+                        renderSkeleton}
+
+                     {!!count && (
+                        <p className="text-center mt-[20px]">
+                           <Button
+                              colors={"third"}
+                              onClick={handleGetMore}
+                              disabled={remaining <= 0}
+                           >
+                              More ({remaining > 0 ? remaining : 0}) ratings
+                           </Button>
+                        </p>
                      )}
                   </>
                )}

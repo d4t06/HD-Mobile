@@ -93,7 +93,7 @@ export default function VariantItem({ variant, index }: Props) {
    return (
       <>
          <Empty fontClassName="bg-[#f6f6f6]">
-            <span className="font-semibold">{variant.name}</span>
+            <span className="font-medium">{variant.name}</span>
             <OverlayCTA
                data={[
                   {

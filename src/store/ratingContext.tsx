@@ -4,7 +4,7 @@ import { ReactNode, createContext, useCallback, useContext, useReducer } from "r
 export type RatingStateType = {
    page: number;
    ratings: Rating[];
-   status: "loading" | "error" | "success";
+   status: "loading" | "error" | "success" | "more-loading";
    count: number;
    size: number;
    average: number;
@@ -53,7 +53,7 @@ const reducer = (
 
    switch (action.type) {
       case REDUCER_ACTION_TYPE.APPROVE: {
-         const payload = action.payload;
+         const payload = structuredClone(action.payload);
 
          const newRatings = [...newState.ratings];
 
@@ -66,7 +66,7 @@ const reducer = (
          return newState;
       }
       case REDUCER_ACTION_TYPE.DELETE: {
-         const payload = action.payload;
+         const payload = structuredClone(action.payload);
 
          const newRatings = [...newState.ratings];
 
@@ -76,21 +76,27 @@ const reducer = (
          return newState;
       }
       case REDUCER_ACTION_TYPE.STORING: {
-         console.log("storing ");
+         const payload = { ...action.payload };
 
-         const payload = action.payload;
+         console.log('reducer', payload.status, payload.ratings);
+         
 
-         if (payload.replace) Object.assign(newState, payload);
-         else {
-            payload.ratings = [...state.ratings, ...(payload.ratings || [])];
-            Object.assign(newState, payload);
+         // if (payload.replace) Object.assign(newState, payload);
+         if (payload.replace) {
+            return { ...state, ...payload };
+         } else {
+            const { ratings, ...rest } = payload;
+            return { ...state, ...rest, ratings: [...state.ratings, ...(ratings || [])] };
+
+            // payload.ratings = [...newState.ratings, ...(payload.ratings || [])];
+            // Object.assign(newState, payload);
          }
 
          return newState;
       }
 
       default:
-         return state;
+         return newState;
    }
 };
 
@@ -135,11 +141,9 @@ const initialContextState: ContextType = {
 const RatingContext = createContext<ContextType>(initialContextState);
 
 export default function RatingContextProvider({ children }: { children: ReactNode }) {
-   return (
-      <RatingContext.Provider value={useRatingContext()}>
-         {children}
-      </RatingContext.Provider>
-   );
+   const props = useRatingContext();
+
+   return <RatingContext.Provider value={props}>{children}</RatingContext.Provider>;
 }
 
 export const useRating = () => {

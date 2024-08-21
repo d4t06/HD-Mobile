@@ -91,7 +91,7 @@ export default function ColorItem({ color, index }: Props) {
    return (
       <>
          <Empty fontClassName="bg-[#f6f6f6]">
-            <span className="font-semibold">{color.name}</span>
+            <span className="font-medium">{color.name}</span>
             <OverlayCTA
                data={[
                   {
