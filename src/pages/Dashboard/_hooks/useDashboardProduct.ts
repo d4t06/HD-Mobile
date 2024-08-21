@@ -5,7 +5,8 @@ import {
    storingFilters,
 } from "@/store";
 import { selectCategory } from "@/store/categorySlice";
-import { setProductStatus } from "@/store/productSlice";
+import {  } from "@/store/productSlice";
+import { setStatus } from "@/store/productsSlice";
 import { AppDispatch } from "@/store/store";
 import { getLocalStorage, setLocalStorage } from "@/utils/appHelper";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -63,7 +64,7 @@ export default function useDashBoardProduct({ setCurCategory, curCategory }: Pro
          );
       } else {
          console.log("already exist");
-         dispatch(setProductStatus("successful"));
+         dispatch(setStatus("successful"));
       }
 
       return () => {

@@ -4,10 +4,10 @@ import { useParams } from "react-router-dom";
 import { publicRequest } from "@/utils/request";
 import { useDispatch, useSelector } from "react-redux";
 import {
+   resetProduct,
    runError,
    selectProduct,
-   setProduct,
-   setProductStatus,
+   storingProduct,
 } from "@/store/productSlice";
 
 const PRODUCT_URL = "/products";
@@ -25,12 +25,12 @@ export default function useGetProductDetail() {
       try {
          if (!productId) throw new Error("missing params");
 
-         dispatch(setProductStatus("loading"));
-         if (import.meta.env.DEV) await sleep(500);
+         dispatch(storingProduct({ status: "loading" }));
+         if (import.meta.env.DEV) await sleep(2000);
 
          const res = await publicRequest.get(`${PRODUCT_URL}/${productId}`);
 
-         dispatch(setProduct(res.data.data));
+         dispatch(storingProduct({ product: res.data.data, status: "successful" }));
       } catch (error) {
          console.log({ message: error });
          dispatch(runError());
@@ -42,6 +42,10 @@ export default function useGetProductDetail() {
          getProductDetail();
          ranUseEffect.current = true;
       }
+
+      return () => {
+         dispatch(resetProduct());
+      };
    }, [productId]);
 
    return {

@@ -12,6 +12,8 @@ export default function useGetRatingAverage() {
       try {
          setStatus("loading");
 
+         console.log("get aver");
+
          if (import.meta.env.DEV) await sleep(600);
 
          const res = await publicRequest.get(`${RATING_URL}/avg`, {

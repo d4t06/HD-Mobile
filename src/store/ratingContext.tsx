@@ -25,6 +25,8 @@ const enum REDUCER_ACTION_TYPE {
    APPROVE,
    DELETE,
    STORING,
+   ERROR,
+   RESET,
 }
 type Storing = {
    type: REDUCER_ACTION_TYPE.STORING;
@@ -38,6 +40,13 @@ type Delete = {
    };
 };
 
+type Error = {
+   type: REDUCER_ACTION_TYPE.ERROR;
+};
+type Reset = {
+   type: REDUCER_ACTION_TYPE.RESET;
+};
+
 type Approve = {
    type: REDUCER_ACTION_TYPE.APPROVE;
    payload: {
@@ -47,56 +56,55 @@ type Approve = {
 
 const reducer = (
    state: RatingStateType,
-   action: Storing | Delete | Approve
+   action: Storing | Delete | Approve | Error | Reset
 ): RatingStateType => {
-   const newState = { ...state };
-
    switch (action.type) {
       case REDUCER_ACTION_TYPE.APPROVE: {
          const payload = structuredClone(action.payload);
 
-         const newRatings = [...newState.ratings];
+         const newRatings = [...state.ratings];
 
          const newRating = { ...newRatings[payload.index] };
          newRating.approve = 1;
 
          newRatings[payload.index] = newRating;
-         newState.ratings = newRatings;
 
-         return newState;
+         return { ...state, ratings: newRatings };
       }
       case REDUCER_ACTION_TYPE.DELETE: {
          const payload = structuredClone(action.payload);
 
-         const newRatings = [...newState.ratings];
+         const newRatings = [...state.ratings];
 
          newRatings.splice(payload.index, 1);
-         newState.ratings = newRatings;
 
-         return newState;
+         return { ...state, ratings: newRatings };
       }
       case REDUCER_ACTION_TYPE.STORING: {
-         const payload = { ...action.payload };
+         const payload = action.payload;
 
-         console.log('reducer', payload.status, payload.ratings);
-         
-
-         // if (payload.replace) Object.assign(newState, payload);
          if (payload.replace) {
             return { ...state, ...payload };
          } else {
             const { ratings, ...rest } = payload;
             return { ...state, ...rest, ratings: [...state.ratings, ...(ratings || [])] };
-
-            // payload.ratings = [...newState.ratings, ...(payload.ratings || [])];
-            // Object.assign(newState, payload);
          }
-
-         return newState;
       }
+      case REDUCER_ACTION_TYPE.ERROR:
+         return {
+            ...state,
+            ...initialState,
+            status: "error",
+         };
+
+      case REDUCER_ACTION_TYPE.RESET:
+         return {
+            ...state,
+            ...initialState,
+         };
 
       default:
-         return newState;
+         return state;
    }
 };
 
@@ -105,7 +113,7 @@ const useRatingContext = () => {
    const [state, dispatch] = useReducer(reducer, initialState);
 
    const storingRatings = useCallback((payload: Storing["payload"]) => {
-      dispatch({
+      return dispatch({
          type: REDUCER_ACTION_TYPE.STORING,
          payload,
       });
@@ -125,7 +133,19 @@ const useRatingContext = () => {
       });
    }, []);
 
-   return { state, storingRatings, approveRating, deleteRating };
+   const catchError = useCallback(() => {
+      dispatch({
+         type: REDUCER_ACTION_TYPE.ERROR,
+      });
+   }, []);
+
+   const resetRating = useCallback(() => {
+      dispatch({
+         type: REDUCER_ACTION_TYPE.RESET,
+      });
+   }, []);
+
+   return { state, storingRatings, approveRating, deleteRating, catchError, resetRating };
 };
 
 // 5 context state
@@ -136,19 +156,24 @@ const initialContextState: ContextType = {
    approveRating: () => {},
    deleteRating: () => {},
    storingRatings: () => {},
+   resetRating: () => {},
+   catchError: () => {},
 };
 
 const RatingContext = createContext<ContextType>(initialContextState);
 
 export default function RatingContextProvider({ children }: { children: ReactNode }) {
-   const props = useRatingContext();
+   // const props = useRatingContext();
 
-   return <RatingContext.Provider value={props}>{children}</RatingContext.Provider>;
+   return (
+      <RatingContext.Provider value={useRatingContext()}>
+         {children}
+      </RatingContext.Provider>
+   );
 }
 
 export const useRating = () => {
    const context = useContext(RatingContext);
-   if (!context) throw new Error("context is required");
 
    const {
       state: { ...restState },

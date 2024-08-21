@@ -1,5 +1,4 @@
-// import useRating from "@/hooks/useRating";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import RatingItem from "@/components/RatingItem";
 import { StarIcon } from "@heroicons/react/16/solid";
 import Button from "@/components/ui/Button";
@@ -8,10 +7,10 @@ import { Modal } from "@/components";
 import AddRating from "@/components/Modal/AddRating";
 import { useAuth } from "@/store/AuthContext";
 import { useRating } from "@/store/ratingContext";
-import useRatingAction from "@/hooks/useRatingAction";
 import useGetRatingAverage from "@/hooks/useGetRatingAverage";
 import Skeleton from "@/components/Skeleton";
 import NoResult from "@/components/NoResult";
+import uesGetRating from "@/hooks/useGetRating";
 
 type Props = {
    loading: boolean;
@@ -19,13 +18,16 @@ type Props = {
 };
 
 export default function Rating({ loading, product }: Props) {
-   const { count, page, ratings, size, status } = useRating();
    const { auth } = useAuth();
+   const { size, status, page, ratings, count } = useRating();
 
    const [isOpenModal, setIsOpenModal] = useState(false);
 
+   const ranEffect = useRef(false);
+
+   // hooks
    const { avg, status: getAvgStatus, getAverage } = useGetRatingAverage();
-   const { getRatings } = useRatingAction();
+   const { getRatings } = uesGetRating();
 
    const closeModal = () => setIsOpenModal(false);
 
@@ -52,13 +54,15 @@ export default function Rating({ loading, product }: Props) {
    );
 
    useEffect(() => {
-      if (loading) return;
-
       if (product) {
-         getRatings({ variant: "client", replace: true, productId: product.id });
-         getAverage(product.id);
+         if (!ranEffect.current) {
+            ranEffect.current = true;
+
+            getRatings({ variant: "client", replace: true, productId: product.id });
+            getAverage(product.id);
+         }
       }
-   }, [loading]);
+   }, [product]);
 
    return (
       <>
@@ -81,28 +85,29 @@ export default function Rating({ loading, product }: Props) {
             </div>
 
             <div className="space-y-[20px]">
-               {!!ratings.length && (
-                  <div className="flex flex-col items-center mb-[30px]">
-                     <h2 className="text-lg text-[#3f3f3f] font-medium ">
-                        Average rating
-                     </h2>
-                     {getAvgStatus === "loading" && (
+               <div className="flex flex-col items-center mb-[30px]">
+                  <h2 className="text-lg text-[#3f3f3f] font-medium ">Average rating</h2>
+                  {getAvgStatus === "loading" && (
+                     <>
                         <Skeleton className="h-[52px] my-1 w-[200px] rounded-md" />
-                     )}
+                        <Skeleton className="h-[18px] my-1 w-[100px] rounded-md" />
+                     </>
+                  )}
 
-                     {getAvgStatus !== "loading" && (
-                        <h1 className="text-[50px] leading-[60px] font-[600] text-[#cd1818]">
-                           {getAvgStatus === "success" && avg ? (
-                              <span>{avg.toFixed(0)} / 5</span>
-                           ) : (
-                              <span>0 /0</span>
-                           )}
-                        </h1>
-                     )}
+                  {getAvgStatus !== "loading" && (
+                     <h1 className="text-[50px] leading-[60px] font-[600] text-[#cd1818]">
+                        {getAvgStatus === "success" && avg ? (
+                           <span>{avg.toFixed(0)} / 5</span>
+                        ) : (
+                           <span>- /-</span>
+                        )}
+                     </h1>
+                  )}
 
+                  {getAvgStatus !== "loading" && (
                      <p className="text-[#3f3f3f]">{count} ratings</p>
-                  </div>
-               )}
+                  )}
+               </div>
 
                {status !== "error" && (
                   <>

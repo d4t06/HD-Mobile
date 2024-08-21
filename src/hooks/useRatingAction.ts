@@ -1,7 +1,7 @@
 import { publicRequest } from "@/utils/request";
 import { useState } from "react";
 import { usePrivateRequest } from ".";
-import { RatingStateType, useRating } from "@/store/ratingContext";
+import { useRating } from "@/store/ratingContext";
 import { sleep } from "@/utils/appHelper";
 
 const RATING_URL = "/product-ratings";
@@ -10,7 +10,7 @@ const MANAGEMENT_RATING_URL = "/product-rating-management";
 export default function useRatingAction() {
    const [isFetching, setIsFetching] = useState(false);
 
-   const { storingRatings, approveRating, deleteRating, size } = useRating();
+   const { approveRating, deleteRating } = useRating();
 
    const privateRequest = usePrivateRequest();
 
@@ -29,62 +29,6 @@ export default function useRatingAction() {
       variant: "delete";
       id: number;
       index: number;
-   };
-
-   type GetRatings = {
-      replace?: boolean;
-      page?: number;
-      size?: number;
-      productId?: number;
-   };
-
-   interface Admin extends GetRatings {
-      variant: "admin";
-   }
-
-   type Client = GetRatings & {
-      variant: "client";
-      productId: number;
-   };
-
-   const getRatings = async (props: Admin | Client) => {
-      try {
-         const { variant, replace, ...params } = props;
-
-         if (replace) storingRatings({ status: "loading", ratings: [] });
-         else storingRatings({ status: "more-loading" });
-
-         if (import.meta.env.DEV) await sleep(600);
-         let url = "";
-
-         if (!params.size) params.size = size || 1;
-
-         switch (variant) {
-            case "admin":
-               url = MANAGEMENT_RATING_URL;
-
-               break;
-
-            case "client":
-               url = RATING_URL;
-               params["productId"] = props.productId;
-         }
-
-         const res = await publicRequest.get(url, {
-            params,
-         });
-
-         const payload = res.data.data as RatingStateType;
-
-         storingRatings({
-            ...payload,
-            status: "success",
-            replace,
-         });
-      } catch (error) {
-         console.log(error);
-         storingRatings({ status: "error" });
-      }
    };
 
    const action = async (props: Add | Approve | Delete) => {
@@ -123,5 +67,5 @@ export default function useRatingAction() {
       }
    };
 
-   return { action, getRatings, isFetching };
+   return { action, isFetching };
 }

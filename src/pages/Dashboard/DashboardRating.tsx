@@ -9,6 +9,7 @@ import { useRating } from "@/store/ratingContext";
 import { CheckIcon, TrashIcon } from "@heroicons/react/16/solid";
 import PushFrame from "@/components/ui/PushFrame";
 import NoResult from "@/components/NoResult";
+import uesGetRating from "@/hooks/useGetRating";
 
 type Modal = "delete" | "approve";
 
@@ -17,9 +18,10 @@ const classes = {
 };
 
 export default function DashboardRating() {
-   const { count, page, size, ratings, status } = useRating();
+   const { count, page, size, ratings, status, resetRating } = useRating();
 
-   const { getRatings, action, isFetching } = useRatingAction();
+   const { action, isFetching } = useRatingAction();
+   const { getRatings } = uesGetRating();
 
    const [isOpenModal, setIsOpenModal] = useState<Modal | "">("");
 
@@ -103,7 +105,7 @@ export default function DashboardRating() {
                />
             );
       }
-   }, [isOpenModal]);
+   }, [isOpenModal, isFetching]);
 
    const renderSkeleton = useMemo(
       () =>
@@ -119,6 +121,10 @@ export default function DashboardRating() {
 
          getRatings({ replace: true, variant: "admin", size: 1 });
       }
+
+      return () => {
+         resetRating();
+      };
    }, []);
 
    if (status === "error")

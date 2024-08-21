@@ -14,13 +14,8 @@ const productSlice = createSlice({
    name: "product",
    initialState,
    reducers: {
-      setProduct(state: StateType, action: PayloadAction<ProductDetail>) {
-         state.product = action.payload;
-         state.status = "successful";
-      },
-
-      setProductStatus(state: StateType, action: PayloadAction<StateType["status"]>) {
-         state.status = action.payload;
+      storingProduct(state: StateType, action: PayloadAction<Partial<StateType>>) {
+         Object.assign(state, action.payload);
       },
 
       updateProduct: (
@@ -198,6 +193,10 @@ const productSlice = createSlice({
          state.product = null;
          state.status = "error";
       },
+
+      resetProduct(state: StateType) {
+         Object.assign(state, initialState)
+      },
    },
 });
 
@@ -210,11 +209,11 @@ export const {
    setCombine,
    setDefaultVariant,
    setDefaultVariantCombine,
-   setProduct,
-   setProductStatus,
+   storingProduct,
    setVariant,
    runError,
    setSlider,
+   resetProduct,
 } = productSlice.actions;
 
 export default productSlice.reducer;

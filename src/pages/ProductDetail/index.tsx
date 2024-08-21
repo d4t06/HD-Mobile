@@ -1,8 +1,8 @@
 import useGetProductDetail from "@/hooks/useGetProductDetail";
 import DetailTop from "./_components/DetailTop";
-import DetailBody from "./_components/DetailBody";
 import Rating from "./_components/Rating";
 import RatingContextProvider from "@/store/ratingContext";
+import DetailBody from "./_components/DetailBody";
 
 export default function DetailPage() {
    // hooks
