@@ -1,11 +1,10 @@
 import HTMLReactParser from "html-react-parser/lib/index";
 import { useEffect, useRef, useState } from "react";
-
 import Skeleton from "@/components/Skeleton";
-
 import styles from "./DescSection.module.scss";
 import classNames from "classnames/bind";
 import { Button } from "@/components";
+import { ChevronDownIcon } from "@heroicons/react/16/solid";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -68,8 +67,13 @@ export default function DescSection({ product, loading }: Props) {
 
          {!loading && updatedHeight && !isShowMore && (
             <p className="text-center">
-               <Button colors={"third"} onClick={handleShowMore}>
-                  Expand
+               <Button
+                  colors={"second"}
+                  className="space-x-1"
+                  onClick={handleShowMore}
+               >
+                  <ChevronDownIcon className="w-6" />
+                  <span>Expand</span>
                </Button>
             </p>
          )}

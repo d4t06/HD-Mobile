@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import RatingItem from "@/components/RatingItem";
-import { StarIcon } from "@heroicons/react/16/solid";
+import { PencilSquareIcon, StarIcon } from "@heroicons/react/16/solid";
 import Button from "@/components/ui/Button";
 import Title from "@/components/Title";
 import { Modal } from "@/components";
@@ -33,7 +33,10 @@ export default function Rating({ loading, product }: Props) {
 
    const handleGetMore = async () => {
       if (!product) return;
-      await getRatings({ variant: "client", page: page + 1, productId: product.id });
+      await getRatings({
+         page: page + 1,
+         product_id: product.id,
+      });
    };
 
    const remaining = useMemo(() => count - page * size, [ratings]);
@@ -58,7 +61,7 @@ export default function Rating({ loading, product }: Props) {
          if (!ranEffect.current) {
             ranEffect.current = true;
 
-            getRatings({ variant: "client", replace: true, productId: product.id });
+            getRatings({ replace: true, product_id: product.id });
             getAverage(product.id);
          }
       }
@@ -69,24 +72,25 @@ export default function Rating({ loading, product }: Props) {
          <div className="mt-[30px]">
             <div className="md:flex justify-between items-center mb-[20px]">
                <Title className="mb-[10px] md:mb-0">
-                  <StarIcon className="w-[24px]" />
+                  <StarIcon className="w-6" />
                   <span>Rating</span>
                </Title>
 
                {auth && (
                   <Button
                      onClick={() => setIsOpenModal(true)}
-                     colors={"third"}
-                     className="w-full md:w-auto"
+                     colors={"second"}
+                     className="w-full md:w-auto space-x-1"
                   >
-                     Write rating
+                     <PencilSquareIcon className="w-6" />
+                     <span>Write rating</span>
                   </Button>
                )}
             </div>
 
             <div className="space-y-[20px]">
-               <div className="flex flex-col items-center mb-[30px]">
-                  <h2 className="text-lg text-[#3f3f3f] font-medium ">Average rating</h2>
+               <div className="flex flex-col items-center mb-[30px] font-medium">
+                  <h2 className="text-lg text-[#3f3f3f]  ">Average rating</h2>
                   {getAvgStatus === "loading" && (
                      <>
                         <Skeleton className="h-[52px] my-1 w-[200px] rounded-md" />
@@ -95,11 +99,11 @@ export default function Rating({ loading, product }: Props) {
                   )}
 
                   {getAvgStatus !== "loading" && (
-                     <h1 className="text-[50px] leading-[60px] font-[600] text-[#cd1818]">
+                     <h1 className="text-[50px] leading-[60px]  text-[#cd1818]">
                         {getAvgStatus === "success" && avg ? (
                            <span>{avg.toFixed(0)} / 5</span>
                         ) : (
-                           <span>- /-</span>
+                           <span>--</span>
                         )}
                      </h1>
                   )}
@@ -116,10 +120,18 @@ export default function Rating({ loading, product }: Props) {
                            return <RatingItem key={index} review={r} />;
                         })
                      ) : (
-                        <>{status === "success" && <NoResult />}</>
+                        <>
+                           {status === "success" && (
+                              <NoResult>
+                                 <p>No rating jet...</p>
+                              </NoResult>
+                           )}
+                        </>
                      )}
 
-                     {(loading || status === "loading" || status === "more-loading") &&
+                     {(loading ||
+                        status === "loading" ||
+                        status === "more-loading") &&
                         renderSkeleton}
 
                      {!!count && (
@@ -136,13 +148,21 @@ export default function Rating({ loading, product }: Props) {
                   </>
                )}
 
-               {status === "error" && <p>Some thing went wrong ¯\_(ツ)_/¯</p>}
+               {status === "error" && (
+                  <NoResult>
+                     <p>Something went wrong</p>
+                  </NoResult>
+               )}
             </div>
          </div>
 
          {isOpenModal && product && auth && (
             <Modal closeModal={closeModal}>
-               <AddRating close={closeModal} username={auth.username} product={product} />
+               <AddRating
+                  closeModal={closeModal}
+                  username={auth.username}
+                  product={product}
+               />
             </Modal>
          )}
       </>

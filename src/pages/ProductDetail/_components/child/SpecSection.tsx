@@ -19,8 +19,8 @@ export default function SpecSection({ product, loading }: Props) {
 
    const SpecSkeleton = (
       <>
-         <Skeleton className="pt-[100%] rounded-[12px] mb-[20px]" />
-         {[...Array(5).keys()].map((item) => (
+         <Skeleton className="pt-[70%] rounded-[12px] mb-[20px]" />
+         {[...Array(4).keys()].map((item) => (
             <Skeleton key={item} className="w-full h-[34px] rounded-[8px] mb-[10px]" />
          ))}
       </>

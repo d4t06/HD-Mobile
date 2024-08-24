@@ -4,11 +4,12 @@ import ModalHeader from "./ModalHeader";
 import { inputClasses } from "../ui/Input";
 import { StarIcon } from "@heroicons/react/16/solid";
 import useRatingAction from "@/hooks/useRatingAction";
+import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 
 type Props = {
    product: ProductDetail;
    username: string;
-   close: () => void;
+   closeModal: () => void;
 };
 
 const initReview = (product: ProductDetail, username: string) => {
@@ -21,7 +22,7 @@ const initReview = (product: ProductDetail, username: string) => {
    return data;
 };
 
-export default function AddRating({ product, username, close }: Props) {
+export default function AddRating({ product, username, closeModal }: Props) {
    const [ratingData, setRatingData] = useState<RatingSchema>(
       initReview(product, username)
    );
@@ -29,13 +30,23 @@ export default function AddRating({ product, username, close }: Props) {
 
    const { action, isFetching } = useRatingAction();
 
-   const handleRatingData = (field: keyof typeof ratingData, value: string | number) => {
+   const handleRatingData = (
+      field: keyof typeof ratingData,
+      value: string | number
+   ) => {
       setRatingData((prev) => ({ ...prev, [field]: value }));
    };
 
    const handleSubmit = async () => {
-      await action({ rating: ratingData, variant: "add" });
-      setShowConfirm(true);
+      await action({ rating: ratingData, variant: "add" }).then((res: any) => {
+
+         console.log('check res', res);
+         
+
+         if ([200, 201].includes(res?.response?.status || res?.code))
+            setShowConfirm(true);
+         else closeModal();
+      });
    };
 
    const classes = {
@@ -53,35 +64,50 @@ export default function AddRating({ product, username, close }: Props) {
 
    return (
       <>
-         {showConfirm && (
-            <div className="w-[400px] max-w-[85vw]">
-               <ModalHeader title={"Rate successful"} closeModal={close} />
-               <p className=" font-medium text-[#3f3f3f]">We are got your rating</p>
-               <div className="text-center mt-[30px]">
-                  <Button colors={"third"} loading={false} onClick={close}>
-                     Cút
-                  </Button>
-               </div>
-            </div>
-         )}
+         <div className="w-[400px]">
+            <ModalHeader
+               title={`Rating '${product.name}'`}
+               closeModal={closeModal}
+            />
 
-         {!showConfirm && (
-            <div className="w-[700px] ">
-               <ModalHeader title={`Rating '${product.name}'`} closeModal={close} />
+            {showConfirm && (
+               <>
+                  <div className="flex flex-col items-center">
+                     <CheckBadgeIcon className="w-[100px] text-emerald-500" />
+                     <p className=" font-medium text-[#3f3f3f]">
+                        We are got your rating
+                     </p>
+                  </div>
+                  <div className="text-center mt-5">
+                     <Button
+                        colors={"third"}
+                        loading={false}
+                        onClick={closeModal}
+                     >
+                        Cút
+                     </Button>
+                  </div>
+               </>
+            )}
 
-               <div className="">
+            {!showConfirm && (
+               <>
                   <div className="mb-[20px]">
                      <div className="flex justify-center space-x-[10px]">
                         {[...Array(5).keys()].map((index) => {
                            const isActive = index + 1 <= ratingData.rate;
                            return (
                               <button
-                                 onClick={() => handleRatingData("rate", index + 1)}
+                                 onClick={() =>
+                                    handleRatingData("rate", index + 1)
+                                 }
                                  key={index}
                               >
                                  <StarIcon
                                     className={`w-[36px] ${classes.star} ${
-                                       isActive ? "text-[#efb140]" : "text-[#808080]"
+                                       isActive
+                                          ? "text-[#efb140]"
+                                          : "text-[#808080]"
                                     }`}
                                  />
                               </button>
@@ -92,23 +118,29 @@ export default function AddRating({ product, username, close }: Props) {
                         {satisfactionMap[ratingData.rate]}
                      </h2>
                   </div>
-               </div>
 
-               <div className="bg-[#ccc] rounded-[12px]">
-                  <textarea
-                     placeholder="Nội dung"
-                     value={ratingData.content}
-                     className={`${inputClasses.input} w-full min-h-[100px]`}
-                     onChange={(e) => handleRatingData("content", e.target.value)}
-                  ></textarea>
-               </div>
-               <div className="text-right mt-[30px]">
-                  <Button colors={"third"} loading={isFetching} onClick={handleSubmit}>
-                     Post
-                  </Button>
-               </div>
-            </div>
-         )}
+                  <div className="bg-[#ccc] rounded-[12px]">
+                     <textarea
+                        placeholder="Nội dung"
+                        value={ratingData.content}
+                        className={`${inputClasses.input} w-full min-h-[100px]`}
+                        onChange={(e) =>
+                           handleRatingData("content", e.target.value)
+                        }
+                     ></textarea>
+                  </div>
+                  <div className="text-right mt-[30px]">
+                     <Button
+                        colors={"third"}
+                        loading={isFetching}
+                        onClick={handleSubmit}
+                     >
+                        Post
+                     </Button>
+                  </div>
+               </>
+            )}
+         </div>
       </>
    );
 }

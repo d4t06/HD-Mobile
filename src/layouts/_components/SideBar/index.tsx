@@ -3,7 +3,6 @@ import classNames from "classnames/bind";
 
 import styles from "./SideBar.module.scss";
 import {
-   ArchiveBoxArrowDownIcon,
    BookmarkSquareIcon,
    BuildingStorefrontIcon,
    ComputerDesktopIcon,

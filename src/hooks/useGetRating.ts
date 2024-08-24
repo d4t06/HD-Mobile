@@ -3,51 +3,35 @@ import { sleep } from "@/utils/appHelper";
 import { useRating } from "@/store/ratingContext";
 
 const RATING_URL = "/product-ratings";
-const MANAGEMENT_RATING_URL = "/product-rating-management";
 
 export default function uesGetRating() {
-   const { storingRatings, catchError, size } = useRating();
+   const { storingRatings, catchError, size: storeSize } = useRating();
 
-   type GetRatings = {
+   type Props = {
       replace?: boolean;
       page?: number;
       size?: number;
-      productId?: number;
+      product_id?: number;
+      approved?: boolean;
    };
 
-   interface Admin extends GetRatings {
-      variant: "admin";
-   }
-
-   type Client = GetRatings & {
-      variant: "client";
-      productId: number;
-   };
-
-   const getRatings = async (props: Admin | Client) => {
+   const getRatings = async (props?: Props) => {
       try {
-         const { variant, replace, ...params } = props;
+         const { approved, page, product_id, replace, size } = props || {};
+
+         const params: Record<string, number> = {};
 
          if (replace) storingRatings({ status: "loading", ratings: [] });
          else storingRatings({ status: "more-loading" });
 
          if (import.meta.env.DEV) await sleep(600);
-         let url = "";
 
-         if (!params.size) params.size = size || 1;
+         params["size"] = size || storeSize || 1;
+         if (page) params["page"] = page || 1;
+         if (product_id) params["product_id"] = product_id;
+         if (typeof approved === "boolean" && !approved) params["approved"] = 0;
 
-         switch (variant) {
-            case "admin":
-               url = MANAGEMENT_RATING_URL;
-
-               break;
-
-            case "client":
-               url = RATING_URL;
-               params["productId"] = props.productId;
-         }
-
-         const res = await publicRequest.get(url, {
+         const res = await publicRequest.get(RATING_URL, {
             params,
          });
 

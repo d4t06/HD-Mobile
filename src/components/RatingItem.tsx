@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import Skeleton from "./Skeleton";
 import { StarIcon } from "@heroicons/react/16/solid";
 import AvatarPlaceholder from "@/shares/components/AvartarPlaceholder";
@@ -15,14 +14,9 @@ const classes = {
 };
 
 export default function RatingItem({ className, review }: Props) {
-   const firstName = useMemo(() => {
-      const arr = review?.username.split(" ");
-      return arr ? arr[arr.length - 1] : "X";
-   }, []);
-
    return (
       <div className={`flex comment-item rounded-[12px] ${className}`}>
-         <AvatarPlaceholder firstChar={firstName.charAt(0).toLocaleUpperCase()} />
+         <AvatarPlaceholder name={review.username} />
 
          <div className="ml-[10px]">
             <h5 className={classes.userName}>
@@ -35,9 +29,12 @@ export default function RatingItem({ className, review }: Props) {
                <>
                   <div className="flex space-x-[4px]  mt-[4px]">
                      {[...Array(5).keys()].map((index) => {
-                        const active = index <= review.rate;
+                        const active = index + 1 <= review.rate;
                         return (
-                           <span key={index} className="leading-[24px] inline-flex">
+                           <span
+                              key={index}
+                              className="leading-[24px] inline-flex"
+                           >
                               <StarIcon
                                  className={`w-[24px]   ${
                                     active ? "text-[#efb140]" : "text-[#808080]"

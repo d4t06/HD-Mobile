@@ -71,20 +71,22 @@
    .product {
       display: flex;
       padding: 4px 0;
+      padding-left: 10px;
       border-left: 4px solid transparent;
+      transform: translateX(0);
       cursor: pointer;
+      transition: border linear 0.15s;
       &-img {
          width: 60px;
          flex-shrink: 0;
       }
       &-info {
-         margin-left: 6px;
+         margin-left: 10px;
          font-weight: 500;
          line-height: 20px;
          .price {
             color: #cd1818;
             margin-top: 4px;
-            font-size: 18px;
          }
       }
       &:hover {

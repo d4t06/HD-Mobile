@@ -1,4 +1,3 @@
-import { publicRequest } from "@/utils/request";
 import { useState } from "react";
 import { usePrivateRequest } from ".";
 import { useRating } from "@/store/ratingContext";
@@ -10,7 +9,7 @@ const MANAGEMENT_RATING_URL = "/product-rating-management";
 export default function useRatingAction() {
    const [isFetching, setIsFetching] = useState(false);
 
-   const { approveRating, deleteRating } = useRating();
+   const { deleteRating, storingRatings } = useRating();
 
    const privateRequest = usePrivateRequest();
 
@@ -21,8 +20,7 @@ export default function useRatingAction() {
 
    type Approve = {
       variant: "approve";
-      id: number;
-      index: number;
+      id_list: number[];
    };
 
    type Delete = {
@@ -39,15 +37,17 @@ export default function useRatingAction() {
 
          switch (props.variant) {
             case "add": {
-               await publicRequest.post(RATING_URL, props.rating);
+               const res = await privateRequest.post(RATING_URL, props.rating);
 
-               break;
+               return res;
             }
             case "approve": {
-               const { id, index } = props;
-               await privateRequest.put(`${MANAGEMENT_RATING_URL}/${id}`);
+               const { id_list } = props;
+               await privateRequest.put(`${MANAGEMENT_RATING_URL}`, {
+                  id_list,
+               });
 
-               approveRating(index);
+               storingRatings({ replace: true, ratings: [] });
 
                break;
             }
@@ -57,11 +57,11 @@ export default function useRatingAction() {
                await privateRequest.delete(`${MANAGEMENT_RATING_URL}/${id}`);
 
                deleteRating(index);
-
                break;
             }
          }
       } catch (error) {
+         return error;
       } finally {
          setIsFetching(false);
       }

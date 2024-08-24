@@ -15,7 +15,7 @@ export default function Sidebar({ isOpen, closeSidebar }: Props) {
    const { categories } = useSelector(selectCategory);
    const { auth } = useAuth();
 
-   const logout = useLogout();
+   const { logout } = useLogout();
 
    const singOut = async () => {
       await logout();
@@ -75,9 +75,13 @@ export default function Sidebar({ isOpen, closeSidebar }: Props) {
 
             <div className="text-center mt-auto absolute bottom-[30px] left-[50%] translate-x-[-50%]">
                {auth?.token ? (
-                  <Button colors={'third'} onClick={singOut}>Log out</Button>
+                  <Button colors={"third"} onClick={singOut}>
+                     Log out
+                  </Button>
                ) : (
-                  <Button colors={'third'} to="/login">Login</Button>
+                  <Button colors={"third"} to="/login">
+                     Login
+                  </Button>
                )}
             </div>
          </div>

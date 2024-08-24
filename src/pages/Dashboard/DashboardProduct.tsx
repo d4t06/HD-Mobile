@@ -3,7 +3,11 @@ import { Button, Modal, Search } from "@/components";
 import Table from "@/components/Table";
 
 import AddProductModal from "@/components/Modal/AddProductModal";
-import { Cog6ToothIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+   Cog6ToothIcon,
+   PencilSquareIcon,
+   TrashIcon,
+} from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import useDashBoardProduct from "./_hooks/useDashboardProduct";
@@ -31,10 +35,12 @@ export default function Dashboard() {
    const openModalTarget = useRef<ModelTarget | "">("");
 
    // hooks
-   const { categories, getMore, count, products, status } = useDashBoardProduct({
-      setCurCategory,
-      curCategory,
-   });
+   const { categories, getMore, count, products, status } = useDashBoardProduct(
+      {
+         setCurCategory,
+         curCategory,
+      }
+   );
    const closeModal = () => setIsOpenModal(false);
    const { isFetching, deleteProduct } = useProductAction({ closeModal });
 
@@ -56,7 +62,7 @@ export default function Dashboard() {
    };
 
    const renderProducts = (
-      <Table colList={["Tên", ""]}>
+      <Table colList={["Name", ""]}>
          {status !== "loading" && (
             <>
                {!!products.length ? (
@@ -132,7 +138,10 @@ export default function Dashboard() {
                />
             );
          case "Edit":
-            if (!currentProduct.current || currentProductIndex.current === undefined)
+            if (
+               !currentProduct.current ||
+               currentProductIndex.current === undefined
+            )
                return <p>Some thing went wrong</p>;
 
             return (
@@ -163,23 +172,26 @@ export default function Dashboard() {
    }, [isOpenModal, curCategory, isFetching]);
 
    const classes = {
-      tab: "px-[12px] sm:px-[24px] py-[8px] ml-[8px] mt-[8px]",
+      tab: "px-[12px] sm:px-[24px] py-1 ml-[8px] mt-[8px]",
    };
 
-   if (status === "error") return <p className="text-center">Some thing went wrong</p>;
+   if (status === "error")
+      return <p className="text-center">Some thing went wrong</p>;
 
    return (
       <>
-         <div className="flex items-start justify-between ">
+         <div className="text-lg sm:text-2xl mb-[30px]">Product</div>
+
+         <div className="flex justify-between">
             <Search variant="dashboard" />
             <Button
-               className="flex-shrink-0 ml-[10px] px-[12px] py-[7px]"
+               className="flex-shrink-0 ml-[10px] px-2"
                colors={"third"}
                size={"clear"}
                onClick={() => handleOpenModal({ type: "Add" })}
             >
                <PlusIcon className="w-[24px]" />
-               <span className="hidden sm:block ml-[6px]">Thêm sản phẩm</span>
+               <span className="hidden sm:block ml-[6px]">Add product</span>
             </Button>
          </div>
 
@@ -227,7 +239,7 @@ export default function Dashboard() {
                      loading={status === "more-loading"}
                      onClick={() => handleGetMore()}
                   >
-                     Xem thêm
+                     More
                   </Button>
                </p>
             )}

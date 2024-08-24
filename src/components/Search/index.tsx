@@ -5,6 +5,7 @@ import classNames from "classnames/bind";
 import styles from "./Search.module.scss";
 import useDebounce from "../../hooks/useDebounce";
 import Popup from "../ui/Popup";
+import simonCat from '@/assets/images/not-found.png'
 
 import {
    ArrowPathIcon,
@@ -98,10 +99,10 @@ function Search(props: Props) {
                                  key={index}
                               >
                                  <div className={cx("product-img")}>
-                                    <img src={p.image_url} alt="" />
+                                    <img src={p.image_url || simonCat} alt="" />
                                  </div>
                                  <div className={cx("product-info")}>
-                                    <h2 className={cx("title")}>{p.name}</h2>
+                                    <h2>{p.name}</h2>
                                     <p className={cx("price")}>
                                        {moneyFormat(
                                           p.default_variant.variant.default_combine
