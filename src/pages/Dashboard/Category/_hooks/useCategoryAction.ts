@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { RefObject, useState } from "react";
 import { useToast } from "@/store/ToastContext";
 import { usePrivateRequest } from "@/hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCategory, setCategory } from "@/store/categorySlice";
+import { ModalRef } from "@/components/Modal";
+import { sleep } from "@/utils/appHelper";
 
 const CATEGORY_URL = "/categories";
 
-export default function useCategoryAction() {
+type Props = {
+   modalRef: RefObject<ModalRef>;
+};
+
+export default function useCategoryAction({ modalRef }: Props) {
    const dispatch = useDispatch();
    const { categories } = useSelector(selectCategory);
    const [isFetching, setIsFetching] = useState(false);
@@ -40,57 +46,54 @@ export default function useCategoryAction() {
             case "Add":
                const { category } = props;
                // add category
-               const res = await privateRequest.post(`${CATEGORY_URL}`, category);
+               const res = await privateRequest.post(
+                  `${CATEGORY_URL}`,
+                  category
+               );
 
-               // add attributes prop to category to fix error not found when add attribute
-               //  const newCategoryData = {
-               //     ...catRes.data,
-               //  } as Category;
-
-               //  // add slider
-               //  const sliderData: SliderSchema = {
-               //     slider_name: `Slider for category ${newCategoryData.category_name}`,
-               //  };
-               //  const sliderRes = await privateRequest.post(
-               //     MANAGE_SLIDER_URL,
-               //     sliderData,
-               //     {
-               //        headers: { "Content-Type": "application/json" },
-               //     }
-               //  );
-               //  const newSliderData = sliderRes.data as SliderSchema & { id: number };
-
-               // add category slider
-               //  const categorySliderData: CategorySliderSchema = {
-               //     category_id: newCategoryData.id,
-               //     slider_id: newSliderData.id,
-               //  };
-               //  await privateRequest.post(
-               //     `${CATEGORY_URL}/category-sliders`,
-               //     categorySliderData,
-               //     {
-               //        headers: { "Content-Type": "application/json" },
-               //     }
-               //  );
+               modalRef.current?.toggle();
 
                dispatch(setCategory({ type: "add", category: res.data.data }));
                break;
             case "Edit": {
                const { category, curIndex } = props;
 
-               await privateRequest.put(`${CATEGORY_URL}/${props.category_id}`, category);
+               await privateRequest.put(
+                  `${CATEGORY_URL}/${props.category_id}`,
+                  category
+               );
+
+               modalRef.current?.toggle();
+
+               // await sleep(200);
+
                dispatch(
-                  setCategory({ type: "update", category: category, index: curIndex })
+                  setCategory({
+                     type: "update",
+                     category: category,
+                     index: curIndex,
+                  })
                );
 
                break;
             }
 
             case "Delete": {
-               await privateRequest.delete(`${CATEGORY_URL}/${props.category.id}`);
+               await privateRequest.delete(
+                  `${CATEGORY_URL}/${props.category.id}`
+               );
 
-               const newCategories = categories.filter((c) => c.id !== props.category.id);
-               dispatch(setCategory({ type: "replace", categories: newCategories }));
+               modalRef.current?.toggle();
+
+               // await sleep(200);
+
+               const newCategories = categories.filter(
+                  (c) => c.id !== props.category.id
+               );
+
+               dispatch(
+                  setCategory({ type: "replace", categories: newCategories })
+               );
             }
          }
          setSuccessToast(`${props.type} category successful`);

@@ -3,36 +3,22 @@ import { Button, Modal, Search } from "@/components";
 import Table from "@/components/Table";
 
 import AddProductModal from "@/components/Modal/AddProductModal";
-import {
-   Cog6ToothIcon,
-   PencilSquareIcon,
-   TrashIcon,
-} from "@heroicons/react/24/outline";
+
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import useDashBoardProduct from "./_hooks/useDashboardProduct";
-import ConfirmModal from "@/components/Modal/Confirm";
-import useProductAction from "@/hooks/useProductAction";
+import DashboardProductCta from "@/components/DashboardProductCta";
+import { ModalRef } from "@/components/Modal";
 
-type ModelTarget = "Add" | "Edit" | "Delete";
-
-type OpenAddModal = {
-   type: "Add";
-};
-
-type OpenEditModal = {
-   type: "Edit" | "Delete";
-   product: Product;
-   currentIndex: number;
-};
+type Modal = "Add";
 
 export default function Dashboard() {
-   const [isOpenModal, setIsOpenModal] = useState(false);
+   const [modal, setModal] = useState<Modal | "">("");
    const [curCategory, setCurCategory] = useState<Category>();
 
-   const currentProduct = useRef<Product>();
-   const currentProductIndex = useRef<number>();
-   const openModalTarget = useRef<ModelTarget | "">("");
+   const modalRef = useRef<ModalRef>(null);
+
+   const toggle = () => modalRef.current?.toggle();
 
    // hooks
    const { categories, getMore, count, products, status } = useDashBoardProduct(
@@ -41,8 +27,6 @@ export default function Dashboard() {
          curCategory,
       }
    );
-   const closeModal = () => setIsOpenModal(false);
-   const { isFetching, deleteProduct } = useProductAction({ closeModal });
 
    const remaining = useMemo(() => count - products.length, [products]);
 
@@ -50,15 +34,9 @@ export default function Dashboard() {
       getMore();
    };
 
-   const handleOpenModal = ({ ...props }: OpenAddModal | OpenEditModal) => {
-      openModalTarget.current = props.type;
-      switch (props.type) {
-         case "Delete":
-         case "Edit":
-            currentProduct.current = props.product;
-            currentProductIndex.current = props.currentIndex;
-      }
-      setIsOpenModal(true);
+   const handleOpenModal = (modal: Modal) => {
+      setModal(modal);
+      toggle();
    };
 
    const renderProducts = (
@@ -67,48 +45,16 @@ export default function Dashboard() {
             <>
                {!!products.length ? (
                   <>
-                     {products.map((productItem, index) => {
+                     {products.map((p, index) => {
                         return (
                            <tr key={index}>
-                              <td className="font-[500]">{productItem.name}</td>
+                              <td className="font-[500]">{p.name}</td>
                               {/* loop here */}
                               <td className="!text-right">
-                                 <Button
-                                    onClick={() =>
-                                       handleOpenModal({
-                                          type: "Edit",
-                                          currentIndex: index,
-                                          product: productItem,
-                                       })
-                                    }
-                                    size={"clear"}
-                                    colors={"second"}
-                                    className="p-[4px]"
-                                 >
-                                    <PencilSquareIcon className="w-[24px]" />
-                                 </Button>
-                                 <Button
-                                    to={`${productItem.id}`}
-                                    size={"clear"}
-                                    className="p-[4px] ml-[8px]"
-                                    colors={"second"}
-                                 >
-                                    <Cog6ToothIcon className="w-[24px]" />
-                                 </Button>
-                                 <Button
-                                    onClick={() =>
-                                       handleOpenModal({
-                                          type: "Delete",
-                                          currentIndex: index,
-                                          product: productItem,
-                                       })
-                                    }
-                                    size={"clear"}
-                                    className="p-[4px] ml-[8px]"
-                                    colors={"second"}
-                                 >
-                                    <TrashIcon className="w-[24px]" />
-                                 </Button>
+                                 <DashboardProductCta
+                                    index={index}
+                                    product={p}
+                                 />
                               </td>
                            </tr>
                         );
@@ -126,50 +72,18 @@ export default function Dashboard() {
       </Table>
    );
 
-   const renderModal = useMemo(() => {
-      if (!isOpenModal) return;
-      switch (openModalTarget.current) {
+   const renderModal = () => {
+      switch (modal) {
          case "Add":
             return (
                <AddProductModal
                   type="Add"
                   curCategory={curCategory}
-                  closeModal={closeModal}
+                  closeModal={toggle}
                />
             );
-         case "Edit":
-            if (
-               !currentProduct.current ||
-               currentProductIndex.current === undefined
-            )
-               return <p>Some thing went wrong</p>;
-
-            return (
-               <AddProductModal
-                  type="Edit"
-                  closeModal={closeModal}
-                  product={currentProduct.current}
-                  currentIndex={currentProductIndex.current}
-               />
-            );
-         case "Delete": {
-            const p = currentProduct.current;
-            if (p)
-               return (
-                  <ConfirmModal
-                     label={`Delete '${currentProduct.current!.name}' ?`}
-                     callback={() => deleteProduct(p.id)}
-                     closeModal={closeModal}
-                     loading={isFetching}
-                  />
-               );
-
-            break;
-         }
-         default:
-            return <h1 className="text-2xl">Noting to show</h1>;
       }
-   }, [isOpenModal, curCategory, isFetching]);
+   };
 
    const classes = {
       tab: "px-[12px] sm:px-[24px] py-1 ml-[8px] mt-[8px]",
@@ -188,7 +102,7 @@ export default function Dashboard() {
                className="flex-shrink-0 ml-[10px] px-2"
                colors={"third"}
                size={"clear"}
-               onClick={() => handleOpenModal({ type: "Add" })}
+               onClick={() => handleOpenModal("Add")}
             >
                <PlusIcon className="w-[24px]" />
                <span className="hidden sm:block ml-[6px]">Add product</span>
@@ -245,7 +159,9 @@ export default function Dashboard() {
             )}
          </div>
 
-         {isOpenModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
+         <Modal ref={modalRef} variant="animation">
+            {renderModal()}
+         </Modal>
       </>
    );
 }

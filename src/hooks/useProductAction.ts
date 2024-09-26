@@ -12,6 +12,7 @@ type Props = {
 };
 
 const URL = "/products";
+const MANAGEMENT_PRO_URL = "/product-management";
 
 export default function useProductAction({ closeModal }: Props) {
    const dispatch = useDispatch();
@@ -29,6 +30,11 @@ export default function useProductAction({ closeModal }: Props) {
       product: ProductSchema;
    };
 
+   type DuplicateProduct = {
+      variant: "Duplicate";
+      product: Product;
+   };
+
    type EditProductList = {
       variant: "Edit";
       product: Partial<ProductSchema>;
@@ -37,7 +43,7 @@ export default function useProductAction({ closeModal }: Props) {
       target: "list";
    };
 
-   type EditProducDetail = {
+   type EditProductDetail = {
       variant: "Edit";
       product: Partial<ProductSchema>;
       productId: number;
@@ -46,7 +52,7 @@ export default function useProductAction({ closeModal }: Props) {
 
    const actions = async ({
       ...props
-   }: AddProduct | EditProductList | EditProducDetail) => {
+   }: AddProduct | EditProductList | EditProductDetail | DuplicateProduct) => {
       try {
          if (!props.product) throw new Error("Product data error");
          setIsFetching(true);
@@ -65,13 +71,24 @@ export default function useProductAction({ closeModal }: Props) {
 
                if (target === "list") {
                   dispatch(
-                     setProducts({ variant: "update", index: props.index, product })
+                     setProducts({
+                        variant: "update",
+                        index: props.index,
+                        product,
+                     })
                   );
                }
                if (target === "one") dispatch(updateProduct(product));
+               break;
+            case "Duplicate": {
+               const res = await privateRequest.get(
+                  `${MANAGEMENT_PRO_URL}/duplicate/${props.product.id}`
+               );
+
+               dispatch(storingProducts({ products: [res.data.data] }));
+            }
          }
          setSuccessToast(`${props.variant} product successful`);
-         closeModal();
       } catch (error) {
          console.log({ message: error });
          setErrorToast(`${props.variant} product fail`);

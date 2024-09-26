@@ -9,6 +9,7 @@ import ConfirmModal from "@/components/Modal/Confirm";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
+import { ModalRef } from "@/components/Modal";
 
 type Modal = "add" | "edit" | "delete";
 
@@ -19,12 +20,13 @@ type Props = {
 export default function CategoryList({ mainClasses }: Props) {
    const { categories } = useSelector(selectCategory);
 
-   const [openModal, setOpenModal] = useState<Modal | "">("");
+   const [modal, setModal] = useState<Modal | "">("");
+   const modalRef = useRef<ModalRef>(null);
 
    const currentCategoryIndex = useRef<number>();
 
    // hooks
-   const { actions, isFetching } = useCategoryAction();
+   const { actions, isFetching } = useCategoryAction({ modalRef });
 
    type AddModal = {
       modal: "add";
@@ -35,6 +37,8 @@ export default function CategoryList({ mainClasses }: Props) {
       index: number;
    };
 
+   const toggleModal = () => modalRef.current?.toggle();
+
    const handleOpenModal = (props: AddModal | EditDeleteModal) => {
       switch (props.modal) {
          case "edit":
@@ -42,10 +46,9 @@ export default function CategoryList({ mainClasses }: Props) {
             currentCategoryIndex.current = props.index;
       }
 
-      setOpenModal(props.modal);
+      setModal(props.modal);
+      toggleModal();
    };
-
-   const closeModal = () => setOpenModal("");
 
    type Add = {
       type: "Add";
@@ -69,7 +72,7 @@ export default function CategoryList({ mainClasses }: Props) {
             category: categories[currentCategoryIndex.current],
          });
 
-         closeModal();
+         toggleModal();
 
          return;
       }
@@ -108,57 +111,72 @@ export default function CategoryList({ mainClasses }: Props) {
          }
       }
 
-      closeModal();
+      // toggleModal();
    };
 
-   const renderModal = useMemo(() => {
-      if (!openModal) return;
-      switch (openModal) {
+   const renderModal = () => {
+      if (!modal) return;
+
+      if (modal === "edit" || modal === "delete") {
+         if (
+            currentCategoryIndex.current === undefined ||
+            !categories[currentCategoryIndex.current]
+         )
+            return;
+
+         const currentCat = categories[currentCategoryIndex.current];
+
+         switch (modal) {
+            case "edit":
+               return (
+                  <AddItem
+                     loading={isFetching}
+                     title={`Edit '${currentCat.name}' `}
+                     initValue={currentCat.name}
+                     cbWhenSubmit={(value) =>
+                        handleCategoryActions({ type: "Edit", value })
+                     }
+                     closeModal={toggleModal}
+                  />
+               );
+
+            case "delete":
+               return (
+                  <ConfirmModal
+                     callback={() => handleCategoryActions({ type: "Delete" })}
+                     loading={isFetching}
+                     closeModal={toggleModal}
+                     label={`Delete category '${currentCat.name}'`}
+                  />
+               );
+         }
+      }
+
+      switch (modal) {
          case "add":
             return (
                <AddItem
                   loading={isFetching}
                   title="Add category"
-                  cbWhenSubmit={(value) => handleCategoryActions({ type: "Add", value })}
-                  closeModal={closeModal}
-               />
-            );
-         case "edit":
-            if (currentCategoryIndex.current === undefined) return "Index not found";
-            return (
-               <AddItem
-                  loading={isFetching}
-                  title={`Edit '${categories[currentCategoryIndex.current].name}' `}
-                  initValue={categories[currentCategoryIndex.current].name}
-                  cbWhenSubmit={(value) => handleCategoryActions({ type: "Edit", value })}
-                  closeModal={closeModal}
-               />
-            );
-
-         case "delete":
-            if (currentCategoryIndex.current === undefined) return "Index not found";
-
-            return (
-               <ConfirmModal
-                  callback={() => handleCategoryActions({ type: "Delete" })}
-                  loading={isFetching}
-                  closeModal={closeModal}
-                  label={`Delete category '${
-                     categories[currentCategoryIndex.current].name
-                  }'`}
+                  cbWhenSubmit={(value) =>
+                     handleCategoryActions({ type: "Add", value })
+                  }
+                  closeModal={toggleModal}
                />
             );
          default:
             return <h1 className="text-3xl">Not thing to show</h1>;
       }
-   }, [openModal, isFetching]);
+   };
 
    return (
       <>
          <h1 className={mainClasses.label}>Category</h1>
          <div className={mainClasses.group}>
             <div
-               className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}
+               className={`${mainClasses.flexContainer} ${
+                  isFetching ? "disable" : ""
+               }`}
             >
                {categories.map(
                   (item, index) =>
@@ -173,12 +191,20 @@ export default function CategoryList({ mainClasses }: Props) {
                                  data={[
                                     {
                                        cb: () =>
-                                          handleOpenModal({ modal: "edit", index }),
-                                       icon: <PencilIcon className="w-[24px]" />,
+                                          handleOpenModal({
+                                             modal: "edit",
+                                             index,
+                                          }),
+                                       icon: (
+                                          <PencilIcon className="w-[24px]" />
+                                       ),
                                     },
                                     {
                                        cb: () =>
-                                          handleOpenModal({ modal: "delete", index }),
+                                          handleOpenModal({
+                                             modal: "delete",
+                                             index,
+                                          }),
                                        icon: <TrashIcon className="w-[24px]" />,
                                     },
                                  ]}
@@ -196,7 +222,9 @@ export default function CategoryList({ mainClasses }: Props) {
             </div>
          </div>
 
-         {!!openModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
+         <Modal ref={modalRef} variant="animation">
+            {renderModal()}
+         </Modal>
       </>
    );
 }
