@@ -28,16 +28,16 @@ export default function DashboardProductCta({ index, product }: Props) {
    const modalRef = useRef<ModalRef>(null);
    const triggerRef = useRef<TriggerRef>(null);
 
-   const toggle = () => modalRef.current?.toggle();
+   const closeModal = () => modalRef.current?.close();
 
    const { isFetching, deleteProduct, actions } = useProductAction({
-      closeModal: toggle,
+      closeModal,
    });
 
    const handleOpenModal = (modal: Modal) => {
       setModal(modal);
       triggerRef.current?.close();
-      toggle();
+      modalRef.current?.open();
    };
 
    const handleDuplicate = async () => {
@@ -51,7 +51,7 @@ export default function DashboardProductCta({ index, product }: Props) {
             return (
                <AddProductModal
                   type="Edit"
-                  closeModal={toggle}
+                  closeModal={closeModal}
                   product={product}
                   currentIndex={index}
                />
@@ -61,7 +61,7 @@ export default function DashboardProductCta({ index, product }: Props) {
                <ConfirmModal
                   label={`Delete '${product.name}' ?`}
                   callback={() => deleteProduct(product.id)}
-                  closeModal={toggle}
+                  closeModal={closeModal}
                   loading={isFetching}
                />
             );

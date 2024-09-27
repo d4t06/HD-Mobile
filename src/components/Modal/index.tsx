@@ -11,21 +11,22 @@ import { createPortal } from "react-dom";
 
 type NoAnimation = {
    variant?: "default";
-   children: ReactNode;
+   children?: ReactNode;
    closeModal: () => void;
    className?: string;
 };
 
 type WithAnimation = {
    variant?: "animation";
-   children: ReactNode;
+   children?: ReactNode;
    className?: string;
 };
 
 type Props = NoAnimation | WithAnimation;
 
 export type ModalRef = {
-   toggle: () => void;
+   open: () => void;
+   close: () => void;
 };
 
 function Modal({ children, className, ...props }: Props, ref: Ref<ModalRef>) {
@@ -36,10 +37,8 @@ function Modal({ children, className, ...props }: Props, ref: Ref<ModalRef>) {
       variant === "default" ? true : false
    );
 
-   const toggle = () => {
-      if (isMounted) setIsMounted(false);
-      if (!isOpen) setIsOpen(true);
-   };
+   const open = () => setIsOpen(true);
+   const close = () => setIsMounted(false);
 
    const handleOverlayClick: MouseEventHandler = (e) => {
       e.preventDefault();
@@ -50,11 +49,12 @@ function Modal({ children, className, ...props }: Props, ref: Ref<ModalRef>) {
          props.closeModal ? props.closeModal() : "";
       }
 
-      if (variant === "animation") toggle();
+      if (variant === "animation") close();
    };
 
    useImperativeHandle(ref, () => ({
-      toggle,
+      open,
+      close,
    }));
 
    useEffect(() => {
@@ -99,19 +99,25 @@ function Modal({ children, className, ...props }: Props, ref: Ref<ModalRef>) {
                              }
                         `}
                   ></div>
-                  <div
-                     className={`absolute duration-300 transition-[transform,opacity] z-[99] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                  {children && (
+                     <div
+                        className={`absolute duration-300 transition-[transform,opacity] z-[99] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                             ${
                                isMounted
                                   ? classes.mountedContent
                                   : classes.unMountedContent
                             }
                         `}
-                  >
-                     <div className={`bg-white p-6 sm:p-5 rounded-lg ${className || ""}`}>
-                        {children}
+                     >
+                        <div
+                           className={`bg-white p-6 sm:p-5 rounded-lg ${
+                              className || ""
+                           }`}
+                        >
+                           {children}
+                        </div>
                      </div>
-                  </div>
+                  )}
                </div>,
                document.getElementById("portals")!
             )}

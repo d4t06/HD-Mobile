@@ -23,7 +23,12 @@ export default function CategoryList({ mainClasses }: Props) {
    const [modal, setModal] = useState<Modal | "">("");
    const modalRef = useRef<ModalRef>(null);
 
-   const currentCategoryIndex = useRef<number>();
+   /** don't work when open using modalRef
+    *  the value id reference but the code don't rerun
+    */
+   // const currentCategoryIndex = useRef<number>();
+
+   const [currentCategoryIndex, setCurrentCategoryIndex] = useState<number>();
 
    // hooks
    const { actions, isFetching } = useCategoryAction({ modalRef });
@@ -37,17 +42,20 @@ export default function CategoryList({ mainClasses }: Props) {
       index: number;
    };
 
-   const toggleModal = () => modalRef.current?.toggle();
+   const closeModal = () => modalRef.current?.close();
 
    const handleOpenModal = (props: AddModal | EditDeleteModal) => {
       switch (props.modal) {
          case "edit":
          case "delete":
-            currentCategoryIndex.current = props.index;
+            setCurrentCategoryIndex(props.index);
+            break;
+         case "add":
+            setCurrentCategoryIndex(undefined);
       }
 
       setModal(props.modal);
-      toggleModal();
+      modalRef.current?.open();
    };
 
    type Add = {
@@ -65,16 +73,39 @@ export default function CategoryList({ mainClasses }: Props) {
    };
 
    const handleCategoryActions = async (props: Add | Edit | Delete) => {
-      if (props.type === "Delete") {
-         if (currentCategoryIndex.current === undefined) return;
-         await actions({
-            type: "Delete",
-            category: categories[currentCategoryIndex.current],
-         });
+      if (props.type === "Delete" || props.type === "Edit") {
+         if (currentCategoryIndex === undefined) return;
+         const currentCategory = categories[currentCategoryIndex];
 
-         toggleModal();
+         if (!currentCategory) return;
 
-         return;
+         switch (props.type) {
+            case "Delete": {
+               await actions({
+                  type: "Delete",
+                  category: categories[currentCategoryIndex],
+               });
+
+               break;
+            }
+
+            case "Edit": {
+               const categorySchema: CategorySchema = {
+                  attribute_order: currentCategory.attribute_order,
+                  hidden: false,
+                  name: props.value,
+                  name_ascii: generateId(props.value),
+               };
+
+               await actions({
+                  type: "Edit",
+                  category: categorySchema,
+                  curIndex: currentCategoryIndex,
+                  category_id: currentCategory.id,
+               });
+               break;
+            }
+         }
       }
 
       switch (props.type) {
@@ -89,42 +120,16 @@ export default function CategoryList({ mainClasses }: Props) {
             await actions({ type: "Add", category: categorySchema });
             break;
          }
-         case "Edit": {
-            if (currentCategoryIndex.current === undefined) return;
-
-            const target = categories[currentCategoryIndex.current];
-
-            const categorySchema: CategorySchema = {
-               attribute_order: target.attribute_order,
-               hidden: false,
-               name: props.value,
-               name_ascii: generateId(props.value),
-            };
-
-            await actions({
-               type: "Edit",
-               category: categorySchema,
-               curIndex: currentCategoryIndex.current,
-               category_id: target.id,
-            });
-            break;
-         }
       }
-
-      // toggleModal();
    };
 
    const renderModal = () => {
       if (!modal) return;
 
       if (modal === "edit" || modal === "delete") {
-         if (
-            currentCategoryIndex.current === undefined ||
-            !categories[currentCategoryIndex.current]
-         )
-            return;
-
-         const currentCat = categories[currentCategoryIndex.current];
+         if (currentCategoryIndex === undefined) return;
+         const currentCat = categories[currentCategoryIndex];
+         if (!currentCat) return;
 
          switch (modal) {
             case "edit":
@@ -136,7 +141,7 @@ export default function CategoryList({ mainClasses }: Props) {
                      cbWhenSubmit={(value) =>
                         handleCategoryActions({ type: "Edit", value })
                      }
-                     closeModal={toggleModal}
+                     closeModal={closeModal}
                   />
                );
 
@@ -145,7 +150,7 @@ export default function CategoryList({ mainClasses }: Props) {
                   <ConfirmModal
                      callback={() => handleCategoryActions({ type: "Delete" })}
                      loading={isFetching}
-                     closeModal={toggleModal}
+                     closeModal={closeModal}
                      label={`Delete category '${currentCat.name}'`}
                   />
                );
@@ -161,7 +166,7 @@ export default function CategoryList({ mainClasses }: Props) {
                   cbWhenSubmit={(value) =>
                      handleCategoryActions({ type: "Add", value })
                   }
-                  closeModal={toggleModal}
+                  closeModal={closeModal}
                />
             );
          default:

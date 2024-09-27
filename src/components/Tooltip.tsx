@@ -6,16 +6,13 @@ import {
    isValidElement,
    ReactNode,
    Ref,
-   useEffect,
-   useRef,
-   useState,
 } from "react";
-import { usePopoverContext } from "./Popover";
+import useTooltip from "@/hooks/useTooltip";
 
 type Props = {
    children: ReactNode;
    className?: string;
-   position?: string;
+   position?: "bottom" | "top";
    content: string;
    onClick?: () => void;
 };
@@ -24,46 +21,31 @@ function ToolTip(
    {
       children,
       className = "px-2 py-1 text-sm font-[600]",
-      position = "bottom-[calc(100%+8px)]",
+      position = "top",
       content,
       onClick,
    }: Props,
    _ref: Ref<ElementRef<"button">>
 ) {
-   const [open, setOpen] = useState(false);
+   const { appendOnPortal, isOpen, setTriggerRef, state, triggerRef } =
+      useTooltip();
 
-   const { setTriggerRef, state, appendOnPortal } = usePopoverContext();
+   const _position = position || "top";
 
-   const cloneEleRef = useRef<ElementRef<"button">>(null);
-
-   const handleMouseEnter: EventListener = () => {
-      setOpen(true);
+   const arrowPositionBaseOnParentMap: Record<typeof _position, string> = {
+      top: "before:border-t-[#cd1818] before:bottom-0 before:translate-y-[calc(50%+6px)]",
+      bottom: "before:border-b-[#cd1818] before:top-0 before:-translate-y-[calc(50%+6px)]",
    };
 
-   const handleMouseLeave: EventListener = () => {
-      setOpen(false);
+   const contentPositionMap: Record<typeof _position, string> = {
+      top: "bottom-[calc(100%+8px)]",
+      bottom: "top-[calc(100%+8px)]",
    };
-
-   useEffect(() => {
-      const cloneEle = cloneEleRef.current as HTMLButtonElement;
-
-      if (!cloneEle) return;
-
-      if (setTriggerRef) {
-         setTriggerRef(cloneEle);
-      }
-
-      cloneEle.addEventListener("mouseenter", handleMouseEnter);
-      cloneEle.addEventListener("mouseleave", handleMouseLeave);
-
-      return () => {
-         cloneEle.removeEventListener("mouseenter", handleMouseEnter);
-         cloneEle.removeEventListener("mouseleave", handleMouseLeave);
-      };
-   }, []);
 
    const classes = {
-      container: "bg-slate-700 text-white",
+      arrow: `before:content-[''] before:absolute before:-translate-x-1/2 before:left-1/2 before:border-8 before:border-transparent ${arrowPositionBaseOnParentMap[_position]}`,
+
+      content: `absolute z-[99] pointer-events-none border-[2px] font-[500] text-sm px-2 py-[2px] bg-[#cd1818] text-white whitespace-nowrap ${contentPositionMap[_position]} -translate-x-1/2 left-1/2 rounded-md`,
    };
 
    const jsxContent = (
@@ -72,16 +54,16 @@ function ToolTip(
             <>
                {onClick
                   ? cloneElement(children, {
-                       ref: cloneEleRef,
+                       ref: triggerRef,
                        onClick,
                     } as HTMLProps<HTMLButtonElement>)
                   : cloneElement(children, {
-                       ref: cloneEleRef,
+                       ref: triggerRef,
                     } as HTMLProps<HTMLButtonElement>)}
 
-               {!state?.isOpen && open && (
+               {!state?.isOpen && isOpen && (
                   <div
-                     className={`${classes.container} absolute whitespace-nowrap -translate-x-1/2 left-1/2 rounded-md ${position} ${className}`}
+                     className={`${classes.content} ${classes.arrow} ${className}`}
                   >
                      {content}
                   </div>

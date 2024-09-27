@@ -40,6 +40,11 @@ export default function useCategoryAction({ modalRef }: Props) {
 
    type Props = Add | Edit | Delete;
 
+   const closeModal = async () => {
+      modalRef.current?.close();
+      await sleep(200);
+   };
+
    const actions = async ({ ...props }: Props) => {
       try {
          switch (props.type) {
@@ -51,7 +56,7 @@ export default function useCategoryAction({ modalRef }: Props) {
                   category
                );
 
-               modalRef.current?.toggle();
+              await closeModal()
 
                dispatch(setCategory({ type: "add", category: res.data.data }));
                break;
@@ -63,9 +68,7 @@ export default function useCategoryAction({ modalRef }: Props) {
                   category
                );
 
-               modalRef.current?.toggle();
-
-               // await sleep(200);
+              await closeModal()
 
                dispatch(
                   setCategory({
@@ -83,9 +86,7 @@ export default function useCategoryAction({ modalRef }: Props) {
                   `${CATEGORY_URL}/${props.category.id}`
                );
 
-               modalRef.current?.toggle();
-
-               // await sleep(200);
+              await closeModal()
 
                const newCategories = categories.filter(
                   (c) => c.id !== props.category.id

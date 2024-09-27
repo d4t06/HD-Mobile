@@ -12,23 +12,6 @@ function DashboardLayout({ children }: { children: ReactNode }) {
    // hooks
    useGetCategory();
 
-   // useEffect(() => {
-   //    const isOnMobile = window.innerWidth < 768;
-
-   //    const handleResize = () => {
-   //       const contentEle = dashboardRef.current as HTMLDivElement;
-   //       contentEle.style.maxHeight = window.innerHeight + "px";
-   //    };
-
-   //    if (isOnMobile) {
-   //       window.addEventListener("resize", handleResize);
-   //    }
-
-   //    return () => {
-   //       window.removeEventListener("resize", handleResize);
-   //    };
-   // }, []);
-
    return (
       <UploadImageProvider>
          <RatingContextProvider>
