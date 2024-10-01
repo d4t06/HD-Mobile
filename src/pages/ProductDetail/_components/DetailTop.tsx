@@ -131,12 +131,12 @@ export default function DetailTop({ loading, product }: Props) {
          <div className="md:flex flex-wrap md:mx-[-12px]">
             <div className="md:w-7/12 md:px-[12px]">
                {loading && (
-                  <Skeleton className="w-full pt-[50%] rounded-[16px]" />
+                  <Skeleton className="w-full pt-[60%] sm:pt-[75%] rounded-[16px]" />
                )}
                {!loading && (
                   <div className="relative sm:sticky top-[10px]">
                      <ImageSlider
-                        className="pt-[60%] md:pt-[50%]"
+                        className="pt-[60%] md:pt-[75%]"
                         data={slider?.slider_images || []}
                      />
                   </div>
@@ -151,7 +151,7 @@ export default function DetailTop({ loading, product }: Props) {
                         {currentCombine && (
                            <>
                               <div className="space-y-[14px]">
-                                 <div className="space-y-[4px]">
+                                 <div className="">
                                     <h5 className={cx("label")}>Variant</h5>
                                     <div className={cx("list")}>
                                        {product.variants.map(
@@ -194,7 +194,7 @@ export default function DetailTop({ loading, product }: Props) {
                                        )}
                                     </div>
                                  </div>
-                                 <div className="space-y-[4px]">
+                                 <div className="">
                                     <h5 className={cx("label")}>Color</h5>
                                     <div className={cx("list")}>
                                        {product.colors.map((color, index) => (
