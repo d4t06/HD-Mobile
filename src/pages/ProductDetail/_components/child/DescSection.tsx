@@ -53,7 +53,7 @@ export default function DescSection({ product, loading }: Props) {
 
             {!loading && updatedHeight && (
                <>
-                  {HTMLReactParser(product?.description.content || "")}
+                  {HTMLReactParser(product?.description?.content || "")}
                   {!isShowMore && (
                      <div
                         className={`absolute w-full bottom-0 h-[150px] ${cx(

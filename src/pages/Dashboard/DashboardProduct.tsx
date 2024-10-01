@@ -15,6 +15,7 @@ import Popover, {
    TriggerRef,
 } from "@/components/Popover";
 import { CodeBracketIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
+import JsonImport from "./_components/JsonImport";
 
 type Modal = "Form" | "Json";
 
@@ -90,6 +91,8 @@ export default function Dashboard() {
                   closeModal={closeModal}
                />
             );
+         case "Json":
+            return <JsonImport closeModal={closeModal} />;
       }
    };
 
