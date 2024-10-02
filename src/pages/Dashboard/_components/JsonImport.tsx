@@ -68,8 +68,7 @@ export default function JsonImport({ closeModal }: Props) {
          {status === "fetching" && jsonProducts && (
             <div className="text-[#333]">
                <p className="text-xl font-[500]">
-                  {(currentIndex || 0) + 1} of{" "}
-                  <span className="text-[#cd1818]">{jsonProducts?.length}</span>
+                  {(currentIndex || 0) + 1} of {jsonProducts?.length}
                </p>
                <div className="flex justify-between mt-3">
                   <p className="font-[500] text-lg">

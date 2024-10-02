@@ -23,9 +23,13 @@ export default function useGalleryAction() {
          setFetching(true);
          const controller = new AbortController();
 
-         await privateRequest.delete(`${IMAGE_URL}/${encodeURIComponent(publicId)}`);
+         await privateRequest.delete(
+            `${IMAGE_URL}/${encodeURIComponent(publicId)}`
+         );
 
-         const newImages = currentImages.filter((image) => image.public_id !== publicId);
+         const newImages = currentImages.filter(
+            (image) => image.public_id !== publicId
+         );
          storeImages({ currentImages: newImages });
 
          return () => {
@@ -45,12 +49,20 @@ export default function useGalleryAction() {
       count: number;
    };
 
-   const getImages = async (page: number) => {
+   const getImages = async ({
+      page,
+      size = 20,
+   }: {
+      page: number;
+      size?: number;
+   }) => {
       try {
          setImageStatus("fetching");
          if (import.meta.env.DEV) await sleep(300);
 
-         const res = await privateRequest.get(`${IMAGE_URL}?page=${page}&size=6`);
+         const res = await privateRequest.get(
+            `${IMAGE_URL}?page=${page}&size=${size}`
+         );
          const data = res.data.data as getImagesRes;
 
          const newImages = [...currentImages, ...data.images];
@@ -74,7 +86,7 @@ export default function useGalleryAction() {
 
       if (!ranUseEffect.current) {
          ranUseEffect.current = true;
-         getImages(1);
+         getImages({ page: 1 });
       }
    }, []);
 

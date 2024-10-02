@@ -1,17 +1,23 @@
 import useCategoryAction from "../_hooks/useCategoryAction";
 import { useMemo, useRef, useState } from "react";
-import { Empty, Modal } from "@/components";
+import { Button, Empty, Modal } from "@/components";
 import OverlayCTA from "@/components/ui/OverlayCTA";
 import { generateId } from "@/utils/appHelper";
 import AddItem from "@/components/Modal/AddItem";
 import ConfirmModal from "@/components/Modal/Confirm";
 
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+   CodeBracketIcon,
+   PencilIcon,
+   TrashIcon,
+} from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 import { ModalRef } from "@/components/Modal";
+import JsonInput from "@/components/Modal/JsonInput";
+import { useImportCategory } from "../_hooks/useImportCategory";
 
-type Modal = "add" | "edit" | "delete";
+type Modal = "add" | "edit" | "delete" | "import";
 
 type Props = {
    mainClasses: LayoutClasses;
@@ -32,6 +38,7 @@ export default function CategoryList({ mainClasses }: Props) {
 
    // hooks
    const { actions, isFetching } = useCategoryAction({ modalRef });
+   const { status, submit } = useImportCategory();
 
    type AddModal = {
       modal: "add";
@@ -42,9 +49,15 @@ export default function CategoryList({ mainClasses }: Props) {
       index: number;
    };
 
+   type ImportModal = {
+      modal: "import";
+   };
+
    const closeModal = () => modalRef.current?.close();
 
-   const handleOpenModal = (props: AddModal | EditDeleteModal) => {
+   const handleOpenModal = (
+      props: AddModal | EditDeleteModal | ImportModal
+   ) => {
       switch (props.modal) {
          case "edit":
          case "delete":
@@ -72,7 +85,14 @@ export default function CategoryList({ mainClasses }: Props) {
       type: "Delete";
    };
 
-   const handleCategoryActions = async (props: Add | Edit | Delete) => {
+   type Import = {
+      type: "Import";
+      value: string;
+   };
+
+   const handleCategoryActions = async (
+      props: Add | Edit | Delete | Import
+   ) => {
       if (props.type === "Delete" || props.type === "Edit") {
          if (currentCategoryIndex === undefined) return;
          const currentCategory = categories[currentCategoryIndex];
@@ -119,6 +139,10 @@ export default function CategoryList({ mainClasses }: Props) {
 
             await actions({ type: "Add", category: categorySchema });
             break;
+         }
+
+         case "Import": {
+            await submit(props.value);
          }
       }
    };
@@ -169,6 +193,21 @@ export default function CategoryList({ mainClasses }: Props) {
                   closeModal={closeModal}
                />
             );
+         case "import":
+            return (
+               <JsonInput
+                  status={status}
+                  title="Import category"
+                  closeModal={closeModal}
+                  submit={(v) =>
+                     handleCategoryActions({ type: "Import", value: v })
+                  }
+               >
+                  {status === "fetching" && (
+                     <p className="text-lg">... Importing</p>
+                  )}
+               </JsonInput>
+            );
          default:
             return <h1 className="text-3xl">Not thing to show</h1>;
       }
@@ -176,7 +215,18 @@ export default function CategoryList({ mainClasses }: Props) {
 
    return (
       <>
-         <h1 className={mainClasses.label}>Category</h1>
+         <div className="flex justify-between">
+            <h1 className={mainClasses.label}>Category</h1>
+
+            <Button
+               onClick={() => handleOpenModal({ modal: "import" })}
+               className="space-x-1"
+               colors={"third"}
+            >
+               <CodeBracketIcon className="w-6" />
+               <span>Import Json</span>
+            </Button>
+         </div>
          <div className={mainClasses.group}>
             <div
                className={`${mainClasses.flexContainer} ${

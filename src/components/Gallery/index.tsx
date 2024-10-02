@@ -3,7 +3,11 @@ import classNames from "classnames/bind";
 import styles from "./Gallery.module.scss";
 import { useImage } from "@/store/ImageContext";
 import Skeleton from "../Skeleton";
-import { ArrowPathIcon, ArrowUpTrayIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+   ArrowPathIcon,
+   ArrowUpTrayIcon,
+   XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { Button } from "..";
 import useGalleryAction from "@/hooks/useGalleryActiont";
 import ImageList from "./ImageList";
@@ -30,7 +34,10 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
       () => (multiple ? !!choseList.length : !!active),
       [active, choseList]
    );
-   const isRemaining = useMemo(() => count - page * page_size > 0, [currentImages]);
+   const isRemaining = useMemo(
+      () => count - page * page_size > 0,
+      [currentImages]
+   );
    const isNoHaveImage =
       !currentImages.length && !tempImages.length && imageStatus !== "fetching";
 
@@ -68,7 +75,10 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
          [...Array(6).keys()].map((item) => (
             <div
                key={item}
-               className={cx("w-1/3 sm:w-1/5 mt-[8px]", "px-[4px] gallery-item")}
+               className={cx(
+                  "w-1/3 sm:w-1/5 mt-[8px]",
+                  "px-[4px] gallery-item"
+               )}
             >
                <Skeleton className="pt-[100%] w-[100% rounded-[6px]" />
             </div>
@@ -87,7 +97,11 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
                >
                   <div className={cx("image-container")}>
                      <div className={cx("image-frame", "relative")}>
-                        <img className="opacity-[.4]" src={item.image_url} alt="img" />
+                        <img
+                           className="opacity-[.4]"
+                           src={item.image_url}
+                           alt="img"
+                        />
                         <ArrowPathIcon className="animate-spin absolute w-[30px]" />
                      </div>
                   </div>
@@ -98,7 +112,8 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
    );
 
    const classes = {
-      galleryTop: "flex justify-between border-b border-[#ccc] mb-[10px] pb-[10px]",
+      galleryTop:
+         "flex justify-between border-b border-[#ccc] mb-[10px] pb-[10px]",
    };
 
    return (
@@ -173,7 +188,7 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
                         disabled={!!tempImages.length}
                         loading={imageStatus === "fetching"}
                         colors={"second"}
-                        onClick={() => getImages(page + 1)}
+                        onClick={() => getImages({ page: page + 1 })}
                      >
                         Thêm
                      </Button>

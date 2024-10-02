@@ -19,14 +19,14 @@ const categorySlice = createSlice({
          action: PayloadAction<
             | { type: "replace"; categories: Category[] }
             | { type: "status"; status: StateType["status"] }
-            | { type: "add"; category: Category }
+            | { type: "add"; categories: Category[] }
             | { type: "update"; category: Partial<Category>; index: number }
          >
       ) {
          const payload = action.payload;
          switch (payload.type) {
             case "add":
-               state.categories.push(payload.category);
+               state.categories.push(...payload.categories);
                break;
             case "replace":
                state.categories = payload.categories;
