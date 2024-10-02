@@ -34,7 +34,10 @@ export default function JsonInput({
 
    return (
       <div className="w-[500px] max-w-[90vw]">
-         <ModalHeader closeModal={closeModal} title={title || "Json import"} />
+         <ModalHeader
+            closeModal={status !== "fetching" ? closeModal : () => {}}
+            title={title || "Json import"}
+         />
 
          {status === "input" && (
             <textarea
@@ -48,20 +51,6 @@ export default function JsonInput({
          )}
 
          {children}
-
-         {/* {status === "fetching" && json && (
-            <div className="text-[#333]">
-               <p className="text-xl font-[500]">
-                  {(currentIndex || 0) + 1} of {json?.length}
-               </p>
-               <div className="flex justify-between mt-3">
-                  <p className="font-[500] text-lg">
-                     {json[currentIndex || 0].name}
-                  </p>
-                  <ArrowPathIcon className="w-6 animate-spin" />
-               </div>
-            </div>
-         )} */}
 
          {status === "finish" && <p className="text-lg">Import successful</p>}
 

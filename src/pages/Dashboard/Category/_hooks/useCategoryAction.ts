@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectCategory, setCategory } from "@/store/categorySlice";
 import { ModalRef } from "@/components/Modal";
 import { sleep } from "@/utils/appHelper";
-import Category from "..";
 
 const CATEGORY_URL = "/categories";
 
@@ -52,26 +51,18 @@ export default function useCategoryAction({ modalRef }: Props) {
             case "Add":
                const { category } = props;
                // add category
-               const res = await privateRequest.post(
-                  `${CATEGORY_URL}`,
-                  category
-               );
+               const res = await privateRequest.post(`${CATEGORY_URL}`, category);
 
                const newCategory = res.data.data as Category;
 
                await closeModal();
 
-               dispatch(
-                  setCategory({ type: "add", categories: [newCategory] })
-               );
+               dispatch(setCategory({ type: "add", categories: [newCategory] }));
                break;
             case "Edit": {
                const { category, curIndex } = props;
 
-               await privateRequest.put(
-                  `${CATEGORY_URL}/${props.category_id}`,
-                  category
-               );
+               await privateRequest.put(`${CATEGORY_URL}/${props.category_id}`, category);
 
                await closeModal();
 
@@ -87,19 +78,13 @@ export default function useCategoryAction({ modalRef }: Props) {
             }
 
             case "Delete": {
-               await privateRequest.delete(
-                  `${CATEGORY_URL}/${props.category.id}`
-               );
+               await privateRequest.delete(`${CATEGORY_URL}/${props.category.id}`);
 
                await closeModal();
 
-               const newCategories = categories.filter(
-                  (c) => c.id !== props.category.id
-               );
+               const newCategories = categories.filter((c) => c.id !== props.category.id);
 
-               dispatch(
-                  setCategory({ type: "replace", categories: newCategories })
-               );
+               dispatch(setCategory({ type: "replace", categories: newCategories }));
             }
          }
          setSuccessToast(`${props.type} category successful`);

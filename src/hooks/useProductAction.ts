@@ -62,6 +62,8 @@ export default function useProductAction({ closeModal }: Props) {
             case "Add":
                const res = await privateRequest.post(`${URL}`, props.product);
                dispatch(storingProducts({ products: [res.data.data] }));
+               closeModal();
+
                break;
 
             case "Edit":
@@ -79,6 +81,8 @@ export default function useProductAction({ closeModal }: Props) {
                   );
                }
                if (target === "one") dispatch(updateProduct(product));
+
+               closeModal();
                break;
             case "Duplicate": {
                const res = await privateRequest.get(

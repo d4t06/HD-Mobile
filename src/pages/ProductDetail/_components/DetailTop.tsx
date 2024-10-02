@@ -38,9 +38,20 @@ export default function DetailTop({ loading, product }: Props) {
       );
    }, [color, variant]);
 
-   const currentSliderImages = useMemo(() => {
+   const isDefaultVariant =
+      product &&
+      product.variants.length === 1 &&
+      product.variants[0].name_ascii === "default";
+
+   const isDefaultColor =
+      product &&
+      product.colors.length === 1 &&
+      product.colors[0].name_ascii === "default";
+
+   useMemo(() => {
       if (!color) return;
-      if (color?.product_slider) setSlider(color.product_slider.slider);
+      if (color?.product_slider.slider.slider_images.length)
+         setSlider(color.product_slider.slider);
    }, [color]);
 
    const closeModal = () => setIsOpenModal(false);
@@ -48,9 +59,7 @@ export default function DetailTop({ loading, product }: Props) {
    const findDefaultCombineOfVariant = (variant: ProductVariant) => {
       if (!product) return;
 
-      return product.combines.find(
-         (c) => c.id === variant.default_combine.combine_id
-      );
+      return product.combines.find((c) => c.id === variant.default_combine.combine_id);
    };
 
    const handleAddCartItem = async () => {
@@ -72,30 +81,32 @@ export default function DetailTop({ loading, product }: Props) {
       await actions({ variant: "add", cartItem: schema });
    };
 
-   const BoxSkeleton = [...Array(2).keys()].map((item) => (
+   const BoxSkeleton = [...Array(3).keys()].map((item) => (
       <div key={item} className={cx(`item`)}>
-         <Skeleton className="h-[60px] rounded-[6px]" />
+         <Skeleton className="h-[60px]" />
       </div>
    ));
 
    const ProductInfoSkeleton = (
       <>
-         <Skeleton className="w-[300px] h-[30px] rounded-[6px] " />
+         <Skeleton className="w-[300px] h-[30px] " />
          <div className="">
-            <Skeleton className="w-[70px] h-[20px] rounded-[6px] mb-[6px]" />
+            <Skeleton className="w-[70px] h-[20px] mb-[6px]" />
             <div className={cx("list")}>{BoxSkeleton}</div>
          </div>
 
          <div className="">
-            <Skeleton className="w-[70px] h-[20px] rounded-[6px] mt-[14px] mb-[6px]" />
+            <Skeleton className="w-[70px] h-[20px] mt-[14px] mb-[6px]" />
             <div className={cx("list")}>{BoxSkeleton}</div>
          </div>
 
          <div className="">
-            <Skeleton className="w-[70px] h-[20px] rounded-[6px] mt-[14px] mb-[6px]" />
-            <Skeleton className="w-[200px] h-[34px] rounded-[6px] my-[6px]" />
-            <Skeleton className="w-[160px] h-[24px] rounded-[6px] my-[6px]" />
+            <Skeleton className="w-[70px] h-[20px] mt-[14px] mb-[6px]" />
+            <Skeleton className="w-[200px] h-[34px] my-[6px]" />
+            <Skeleton className="w-[160px] h-[24px] my-[6px]" />
          </div>
+
+         <Skeleton className="w-full h-[40px]" />
       </>
    );
 
@@ -151,15 +162,15 @@ export default function DetailTop({ loading, product }: Props) {
                         {currentCombine && (
                            <>
                               <div className="space-y-[14px]">
-                                 <div className="">
-                                    <h5 className={cx("label")}>Variant</h5>
-                                    <div className={cx("list")}>
-                                       {product.variants.map(
-                                          (variant, index) => {
+                                 {isDefaultVariant ? (
+                                    <></>
+                                 ) : (
+                                    <div className="">
+                                       <h5 className={cx("label")}>Variant</h5>
+                                       <div className={cx("list")}>
+                                          {product.variants.map((variant, index) => {
                                              const defaultCombine =
-                                                findDefaultCombineOfVariant(
-                                                   variant
-                                                );
+                                                findDefaultCombineOfVariant(variant);
                                              if (defaultCombine)
                                                 return (
                                                    <div
@@ -177,9 +188,7 @@ export default function DetailTop({ loading, product }: Props) {
                                                             currentCombine.variant_id
                                                          }
                                                       >
-                                                         <span>
-                                                            {variant.name}
-                                                         </span>
+                                                         <span>{variant.name}</span>
                                                          <span className="text-[14px] font-[500]">
                                                             {moneyFormat(
                                                                defaultCombine.price
@@ -190,33 +199,34 @@ export default function DetailTop({ loading, product }: Props) {
                                                    </div>
                                                 );
                                              else return <></>;
-                                          }
-                                       )}
+                                          })}
+                                       </div>
                                     </div>
-                                 </div>
-                                 <div className="">
-                                    <h5 className={cx("label")}>Color</h5>
-                                    <div className={cx("list")}>
-                                       {product.colors.map((color, index) => (
-                                          <div
-                                             key={index}
-                                             className={cx("item")}
-                                          >
-                                             <Button
-                                                colors={"second"}
-                                                className="h-[60px] !flex-col px-[4px] w-full"
-                                                onClick={() => setColor(color)}
-                                                active={
-                                                   color.id ===
-                                                   currentCombine.color_id
-                                                }
-                                             >
-                                                <span>{color.name}</span>
-                                             </Button>
-                                          </div>
-                                       ))}
+                                 )}
+
+                                 {isDefaultColor ? (
+                                    <></>
+                                 ) : (
+                                    <div className="">
+                                       <h5 className={cx("label")}>Color</h5>
+                                       <div className={cx("list")}>
+                                          {product.colors.map((color, index) => (
+                                             <div key={index} className={cx("item")}>
+                                                <Button
+                                                   colors={"second"}
+                                                   className="h-[60px] !flex-col px-[4px] w-full"
+                                                   onClick={() => setColor(color)}
+                                                   active={
+                                                      color.id === currentCombine.color_id
+                                                   }
+                                                >
+                                                   <span>{color.name}</span>
+                                                </Button>
+                                             </div>
+                                          ))}
+                                       </div>
                                     </div>
-                                 </div>
+                                 )}
                               </div>
                               <div className={cx("price")}>
                                  <p className={cx("label")}>Price</p>
@@ -226,9 +236,7 @@ export default function DetailTop({ loading, product }: Props) {
                                        : "Contact"}
                                  </p>
                                  <span className={cx("vat-tag")}>
-                                    {currentCombine.price
-                                       ? "VAT included"
-                                       : "---"}
+                                    {currentCombine.price ? "VAT included" : "---"}
                                  </span>
                               </div>
                               <Button
@@ -255,7 +263,7 @@ export default function DetailTop({ loading, product }: Props) {
          </div>
 
          {isOpenModal && (
-            <Modal className="z-[99]" closeModal={closeModal}>
+            <Modal zIndexClass="z-[999]" closeModal={closeModal}>
                <div className="w-[400px] ">
                   <ModalHeader title="SOS!" closeModal={closeModal} />
                   <img
@@ -263,14 +271,8 @@ export default function DetailTop({ loading, product }: Props) {
                      src="https://zalo-api.zadn.vn/api/emoticon/sticker/webpc?eid=46970&size=130"
                      alt=""
                   />
-                  <p className="font-medium mt-3">
-                     Không đăng nhập rối sao mua hả ?
-                  </p>
-                  <Button
-                     onClick={closeModal}
-                     className="mt-5"
-                     colors={"third"}
-                  >
+                  <p className="font-medium mt-3">Không đăng nhập rối sao mua hả ?</p>
+                  <Button onClick={closeModal} className="mt-5" colors={"third"}>
                      Cút
                   </Button>
                </div>

@@ -2,7 +2,7 @@ import { EditorContent, EditorOptions, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./Toolbar";
 import Image from "@tiptap/extension-image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props extends Partial<EditorOptions> {
    cb: (value: string, resetChange: () => void) => Promise<void>;
@@ -42,6 +42,15 @@ export default function MyEditor({ extensions, className, cb, ...props }: Props)
       wrapper: "my-editor border border-black/10 bg-white rounded-[12px] overflow-hidden",
       editContainer: "max-h-[70vh] overflow-auto editor-container",
    };
+
+   useEffect(() => {
+      return () => {
+         const container = document.querySelector<HTMLDivElement>(".dashboard-content");
+         if (container) {
+            container.style.overflow = "auto";
+         }
+      };
+   }, []);
 
    return (
       <div className={`${classes.wrapper} ${className || ""}`}>

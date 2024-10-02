@@ -99,7 +99,7 @@ export default function CartItem({ cartItem, isChecked, index }: Props) {
          </div>
 
          {openModal && (
-            <Modal closeModal={closeModal} z="z-[200]">
+            <Modal closeModal={closeModal} zIndexClass="z-[999]">
                <ConfirmModal
                   callback={handleDeleteCartItem}
                   loading={isFetching}

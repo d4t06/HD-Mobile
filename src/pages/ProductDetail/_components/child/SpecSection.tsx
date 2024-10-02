@@ -16,7 +16,7 @@ export default function SpecSection({ product, loading }: Props) {
    const attributeOrder = product?.category.attribute_order
       ? product.category.attribute_order.split("_")
       : [];
- 
+
    const SpecSkeleton = (
       <>
          <Skeleton className="pt-[70%] rounded-[12px] mb-[20px]" />
@@ -61,16 +61,15 @@ export default function SpecSection({ product, loading }: Props) {
                                     foundedCategoryAttribute.id
                               );
 
-                              console.log(foundedProductAttribute?.value.split('/n'));
-                              
-
                               return (
                                  <tr key={index}>
                                     <td className="w-[40%]">
                                        {foundedCategoryAttribute.name}
                                     </td>
                                     <td className="leading-[1.6]">
-                                       {foundedProductAttribute?.value.split('/n').map(t => <p>{t}</p>) || "..."}
+                                       {foundedProductAttribute?.value
+                                          .split("/n")
+                                          .map((t, i) => <p key={i}>{t}</p>) || "..."}
                                     </td>
                                  </tr>
                               );

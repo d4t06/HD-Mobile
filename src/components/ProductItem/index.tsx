@@ -19,6 +19,9 @@ export default function ProductItem({ product }: Props) {
       return product.variants.find((v) => v.id === product.default_variant.variant_id);
    };
 
+   const isDefaultVariant =
+      product.variants.length === 1 && product.variants[0].name_ascii === "default";
+
    useEffect(() => {
       const founded = findDefaultStorage();
       setActiveVariant(founded);
@@ -52,28 +55,32 @@ export default function ProductItem({ product }: Props) {
 
             {!!product.variants.length && product.default_variant.variant ? (
                <>
-                  <div className={cx("variant-box", "mx-[-2px] md:mx-[-4px]")}>
-                     {product.variants.map((v, index) => {
-                        const isActive = activeVariant?.id === v.id;
-                        return (
-                           <div
-                              key={index}
-                              className="w-[50%] sm:w-1/3 px-[2px] md:px-[4px]"
-                           >
-                              <Button
-                                 onClick={() => setActiveVariant(v)}
-                                 className={`text-[14px] w-full ${
-                                    isActive ? "active" : ""
-                                 }`}
-                                 colors={"second"}
-                                 active={isActive}
+                  {isDefaultVariant ? (
+                     <></>
+                  ) : (
+                     <div className={cx("variant-box", "mx-[-2px] md:mx-[-4px]")}>
+                        {product.variants.map((v, index) => {
+                           const isActive = activeVariant?.id === v.id;
+                           return (
+                              <div
+                                 key={index}
+                                 className="w-[50%] sm:w-1/3 px-[2px] md:px-[4px]"
                               >
-                                 {v.name}
-                              </Button>
-                           </div>
-                        );
-                     })}
-                  </div>
+                                 <Button
+                                    onClick={() => setActiveVariant(v)}
+                                    className={`text-[14px] w-full ${
+                                       isActive ? "active" : ""
+                                    }`}
+                                    colors={"second"}
+                                    active={isActive}
+                                 >
+                                    {v.name}
+                                 </Button>
+                              </div>
+                           );
+                        })}
+                     </div>
+                  )}
                   <div className={cx("product-item_price")}>
                      <h1 className={cx("product-item_price--current")}>
                         {moneyFormat(activeVariant?.default_combine.combine.price || "")}đ

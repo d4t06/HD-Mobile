@@ -71,7 +71,7 @@ export default function DashboardProductCta({ index, product }: Props) {
 
    const classes = {
       menuItem:
-         "px-3 py-1 flex items-center hover:text-[#cd1818] space-x-1 hover:bg-[#e1e1e1]",
+         "px-3 py-1 flex font-[500] items-center hover:text-[#cd1818] space-x-1 hover:bg-[#e1e1e1]",
    };
 
    return (
@@ -103,17 +103,14 @@ export default function DashboardProductCta({ index, product }: Props) {
                </PopoverTrigger>
 
                <PopoverContent appendTo="portal">
-                  <div className="w-[160px] overflow-hidden relative flex flex-col rounded-lg py-3 bg-[#fff] shadow-[4px_2px_15px_0_rgba(0,0,0,.15)] text-[#333]">
-                     <div className="px-2 mb-2">
-                        <p className="rounded-md bg-[#f1f1f1] p-2 font-[500] line-clamp-1">
-                           {product.name}
-                        </p>
+                  <div className="w-[160px] overflow-hidden relative flex flex-col rounded-lg py-3 bg-[#fff] shadow-[1px_1px_10px_0_rgba(0,0,0,.15)] text-[#333]">
+                     <div className="w-full px-2 mb-2">
+                        <div className="bg-[#f1f1f1] rounded-lg p-2">
+                           <p className="font-[500] line-clamp-1">{product.name}</p>
+                        </div>
                      </div>
 
-                     <button
-                        onClick={handleDuplicate}
-                        className={classes.menuItem}
-                     >
+                     <button onClick={handleDuplicate} className={classes.menuItem}>
                         <DocumentDuplicateIcon className="w-5" />
                         <span>Duplicate</span>
                      </button>

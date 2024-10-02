@@ -4,25 +4,14 @@ import { privateRequest } from "@/utils/request";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
-type JsonProduct = {
-   name: string;
-   category_id: number;
-   brand_id: number;
-   colors: string[];
-   variants: string[];
-   attributes: { category_attribute_id: number; value: string }[];
-   image: string;
-   sliders: string[];
-};
-
 const IMPORT_URL = "/product-management/json-import";
 
-export default function useJsonImport() {
+export default function useImportProduct() {
    const dispatch = useDispatch();
 
-   const [status, setStatus] = useState<
-      "input" | "fetching" | "error" | "finish"
-   >("input");
+   const [status, setStatus] = useState<"input" | "fetching" | "error" | "finish">(
+      "input"
+   );
    const [currentIndex, setCurrentIndex] = useState(0);
 
    const { setErrorToast, setSuccessToast } = useToast();
@@ -31,7 +20,7 @@ export default function useJsonImport() {
       try {
          setStatus("fetching");
 
-         const json: JsonProduct[] = JSON.parse(value);
+         const json = JSON.parse(value);
 
          let counter = 0;
          const products: Product[] = [];
@@ -42,7 +31,8 @@ export default function useJsonImport() {
                data: jsonProduct,
             });
 
-            if (res.data.data) products.push(res.data.data);
+            const newProduct: Product = res.data.data;
+            if (newProduct) products.push(res.data.data);
 
             counter++;
          }
@@ -64,5 +54,6 @@ export default function useJsonImport() {
       status,
       submit,
       currentIndex,
+      setStatus
    };
 }

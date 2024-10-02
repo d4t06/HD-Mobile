@@ -1,16 +1,12 @@
 import useCategoryAction from "../_hooks/useCategoryAction";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button, Empty, Modal } from "@/components";
 import OverlayCTA from "@/components/ui/OverlayCTA";
 import { generateId } from "@/utils/appHelper";
 import AddItem from "@/components/Modal/AddItem";
 import ConfirmModal from "@/components/Modal/Confirm";
 
-import {
-   CodeBracketIcon,
-   PencilIcon,
-   TrashIcon,
-} from "@heroicons/react/24/outline";
+import { CodeBracketIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 import { ModalRef } from "@/components/Modal";
@@ -55,9 +51,7 @@ export default function CategoryList({ mainClasses }: Props) {
 
    const closeModal = () => modalRef.current?.close();
 
-   const handleOpenModal = (
-      props: AddModal | EditDeleteModal | ImportModal
-   ) => {
+   const handleOpenModal = (props: AddModal | EditDeleteModal | ImportModal) => {
       switch (props.modal) {
          case "edit":
          case "delete":
@@ -90,9 +84,7 @@ export default function CategoryList({ mainClasses }: Props) {
       value: string;
    };
 
-   const handleCategoryActions = async (
-      props: Add | Edit | Delete | Import
-   ) => {
+   const handleCategoryActions = async (props: Add | Edit | Delete | Import) => {
       if (props.type === "Delete" || props.type === "Edit") {
          if (currentCategoryIndex === undefined) return;
          const currentCategory = categories[currentCategoryIndex];
@@ -187,9 +179,7 @@ export default function CategoryList({ mainClasses }: Props) {
                <AddItem
                   loading={isFetching}
                   title="Add category"
-                  cbWhenSubmit={(value) =>
-                     handleCategoryActions({ type: "Add", value })
-                  }
+                  cbWhenSubmit={(value) => handleCategoryActions({ type: "Add", value })}
                   closeModal={closeModal}
                />
             );
@@ -199,13 +189,9 @@ export default function CategoryList({ mainClasses }: Props) {
                   status={status}
                   title="Import category"
                   closeModal={closeModal}
-                  submit={(v) =>
-                     handleCategoryActions({ type: "Import", value: v })
-                  }
+                  submit={(v) => handleCategoryActions({ type: "Import", value: v })}
                >
-                  {status === "fetching" && (
-                     <p className="text-lg">... Importing</p>
-                  )}
+                  {status === "fetching" && <p className="text-lg">... Importing</p>}
                </JsonInput>
             );
          default:
@@ -229,9 +215,7 @@ export default function CategoryList({ mainClasses }: Props) {
          </div>
          <div className={mainClasses.group}>
             <div
-               className={`${mainClasses.flexContainer} ${
-                  isFetching ? "disable" : ""
-               }`}
+               className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}
             >
                {categories.map(
                   (item, index) =>
@@ -250,9 +234,7 @@ export default function CategoryList({ mainClasses }: Props) {
                                              modal: "edit",
                                              index,
                                           }),
-                                       icon: (
-                                          <PencilIcon className="w-[24px]" />
-                                       ),
+                                       icon: <PencilIcon className="w-[24px]" />,
                                     },
                                     {
                                        cb: () =>

@@ -60,7 +60,7 @@ export default function Avatar() {
          </div>
 
          {isOpenModal && (
-            <Modal z="z-[999]" closeModal={closeModal}>
+            <Modal zIndexClass="z-[999]" closeModal={closeModal}>
                <ConfirmModal
                   callback={handleLogout}
                   closeModal={closeModal}
