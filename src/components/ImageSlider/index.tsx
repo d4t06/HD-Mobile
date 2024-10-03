@@ -41,7 +41,11 @@ function ImageSlider({ data, className = "pt-[25%]", autoSlide }: Props) {
          >
             <ArrowLeftIcon className="w-[24px]" />
          </div>
-         <div className={cx("right-arrow", "slider-control")} onMouseDown={(e) => e.stopPropagation()} onClick={next}>
+         <div
+            className={cx("right-arrow", "slider-control")}
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={next}
+         >
             <ArrowRightIcon className="w-[24px]" />
          </div>
          <div className={cx("slider-index")}>

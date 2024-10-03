@@ -134,6 +134,8 @@ export default function AddProductBtn({ currentCategory }: Props) {
                         </div>
                      </div>
                   )}
+
+                  {status === 'error' && <p>Something went wrong</p>}
                </JsonInput>
             )}
          </Modal>

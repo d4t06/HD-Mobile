@@ -2,7 +2,11 @@ import { useMemo, useState } from "react";
 import { useToast } from "@/store/ToastContext";
 import { usePrivateRequest } from "@/hooks";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCategory, setAttributes, setCategory } from "@/store/categorySlice";
+import {
+   selectCategory,
+   setAttributes,
+   setCategory,
+} from "@/store/categorySlice";
 import { sleep } from "@/utils/appHelper";
 
 const CATEGORY_ATTRIBUTE_URL = "/category-attributes";
@@ -65,7 +69,10 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
                const { attribute, categoryIndex } = props;
                const curAttributeOrder = currentCategory.attribute_order;
 
-               const res = await privateRequest.post(CATEGORY_ATTRIBUTE_URL, attribute);
+               const res = await privateRequest.post(
+                  CATEGORY_ATTRIBUTE_URL,
+                  attribute
+               );
 
                const newAttribute = res.data.data;
 
@@ -82,10 +89,17 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
                };
 
                // update category
-               await privateRequest.put(`/categories/${currentCategory.id}`, newCategory);
+               await privateRequest.put(
+                  `/categories/${currentCategory.id}`,
+                  newCategory
+               );
 
                dispatch(
-                  setAttributes({ type: "add", categoryIndex, attribute: res.data.data })
+                  setAttributes({
+                     type: "add",
+                     categoryIndex,
+                     attribute: res.data.data,
+                  })
                );
 
                dispatch(
@@ -99,10 +113,18 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
                break;
             case "Edit": {
                const { attribute, id, categoryIndex, index } = props;
-               await privateRequest.put(`${CATEGORY_ATTRIBUTE_URL}/${id}`, attribute);
+               await privateRequest.put(
+                  `${CATEGORY_ATTRIBUTE_URL}/${id}`,
+                  attribute
+               );
 
                dispatch(
-                  setAttributes({ type: "update", attribute, categoryIndex, index })
+                  setAttributes({
+                     type: "update",
+                     attribute,
+                     categoryIndex,
+                     index,
+                  })
                );
 
                break;
@@ -116,7 +138,8 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
                // if last index
                if (curAttributeOrder.includes(`_${id}`)) {
                   newAttributeOrder = curAttributeOrder.replace(`_${id}`, "");
-               } else newAttributeOrder = curAttributeOrder.replace(`${id}_`, "");
+               } else
+                  newAttributeOrder = curAttributeOrder.replace(`${id}_`, "");
 
                await privateRequest.delete(`${CATEGORY_ATTRIBUTE_URL}/${id}`);
 
@@ -128,9 +151,14 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
                };
 
                // update category
-               await privateRequest.put(`/categories/${currentCategory.id}`, newCategory);
+               await privateRequest.put(
+                  `/categories/${currentCategory.id}`,
+                  newCategory
+               );
 
-               dispatch(setAttributes({ type: "delete", categoryIndex, index }));
+               dispatch(
+                  setAttributes({ type: "delete", categoryIndex, index })
+               );
                dispatch(
                   setCategory({
                      type: "update",
@@ -162,11 +190,29 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
          if (import.meta.env.DEV) sleep(500);
          const newOrderArray = currentCategory.attribute_order.split("_");
 
+         console.log("start", startIndex, "end", endIndex);
+
          let temp = newOrderArray[startIndex];
-         newOrderArray[startIndex] = newOrderArray[endIndex];
+         const moveDir = startIndex > endIndex ? "up" : "down";
+
+         if (moveDir === "up") {
+            for (let i = startIndex; i >= endIndex; i--) {
+               newOrderArray[i] = newOrderArray[i - 1];
+
+               console.log(newOrderArray[i], newOrderArray[i - 1]);
+            }
+         }
+
+       
+         if (moveDir === "down") {
+            for (let i = startIndex; i <= endIndex; i++) {
+               newOrderArray[i] = newOrderArray[i + 1];
+            }
+         }
          newOrderArray[endIndex] = temp;
 
          const newOrder = newOrderArray.join("_");
+
          const newCategory: CategorySchema = {
             attribute_order: newOrder,
             name_ascii: currentCategory.name_ascii,
@@ -174,7 +220,10 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
             hidden: false,
          };
 
-         await privateRequest.put(`${CATEGORY_URL}/${currentCategory.id}`, newCategory);
+         // await privateRequest.put(
+         //    `${CATEGORY_URL}/${currentCategory.id}`,
+         //    newCategory
+         // );
 
          dispatch(
             setCategory({

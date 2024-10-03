@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { SortType, selectedAllFilter, storingFilters } from "../../store/filtersSlice";
+import {
+   SortType,
+   selectedAllFilter,
+   storingFilters,
+} from "../../store/filtersSlice";
 import classNames from "classnames/bind";
 import styles from "./ProductSort.module.scss";
 
-import { fetchProducts, searchProducts, selectedAllProduct } from "../../store/productsSlice";
+import {
+   fetchProducts,
+   searchProducts,
+   selectedAllProduct,
+} from "../../store/productsSlice";
 import { AppDispatch } from "@/store/store";
 import useCurrentCategory from "@/hooks/useCurrentCategory";
 import { Button } from "..";
@@ -38,11 +46,10 @@ function ProductSort({ searchKey }: Props) {
    const { filters } = useSelector(selectedAllFilter);
    const [checked, setChecked] = useState(1);
 
-   const {status} = useSelector(selectedAllProduct)
+   const { status } = useSelector(selectedAllProduct);
 
    // hooks
    const { currentCategory } = useCurrentCategory();
-
 
    useEffect(() => {
       if (checked === 1) return;
@@ -67,10 +74,8 @@ function ProductSort({ searchKey }: Props) {
             dispatch(
                searchProducts({
                   page: 1,
-                  category_id: currentCategory.id,
-                  filters,
                   sort: newSort,
-                  key: searchKey,
+                  q: searchKey,
                   replace: true,
                })
             );

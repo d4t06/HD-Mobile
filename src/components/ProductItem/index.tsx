@@ -5,6 +5,7 @@ import { moneyFormat } from "../../utils/appHelper";
 
 import { useEffect, useState } from "react";
 import { Button } from "..";
+import Image from "../ui/Image";
 
 const cx = classNames.bind(styles);
 
@@ -16,11 +17,14 @@ export default function ProductItem({ product }: Props) {
    const [activeVariant, setActiveVariant] = useState<ProductVariantDetail>();
 
    const findDefaultStorage = (): ProductVariantDetail | undefined => {
-      return product.variants.find((v) => v.id === product.default_variant.variant_id);
+      return product.variants.find(
+         (v) => v.id === product.default_variant.variant_id
+      );
    };
 
    const isDefaultVariant =
-      product.variants.length === 1 && product.variants[0].name_ascii === "default";
+      product.variants.length === 1 &&
+      product.variants[0].name_ascii === "default";
 
    useEffect(() => {
       const founded = findDefaultStorage();
@@ -29,25 +33,11 @@ export default function ProductItem({ product }: Props) {
 
    return (
       <div className={cx("product-item")}>
-         <Link to={`/product/${product.id}`} className={cx("product-item-frame")}>
-            {product.image_url ? (
-               <img
-                  className={cx("product-item-image")}
-                  src={
-                     product.image_url ||
-                     "https://d4t06.github.io/Vue-Mobile/assets/search-empty-ChRLxitn.png"
-                  }
-               />
-            ) : (
-               <img
-                  // className={cx("product-item-image")}
-
-                  className="m-auto"
-                  src={
-                     "https://d4t06.github.io/Vue-Mobile/assets/search-empty-ChRLxitn.png"
-                  }
-               />
-            )}
+         <Link
+            to={`/product/${product.id}`}
+            className={cx("product-item-frame")}
+         >
+            <Image src={product.image_url} />
          </Link>
 
          <div className={cx("product-item-body", "space-y-[14px]")}>
@@ -58,7 +48,9 @@ export default function ProductItem({ product }: Props) {
                   {isDefaultVariant ? (
                      <></>
                   ) : (
-                     <div className={cx("variant-box", "mx-[-2px] md:mx-[-4px]")}>
+                     <div
+                        className={cx("variant-box", "mx-[-2px] md:mx-[-4px]")}
+                     >
                         {product.variants.map((v, index) => {
                            const isActive = activeVariant?.id === v.id;
                            return (
@@ -83,7 +75,10 @@ export default function ProductItem({ product }: Props) {
                   )}
                   <div className={cx("product-item_price")}>
                      <h1 className={cx("product-item_price--current")}>
-                        {moneyFormat(activeVariant?.default_combine.combine.price || "")}đ
+                        {moneyFormat(
+                           activeVariant?.default_combine.combine.price || ""
+                        )}
+                        đ
                      </h1>
                   </div>
                </>

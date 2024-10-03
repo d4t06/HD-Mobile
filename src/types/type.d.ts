@@ -51,7 +51,10 @@ type ProductVariant = Omit<ProductVariantDetail, "default_combine"> & {
    default_combine: DefaultVariantCombine;
 };
 
-type ProductVariantSchema = Omit<ProductVariantDetail, "id" | "default_combine">;
+type ProductVariantSchema = Omit<
+   ProductVariantDetail,
+   "id" | "default_combine"
+>;
 
 type ProductColor = {
    id: number;
@@ -83,7 +86,10 @@ type DefaultVariantCombineDetail = {
 
 type DefaultVariantCombine = Omit<DefaultVariantCombineDetail, "combine">;
 
-type DefaultVariantCombineSchema = Omit<DefaultVariantCombineDetail, "combine" | "id">;
+type DefaultVariantCombineSchema = Omit<
+   DefaultVariantCombineDetail,
+   "combine" | "id"
+>;
 
 type ProductResponse = {
    products: Product[];
@@ -93,7 +99,6 @@ type ProductResponse = {
    sort: boolean;
    category_id: number | null;
    column: number | null;
-   type: number | null;
 };
 
 type Description = {
@@ -112,8 +117,8 @@ type ProductDetail = {
    id: number;
    name: string;
    name_ascii: string;
-   category_id: number;
-   category: Category;
+   category_id: number | null;
+   category: Category | null;
    brand_id: number;
    image_url: string;
    description: Description;
@@ -262,7 +267,10 @@ type Rating = {
    rate: number;
 };
 
-type RatingSchema = Omit<Rating, "id" | "total_like" | "approve" | 'date_convert'>;
+type RatingSchema = Omit<
+   Rating,
+   "id" | "total_like" | "approve" | "date_convert"
+>;
 
 type PriceRange = {
    id: number;

@@ -13,10 +13,7 @@ type Props = {
 export default function NewProduct({ loading }: Props) {
    const dispatch = useDispatch<AppDispatch>();
 
-   const {
-      status,
-      productState: { products },
-   } = useSelector(selectedAllProduct);
+   const { status, products } = useSelector(selectedAllProduct);
 
    const ProductsSkeletons = useMemo(
       () =>
@@ -31,7 +28,9 @@ export default function NewProduct({ loading }: Props) {
    useEffect(() => {
       if (loading) return;
 
-      dispatch(fetchProducts({ category_id: undefined, size: 6 }));
+      dispatch(
+         fetchProducts({ category_id: undefined, size: 6, replace: true })
+      );
    }, [loading]);
 
    return (
@@ -44,7 +43,10 @@ export default function NewProduct({ loading }: Props) {
                <>
                   {products.length ? (
                      products.map((product, index) => (
-                        <div key={index} className="px-[4px] w-1/2 md:w-1/4 mt-[8px]">
+                        <div
+                           key={index}
+                           className="px-[4px] w-1/2 md:w-1/4 mt-[8px]"
+                        >
                            <ProductItem product={product} />
                         </div>
                      ))

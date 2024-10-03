@@ -1,27 +1,36 @@
 import { useRef, useState } from "react";
-import Skeleton from "../Skeleton";
+import logo from "@/assets/logo.png";
+import Skeleton from "./Skeleton";
 import simonCat from "@/assets/images/not-found.png";
 
 type Props = {
    src?: string;
-   className?: string;
+   classNames?: string;
+   blurHashEncode?: string;
    onError?: () => void;
 };
 
-export default function Image({ src, className = "", onError }: Props) {
+export default function Image({
+   src,
+   classNames,
+   blurHashEncode,
+   onError,
+}: Props) {
    const [imageLoaded, setImageLoaded] = useState(false);
    const imageRef = useRef<HTMLImageElement>(null);
 
    const handleLoadImage = () => {
       setImageLoaded(true);
+
+      if (!src) return;
+      if (src?.includes("blob")) {
+         URL.revokeObjectURL(src);
+      }
    };
 
    const defaultHandleError = () => {
       const imageEle = imageRef.current as HTMLImageElement;
       imageEle.src = simonCat;
-
-      Object.assign(imageEle.style, {height: 'auto', width: 'auto' ,margin: 'auto'})
-      
       setImageLoaded(true);
    };
 
@@ -33,14 +42,16 @@ export default function Image({ src, className = "", onError }: Props) {
       <>
          {!imageLoaded && (
             <>
-               <Skeleton className="w-full h-full" />
+               <Skeleton className="w-full h-0" />
             </>
          )}
          <img
             onLoad={handleLoadImage}
             onError={handleError}
-            className={`${className} ${!imageLoaded ? "hidden" : ""}`}
-            src={src}
+            className={`${classNames ? classNames : ""} w-full ${
+               !imageLoaded ? "hidden" : ""
+            }`}
+            src={src || logo}
             ref={imageRef}
          />
       </>

@@ -1,11 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import * as productServices from "../services/productServices";
-import searchService from "../services/searchService";
+import { GetProductsParams, getProducts } from "../services/productServices";
+import { search, SearchProductParams } from "../services/searchService";
 
-import { FilterType, SortType } from "./filtersSlice";
 import { sleep } from "@/utils/appHelper";
-// import { AxiosInstance } from "axios";
-// import { usePrivateRequest } from "@/hooks";
 
 export type ProductState = {
    products: Product[];
@@ -15,104 +12,110 @@ export type ProductState = {
 
 export type StateType = {
    status: "" | "loading" | "more-loading" | "successful" | "error";
-   productState: ProductState;
+   // productState: ProductState;
+   products: Product[];
+   count: number;
+   pageSize: number;
    category_id: number | undefined;
    page: number;
 };
 
 const initialState: StateType = {
    status: "loading",
-   productState: {
-      products: [],
-      count: 0,
-      pageSize: 0,
-   },
+   // productState: {
+   products: [],
+   count: 0,
+   pageSize: 0,
+   // },
    category_id: undefined,
    page: 1,
 };
 
-export type Param = {
-   filters?: FilterType;
-   category_id: number | undefined;
-   page?: number;
-   sort?: SortType;
-   admin?: boolean;
+type FetchProductParams = GetProductsParams & {
    replace?: boolean;
    status?: StateType["status"];
-   size?: number;
 };
 
 export const fetchProducts = createAsyncThunk(
    "/products/getProducts",
-   async (param: Param) => {
+   async (param: FetchProductParams) => {
       const { replace, status, ...rest } = param;
 
       if (import.meta.env.DEV) await sleep(500);
 
-      const data = (await productServices.getProducts({
+      const { sort, column, ...restRes } = (await getProducts({
          ...rest,
       })) as ProductResponse;
 
-      return { ...data, ...rest, replace, status };
+      return { ...restRes, replace, status };
    }
 );
+
+type ThunkSearchProductParams = SearchProductParams & {
+   replace?: boolean;
+   status?: StateType["status"];
+};
 
 export const searchProducts = createAsyncThunk(
    "/search",
-   async (param: Param & { key: string }) => {
-      const { key, replace, status, admin, ...rest } = param;
+   async (param: ThunkSearchProductParams) => {
+      const { replace, status, ...rest } = param;
 
       if (import.meta.env.DEV) await sleep(500);
 
-      const payload = await searchService({
-         q: key,
+      const { column, sort, ...restRes } = (await search({
          ...rest,
-      });
+      })) as ProductResponse;
 
-      return { ...payload, ...rest, status, replace };
+      return { ...restRes, status, replace };
    }
 );
-
-type PayLoadType = {
-   products: Product[];
-};
 
 const productsSlice = createSlice({
    name: "products",
    initialState,
    reducers: {
-      storingProducts(state, action: PayloadAction<PayLoadType>) {
-         const payload = action.payload;
-         state.productState.products.push(...payload.products);
-      },
       setProducts(
          state,
          action: PayloadAction<
             | {
                  variant: "replace";
-                 products: Product[];
+                 payload: Partial<StateType>;
               }
             | {
-                 variant: "update";
-                 product: Partial<ProductSchema>;
-                 index: number;
+                 variant: "storing";
+                 payload: Partial<StateType>;
               }
          >
       ) {
-         const payload = action.payload;
+         const { payload, variant } = action.payload;
+         const { products = [], ...rest } = payload;
 
-         switch (payload.variant) {
-            case "replace":
-               state.productState.products = payload.products;
-               break;
-            case "update": {
-               const { index, product } = payload;
-               Object.assign(state.productState.products[index], product);
-            }
-         }
+         Object.assign(state, rest);
+         state.status = "successful";
+
+         if (variant === "replace") state.products = products;
+         else state.products.push(...products);
+      },
+      addProduct(state, action: PayloadAction<Product[]>) {
+         state.products.push(...action.payload);
+      },
+      updateProduct(
+         state,
+         action: PayloadAction<{
+            product: Partial<ProductSchema>;
+            index: number;
+         }>
+      ) {
+         const payload = action.payload;
+         const { index, product } = payload;
+         Object.assign(state.products[index], product);
       },
       setStatus(state, action: PayloadAction<StateType["status"]>) {
          state.status = action.payload;
+      },
+      resetProducts(state: StateType) {
+         Object.assign(state, initialState);
       },
    },
    extraReducers: (builder) => {
@@ -122,17 +125,14 @@ const productsSlice = createSlice({
             state.status = action.meta.arg.status || "loading";
          })
          .addCase(fetchProducts.fulfilled, (state, action) => {
-            const { replace = true, ...payload } = action.payload;
-            if (!payload) return state;
+            const { replace, status, products = [], ...rest } = action.payload;
+
+            Object.assign(state, rest);
 
             state.status = "successful";
-            state.page = payload.page || 1;
-            state.category_id = payload.category_id;
-            state.productState.count = payload.count;
-            state.productState.pageSize = payload.page_size;
 
-            if (replace) state.productState.products = payload.products;
-            else state.productState.products.push(...payload.products);
+            if (replace) state.products = products;
+            else state.products.push(...products);
          })
          .addCase(fetchProducts.rejected, (state) => {
             state.status = "error";
@@ -144,17 +144,14 @@ const productsSlice = createSlice({
          })
 
          .addCase(searchProducts.fulfilled, (state, action) => {
-            const { replace = true, ...payload } = action.payload;
-            if (!payload) return state;
+            const { replace, status, products = [], ...rest } = action.payload;
+
+            Object.assign(state, rest);
 
             state.status = "successful";
-            state.page = payload.page || 1;
-            state.productState.count = payload.count || 0;
 
-            const products = payload.products || [];
-
-            if (replace) state.productState.products = products;
-            else state.productState.products.push(...products);
+            if (replace) state.products = products;
+            else state.products.push(...products);
          })
 
          .addCase(searchProducts.rejected, (state) => {
@@ -167,6 +164,12 @@ export const selectedAllProduct = (state: { products: StateType }) => {
    return state.products;
 };
 
-export const { storingProducts, setProducts, setStatus } = productsSlice.actions;
+export const {
+   setProducts,
+   updateProduct,
+   setStatus,
+   resetProducts,
+   addProduct,
+} = productsSlice.actions;
 
 export default productsSlice.reducer;

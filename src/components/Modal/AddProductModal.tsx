@@ -10,6 +10,7 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import OverlayCTA from "../ui/OverlayCTA";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
+import Image from "../ui/Image";
 
 type AddProduct = {
    type: "Add";
@@ -24,12 +25,19 @@ type EditProduct = {
    currentIndex: number;
 };
 
-type Props = AddProduct | EditProduct;
+type EditProductDetail = {
+   type: "Edit-Detail";
+   closeModal: () => void;
+   product: ProductDetail;
+};
+
+type Props = AddProduct | EditProduct | EditProductDetail;
 
 const runInitProductData = (props: Props) => {
    switch (props.type) {
       case "Add":
          return initProductObject({ category_id: props.curCategory?.id });
+      case "Edit-Detail":
       case "Edit":
          const { product } = props;
          return initProductObject({
@@ -127,12 +135,20 @@ export default function AddProductModal({ ...props }: Props) {
                product: productData,
             });
             break;
+         case "Edit-Detail":
+            await actions({
+               variant: "Edit",
+               target: "one",
+               productId: props.product.id,
+               product: productData,
+            });
       }
    };
 
    const tileMap: Record<typeof props.type, string> = {
       Add: "Add product",
       Edit: `Edit '${props.type === "Edit" && props.product.name}'`,
+      "Edit-Detail": `Edit '${props.type === "Edit-Detail" && props.product.name}'`,
    };
 
    return (
@@ -144,7 +160,7 @@ export default function AddProductModal({ ...props }: Props) {
          <div className="flex-grow overflow-auto">
             <div className="flex flex-col sm:flex-row">
                <div className="sm:w-1/3 sm:mr-[16px]">
-                  <div className="group relative">
+                  <div className="group relative rounded-md mx-auto border border-black/15">
                      {!productData.image_url && (
                         <Empty
                            className="pt-[50%] sm:pt-[100%]"
@@ -154,10 +170,11 @@ export default function AddProductModal({ ...props }: Props) {
                      )}
                      {productData.image_url && (
                         <>
-                           <img
-                              className="rounded-[8px] max-h-[200px] mx-auto border border-black/15"
+                           <Image
+                              className="max-h-[200px]"
                               src={productData.image_url}
                            />
+
                            <OverlayCTA
                               data={[
                                  {
@@ -186,14 +203,15 @@ export default function AddProductModal({ ...props }: Props) {
                      />
                   </div>
 
-                  {props.type === "Add" && (
+                  {(props.type === "Add" ||
+                     (props.type === "Edit" && !props.product.category_id)) && (
                      <div className="flex flex-col">
                         <label className={"text-[18px] mb-[4px]"} htmlFor="">
                            Category
                         </label>
                         <select
                            name="category"
-                           value={productData.category_id}
+                           value={productData.category_id || ""}
                            onChange={(e) =>
                               handleInput("category_id", +e.target.value)
                            }
@@ -219,7 +237,7 @@ export default function AddProductModal({ ...props }: Props) {
                      </label>
                      <select
                         name="brand"
-                        value={productData.brand_id}
+                        value={productData.brand_id || ""}
                         onChange={(e) =>
                            handleInput("brand_id", +e.target.value)
                         }

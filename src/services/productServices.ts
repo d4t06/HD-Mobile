@@ -1,30 +1,32 @@
-import { Param } from "@/store/productsSlice";
+import { FilterType, SortType } from "@/store/filtersSlice";
 import { publicRequest } from "@/utils/request";
 
-export const getProducts = async (props: Param) => {
-   const { filters, sort, category_id, page, size, admin } = props;
-   const params: Record<string, string | string[] | number[] | number | undefined> = {
-      page: page || 1,
-      category_id,
-   };
+export type GetProductsParams = {
+   filters?: FilterType;
+   category_id: number | undefined;
+   page?: number;
+   sort?: SortType;
+   size?: number;
+};
 
-   if (size) params["size"] = size;
+export const getProducts = async (props: GetProductsParams) => {
+   const { filters, sort, category_id, page = 1, size } = props;
+   const params: Record<
+      string,
+      string | string[] | number[] | number | undefined
+   > = {
+      page,
+      category_id,
+      size,
+      ...sort,
+   };
 
    if (filters && filters.brands.length)
       params["brand_id"] = filters.brands.map((b) => b.id) as number[];
-   if (sort && sort.column && sort.type) {
-      params["column"] = sort.column;
-      params["type"] = sort.type;
-   }
 
-   if (filters?.price) {
-      params["price"] = [filters.price.from, filters.price.to];
-   }
+   if (filters?.price) params["price"] = [filters.price.from, filters.price.to];
 
-   let url = "/products";
-   if (admin) url = "/product-management/products";
-
-   const response = await publicRequest.get(url, {
+   const response = await publicRequest.get("/products", {
       params,
       paramsSerializer: {
          indexes: false,

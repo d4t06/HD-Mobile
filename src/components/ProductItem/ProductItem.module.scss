@@ -19,13 +19,13 @@
       margin-top: 15px;
       display: flex;
       align-items: center;
-   }
-   &-image {
-      height: 100%;
-      width: 100%;
-      object-fit: contain;
-      object-position: center;
-      transition: transform 0.15s linear;
+      img {
+         height: 100%;
+         width: 100%;
+         object-fit: contain;
+         object-position: center;
+         transition: transform 0.15s linear;
+      }
    }
 
    &_name {
@@ -87,7 +87,7 @@
 
    &:hover {
       border-color: #ee4d2d;
-      .product-item-image {
+      img {
          transform: translateY(-8px);
       }
    }

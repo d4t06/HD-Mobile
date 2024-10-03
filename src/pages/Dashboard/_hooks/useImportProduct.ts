@@ -1,5 +1,5 @@
+import { setProducts } from "@/store/productsSlice";
 import { useToast } from "@/store/ToastContext";
-import { storingProducts } from "@/store/productsSlice";
 import { privateRequest } from "@/utils/request";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -9,9 +9,9 @@ const IMPORT_URL = "/product-management/json-import";
 export default function useImportProduct() {
    const dispatch = useDispatch();
 
-   const [status, setStatus] = useState<"input" | "fetching" | "error" | "finish">(
-      "input"
-   );
+   const [status, setStatus] = useState<
+      "input" | "fetching" | "error" | "finish"
+   >("input");
    const [currentIndex, setCurrentIndex] = useState(0);
 
    const { setErrorToast, setSuccessToast } = useToast();
@@ -37,7 +37,7 @@ export default function useImportProduct() {
             counter++;
          }
 
-         dispatch(storingProducts({ products }));
+         dispatch(setProducts({ variant: "storing", payload: { products } }));
 
          setStatus("finish");
 
@@ -54,6 +54,6 @@ export default function useImportProduct() {
       status,
       submit,
       currentIndex,
-      setStatus
+      setStatus,
    };
 }

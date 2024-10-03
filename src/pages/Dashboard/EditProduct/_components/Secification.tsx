@@ -8,12 +8,12 @@ type Props = {
    mainClasses: LayoutClasses;
 };
 
-export default function Specification({mainClasses}: Props) {
+export default function Specification({ mainClasses }: Props) {
    const { product } = useSelector(selectProduct);
 
    const attributeOrderArray = useMemo(
       () =>
-         product && !!product.category.attribute_order
+         product && !!product.category?.attribute_order
             ? product.category.attribute_order.split("_")
             : [],
       []

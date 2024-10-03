@@ -113,7 +113,7 @@ export default function AttributeList({ mainClasses }: Props) {
                      return (
                         <DragAbleItem
                            index={index}
-                           key={foundedCatAttribute.name_ascii}
+                           key={index}
                            className={`${
                               isFetching ? "opacity-60 pointer-events-none" : ""
                            } border border-black/15 rounded-[8px] overflow-hidden ml-[8px] mt-[8px]`}

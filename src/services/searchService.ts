@@ -1,11 +1,17 @@
-import { Param } from "@/store/productsSlice";
+import {  SortType } from "@/store/filtersSlice";
 import { publicRequest } from "@/utils/request";
 
-export const searchService = async (
-   query: Param & { q: string },
+export type SearchProductParams = {
+   q: string;
+   page?: number;
+   sort?: SortType;
+   size?: number;
+};
+
+export const search = async (
+   query: SearchProductParams,
    signal?: AbortSignal
 ) => {
-   // phai xu li sort
    const { sort, ...rest } = query;
 
    try {
@@ -22,4 +28,3 @@ export const searchService = async (
    }
 };
 
-export default searchService;

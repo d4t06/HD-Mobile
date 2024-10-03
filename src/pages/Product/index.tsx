@@ -2,9 +2,19 @@ import { useEffect, useMemo } from "react";
 import classNames from "classnames/bind";
 import styles from "./Products.module.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { ProductItem, Sort, Filter, Label, ImageSlider } from "../../components";
+import {
+   ProductItem,
+   Sort,
+   Filter,
+   Label,
+   ImageSlider,
+} from "../../components";
 
-import { fetchProducts, selectedAllProduct, selectedAllFilter } from "../../store";
+import {
+   fetchProducts,
+   selectedAllProduct,
+   selectedAllFilter,
+} from "../../store";
 import ProductSkeleton from "@/components/Skeleton/ProductSkeleton";
 import { AppDispatch } from "@/store/store";
 import Skeleton from "@/components/Skeleton";
@@ -16,12 +26,8 @@ const cx = classNames.bind(styles);
 
 export default function Product() {
    const dispatchRedux = useDispatch<AppDispatch>();
-   const {
-      status,
-      page,
-      productState: { count, products },
-      category_id,
-   } = useSelector(selectedAllProduct);
+   const { status, page, count, products, category_id } =
+      useSelector(selectedAllProduct);
    const { filters, sort } = useSelector(selectedAllFilter);
 
    // use hooks
@@ -37,7 +43,6 @@ export default function Product() {
             sort,
             filters,
             page: page + 1,
-            replace: false,
             status: "more-loading",
          })
       );
@@ -87,7 +92,9 @@ export default function Product() {
             sliderSkeleton
          ) : (
             <ImageSlider
-               data={currentCategory?.category_slider.slider.slider_images || []}
+               data={
+                  currentCategory?.category_slider.slider.slider_images || []
+               }
             />
          )}
 
@@ -106,7 +113,11 @@ export default function Product() {
                <Sort />
 
                <div className={"mt-[15px]"}>
-                  <div className={cx("product-list flex mx-[-4px] mt-[-8px] flex-wrap")}>
+                  <div
+                     className={cx(
+                        "product-list flex mx-[-4px] mt-[-8px] flex-wrap"
+                     )}
+                  >
                      {/* init loading is category loading */}
                      {/* loading is first get product (at page 1) */}
 
@@ -139,21 +150,29 @@ export default function Product() {
 
                      {isLoading && ProductsSkeletons}
                   </div>
-                  {status !== "error" && status != "loading" && !!products.length && (
-                     <div className={cx("pagination", { disable: remaining === 0 })}>
-                        <Button
-                           colors={"third"}
-                           disabled={status === "more-loading"}
-                           onClick={() => handleGetMore()}
+                  {status !== "error" &&
+                     status != "loading" &&
+                     !!products.length && (
+                        <div
+                           className={cx("pagination", {
+                              disable: remaining === 0,
+                           })}
                         >
-                           More ({remaining}) products
-                        </Button>
-                     </div>
-                  )}
+                           <Button
+                              colors={"third"}
+                              disabled={status === "more-loading"}
+                              onClick={() => handleGetMore()}
+                           >
+                              More ({remaining}) products
+                           </Button>
+                        </div>
+                     )}
                </div>
             </div>
 
-            <div className="px-[8px] w-1/4 max-[768px]:hidden">{<Filter />}</div>
+            <div className="px-[8px] w-1/4 max-[768px]:hidden">
+               {<Filter />}
+            </div>
          </div>
       </div>
    );

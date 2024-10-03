@@ -3,7 +3,7 @@ import { usePrivateRequest } from ".";
 import { useToast } from "@/store/ToastContext";
 import { useDispatch, useSelector } from "react-redux";
 import { selectedAllProduct } from "@/store";
-import { setProducts, storingProducts } from "@/store/productsSlice";
+import { addProduct, setProducts, updateProduct as updateProductList } from "@/store/productsSlice";
 import { sleep } from "@/utils/appHelper";
 import { updateProduct } from "@/store/productSlice";
 
@@ -19,9 +19,7 @@ export default function useProductAction({ closeModal }: Props) {
    const [isFetching, setIsFetching] = useState(false);
 
    // use hooks
-   const {
-      productState: { products },
-   } = useSelector(selectedAllProduct);
+   const { products } = useSelector(selectedAllProduct);
    const privateRequest = usePrivateRequest();
    const { setErrorToast, setSuccessToast } = useToast();
 
@@ -61,7 +59,7 @@ export default function useProductAction({ closeModal }: Props) {
          switch (props.variant) {
             case "Add":
                const res = await privateRequest.post(`${URL}`, props.product);
-               dispatch(storingProducts({ products: [res.data.data] }));
+               if (res.data.data) dispatch(addProduct([res.data.data]));
                closeModal();
 
                break;
@@ -73,8 +71,7 @@ export default function useProductAction({ closeModal }: Props) {
 
                if (target === "list") {
                   dispatch(
-                     setProducts({
-                        variant: "update",
+                     updateProductList({
                         index: props.index,
                         product,
                      })
@@ -89,7 +86,7 @@ export default function useProductAction({ closeModal }: Props) {
                   `${MANAGEMENT_PRO_URL}/duplicate/${props.product.id}`
                );
 
-               dispatch(storingProducts({ products: [res.data.data] }));
+               dispatch(addProduct([res.data.data]));
             }
          }
          setSuccessToast(`${props.variant} product successful`);
@@ -109,7 +106,12 @@ export default function useProductAction({ closeModal }: Props) {
          await privateRequest.delete(`${URL}/${id}`);
 
          const newProducts = products.filter((p) => p.id !== id);
-         dispatch(setProducts({ products: newProducts, variant: "replace" }));
+         dispatch(
+            setProducts({
+               payload: { products: newProducts },
+               variant: "replace",
+            })
+         );
 
          setSuccessToast(`Delete product successful`);
          closeModal();

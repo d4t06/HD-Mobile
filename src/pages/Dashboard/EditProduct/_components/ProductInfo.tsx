@@ -1,43 +1,25 @@
-import { Empty, Gallery, Modal } from "@/components";
+import { Empty, Modal } from "@/components";
 import { selectProduct } from "@/store/productSlice";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import OverlayCTA from "@/components/ui/OverlayCTA";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
-import useProductAction from "@/hooks/useProductAction";
+import Image from "@/components/ui/Image";
+import AddProductModal from "@/components/Modal/AddProductModal";
 
-export default function ProductImage() {
+export default function ProductInfo() {
    const { product } = useSelector(selectProduct);
 
    const [openModal, setOpenModal] = useState(false);
    const closeModal = () => setOpenModal(false);
 
-   const { isFetching, actions } = useProductAction({ closeModal });
-
-   const handleUpdateImage = async (image: ImageType) => {
-      if (!product) return;
-
-      if (image.image_url === product.image_url) return;
-
-      await actions({
-         variant: "Edit",
-         productId: product.id,
-         target: "one",
-         product: { image_url: image.image_url },
-      });
-   };
-
    if (!product) return;
    return (
-      <>
-         <div className="w-1/2 max-w-[300px]">
+      <div className="flex flex-col sm:flex-row ">
+         <div className="w-3/5 max-w-[200px] mx-auto sm:m-0 sm:w-1/3">
             {product.image_url ? (
                <Empty className="pt-[100%]">
-                  <img
-                     className={`${isFetching ? "disable" : ""}`}
-                     src={product.image_url}
-                     alt=""
-                  />
+                  <Image src={product.image_url} />
                   <OverlayCTA
                      data={[
                         {
@@ -50,21 +32,24 @@ export default function ProductImage() {
             ) : (
                <Empty
                   onClick={() => setOpenModal(true)}
-                  loading={isFetching}
                   fontClassName="bg-white"
                   className="pt-[125%]"
                />
             )}
          </div>
+         <div className="text-xl font-[500] mt-3 sm:ml-3 sm:mt-0">
+            {product.name}
+         </div>
 
          {openModal && (
             <Modal closeModal={closeModal}>
-               <Gallery
-                  setImageUrl={(images) => handleUpdateImage(images[0])}
+               <AddProductModal
+                  type="Edit-Detail"
                   closeModal={closeModal}
+                  product={product}
                />
             </Modal>
          )}
-      </>
+      </div>
    );
 }
