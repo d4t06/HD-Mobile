@@ -1,19 +1,38 @@
+@import "../../common";
+
 .image-slider {
-   position: absolute;
    inset: 0;
    scroll-behavior: smooth;
-   border-radius: 16px;
    overflow: hidden;
-   box-shadow: 2px 5px 15px 0 rgba($color: #000000, $alpha: 0.1);
    white-space: nowrap; // overflow horizontal only
+   margin: 0 -8px;
 
-   // image
+   &.size-2 {
+      .slider-item {
+         width: 50%;
+      }
+   }
+   
+   &.size-3 {
+      .slider-item {
+         width: 33.33%;
+      }
+   }
+
    .slider-item {
+      position: relative;
       width: 100%;
       height: 100%;
       display: inline-flex;
       align-items: center;
+      padding: 0 8px;
+
       img {
+         position: absolute;
+         inset: 0;
+         border-radius: 16px;
+         box-shadow: 2px 2px 10px rgba($color: #000000, $alpha: .1);
+
          user-select: none; // prevent user select image
          width: 100%;
          height: 100%;
@@ -21,10 +40,6 @@
          object-position: center;
          pointer-events: none;
       }
-   }
-
-   @media screen and (max-width: 768px) {
-      border-radius: 8px;
    }
 }
 
@@ -59,32 +74,4 @@
 }
 .left-arrow {
    left: 16px;
-}
-
-// index
-.slider-index {
-   position: absolute;
-   display: inline-flex;
-   border-radius: 99px;
-   bottom: 8px;
-   left: 16px;
-   font-size: 12px;
-   padding: 2px 10px;
-   background-color: rgba($color: #000, $alpha: 0.3);
-   color: #fff;
-   z-index: 10;
-   * + * {
-      margin-left: 4px;
-   }
-   span {
-      display: inline-block;
-      line-height: 14px;
-      font-weight: 500;
-   }
-
-   @media screen and (max-width: 768px) {
-      span {
-         line-height: 12px;
-      }
-   }
 }

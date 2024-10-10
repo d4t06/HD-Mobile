@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function SpecSection({ product, loading }: Props) {
-   const attributeOrder = product?.category.attribute_order
+   const attributeOrder = product?.category?.attribute_order
       ? product.category.attribute_order.split("_")
       : [];
 
@@ -33,7 +33,7 @@ export default function SpecSection({ product, loading }: Props) {
             <div className={"spec-table"}>
                {product.image_url ? (
                   <Image
-                     classNames="max-w-[60%] w-[250px] mx-auto"
+                     className="max-w-[60%] w-[250px] mx-auto"
                      src={product.image_url}
                   />
                ) : (
@@ -49,7 +49,7 @@ export default function SpecSection({ product, loading }: Props) {
                         {attributeOrder.length ? (
                            attributeOrder.map((id, index) => {
                               const foundedCategoryAttribute =
-                                 product.category.attributes.find(
+                                 product?.category?.attributes.find(
                                     (catAttr) => catAttr.id === +id
                                  );
 

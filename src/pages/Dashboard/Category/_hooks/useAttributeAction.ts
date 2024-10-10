@@ -203,7 +203,6 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
             }
          }
 
-       
          if (moveDir === "down") {
             for (let i = startIndex; i <= endIndex; i++) {
                newOrderArray[i] = newOrderArray[i + 1];
@@ -220,10 +219,10 @@ export default function useAttributeActions({ currentCategoryIndex }: Props) {
             hidden: false,
          };
 
-         // await privateRequest.put(
-         //    `${CATEGORY_URL}/${currentCategory.id}`,
-         //    newCategory
-         // );
+         await privateRequest.put(
+            `${CATEGORY_URL}/${currentCategory.id}`,
+            newCategory
+         );
 
          dispatch(
             setCategory({

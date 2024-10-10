@@ -11,47 +11,63 @@ type Props = {
    data: SliderImage[];
    className?: string;
    autoSlide?: number;
+   sticky?: boolean;
+   size?: number;
 };
 
-function ImageSlider({ data, className = "pt-[25%]", autoSlide }: Props) {
+function ImageSlider({
+   data,
+   className = "pt-[32%]",
+   autoSlide,
+   sticky,
+   size = 2,
+}: Props) {
    // use hooks
-   const { attributeObj, curIndex, sliderRef, next, previous } = useSlider({
+   const { attributeObj, sliderRef, next, previous } = useSlider({
       data,
       autoSlide,
+      size,
    });
 
-   const classes = cx("image-slider");
+   if (!data.length) return <></>;
 
    return (
-      <div className={`${className} relative`}>
-         <div className={`${classes} `} {...attributeObj} ref={sliderRef}>
+      <div className={`${sticky ? "sm:sticky top-3" : ""} relative`}>
+         <div
+            className={`${cx("image-slider", `size-${size}`)} `}
+            {...attributeObj}
+            ref={sliderRef}
+         >
             {!!data.length &&
                data.map((sliderImage, index) => {
                   return (
-                     <div key={index} className={cx("slider-item")}>
-                        <Image src={sliderImage.image.image_url} />
+                     <div key={index} className={`${cx("slider-item")} `}>
+                        <div className={`${className} w-full relative`}>
+                           <Image src={sliderImage.image.image_url} />
+                        </div>
                      </div>
                   );
                })}
-         </div>
-         <div
-            className={cx("left-arrow", "slider-control")}
-            onMouseDown={(e) => e.stopPropagation()}
-            onClick={previous}
-         >
-            <ArrowLeftIcon className="w-[24px]" />
-         </div>
-         <div
-            className={cx("right-arrow", "slider-control")}
-            onMouseDown={(e) => e.stopPropagation()}
-            onClick={next}
-         >
-            <ArrowRightIcon className="w-[24px]" />
-         </div>
-         <div className={cx("slider-index")}>
+            <div
+               className={cx("left-arrow", "slider-control")}
+               onMouseDown={(e) => e.stopPropagation()}
+               onClick={previous}
+            >
+               <ArrowLeftIcon className="w-[24px]" />
+            </div>
+            <div
+               className={cx("right-arrow", "slider-control")}
+               onMouseDown={(e) => e.stopPropagation()}
+               onClick={next}
+            >
+               <ArrowRightIcon className="w-[24px]" />
+            </div>
+
+            {/* <div className={cx("slider-index")}>
             <span>{data.length ? curIndex : 0}</span>
             <span>/</span>
             <span>{data.length}</span>
+         </div> */}
          </div>
       </div>
    );

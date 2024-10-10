@@ -16,6 +16,7 @@
    &-frame {
       position: relative;
       height: 225px;
+      padding: 0 16px;
       margin-top: 15px;
       display: flex;
       align-items: center;
@@ -30,10 +31,8 @@
 
    &_name {
       font-size: 18px;
-      font-weight: 600;
+      font-weight: 500;
       color: #333;
-      // height: 3.6rem;
-      line-height: 20px;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
@@ -45,9 +44,7 @@
    }
 
    &_price {
-      font-size: 19px;
-      // font-weight: 600;
-      // height: 5rem;
+      font-size: 18px;
       text-align: left;
 
       &--old {

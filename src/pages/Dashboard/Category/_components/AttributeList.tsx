@@ -1,5 +1,5 @@
 import { inputClasses } from "@/components/ui/Input";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { generateId } from "@/utils/appHelper";
 import { DragAbleItem, Modal } from "@/components";
 import AddItem from "@/components/Modal/AddItem";
@@ -9,6 +9,7 @@ import useAttributeActions from "../_hooks/useAttributeAction";
 import Button from "@/components/ui/Button";
 import AttributeItem from "./child/AttributeItem";
 import { PlusIcon } from "@heroicons/react/16/solid";
+import DragProvider from "@/store/DragContext";
 
 type Props = {
    mainClasses: LayoutClasses;
@@ -19,9 +20,6 @@ export default function AttributeList({ mainClasses }: Props) {
    const [currentCategoryIndex, setCurrentCategoryIndex] = useState<number>();
 
    const [openModal, setOpenModal] = useState(false);
-
-   const [isDrag, setIsDrag] = useState(false);
-   const endIndexRef = useRef<number>(0);
 
    //    hooks
    const { actions, isFetching, sortAttribute } = useAttributeActions({
@@ -60,6 +58,10 @@ export default function AttributeList({ mainClasses }: Props) {
       closeModal();
    };
 
+   const handleDragEnd = async (start: number, end: number) => {
+      await sortAttribute(start, end);
+   };
+
    return (
       <>
          <h1 className={mainClasses.label}>Attribute</h1>
@@ -95,42 +97,48 @@ export default function AttributeList({ mainClasses }: Props) {
                   onClick={() => setOpenModal(true)}
                >
                   <PlusIcon className="w-[20px]" />
-                  <span className="hidden sm:inline-block ml-[6p]">Add Attribute</span>
+                  <span className="hidden sm:inline-block ml-[6p]">
+                     Add Attribute
+                  </span>
                </Button>
             </div>
 
             {currentCategoryIndex !== undefined && currentCategory && (
-               <div className="flex flex-wrap ml-[-8px] mt-[6px]">
-                  {attributeOrder.map((id, index) => {
-                     const attributeIndex = currentCategory.attributes.findIndex(
-                        (attr) => attr.id === +id
-                     );
-                     if (attributeIndex === -1) return <p>Attribute not found</p>;
+               <DragProvider>
+                  <div className="flex flex-wrap ml-[-8px] mt-[6px]">
+                     {attributeOrder.map((id, index) => {
+                        const attributeIndex =
+                           currentCategory.attributes.findIndex(
+                              (attr) => attr.id === +id
+                           );
+                        if (attributeIndex === -1)
+                           return <p>Attribute not found</p>;
 
-                     const foundedCatAttribute =
-                        currentCategory.attributes[attributeIndex];
+                        const foundedCatAttribute =
+                           currentCategory.attributes[attributeIndex];
 
-                     return (
-                        <DragAbleItem
-                           index={index}
-                           key={index}
-                           className={`${
-                              isFetching ? "opacity-60 pointer-events-none" : ""
-                           } border border-black/15 rounded-[8px] overflow-hidden ml-[8px] mt-[8px]`}
-                           setIsDrag={setIsDrag}
-                           isDrag={isDrag}
-                           handleDragEnd={() => sortAttribute(index, endIndexRef.current)}
-                           endIndexRef={endIndexRef}
-                        >
-                           <AttributeItem
-                              attribute={foundedCatAttribute}
-                              index={attributeIndex}
-                              categoryIndex={currentCategoryIndex}
-                           />
-                        </DragAbleItem>
-                     );
-                  })}
-               </div>
+                        return (
+                           <div key={index} className="mt-2 ml-2">
+                              <DragAbleItem
+                                 index={index}
+                                 className={`${
+                                    isFetching
+                                       ? "disabled"
+                                       : ""
+                                 } border-[2px] border-black/15 rounded-[8px] overflow-hidden `}
+                                 handleDragEnd={handleDragEnd}
+                              >
+                                 <AttributeItem
+                                    attribute={foundedCatAttribute}
+                                    index={attributeIndex}
+                                    categoryIndex={currentCategoryIndex}
+                                 />
+                              </DragAbleItem>
+                           </div>
+                        );
+                     })}
+                  </div>
+               </DragProvider>
             )}
          </div>
 

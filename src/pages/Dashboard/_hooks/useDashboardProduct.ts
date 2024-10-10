@@ -53,6 +53,10 @@ export default function useDashBoardProduct({
       if (filters && filters.brands.length)
          params["brand_id"] = filters.brands.map((b) => b.id) as number[];
 
+      if (props.variant === "replace") {
+         dispatch(setStatus("loading"));
+      } else dispatch(setStatus("more-loading"));
+
       const res = await privateRequest.get("/product-management/products", {
          params,
          paramsSerializer: {

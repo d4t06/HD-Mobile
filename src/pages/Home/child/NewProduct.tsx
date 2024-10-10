@@ -17,8 +17,8 @@ export default function NewProduct({ loading }: Props) {
 
    const ProductsSkeletons = useMemo(
       () =>
-         [...Array(6).keys()].map((index) => (
-            <div key={index} className="px-[4px] mt-[8px] w-1/2 md:w-1/4">
+         [...Array(5).keys()].map((index) => (
+            <div key={index} className="px-[4px] mt-[8px] w-1/2 md:w-1/5">
                <ProductSkeleton />
             </div>
          )),
@@ -29,13 +29,13 @@ export default function NewProduct({ loading }: Props) {
       if (loading) return;
 
       dispatch(
-         fetchProducts({ category_id: undefined, size: 6, replace: true })
+         fetchProducts({ category_id: undefined, size: 10, replace: true })
       );
    }, [loading]);
 
    return (
       <div className="">
-         <p className="text-xl font-medium mb-2">New Products</p>
+         <div className="text-xl font-[500] mb-3">New Products</div>
          <div className="flex mx-[-4px] mt-[-8px] flex-wrap">
             {status === "loading" && ProductsSkeletons}
 
@@ -45,7 +45,7 @@ export default function NewProduct({ loading }: Props) {
                      products.map((product, index) => (
                         <div
                            key={index}
-                           className="px-[4px] w-1/2 md:w-1/4 mt-[8px]"
+                           className="px-[4px] w-1/2 md:w-1/5 mt-[8px]"
                         >
                            <ProductItem product={product} />
                         </div>

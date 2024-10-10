@@ -1,265 +1,285 @@
-
 import {
-  useEffect,
-  useRef,
-  useState,
-  MouseEvent,
-  DOMAttributes,
-  TouchEvent,
+   useEffect,
+   useRef,
+   useState,
+   MouseEvent,
+   DOMAttributes,
+   TouchEvent,
 } from "react";
 
 type Props = {
-  data: SliderImage[];
-  autoSlide?: number;
+   data: SliderImage[];
+   autoSlide?: number;
+   size?: number;
 };
 
-export default function useSlider({ data, autoSlide }: Props) {
-  const [curIndex, setCurIndex] = useState(1);
-  const [isEnter, setIsEnter] = useState(false);
-  const [isDrag, setIsDrag] = useState(false);
+const SLIDER_BREAK_POINT = 768;
 
-  const prevScrollRef = useRef(0);
-  const prevPageXRef = useRef(0);
-  const scrollRef = useRef(0);
-  const timerId = useRef<any>();
-  const sliderWidth = useRef(0);
-  const maxScroll = useRef(0);
+export default function useSlider({ data, autoSlide, size = 2 }: Props) {
+   const LAST_INDEX =
+      window.innerWidth >= SLIDER_BREAK_POINT
+         ? data.length - (size - 1)
+         : data.length;
 
-  const sliderRef = useRef<HTMLDivElement>(null);
+   const [curIndex, setCurIndex] = useState(1);
+   const [isEnter, setIsEnter] = useState(false);
+   const [isDrag, setIsDrag] = useState(false);
 
-  const startDrag = (pageX: number) => {
-    if (pageX === undefined) return console.log("pageX is undefined");
-    const isFinish = checkIsScrollFinish(curIndex);
-    if (!isFinish) return;
+   const prevScrollRef = useRef(0);
+   const prevPageXRef = useRef(0);
+   const scrollRef = useRef(0);
+   const timerId = useRef<any>();
 
-    setIsDrag(true);
+   const sliderRef = useRef<HTMLDivElement>(null);
 
-    prevPageXRef.current = pageX;
-    const imageSliderEle = sliderRef.current;
+   const getSliderWidth = () => {
+      const sliderEle = sliderRef.current;
+      if (!sliderEle) return 0;
 
-    if (!imageSliderEle) return;
+      return Math.ceil(
+         window.innerWidth >= SLIDER_BREAK_POINT
+            ? sliderEle.clientWidth / size
+            : sliderEle.clientWidth
+      );
+   };
 
-    imageSliderEle.style.scrollBehavior = "auto";
-  };
+   const startDrag = (pageX: number) => {
+      if (pageX === undefined) return console.log("pageX is undefined");
+      const isFinish = checkIsScrollFinish(curIndex);
+      if (!isFinish) return;
 
-  const handleTouchStart = (e: TouchEvent<HTMLElement>) => {
-    // console.log("check touch event", e.changedTouches[0].pageX);
-    const pageX = e.changedTouches[0].pageX;
-    if (!data.length || data.length === 1) return;
-    startDrag(pageX);
-  };
+      setIsDrag(true);
+      prevPageXRef.current = pageX;
 
-  const handleStartDrag = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
-    e.preventDefault();
-
-    if (!data.length || data.length === 1) return;
-    startDrag(e.pageX);
-  };
-
-  const getNewIndex = () => {
-    let newIndex = curIndex;
-    const distance = scrollRef.current - prevScrollRef.current;
-    const minimum = sliderWidth.current / 4;
-
-    // console.log("check distance", distance);
-
-    if (distance > 0) {
-      if (newIndex === data.length) newIndex -= 1;
-      else if (Math.abs(distance) > minimum) newIndex += 1;
-    } else if (distance < 0) {
-      if (newIndex === 1) newIndex += 1;
-      else if (Math.abs(distance) > minimum) newIndex -= 1;
-    }
-
-    return newIndex;
-  };
-
-  const handleMouseLeave = () => {
-    setIsEnter(false);
-    if (isDrag) handleStopDrag();
-  };
-
-  const drag = (pageX: number) => {
-    const distance = pageX - prevPageXRef.current;
-    const newScrollLeft = prevScrollRef.current - distance;
-
-    const isValid = newScrollLeft > 0 && newScrollLeft < maxScroll.current;
-
-    if (isValid) {
       const sliderEle = sliderRef.current;
       if (!sliderEle) return;
 
-      sliderEle.scrollLeft = newScrollLeft;
-    }
-    scrollRef.current = newScrollLeft;
-  };
+      sliderEle.style.scrollBehavior = "auto";
+   };
 
-  const handleDrag = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
-    if (!isDrag) return;
-    setIsDrag(true);
+   const handleTouchStart = (e: TouchEvent<HTMLElement>) => {
+      const pageX = e.changedTouches[0].pageX;
+      if (!data.length || data.length === 1) return;
+      startDrag(pageX);
+   };
 
-    drag(e.pageX);
-  };
+   const handleStartDrag = (
+      e: MouseEvent<HTMLElement, globalThis.MouseEvent>
+   ) => {
+      e.preventDefault();
 
-  const handleTouchMove = (e: TouchEvent<HTMLElement>) => {
-    if (!isDrag) return;
-    setIsDrag(true);
+      if (!data.length || data.length === 1) return;
+      startDrag(e.pageX);
+   };
 
-    const pageX = e.changedTouches[0].pageX;
+   const getNewIndex = () => {
+      let newIndex = curIndex;
+      if (!sliderRef.current) return newIndex;
 
-    drag(pageX);
-  };
+      const distance = scrollRef.current - prevScrollRef.current;
+      const minimum = sliderRef.current.clientWidth / 4;
 
-  const stopDrag = () => {
-    if (scrollRef.current === prevScrollRef.current) return;
-    if (scrollRef.current === 0 || scrollRef.current === maxScroll.current) return;
+      // console.log("check distance", distance);
 
-    const sliderEle = sliderRef.current;
-    if (!sliderEle) return;
+      if (distance > 0) {
+         if (newIndex === LAST_INDEX) newIndex -= 1;
+         else if (Math.abs(distance) > minimum) newIndex += 1;
+      } else if (distance < 0) {
+         if (newIndex === 1) newIndex += 1;
+         else if (Math.abs(distance) > minimum) newIndex -= 1;
+      }
 
-    sliderEle.style.scrollBehavior = "smooth";
+      return newIndex;
+   };
 
-    const newIndex = getNewIndex();
+   const handleMouseLeave = () => {
+      setIsEnter(false);
+      if (isDrag) handleStopDrag();
+   };
 
-    if (newIndex === curIndex) {
-      sliderEle.scrollLeft = prevScrollRef.current;
-    } else {
-      setCurIndex(newIndex);
-    }
-    scrollRef.current = 0;
-  };
+   const drag = (pageX: number) => {
+      if (!sliderRef.current) return;
 
-  const handleStopDrag = () => {
-    if (!isDrag) return;
-    setIsDrag(false);
+      const sliderWidth = getSliderWidth();
 
-    stopDrag();
-  };
-  // important function
-  const checkIsScrollFinish = (curIndex: number) => {
-    const sliderEle = sliderRef.current;
-    if (!sliderEle) return;
+      const distance = pageX - prevPageXRef.current;
+      const newScrollLeft = prevScrollRef.current - distance;
 
-    const expectScroll = (curIndex - 1) * sliderWidth.current;
-    const diff = Math.ceil(sliderEle.scrollLeft) - Math.ceil(expectScroll);
+      const isValid =
+         newScrollLeft > 0 && newScrollLeft < sliderWidth * LAST_INDEX;
 
-    return !(Math.abs(diff) > 1);
-  };
+      if (isValid) {
+         const sliderEle = sliderRef.current;
+         if (!sliderEle) return;
 
-  const next = () => {
-    const sliderEle = sliderRef.current;
-    if (!sliderEle) return;
-    sliderEle.style.scrollBehavior = "smooth";
+         sliderEle.scrollLeft = newScrollLeft;
+      }
+      scrollRef.current = newScrollLeft;
+   };
 
-    setCurIndex((prev) => {
-      const isFinish = checkIsScrollFinish(prev);
-      if (isFinish) {
-        if (prev === data.length) {
-          return 1;
-        } else {
-          return prev + 1;
-        }
-      } else return prev;
-    });
-  };
+   const handleDrag = (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) => {
+      if (!isDrag) return;
+      setIsDrag(true);
 
-  const previous = () => {
-    const sliderEle = sliderRef.current;
-    if (!sliderEle) return;
+      drag(e.pageX);
+   };
 
-    sliderEle.style.scrollBehavior = "smooth";
+   const handleTouchMove = (e: TouchEvent<HTMLElement>) => {
+      if (!isDrag) return;
+      setIsDrag(true);
 
-    const isFinish = checkIsScrollFinish(curIndex);
-    if (!isFinish) return;
+      const pageX = e.changedTouches[0].pageX;
 
-    if (curIndex === 1) {
-      setCurIndex(data.length);
-    } else {
-      setCurIndex((prev) => prev - 1);
-    }
-  };
+      drag(pageX);
+   };
 
-  const handleWindowResize = () => {
-    const sliderEle = sliderRef.current;
-    if (!sliderEle) return;
+   const stopDrag = () => {
+      if (!sliderRef.current) return;
 
-    sliderWidth.current = Math.ceil(sliderEle.clientWidth);
-  };
+      const sliderWidth = getSliderWidth();
 
-  //   initial data
-  useEffect(() => {
-    const sliderEle = sliderRef.current;
-    if (!sliderEle) return;
-    const width = Math.ceil(sliderEle.clientWidth);
+      if (scrollRef.current === prevScrollRef.current) return;
+      if (
+         scrollRef.current === 0 ||
+         scrollRef.current === sliderWidth * LAST_INDEX
+      )
+         return;
 
-    // setImages(data);
-    sliderWidth.current = width;
-    maxScroll.current = width * data.length;
-    //  setMaxScroll(width * data.length);
+      const sliderEle = sliderRef.current;
+      if (!sliderEle) return;
 
-    return () => {
+      sliderEle.style.scrollBehavior = "smooth";
+
+      const newIndex = getNewIndex();
+
+      if (newIndex === curIndex) {
+         sliderEle.scrollLeft = prevScrollRef.current;
+      } else {
+         setCurIndex(newIndex);
+      }
+      scrollRef.current = 0;
+   };
+
+   const handleStopDrag = () => {
+      if (!isDrag) return;
+      setIsDrag(false);
+
+      stopDrag();
+   };
+
+   // important function
+   const checkIsScrollFinish = (curIndex: number) => {
+      const sliderEle = sliderRef.current;
+      if (!sliderEle) return;
+
+      const width = getSliderWidth();
+
+      const expectScroll = (curIndex - 1) * width;
+      const diff = Math.ceil(sliderEle.scrollLeft) - Math.ceil(expectScroll);
+
+      return !(Math.abs(diff) > 1);
+   };
+
+   const next = () => {
+      const sliderEle = sliderRef.current;
+      if (!sliderEle) return;
+      sliderEle.style.scrollBehavior = "smooth";
+
+      setCurIndex((prev) => {
+         const isFinish = checkIsScrollFinish(prev);
+
+         if (isFinish) {
+            if (prev === LAST_INDEX) {
+               return 1;
+            } else {
+               return prev + 1;
+            }
+         } else return prev;
+      });
+   };
+
+   const previous = () => {
+      const sliderEle = sliderRef.current;
+      if (!sliderEle) return;
+
+      sliderEle.style.scrollBehavior = "smooth";
+
+      const isFinish = checkIsScrollFinish(curIndex);
+      if (!isFinish) return;
+
+      if (curIndex === 1) {
+         setCurIndex(LAST_INDEX);
+      } else {
+         setCurIndex((prev) => prev - 1);
+      }
+   };
+
+   const resetSlider = () => {
       setCurIndex(1);
+
+      const sliderEle = sliderRef.current;
       if (sliderEle) {
-        sliderEle.style.scrollBehavior = "auto";
-        sliderEle.scrollLeft = 0;
+         sliderEle.style.scrollBehavior = "auto";
+         sliderEle.scrollLeft = 0;
       }
-    };
-  }, [data]);
+   };
 
-  useEffect(() => {
-    const sliderEle = sliderRef.current;
-    if (!sliderEle) return;
+   useEffect(() => {
+      return () => {
+         resetSlider();
+      };
+   }, [data]);
 
-    const needToScroll = (curIndex - 1) * sliderWidth.current;
-    sliderEle.scrollLeft = needToScroll;
-    prevScrollRef.current = needToScroll;
-  }, [curIndex, sliderWidth.current]);
+   useEffect(() => {
+      const sliderEle = sliderRef.current;
+      if (!sliderEle) return;
 
-  // problem
-  //   handle auto slider when user hover
-  useEffect(() => {
-    if (isEnter) return;
-    if (!autoSlide) return;
-    if (!data.length) return;
+      const width = getSliderWidth();
 
-    timerId.current = setInterval(() => {
-      console.log("auto slide");
-      next();
-    }, autoSlide);
+      const needToScroll = (curIndex - 1) * width;
+      sliderEle.scrollLeft = needToScroll;
+      prevScrollRef.current = needToScroll;
+   }, [curIndex]);
 
-    return () => {
-      if (timerId.current) {
-        console.log("clear");
-        clearInterval(timerId.current);
-      }
-    };
-  }, [isEnter, data]);
+   // problem
+   //   handle auto slider when user hover
+   useEffect(() => {
+      if (isEnter) return;
+      if (!autoSlide) return;
+      if (!data.length) return;
 
-  useEffect(() => {
-    window.addEventListener("resize", handleWindowResize);
+      timerId.current = setInterval(() => {
+         console.log("auto slide");
+         next();
+      }, autoSlide);
 
-    return () => window.removeEventListener("resize", handleWindowResize);
-  }, []);
+      return () => {
+         if (timerId.current) {
+            console.log("clear");
+            clearInterval(timerId.current);
+         }
+      };
+   }, [isEnter, data]);
 
-  const attributeObj: DOMAttributes<HTMLElement> = {
-    onMouseDown: (e) => handleStartDrag(e),
-    onTouchStart: (e) => handleTouchStart(e),
+   const attributeObj: DOMAttributes<HTMLElement> = {
+      onMouseDown: (e) => handleStartDrag(e),
+      onTouchStart: (e) => handleTouchStart(e),
 
-    onMouseMove: (e) => handleDrag(e),
-    onTouchMove: (e) => handleTouchMove(e),
+      onMouseMove: (e) => handleDrag(e),
+      onTouchMove: (e) => handleTouchMove(e),
 
-    onMouseUp: () => handleStopDrag(),
-    onTouchEnd: () => handleStopDrag(),
+      onMouseUp: () => handleStopDrag(),
+      onTouchEnd: () => handleStopDrag(),
 
-    onMouseEnter: () => setIsEnter(true),
-    onMouseLeave: () => handleMouseLeave(),
-  };
+      onMouseEnter: () => setIsEnter(true),
+      onMouseLeave: () => handleMouseLeave(),
+   };
 
-  return {
-    attributeObj,
-    next,
-    previous,
-    curIndex,
-    sliderRef,
-  };
+   return {
+      attributeObj,
+      next,
+      previous,
+      curIndex,
+      sliderRef,
+   };
 }

@@ -15,12 +15,8 @@ import NoResult from "@/components/NoResult";
 
 export default function SearchResultPage() {
    const dispatch = useDispatch<AppDispatch>();
-   const { sort, filters } = useSelector(selectedAllFilter);
-   const {
-      page,
-      status,
-      productState: { count, products },
-   } = useSelector(selectedAllProduct);
+   const { sort } = useSelector(selectedAllFilter);
+   const { page, status, count, products } = useSelector(selectedAllProduct);
 
    // use hooks
    const { status: categoryStatus } = useSelector(selectCategory);
@@ -51,13 +47,10 @@ export default function SearchResultPage() {
       if (key && remaining)
          dispatch(
             searchProducts({
-               category_id: undefined,
                sort,
                page: page + 1,
-               filters,
-               key,
+               q: key,
                status: "more-loading",
-               replace: false,
             })
          );
    };
@@ -68,10 +61,8 @@ export default function SearchResultPage() {
          dispatch(
             searchProducts({
                sort,
-               filters,
                page,
-               key,
-               category_id: undefined,
+               q: key,
                replace: true,
             })
          );
@@ -85,7 +76,8 @@ export default function SearchResultPage() {
                <h1 className="text-[24px]  ">
                   {status !== "loading" ? (
                      <>
-                        Tìm thấy <span className="text-[#cd1818]">{count || 0}</span> kết
+                        Tìm thấy{" "}
+                        <span className="text-[#cd1818]">{count || 0}</span> kết
                         quả cho từ khóa '{key}'
                      </>
                   ) : (
@@ -99,7 +91,9 @@ export default function SearchResultPage() {
                <div className="products-container mt-[14px]">
                   <div className="flex mx-[-4px] mt-[-8px] flex-wrap">
                      {status !== "loading" && (
-                        <>{!!products.length ? renderProducts() : <NoResult />}</>
+                        <>
+                           {!!products.length ? renderProducts() : <NoResult />}
+                        </>
                      )}
                      {(status === "loading" || status === "more-loading") &&
                         renderSkeletons()}

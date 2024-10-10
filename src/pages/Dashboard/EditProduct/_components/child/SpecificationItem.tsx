@@ -19,7 +19,7 @@ export default function SpecificationItem({ categoryAttributeId }: Props) {
    const { isFetching, actions } = useAttributeAction();
 
    const foundedCatAttribute = useMemo(
-      () => product?.category.attributes.find((attr) => attr.id === categoryAttributeId),
+      () => product?.category?.attributes.find((attr) => attr.id === categoryAttributeId),
       []
    );
 

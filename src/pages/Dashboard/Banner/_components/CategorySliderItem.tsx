@@ -149,11 +149,11 @@ export default function CategorySliderItem({ category, categoryIndex }: Props) {
             <div className="mr-[10px] w-1/6">
                <p className="text-center font-[500]">{category.name}</p>
             </div>
-            <div className="flex flex-wrap space-y-[16px] flex-grow">
+            <div className="flex flex-wrap -mt-2 flex-grow">
                {category.category_slider.slider.slider_images.map((sI, index) => (
-                  <div key={index} className="w-full">
+                  <div key={index} className="w-1/2 px-2 mt-2">
                      <Empty
-                        className={`pt-[55%] ${
+                        className={`pt-[33%] ${
                            isEditingSliderImages &&
                            currentSliderImageIndexRef.current === index
                               ? "disable"
@@ -184,9 +184,9 @@ export default function CategorySliderItem({ category, categoryIndex }: Props) {
                   </div>
                ))}
 
-               <div className="w-full">
+               <div className="w-1/2 px-2 mt-2">
                   <Empty
-                     className="pt-[55%]"
+                     className="pt-[33%]"
                      fontClassName="bg-[#f1f1f1]"
                      loading={isAddingSliderImages}
                      onClick={() => {

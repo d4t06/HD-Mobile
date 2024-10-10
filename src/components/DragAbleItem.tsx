@@ -1,47 +1,35 @@
 "use client";
 
 import useDrag from "@/hooks/useDragItem";
-import { Dispatch, MutableRefObject, ReactNode, SetStateAction } from "react";
+import { ReactNode } from "react";
 
 type Props = {
-  className?: string;
-  children: ReactNode;
-  index: number;
-  endIndexRef: MutableRefObject<number>;
-  handleDragEnd: () => void;
-  setIsDrag: Dispatch<SetStateAction<boolean>>;
-  isDrag: boolean;
+   className?: string;
+   children: ReactNode;
+   index: number;
+   handleDragEnd: (start: number, end: number) => void;
 };
 export default function DragAbleItem({
-  children,
-  index,
-  endIndexRef,
-  className,
-  isDrag,
-  handleDragEnd,
-  setIsDrag,
+   children,
+   index,
+   className,
+   handleDragEnd,
 }: Props) {
-  const { parentProps } = useDrag({
-    index,
-    endIndexRef,
-    handleDragEnd,
-    setIsDrag,
-  });
+   const { parentProps, isDrag } = useDrag({
+      index,
+      handleDragEnd,
+   });
 
-  return (
-    <div
-      className={`draggable`}
-      {...parentProps}
-      draggable
-    >
-      <div className={className}>
-        <div
-          className="child-zone"
-          style={{ pointerEvents: `${isDrag ? "none" : "auto"}` }}
-        >
-          {children}
-        </div>
+   return (
+      <div className={`draggable`} {...parentProps} draggable>
+         <div className={className}>
+            <div
+               className="child-zone"
+               style={{ pointerEvents: `${isDrag ? "none" : "auto"}` }}
+            >
+               {children}
+            </div>
+         </div>
       </div>
-    </div>
-  );
+   );
 }

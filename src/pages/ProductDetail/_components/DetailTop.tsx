@@ -59,7 +59,9 @@ export default function DetailTop({ loading, product }: Props) {
    const findDefaultCombineOfVariant = (variant: ProductVariant) => {
       if (!product) return;
 
-      return product.combines.find((c) => c.id === variant.default_combine.combine_id);
+      return product.combines.find(
+         (c) => c.id === variant.default_combine.combine_id
+      );
    };
 
    const handleAddCartItem = async () => {
@@ -145,12 +147,12 @@ export default function DetailTop({ loading, product }: Props) {
                   <Skeleton className="w-full pt-[60%] sm:pt-[75%] rounded-[16px]" />
                )}
                {!loading && (
-                  <div className="relative sm:sticky top-[10px]">
-                     <ImageSlider
-                        className="pt-[60%] md:pt-[75%]"
-                        data={slider?.slider_images || []}
-                     />
-                  </div>
+                  <ImageSlider
+                     sticky
+                     size={1}
+                     className="pt-[60%] md:pt-[75%]"
+                     data={slider?.slider_images || []}
+                  />
                )}
             </div>
             <div className={"mt-[40px] md:mt-0 md:w-5/12 md:px-[12px]"}>
@@ -168,38 +170,46 @@ export default function DetailTop({ loading, product }: Props) {
                                     <div className="">
                                        <h5 className={cx("label")}>Variant</h5>
                                        <div className={cx("list")}>
-                                          {product.variants.map((variant, index) => {
-                                             const defaultCombine =
-                                                findDefaultCombineOfVariant(variant);
-                                             if (defaultCombine)
-                                                return (
-                                                   <div
-                                                      key={index}
-                                                      className={cx("item")}
-                                                   >
-                                                      <Button
-                                                         colors={"second"}
-                                                         className="h-[60px] !flex-col px-[4px] w-full"
-                                                         onClick={() =>
-                                                            setVariant(variant)
-                                                         }
-                                                         active={
-                                                            variant.id ===
-                                                            currentCombine.variant_id
-                                                         }
+                                          {product.variants.map(
+                                             (variant, index) => {
+                                                const defaultCombine =
+                                                   findDefaultCombineOfVariant(
+                                                      variant
+                                                   );
+                                                if (defaultCombine)
+                                                   return (
+                                                      <div
+                                                         key={index}
+                                                         className={cx("item")}
                                                       >
-                                                         <span>{variant.name}</span>
-                                                         <span className="text-[14px] font-[500]">
-                                                            {moneyFormat(
-                                                               defaultCombine.price
-                                                            )}
-                                                            đ
-                                                         </span>
-                                                      </Button>
-                                                   </div>
-                                                );
-                                             else return <></>;
-                                          })}
+                                                         <Button
+                                                            colors={"second"}
+                                                            className="h-[60px] !flex-col px-[4px] w-full"
+                                                            onClick={() =>
+                                                               setVariant(
+                                                                  variant
+                                                               )
+                                                            }
+                                                            active={
+                                                               variant.id ===
+                                                               currentCombine.variant_id
+                                                            }
+                                                         >
+                                                            <span>
+                                                               {variant.name}
+                                                            </span>
+                                                            <span className="text-[14px] font-[500]">
+                                                               {moneyFormat(
+                                                                  defaultCombine.price
+                                                               )}
+                                                               đ
+                                                            </span>
+                                                         </Button>
+                                                      </div>
+                                                   );
+                                                else return <></>;
+                                             }
+                                          )}
                                        </div>
                                     </div>
                                  )}
@@ -210,20 +220,28 @@ export default function DetailTop({ loading, product }: Props) {
                                     <div className="">
                                        <h5 className={cx("label")}>Color</h5>
                                        <div className={cx("list")}>
-                                          {product.colors.map((color, index) => (
-                                             <div key={index} className={cx("item")}>
-                                                <Button
-                                                   colors={"second"}
-                                                   className="h-[60px] !flex-col px-[4px] w-full"
-                                                   onClick={() => setColor(color)}
-                                                   active={
-                                                      color.id === currentCombine.color_id
-                                                   }
+                                          {product.colors.map(
+                                             (color, index) => (
+                                                <div
+                                                   key={index}
+                                                   className={cx("item")}
                                                 >
-                                                   <span>{color.name}</span>
-                                                </Button>
-                                             </div>
-                                          ))}
+                                                   <Button
+                                                      colors={"second"}
+                                                      className="h-[60px] !flex-col px-[4px] w-full"
+                                                      onClick={() =>
+                                                         setColor(color)
+                                                      }
+                                                      active={
+                                                         color.id ===
+                                                         currentCombine.color_id
+                                                      }
+                                                   >
+                                                      <span>{color.name}</span>
+                                                   </Button>
+                                                </div>
+                                             )
+                                          )}
                                        </div>
                                     </div>
                                  )}
@@ -236,7 +254,9 @@ export default function DetailTop({ loading, product }: Props) {
                                        : "Contact"}
                                  </p>
                                  <span className={cx("vat-tag")}>
-                                    {currentCombine.price ? "VAT included" : "---"}
+                                    {currentCombine.price
+                                       ? "VAT included"
+                                       : "---"}
                                  </span>
                               </div>
                               <Button
@@ -271,8 +291,14 @@ export default function DetailTop({ loading, product }: Props) {
                      src="https://zalo-api.zadn.vn/api/emoticon/sticker/webpc?eid=46970&size=130"
                      alt=""
                   />
-                  <p className="font-medium mt-3">Không đăng nhập rối sao mua hả ?</p>
-                  <Button onClick={closeModal} className="mt-5" colors={"third"}>
+                  <p className="font-medium mt-3">
+                     Không đăng nhập rối sao mua hả ?
+                  </p>
+                  <Button
+                     onClick={closeModal}
+                     className="mt-5"
+                     colors={"third"}
+                  >
                      Cút
                   </Button>
                </div>

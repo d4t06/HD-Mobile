@@ -56,11 +56,11 @@ export default function ProductItem({ product }: Props) {
                            return (
                               <div
                                  key={index}
-                                 className="w-[50%] sm:w-1/3 px-[2px] md:px-[4px]"
+                                 className="w-[50%] sm:w-1/3 px-[2px] md:px-1"
                               >
                                  <Button
                                     onClick={() => setActiveVariant(v)}
-                                    className={`text-[14px] w-full ${
+                                    className={`w-full text-sm  ${
                                        isActive ? "active" : ""
                                     }`}
                                     colors={"second"}

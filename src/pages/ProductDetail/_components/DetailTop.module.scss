@@ -1,52 +1,48 @@
+@import "../../../common";
+
 $getter: 4px;
 $activeCl: #cd1818;
 $shadow: 2px 2px 5px 0
-  rgba(
-    $color: #000000,
-    $alpha: 0.15,
-  );
+   rgba(
+      $color: #000000,
+      $alpha: 0.15,
+   );
 
 .label {
-  font-size: 18px;
-  color: #3f3f3f;
-  line-height: 1.2;
-  font-weight: 500;
-  margin-bottom: 4px;
+   font-size: 18px;
+   color: #3f3f3f;
+   line-height: 1.2;
+   font-weight: 500;
+   margin-bottom: 4px;
 }
 .price {
-  font-weight: 500;
-  line-height: 1.2;
-  .cur-price {
-    font-size: 35px;
-    font-weight: 600;
-    color: #cd1818;
-  }
-  .vat-tag {
-    color: #99a2aa;
-  }
+   font-weight: 500;
+   line-height: 1.2;
+   .cur-price {
+      font-size: 35px;
+      font-weight: 600;
+      color: #cd1818;
+   }
+   .vat-tag {
+      color: #99a2aa;
+   }
 }
 
 .list {
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: -$getter;
-  margin-right: -$getter;
-  margin-top: calc(-2*$getter);
+   display: flex;
+   flex-wrap: wrap;
+   margin-left: -$getter;
+   margin-right: -$getter;
+   margin-top: calc(-2 * $getter);
 
-  .item {
-    width: 33.33%;
-    padding: 0 $getter;
-    transform: translateY(2px);
-    margin-top: calc(2*$getter);
-
-    @media screen and (max-width: 1023px) {
+   .item {
       width: 50%;
-      &:nth-child(2n + 1) {
-        margin-top: 12px;
+      padding: 0 $getter;
+      transform: translateY(2px);
+      margin-top: calc(2 * $getter);
+
+      @include lg() {
+         width: 33.33%;
       }
-      &:first-child {
-        margin-top: 0;
-      }
-    }
-  }
+   }
 }
