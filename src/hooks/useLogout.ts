@@ -11,7 +11,7 @@ const useLogout = () => {
       try {
          setIsFetching(true);
 
-         if (import.meta.env.DEV) await sleep(600);
+         if (import.meta.env.DEV) await sleep(300);
 
          await publicRequest.get("/auth/logout");
          setAuth(null);

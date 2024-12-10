@@ -9,6 +9,7 @@ import MobileHeader from "./MobileHeader";
 import { ShoppingBagIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
+import MyLink from "@/shares/components/MyLink";
 const cx = classNames.bind(styles);
 
 function Header() {
@@ -30,18 +31,15 @@ function Header() {
       return categories.map(
          (cat, index) =>
             !cat.hidden && (
-               <li
+               <MyLink
                   key={index}
-                  className={cx("nav-item", {
-                     active:
-                        !showSearchModal && location.pathname === `/${cat.name_ascii}`,
-                  })}
+                  className={cx("nav-item")}
+                  activeClass={cx("active")}
+                  to={`/${cat.name_ascii}`}
                >
-                  <Link to={`/${cat.name_ascii}`}>
-                     <p className={cx("nav-text")}>{cat.name}</p>
-                  </Link>
-               </li>
-            )
+                  {cat.name}
+               </MyLink>
+            ),
       );
    }, [categories, location, showSearchModal]);
 
@@ -78,9 +76,9 @@ function Header() {
                <div className={cx("header-nav")}>
                   <div className={cx("header-nav-wrap")}>
                      {/* render categories */}
-                     <ul className={cx("nav-list")}>
+                     <div className={cx("nav-list")}>
                         {status === "success" && renderCategories}
-                     </ul>
+                     </div>
                      <ul className={cx("nav-list")}>
                         {auth && (
                            <>
@@ -94,7 +92,7 @@ function Header() {
                         )}
                         {auth?.role === "ADMIN" && (
                            <li className={cx("nav-item")}>
-                              <Link to={"/dashboard"}>
+                              <Link target="_blank" to={"/dashboard"}>
                                  <p className={cx("nav-text")}>Dashboard</p>
                                  <Cog6ToothIcon className="w-[24px]" />
                               </Link>

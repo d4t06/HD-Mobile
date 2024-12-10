@@ -23,7 +23,7 @@ function DashboardLayout({ children }: { children: ReactNode }) {
 
                      <div
                         ref={dashboardRef}
-                        className="dashboard-content flex-grow overflow-auto no-scrollbar bg-[#f1f1f1] p-[15px] sm:p-[30px] !pt-[60px]"
+                        className="dashboard-content flex-grow overflow-auto no-scrollbar bg-[#f4f6f9] p-[15px] sm:p-[30px] !pt-[60px]"
                      >
                         {children}
                      </div>

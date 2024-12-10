@@ -1,19 +1,18 @@
 import useCategoryAction from "../_hooks/useCategoryAction";
 import { useRef, useState } from "react";
-import { Button, Empty, Modal } from "@/components";
+import { Empty, Modal } from "@/components";
 import OverlayCTA from "@/components/ui/OverlayCTA";
 import { generateId } from "@/utils/appHelper";
 import AddItem from "@/components/Modal/AddItem";
 import ConfirmModal from "@/components/Modal/Confirm";
 
-import { CodeBracketIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 import { ModalRef } from "@/components/Modal";
-import JsonInput from "@/components/Modal/JsonInput";
-import { useImportCategory } from "../_hooks/useImportCategory";
+import AddCategoryBtn from "./child/AddCategoryBtn";
 
-type Modal = "add" | "edit" | "delete" | "import";
+type Modal = "edit" | "delete";
 
 type Props = {
    mainClasses: LayoutClasses;
@@ -34,40 +33,18 @@ export default function CategoryList({ mainClasses }: Props) {
 
    // hooks
    const { actions, isFetching } = useCategoryAction({ modalRef });
-   const { status, submit } = useImportCategory();
 
-   type AddModal = {
-      modal: "add";
-   };
-
-   type EditDeleteModal = {
+   type OpenModalProps = {
       modal: "edit" | "delete";
       index: number;
    };
 
-   type ImportModal = {
-      modal: "import";
-   };
-
    const closeModal = () => modalRef.current?.close();
 
-   const handleOpenModal = (props: AddModal | EditDeleteModal | ImportModal) => {
-      switch (props.modal) {
-         case "edit":
-         case "delete":
-            setCurrentCategoryIndex(props.index);
-            break;
-         case "add":
-            setCurrentCategoryIndex(undefined);
-      }
-
+   const handleOpenModal = (props: OpenModalProps) => {
+      setCurrentCategoryIndex(props.index);
       setModal(props.modal);
       modalRef.current?.open();
-   };
-
-   type Add = {
-      type: "Add";
-      value: string;
    };
 
    type Edit = {
@@ -79,62 +56,37 @@ export default function CategoryList({ mainClasses }: Props) {
       type: "Delete";
    };
 
-   type Import = {
-      type: "Import";
-      value: string;
-   };
+   const handleCategoryActions = async (props: Edit | Delete) => {
+      if (currentCategoryIndex === undefined) return;
+      const currentCategory = categories[currentCategoryIndex];
 
-   const handleCategoryActions = async (props: Add | Edit | Delete | Import) => {
-      if (props.type === "Delete" || props.type === "Edit") {
-         if (currentCategoryIndex === undefined) return;
-         const currentCategory = categories[currentCategoryIndex];
-
-         if (!currentCategory) return;
-
-         switch (props.type) {
-            case "Delete": {
-               await actions({
-                  type: "Delete",
-                  category: categories[currentCategoryIndex],
-               });
-
-               break;
-            }
-
-            case "Edit": {
-               const categorySchema: CategorySchema = {
-                  attribute_order: currentCategory.attribute_order,
-                  hidden: false,
-                  name: props.value,
-                  name_ascii: generateId(props.value),
-               };
-
-               await actions({
-                  type: "Edit",
-                  category: categorySchema,
-                  curIndex: currentCategoryIndex,
-                  category_id: currentCategory.id,
-               });
-               break;
-            }
-         }
-      }
+      if (!currentCategory) return;
 
       switch (props.type) {
-         case "Add": {
-            const categorySchema: CategorySchema = {
-               attribute_order: "",
-               name: props.value,
-               name_ascii: generateId(props.value),
-               hidden: false,
-            };
+         case "Delete": {
+            await actions({
+               type: "Delete",
+               category: categories[currentCategoryIndex],
+            });
 
-            await actions({ type: "Add", category: categorySchema });
             break;
          }
 
-         case "Import": {
-            await submit(props.value);
+         case "Edit": {
+            const categorySchema: CategorySchema = {
+               attribute_order: currentCategory.attribute_order,
+               hidden: false,
+               name: props.value,
+               name_ascii: generateId(props.value),
+            };
+
+            await actions({
+               type: "Edit",
+               category: categorySchema,
+               curIndex: currentCategoryIndex,
+               category_id: currentCategory.id,
+            });
+            break;
          }
       }
    };
@@ -142,60 +94,31 @@ export default function CategoryList({ mainClasses }: Props) {
    const renderModal = () => {
       if (!modal) return;
 
-      if (modal === "edit" || modal === "delete") {
-         if (currentCategoryIndex === undefined) return;
-         const currentCat = categories[currentCategoryIndex];
-         if (!currentCat) return;
-
-         switch (modal) {
-            case "edit":
-               return (
-                  <AddItem
-                     loading={isFetching}
-                     title={`Edit '${currentCat.name}' `}
-                     initValue={currentCat.name}
-                     cbWhenSubmit={(value) =>
-                        handleCategoryActions({ type: "Edit", value })
-                     }
-                     closeModal={closeModal}
-                  />
-               );
-
-            case "delete":
-               return (
-                  <ConfirmModal
-                     callback={() => handleCategoryActions({ type: "Delete" })}
-                     loading={isFetching}
-                     closeModal={closeModal}
-                     label={`Delete category '${currentCat.name}'`}
-                  />
-               );
-         }
-      }
+      if (currentCategoryIndex === undefined) return;
+      const currentCat = categories[currentCategoryIndex];
+      if (!currentCat) return;
 
       switch (modal) {
-         case "add":
+         case "edit":
             return (
                <AddItem
                   loading={isFetching}
-                  title="Add category"
-                  cbWhenSubmit={(value) => handleCategoryActions({ type: "Add", value })}
+                  title={`Edit '${currentCat.name}' `}
+                  initValue={currentCat.name}
+                  cbWhenSubmit={(value) => handleCategoryActions({ type: "Edit", value })}
                   closeModal={closeModal}
                />
             );
-         case "import":
+
+         case "delete":
             return (
-               <JsonInput
-                  status={status}
-                  title="Import category"
+               <ConfirmModal
+                  callback={() => handleCategoryActions({ type: "Delete" })}
+                  loading={isFetching}
                   closeModal={closeModal}
-                  submit={(v) => handleCategoryActions({ type: "Import", value: v })}
-               >
-                  {status === "fetching" && <p className="text-lg">... Importing</p>}
-               </JsonInput>
+                  label={`Delete category '${currentCat.name}'`}
+               />
             );
-         default:
-            return <h1 className="text-3xl">Not thing to show</h1>;
       }
    };
 
@@ -204,59 +127,52 @@ export default function CategoryList({ mainClasses }: Props) {
          <div className="flex justify-between">
             <h1 className={mainClasses.label}>Category</h1>
 
-            <Button
-               onClick={() => handleOpenModal({ modal: "import" })}
-               className="space-x-1"
-               colors={"third"}
-            >
-               <CodeBracketIcon className="w-6" />
-               <span>Import Json</span>
-            </Button>
+            <AddCategoryBtn />
          </div>
          <div className={mainClasses.group}>
-            <div
-               className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}
-            >
-               {categories.map(
-                  (item, index) =>
-                     !item.hidden && (
-                        <div
-                           key={index}
-                           className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}
-                        >
-                           <Empty>
-                              <span className="font-[500]">{item.name}</span>
-                              <OverlayCTA
-                                 data={[
-                                    {
-                                       cb: () =>
-                                          handleOpenModal({
-                                             modal: "edit",
-                                             index,
-                                          }),
-                                       icon: <PencilIcon className="w-[24px]" />,
-                                    },
-                                    {
-                                       cb: () =>
-                                          handleOpenModal({
-                                             modal: "delete",
-                                             index,
-                                          }),
-                                       icon: <TrashIcon className="w-[24px]" />,
-                                    },
-                                 ]}
-                              />
-                           </Empty>
-                        </div>
-                     )
-               )}
-               <div className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
-                  <Empty
-                     fontClassName="bg-[#f1f1f1]"
-                     onClick={() => handleOpenModal({ modal: "add" })}
-                  />
+            {!!(categories.length - 1) ? (
+               <div
+                  className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}
+               >
+                  <>
+                     {categories.map(
+                        (item, index) =>
+                           !item.hidden && (
+                              <div
+                                 key={index}
+                                 className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}
+                              >
+                                 <Empty>
+                                    <span className="font-[500]">{item.name}</span>
+                                    <OverlayCTA
+                                       data={[
+                                          {
+                                             cb: () =>
+                                                handleOpenModal({
+                                                   modal: "edit",
+                                                   index,
+                                                }),
+                                             icon: <PencilIcon className="w-[24px]" />,
+                                          },
+                                          {
+                                             cb: () =>
+                                                handleOpenModal({
+                                                   modal: "delete",
+                                                   index,
+                                                }),
+                                             icon: <TrashIcon className="w-[24px]" />,
+                                          },
+                                       ]}
+                                    />
+                                 </Empty>
+                              </div>
+                           ),
+                     )}
+                  </>
                </div>
-            </div>
+            ) : (
+               <p className="text-center">¯\_(ツ)_/¯</p>
+            )}
          </div>
 
          <Modal ref={modalRef} variant="animation">

@@ -45,7 +45,7 @@ function ToolTip(
    const classes = {
       arrow: `before:content-[''] before:absolute before:-translate-x-1/2 before:left-1/2 before:border-8 before:border-transparent ${arrowPositionBaseOnParentMap[_position]}`,
 
-      content: `absolute z-[99] pointer-events-none border-[2px] font-[500] text-sm px-2 py-[2px] bg-[#cd1818] text-white whitespace-nowrap ${contentPositionMap[_position]} -translate-x-1/2 left-1/2 rounded-md`,
+      content: `absolute z-[99] pointer-events-none border-[2px] border-[#a00000] text-sm font-[600] bg-[#cd1818] text-white whitespace-nowrap ${contentPositionMap[_position]} -translate-x-1/2 left-1/2 rounded-md`,
    };
 
    const jsxContent = (

@@ -6,7 +6,6 @@ import {
    TrashIcon,
 } from "@heroicons/react/24/outline";
 import Popover, { PopoverContent, PopoverTrigger, TriggerRef } from "./Popover";
-import Tooltip from "./Tooltip";
 import Button from "./ui/Button";
 import Modal, { ModalRef } from "./Modal";
 import { useRef, useState } from "react";
@@ -71,35 +70,32 @@ export default function DashboardProductCta({ index, product }: Props) {
 
    const classes = {
       menuItem:
-         "px-3 py-1 flex font-[500] items-center hover:text-[#cd1818] space-x-1 hover:bg-[#e1e1e1]",
+         "px-3 py-1 flex font-[500] items-center hover:text-[#cd1818] space-x-1 hover:bg-[#f4f6f8]",
+      button: "p-1",
    };
 
    return (
       <>
          <div className="space-x-2 inline-flex">
-            <Tooltip content="Edit">
-               <Button
-                  onClick={() => handleOpenModal("Edit")}
-                  size={"clear"}
-                  colors={"second"}
-                  className="p-[4px]"
-               >
-                  <PencilSquareIcon className="w-[24px]" />
-               </Button>
-            </Tooltip>
+            <Button
+               onClick={() => handleOpenModal("Edit")}
+               size={"clear"}
+               colors={"second"}
+               className={classes.button}
+            >
+               <PencilSquareIcon className="w-[24px]" />
+            </Button>
 
             <Popover appendOnPortal>
                <PopoverTrigger ref={triggerRef}>
-                  <Tooltip content="Menu">
-                     <Button
-                        onClick={() => handleOpenModal("Edit")}
-                        size={"clear"}
-                        colors={"second"}
-                        className="p-[4px]"
-                     >
-                        <Bars3Icon className="w-[24px]" />
-                     </Button>
-                  </Tooltip>
+                  <Button
+                     onClick={() => handleOpenModal("Edit")}
+                     size={"clear"}
+                     colors={"second"}
+                     className={classes.button}
+                  >
+                     <Bars3Icon className="w-[24px]" />
+                  </Button>
                </PopoverTrigger>
 
                <PopoverContent appendTo="portal">

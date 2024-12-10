@@ -9,21 +9,21 @@ $shadow: 2px 2px 5px 0
    );
 
 .label {
-   font-size: 18px;
-   color: #3f3f3f;
-   line-height: 1.2;
+   // color: #3f3f3f;
+   // line-height: 1.2;
    font-weight: 500;
-   margin-bottom: 4px;
+   // margin-bottom: 4px;
 }
 .price {
    font-weight: 500;
    line-height: 1.2;
    .cur-price {
-      font-size: 35px;
+      font-size: 26px;
       font-weight: 600;
       color: #cd1818;
    }
    .vat-tag {
+      font-size: 14px;
       color: #99a2aa;
    }
 }

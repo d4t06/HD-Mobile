@@ -1,4 +1,3 @@
-import { Link, useLocation } from "react-router-dom";
 import classNames from "classnames/bind";
 
 import styles from "./SideBar.module.scss";
@@ -14,11 +13,11 @@ import { useState } from "react";
 import logo from "@/assets/images/logo.png";
 import Button from "@/components/ui/Button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+import MyLink from "@/shares/components/MyLink";
 
 const cx = classNames.bind(styles);
 
 function Sidebar() {
-   const location = useLocation();
    const [expand, setExpand] = useState(false);
 
    const handleExpand = () => {
@@ -37,68 +36,55 @@ function Sidebar() {
             )}
          </div>
          <div>
-            <Link
+            <MyLink
                to="/dashboard"
-               className={cx(
-                  { active: location.pathname === "/dashboard" },
-                  "sidebar__item"
-               )}
+               activeClass={cx("active")}
+               className={cx("sidebar__item")}
             >
-               <ComputerDesktopIcon className="w-[24px]" />
+               <ComputerDesktopIcon className="w-6" />
                {expand && <>Dashboard</>}
-            </Link>
-            <Link
+            </MyLink>
+
+            <MyLink
                to="/dashboard/product"
-               className={cx(
-                  { active: location.pathname === "/dashboard/product" },
-                  "sidebar__item"
-               )}
+               activeClass={cx("active")}
+               className={cx("sidebar__item")}
             >
-               <DevicePhoneMobileIcon className="w-[24px]" />
+               <DevicePhoneMobileIcon className="w-6" />
                {expand && <>Product</>}
-            </Link>
+            </MyLink>
 
-            <Link
-               className={cx(
-                  { active: location.pathname === "/dashboard/category" },
-                  "sidebar__item"
-               )}
+            <MyLink
                to="/dashboard/category"
+               activeClass={cx("active")}
+               className={cx("sidebar__item")}
             >
-               <BookmarkSquareIcon className="w-[24px]" />
+               <BookmarkSquareIcon className="w-6" />
                {expand && <>Category</>}
-            </Link>
+            </MyLink>
 
-            <Link
-               className={cx(
-                  { active: location.pathname === "/dashboard/banner" },
-                  "sidebar__item"
-               )}
+            <MyLink
                to="/dashboard/banner"
+               activeClass={cx("active")}
+               className={cx("sidebar__item")}
             >
-               <PhotoIcon className="w-[24px]" />
+               <PhotoIcon className="w-6" />
                {expand && <>Banner</>}
-            </Link>
+            </MyLink>
 
-            <Link
-               className={cx(
-                  { active: location.pathname === "/dashboard/rating" },
-                  "sidebar__item"
-               )}
+            <MyLink
                to="/dashboard/rating"
+               activeClass={cx("active")}
+               className={cx("sidebar__item")}
             >
-               <StarIcon className="w-[24px]" />
+               <StarIcon className="w-6" />
                {expand && <>Rating</>}
-            </Link>
+            </MyLink>
 
-            <Link
-               target="blank"
-               className={cx({ active: location.pathname === "" }, "sidebar__item")}
-               to="/"
-            >
-               <BuildingStorefrontIcon className="w-[24px]" />
+            <MyLink to="/" target="_blank" className={cx("sidebar__item")}>
+               <BuildingStorefrontIcon className="w-6" />
                {expand && <>My shop</>}
-            </Link>
+            </MyLink>
          </div>
 
          <div className="hidden sm:block absolute bottom-[20px] right-0 translate-x-[50%] z-[10]">
@@ -109,9 +95,9 @@ function Sidebar() {
                className="p-[4px]"
             >
                {expand ? (
-                  <ChevronLeftIcon className="w-[24px] " />
+                  <ChevronLeftIcon className="w-6 " />
                ) : (
-                  <ChevronRightIcon className="w-[24px]" />
+                  <ChevronRightIcon className="w-6" />
                )}
             </Button>
          </div>

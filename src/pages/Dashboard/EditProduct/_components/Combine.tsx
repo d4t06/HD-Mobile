@@ -15,7 +15,7 @@ export default function Combine({ mainClasses }: Props) {
       <>
          <div className="flex-1 space-y-[30px]">
             <h1 className={mainClasses.label}>Quantity & Price</h1>
-            <Table colList={["Name", "Quantity", "Price", ""]}>
+            <Table className="[&_th]:text-left" colList={["Name", "Quantity", "Price", ""]}>
                {product.variants.length && product.colors.length ? (
                   product.variants.map((item, index) =>
                      product.colors.map((color) => (

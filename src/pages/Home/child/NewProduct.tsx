@@ -35,7 +35,7 @@ export default function NewProduct({ loading }: Props) {
 
    return (
       <div className="">
-         <div className="text-xl font-[500] mb-3">New Products</div>
+         <div className="text-xl font-[500] mb-5">New Products</div>
          <div className="flex mx-[-4px] mt-[-8px] flex-wrap">
             {status === "loading" && ProductsSkeletons}
 

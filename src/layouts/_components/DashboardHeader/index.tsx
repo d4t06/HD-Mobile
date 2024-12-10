@@ -32,7 +32,7 @@ function Header({ dashboardRef }: { dashboardRef: RefObject<HTMLDivElement> }) {
             <div className={cx("header-main")}>
                <p>Hello {auth ? auth?.username : "no persist"} !</p>
             </div>
-            <div className="bg-opacity-[0.8] backdrop-blur-[8px] z-[-1] absolute inset-0 bg-[#f1f1f1] "></div>
+            <div className="backdrop-blur-[8px] z-[-1] absolute inset-0 bg-[#f4f6f8]/80 "></div>
          </div>
       </div>
    );

@@ -1,6 +1,5 @@
 import { inputClasses } from "@/components/ui/Input";
 import { useMemo, useState } from "react";
-import { generateId } from "@/utils/appHelper";
 import { DragAbleItem, Modal } from "@/components";
 import AddItem from "@/components/Modal/AddItem";
 import { useSelector } from "react-redux";
@@ -46,7 +45,7 @@ export default function AttributeList({ mainClasses }: Props) {
 
       const schema: CategoryAttributeSchema = {
          name: value,
-         name_ascii: generateId(value),
+         name_ascii: "",
          category_id: currentCategory!.id,
       };
 
@@ -96,8 +95,8 @@ export default function AttributeList({ mainClasses }: Props) {
                   disabled={!currentCategory}
                   onClick={() => setOpenModal(true)}
                >
-                  <PlusIcon className="w-[20px]" />
-                  <span className="hidden sm:inline-block ml-[6p]">
+                  <PlusIcon className="w-5" />
+                  <span className="hidden sm:inline-block ml-1">
                      Add Attribute
                   </span>
                </Button>

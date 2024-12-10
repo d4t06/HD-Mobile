@@ -6,13 +6,14 @@ import classNames from "classnames/bind";
 type Props = {
    colList: string[];
    children: ReactNode;
+   className?: string;
 };
 
 const cx = classNames.bind(styles);
 
-function Table({ colList, children }: Props) {
+function Table({ colList, children, className }: Props) {
    return (
-      <table className={cx("table")}>
+      <table className={cx("table", className)}>
          <thead>
             <tr>
                {colList.map((item, index) => (

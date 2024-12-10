@@ -93,12 +93,11 @@ export default function SpecificationItem({ categoryAttributeId }: Props) {
             <td className="!text-right">
                <Button
                   onClick={() => setOpenModal(true)}
-                  className="p-[4px] sm:px-[14px]"
+                  className="p-1"
                   colors={"second"}
                   size={"clear"}
                >
-                  <PencilSquareIcon className="w-[20px]" />
-                  <span className="ml-[6px] hidden sm:inline-block">Change</span>
+                  <PencilSquareIcon className="w-5" />
                </Button>
             </td>
          </tr>

@@ -23,7 +23,7 @@ export default function DefaultLayout({ children }: Props) {
 
          <div className="container mx-auto">
             <p className="py-[10px] text-[14px] text-[#333] font-[500]">
-               Make with ❤️ by d4t06 <br />© All rights no reserved ¯\_(ツ)_/¯
+               Make with ❤️ by Nguyen Huu Dat <br />© All rights no reserve ¯\_(ツ)_/¯
             </p>
          </div>
       </div>

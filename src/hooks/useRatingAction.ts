@@ -33,7 +33,7 @@ export default function useRatingAction() {
       try {
          setIsFetching(true);
 
-         if (import.meta.env.DEV) await sleep(600);
+         if (import.meta.env.DEV) await sleep(300);
 
          switch (props.variant) {
             case "add": {

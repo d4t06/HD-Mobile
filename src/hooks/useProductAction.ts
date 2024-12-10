@@ -3,7 +3,11 @@ import { usePrivateRequest } from ".";
 import { useToast } from "@/store/ToastContext";
 import { useDispatch, useSelector } from "react-redux";
 import { selectedAllProduct } from "@/store";
-import { addProduct, setProducts, updateProduct as updateProductList } from "@/store/productsSlice";
+import {
+   addProduct,
+   setProducts,
+   updateProduct as updateProductList,
+} from "@/store/productsSlice";
 import { sleep } from "@/utils/appHelper";
 import { updateProduct } from "@/store/productSlice";
 
@@ -59,7 +63,13 @@ export default function useProductAction({ closeModal }: Props) {
          switch (props.variant) {
             case "Add":
                const res = await privateRequest.post(`${URL}`, props.product);
-               if (res.data.data) dispatch(addProduct([res.data.data]));
+               if (res.data.data)
+                  dispatch(
+                     setProducts({
+                        variant: "insert",
+                        payload: { products: [res.data.data] },
+                     }),
+                  );
                closeModal();
 
                break;
@@ -74,7 +84,7 @@ export default function useProductAction({ closeModal }: Props) {
                      updateProductList({
                         index: props.index,
                         product,
-                     })
+                     }),
                   );
                }
                if (target === "one") dispatch(updateProduct(product));
@@ -83,16 +93,18 @@ export default function useProductAction({ closeModal }: Props) {
                break;
             case "Duplicate": {
                const res = await privateRequest.get(
-                  `${MANAGEMENT_PRO_URL}/duplicate/${props.product.id}`
+                  `${MANAGEMENT_PRO_URL}/duplicate/${props.product.id}`,
                );
 
                dispatch(addProduct([res.data.data]));
             }
          }
          setSuccessToast(`${props.variant} product successful`);
-      } catch (error) {
+      } catch (error: any) {
          console.log({ message: error });
-         setErrorToast(`${props.variant} product fail`);
+
+         if (error?.response?.status === 409) setErrorToast(`Product name already taken`);
+         else setErrorToast(`${props.variant} product fail`);
       } finally {
          setIsFetching(false);
       }
@@ -110,7 +122,7 @@ export default function useProductAction({ closeModal }: Props) {
             setProducts({
                payload: { products: newProducts },
                variant: "replace",
-            })
+            }),
          );
 
          setSuccessToast(`Delete product successful`);

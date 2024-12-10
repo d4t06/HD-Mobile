@@ -44,10 +44,10 @@ const ToastProvider = ({ children }: { children: ReactNode }) => {
    const [toasts, setToasts] = useState<Toast[]>([]);
 
    const setErrorToast = (message: string = "Somethings went wrong") =>
-      setToasts((t) => [...t, { title: "error", id: nanoid(4), desc: message }]);
+      setToasts((t) => [...t, { variant: "error", id: nanoid(4), desc: message }]);
 
-   const setSuccessToast = (message: string = "Somethings went successful") =>
-      setToasts((t) => [...t, { title: "success", id: nanoid(4), desc: `${message}` }]);
+   const setSuccessToast = (message: string = "Ok") =>
+      setToasts((t) => [...t, { variant: "success", id: nanoid(4), desc: message }]);
 
    return (
       <ToastContext.Provider

@@ -26,7 +26,7 @@ export default function useGetProductDetail() {
          if (!productId) throw new Error("missing params");
 
          dispatch(storingProduct({ status: "loading" }));
-         if (import.meta.env.DEV) await sleep(2000);
+         if (import.meta.env.DEV) await sleep(300);
 
          const res = await publicRequest.get(`${PRODUCT_URL}/${productId}`);
 

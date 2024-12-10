@@ -24,7 +24,7 @@ export default function Specification({ mainClasses }: Props) {
       <>
          <div className="flex-1 space-y-[30px]">
             <h1 className={mainClasses.label}>Specification</h1>
-            <Table colList={["Name", "value", ""]}>
+            <Table className="[&_th]:text-left" colList={["Name", "value", ""]}>
                {attributeOrderArray.length ? (
                   attributeOrderArray.map((id) => (
                      <SpecificationItem key={id} categoryAttributeId={+id} />

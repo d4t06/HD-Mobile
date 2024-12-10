@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Button, Search } from "@/components";
+import { Button } from "@/components";
 import Table from "@/components/Table";
 
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
@@ -7,14 +7,16 @@ import useDashBoardProduct from "./_hooks/useDashboardProduct";
 import DashboardProductCta from "@/components/DashboardProductCta";
 
 import AddProductBtn from "./_components/AddProductBtn";
+import DashboardSearch from "./_components/DashboardSearch";
 
 export default function Dashboard() {
-   const [curCategory, setCurCategory] = useState<Category>();
+   // const [curCategory, setCurCategory] = useState<Category>();
+
+   const [tab, setTab] = useState("");
 
    // hooks
    const { categories, getMore, count, products, status } = useDashBoardProduct({
-      setCurCategory,
-      curCategory,
+      tab,
    });
 
    const remaining = useMemo(() => count - products.length, [products]);
@@ -24,7 +26,7 @@ export default function Dashboard() {
    };
 
    const renderProducts = (
-      <Table colList={["Name", ""]}>
+      <Table className="[&_th]:text-left" colList={[`Results (${count})`, ""]}>
          {status !== "loading" && (
             <>
                {!!products.length ? (
@@ -66,15 +68,15 @@ export default function Dashboard() {
          <div className="text-lg sm:text-2xl mb-[30px]">Product</div>
 
          <div className="flex justify-between">
-            <Search variant="dashboard" />
-            <AddProductBtn currentCategory={curCategory} />
+            <DashboardSearch setTab={setTab} />
+            <AddProductBtn />
          </div>
 
          <div className="flex flex-wrap mt-3 ml-[-8px] mb-[10px]">
             <Button
                colors={"second"}
-               onClick={() => setCurCategory(undefined)}
-               active={!curCategory}
+               onClick={() => setTab("")}
+               active={!tab}
                size={"clear"}
                className={classes.tab}
             >
@@ -82,14 +84,14 @@ export default function Dashboard() {
             </Button>
             {categories.map((cat, index) => {
                if (cat.hidden) return;
-               const active = curCategory?.name_ascii === cat.name_ascii;
+               const active = tab === cat.name_ascii;
                return (
                   <Button
                      colors={"second"}
                      key={index}
                      size={"clear"}
                      className={classes.tab}
-                     onClick={() => setCurCategory(cat)}
+                     onClick={() => setTab(cat.name_ascii)}
                      active={active}
                   >
                      {cat.name}

@@ -1,6 +1,6 @@
 import PushFrame from "@/components/ui/PushFrame";
 import "./style.scss";
-import { MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import { DevicePhoneMobileIcon, MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
 
 function Footer() {
    return (
@@ -16,8 +16,8 @@ function Footer() {
                   <div className="flex mt-[30px] md:mt-0 w-full sm:w-1/2">
                      <div className="w-1/2 md:w-1/3">
                         <h5 className="flex font-medium space-x-1">
-                           <PhoneIcon className="w-[24px]" />
-                           <span>Liên hệ</span>
+                           <DevicePhoneMobileIcon className="w-5" />
+                           <span>Hotline</span>
                         </h5>
 
                         <div className="mt-2 text-sm font-medium text-[#3f3f3f]">
@@ -28,8 +28,8 @@ function Footer() {
 
                      <div className="w-1/2 md:w-1/3">
                         <h5 className="flex font-medium space-x-1">
-                           <MapPinIcon className="w-[24px]" />
-                           <span>Địa chỉ</span>
+                           <MapPinIcon className="w-5" />
+                           <span>Address</span>
                         </h5>
 
                         <div className="mt-2 text-sm font-medium text-[#3f3f3f]">

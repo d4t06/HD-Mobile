@@ -41,7 +41,7 @@ export default function usePriceRangeActions() {
    const actions = async ({ ...props }: Props) => {
       try {
          setIsFetching(true);
-         if (import.meta.env.DEV) await sleep(5000);
+         if (import.meta.env.DEV) await sleep(300);
 
          switch (props.type) {
             case "Add":

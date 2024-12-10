@@ -95,8 +95,8 @@ export default function PriceRangeList({ mainClasses }: Props) {
                   disabled={!currentCategory}
                   onClick={() => setOpenModal(true)}
                >
-                  <PlusIcon className="w-[20px]" />
-                  <span className="hidden sm:inline-block ml-[6p]">Add Price Range</span>
+                  <PlusIcon className="w-5" />
+                  <span className="hidden sm:inline-block ml-1">Add Price Range</span>
                </Button>
             </div>
 

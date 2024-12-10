@@ -1,32 +1,27 @@
 import { usePrivateRequest } from "@/hooks";
-import { selectedAllFilter, selectedAllProduct, storingFilters } from "@/store";
+import { selectedAllFilter, selectedAllProduct } from "@/store";
 import { selectCategory } from "@/store/categorySlice";
 import { FilterType, SortType } from "@/store/filtersSlice";
 import {} from "@/store/productSlice";
 import { setProducts, setStatus } from "@/store/productsSlice";
 import { AppDispatch } from "@/store/store";
-import { getLocalStorage, setLocalStorage } from "@/utils/appHelper";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 type Props = {
-   setCurCategory: Dispatch<SetStateAction<Category | undefined>>;
-   curCategory: Category | undefined;
+   // setCurCategory: Dispatch<SetStateAction<Category | undefined>>;
+   tab: string;
 };
 
-export default function useDashBoardProduct({
-   setCurCategory,
-   curCategory,
-}: Props) {
+export default function useDashBoardProduct({ tab }: Props) {
    const dispatch = useDispatch<AppDispatch>();
 
    const { filters } = useSelector(selectedAllFilter);
    const { categories } = useSelector(selectCategory);
 
-   const { page, count, products, status, category_id } =
-      useSelector(selectedAllProduct);
+   const { page, count, products, status, category_id } = useSelector(selectedAllProduct);
 
-   const [isInitCategory, setIsInitCategory] = useState(false);
+   // const [isInitCategory, setIsInitCategory] = useState(false);
 
    const privateRequest = usePrivateRequest();
 
@@ -41,10 +36,7 @@ export default function useDashBoardProduct({
 
    const getProducts = async (props: Params) => {
       const { variant, filters, sort, page = 1, ...rest } = props;
-      const params: Record<
-         string,
-         string | string[] | number[] | number | undefined
-      > = {
+      const params: Record<string, string | string[] | number[] | number | undefined> = {
          page,
          ...rest,
          ...sort,
@@ -76,7 +68,7 @@ export default function useDashBoardProduct({
                   pageSize: payload.page_size,
                   products: payload.products,
                },
-            })
+            }),
          );
    };
 
@@ -90,49 +82,45 @@ export default function useDashBoardProduct({
    };
 
    useEffect(() => {
-      if (!isInitCategory) return;
+      if (!categories.length) return;
+
+      if (tab === "search") return;
 
       const handleGetProducts = async () => {
-         if (category_id !== curCategory?.id || !products.length) {
-            if (!curCategory) setLocalStorage("categoryId", "");
-            else setLocalStorage("categoryId", curCategory.id);
+         const curCategory = categories.find((c) => c.name_ascii == tab);
 
-            await getProducts({
-               category_id: curCategory?.id,
-               filters,
-               size: 50,
-               variant: "replace",
-            });
-         } else {
-            console.log("already exist");
-            dispatch(setStatus("successful"));
-         }
+         await getProducts({
+            category_id: curCategory?.id,
+            filters,
+            size: 50,
+            variant: "replace",
+         });
       };
 
       handleGetProducts();
 
-      return () => {
-         dispatch(storingFilters());
-      };
-   }, [curCategory, isInitCategory]);
+      // return () => {
+      //    dispatch(storingFilters());
+      // };
+   }, [tab, categories]);
 
-   useEffect(() => {
-      if (!categories.length) return;
-      const localStorage = getLocalStorage();
+   // useEffect(() => {
+   //    if (!categories.length) return;
+   //    const localStorage = getLocalStorage();
 
-      const categoryId = localStorage.categoryId;
-      const foundedCategory = categoryId
-         ? categories.find((c) => c.id === categoryId)
-         : undefined;
+   //    const categoryId = localStorage.categoryId;
+   //    const foundedCategory = categoryId
+   //       ? categories.find((c) => c.id === categoryId)
+   //       : undefined;
 
-      if (!foundedCategory) {
-         setIsInitCategory(true);
-         return;
-      }
+   //    if (!foundedCategory) {
+   //       setIsInitCategory(true);
+   //       return;
+   //    }
 
-      setCurCategory(foundedCategory);
-      setIsInitCategory(true);
-   }, [categories]);
+   //    setCurCategory(foundedCategory);
+   //    setIsInitCategory(true);
+   // }, [categories]);
 
    return { count, products, status, categories, getMore };
 }

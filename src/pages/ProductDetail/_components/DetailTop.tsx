@@ -11,6 +11,7 @@ import { useAuth } from "@/store/AuthContext";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import ModalHeader from "@/components/Modal/ModalHeader";
+import PushFrame from "@/components/ui/PushFrame";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -34,7 +35,7 @@ export default function DetailTop({ loading, product }: Props) {
       if (!color || !variant || !product) return;
 
       return product.combines.find(
-         (c) => c.color_id === color.id && c.variant_id === variant.id
+         (c) => c.color_id === color.id && c.variant_id === variant.id,
       );
    }, [color, variant]);
 
@@ -59,9 +60,7 @@ export default function DetailTop({ loading, product }: Props) {
    const findDefaultCombineOfVariant = (variant: ProductVariant) => {
       if (!product) return;
 
-      return product.combines.find(
-         (c) => c.id === variant.default_combine.combine_id
-      );
+      return product.combines.find((c) => c.id === variant.default_combine.combine_id);
    };
 
    const handleAddCartItem = async () => {
@@ -92,22 +91,24 @@ export default function DetailTop({ loading, product }: Props) {
    const ProductInfoSkeleton = (
       <>
          <Skeleton className="w-[300px] h-[30px] " />
-         <div className="">
-            <Skeleton className="w-[70px] h-[20px] mb-[6px]" />
-            <div className={cx("list")}>{BoxSkeleton}</div>
-         </div>
 
-         <div className="">
-            <Skeleton className="w-[70px] h-[20px] mt-[14px] mb-[6px]" />
-            <div className={cx("list")}>{BoxSkeleton}</div>
-         </div>
+         <PushFrame>
+            <div className="">
+               <Skeleton className="w-[70px] h-[20px] mb-[6px]" />
+               <div className={cx("list")}>{BoxSkeleton}</div>
+            </div>
 
-         <div className="">
-            <Skeleton className="w-[70px] h-[20px] mt-[14px] mb-[6px]" />
-            <Skeleton className="w-[200px] h-[34px] my-[6px]" />
-            <Skeleton className="w-[160px] h-[24px] my-[6px]" />
-         </div>
+            <div className="">
+               <Skeleton className="w-[70px] h-[20px] mt-[14px] mb-[6px]" />
+               <div className={cx("list")}>{BoxSkeleton}</div>
+            </div>
 
+            <div className="">
+               <Skeleton className="w-[70px] h-[20px] mt-[14px] mb-[6px]" />
+               <Skeleton className="w-[200px] h-[34px] my-[6px]" />
+               <Skeleton className="w-[160px] h-[24px] my-[6px]" />
+            </div>
+         </PushFrame>
          <Skeleton className="w-full h-[40px]" />
       </>
    );
@@ -163,19 +164,17 @@ export default function DetailTop({ loading, product }: Props) {
                         {productName}
                         {currentCombine && (
                            <>
-                              <div className="space-y-[14px]">
-                                 {isDefaultVariant ? (
-                                    <></>
-                                 ) : (
-                                    <div className="">
-                                       <h5 className={cx("label")}>Variant</h5>
-                                       <div className={cx("list")}>
-                                          {product.variants.map(
-                                             (variant, index) => {
+                              <PushFrame>
+                                 <div className="space-y-[14px]">
+                                    {isDefaultVariant ? (
+                                       <></>
+                                    ) : (
+                                       <div className="">
+                                          <h5 className={cx("label")}>Variant</h5>
+                                          <div className={cx("list")}>
+                                             {product.variants.map((variant, index) => {
                                                 const defaultCombine =
-                                                   findDefaultCombineOfVariant(
-                                                      variant
-                                                   );
+                                                   findDefaultCombineOfVariant(variant);
                                                 if (defaultCombine)
                                                    return (
                                                       <div
@@ -186,21 +185,17 @@ export default function DetailTop({ loading, product }: Props) {
                                                             colors={"second"}
                                                             className="h-[60px] !flex-col px-[4px] w-full"
                                                             onClick={() =>
-                                                               setVariant(
-                                                                  variant
-                                                               )
+                                                               setVariant(variant)
                                                             }
                                                             active={
                                                                variant.id ===
                                                                currentCombine.variant_id
                                                             }
                                                          >
-                                                            <span>
-                                                               {variant.name}
-                                                            </span>
+                                                            <span>{variant.name}</span>
                                                             <span className="text-[14px] font-[500]">
                                                                {moneyFormat(
-                                                                  defaultCombine.price
+                                                                  defaultCombine.price,
                                                                )}
                                                                đ
                                                             </span>
@@ -208,30 +203,23 @@ export default function DetailTop({ loading, product }: Props) {
                                                       </div>
                                                    );
                                                 else return <></>;
-                                             }
-                                          )}
+                                             })}
+                                          </div>
                                        </div>
-                                    </div>
-                                 )}
+                                    )}
 
-                                 {isDefaultColor ? (
-                                    <></>
-                                 ) : (
-                                    <div className="">
-                                       <h5 className={cx("label")}>Color</h5>
-                                       <div className={cx("list")}>
-                                          {product.colors.map(
-                                             (color, index) => (
-                                                <div
-                                                   key={index}
-                                                   className={cx("item")}
-                                                >
+                                    {isDefaultColor ? (
+                                       <></>
+                                    ) : (
+                                       <div className="">
+                                          <h5 className={cx("label")}>Color</h5>
+                                          <div className={cx("list")}>
+                                             {product.colors.map((color, index) => (
+                                                <div key={index} className={cx("item")}>
                                                    <Button
                                                       colors={"second"}
                                                       className="h-[60px] !flex-col px-[4px] w-full"
-                                                      onClick={() =>
-                                                         setColor(color)
-                                                      }
+                                                      onClick={() => setColor(color)}
                                                       active={
                                                          color.id ===
                                                          currentCombine.color_id
@@ -240,25 +228,24 @@ export default function DetailTop({ loading, product }: Props) {
                                                       <span>{color.name}</span>
                                                    </Button>
                                                 </div>
-                                             )
-                                          )}
+                                             ))}
+                                          </div>
                                        </div>
+                                    )}
+
+                                    <div className={cx("price")}>
+                                       <p className={cx("label")}>Price</p>
+                                       <p className={cx("cur-price")}>
+                                          {currentCombine.price
+                                             ? moneyFormat(currentCombine.price) + "₫"
+                                             : "Contact"}
+                                       </p>
+                                       <span className={cx("vat-tag")}>
+                                          {currentCombine.price ? "VAT included" : "---"}
+                                       </span>
                                     </div>
-                                 )}
-                              </div>
-                              <div className={cx("price")}>
-                                 <p className={cx("label")}>Price</p>
-                                 <p className={cx("cur-price")}>
-                                    {currentCombine.price
-                                       ? moneyFormat(currentCombine.price) + "₫"
-                                       : "Contact"}
-                                 </p>
-                                 <span className={cx("vat-tag")}>
-                                    {currentCombine.price
-                                       ? "VAT included"
-                                       : "---"}
-                                 </span>
-                              </div>
+                                 </div>
+                              </PushFrame>
                               <Button
                                  disabled={isFetching}
                                  className="h-[40px] w-full font-semibold"
@@ -291,14 +278,8 @@ export default function DetailTop({ loading, product }: Props) {
                      src="https://zalo-api.zadn.vn/api/emoticon/sticker/webpc?eid=46970&size=130"
                      alt=""
                   />
-                  <p className="font-medium mt-3">
-                     Không đăng nhập rối sao mua hả ?
-                  </p>
-                  <Button
-                     onClick={closeModal}
-                     className="mt-5"
-                     colors={"third"}
-                  >
+                  <p className="font-medium mt-3">Không đăng nhập rối sao mua hả ?</p>
+                  <Button onClick={closeModal} className="mt-5" colors={"third"}>
                      Cút
                   </Button>
                </div>

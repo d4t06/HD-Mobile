@@ -48,7 +48,7 @@ export const fetchProducts = createAsyncThunk(
       })) as ProductResponse;
 
       return { ...restRes, replace, status };
-   }
+   },
 );
 
 type ThunkSearchProductParams = SearchProductParams & {
@@ -68,7 +68,7 @@ export const searchProducts = createAsyncThunk(
       })) as ProductResponse;
 
       return { ...restRes, status, replace };
-   }
+   },
 );
 
 const productsSlice = createSlice({
@@ -86,7 +86,11 @@ const productsSlice = createSlice({
                  variant: "storing";
                  payload: Partial<StateType>;
               }
-         >
+            | {
+                 variant: "insert";
+                 payload: Partial<StateType>;
+              }
+         >,
       ) {
          const { payload, variant } = action.payload;
          const { products = [], ...rest } = payload;
@@ -94,8 +98,19 @@ const productsSlice = createSlice({
          Object.assign(state, rest);
          state.status = "successful";
 
-         if (variant === "replace") state.products = products;
-         else state.products.push(...products);
+         switch (variant) {
+            case "replace":
+               state.products = products;
+               break;
+            case "storing":
+               state.products.push(...products);
+               break;
+
+            case "insert":
+               const newProducts = [...products, ...state.products];
+               state.products = newProducts;
+               break;
+         }
       },
       addProduct(state, action: PayloadAction<Product[]>) {
          state.products.push(...action.payload);
@@ -105,7 +120,7 @@ const productsSlice = createSlice({
          action: PayloadAction<{
             product: Partial<ProductSchema>;
             index: number;
-         }>
+         }>,
       ) {
          const payload = action.payload;
          const { index, product } = payload;
@@ -164,12 +179,7 @@ export const selectedAllProduct = (state: { products: StateType }) => {
    return state.products;
 };
 
-export const {
-   setProducts,
-   updateProduct,
-   setStatus,
-   resetProducts,
-   addProduct,
-} = productsSlice.actions;
+export const { setProducts, updateProduct, setStatus, resetProducts, addProduct } =
+   productsSlice.actions;
 
 export default productsSlice.reducer;

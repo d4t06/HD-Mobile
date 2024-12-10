@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { generateId, initProductObject } from "@/utils/appHelper";
+import { initProductObject } from "@/utils/appHelper";
 import { Button, Gallery, Modal } from "@/components";
 import { Empty, Input } from "@/components";
 import { inputClasses } from "@/components/ui/Input";
@@ -60,11 +60,11 @@ export default function AddProductModal({ ...props }: Props) {
    const { categories } = useSelector(selectCategory);
 
    const [productData, setProductData] = useState<ProductSchema>(() =>
-      runInitProductData(props)
+      runInitProductData(props),
    );
    const [isOpenModal, setIsOpenModal] = useState(false);
    const [selectedCat, setSelectedCat] = useState<Category | undefined>(() =>
-      runInitCategory(props)
+      runInitCategory(props),
    );
 
    const nameRef = useRef<HTMLInputElement>(null);
@@ -76,9 +76,7 @@ export default function AddProductModal({ ...props }: Props) {
 
    const brandsByCategory = useMemo(() => {
       if (props.type === "Edit") {
-         const foundedCategory = categories.find(
-            (c) => c.id === productData.category_id
-         );
+         const foundedCategory = categories.find((c) => c.id === productData.category_id);
 
          if (foundedCategory) return foundedCategory.brands;
          else return [];
@@ -95,7 +93,6 @@ export default function AddProductModal({ ...props }: Props) {
          return setProductData({
             ...productData,
             [field]: value,
-            name_ascii: generateId(value),
          });
       }
 
@@ -153,10 +150,7 @@ export default function AddProductModal({ ...props }: Props) {
 
    return (
       <div className="w-[700px] max-h-[90vh] max-w-[80vw] flex flex-col">
-         <ModalHeader
-            closeModal={props.closeModal}
-            title={`${tileMap[props.type]}`}
-         />
+         <ModalHeader closeModal={props.closeModal} title={`${tileMap[props.type]}`} />
          <div className="flex-grow overflow-auto">
             <div className="flex flex-col sm:flex-row">
                <div className="sm:w-1/3 sm:mr-[16px]">
@@ -170,18 +164,13 @@ export default function AddProductModal({ ...props }: Props) {
                      )}
                      {productData.image_url && (
                         <>
-                           <Image
-                              className="max-h-[200px]"
-                              src={productData.image_url}
-                           />
+                           <Image className="max-h-[200px]" src={productData.image_url} />
 
                            <OverlayCTA
                               data={[
                                  {
                                     cb: () => setIsOpenModal(true),
-                                    icon: (
-                                       <ArrowPathIcon className="w-[24px]" />
-                                    ),
+                                    icon: <ArrowPathIcon className="w-[24px]" />,
                                  },
                               ]}
                            />
@@ -212,9 +201,7 @@ export default function AddProductModal({ ...props }: Props) {
                         <select
                            name="category"
                            value={productData.category_id || ""}
-                           onChange={(e) =>
-                              handleInput("category_id", +e.target.value)
-                           }
+                           onChange={(e) => handleInput("category_id", +e.target.value)}
                            className={inputClasses.input}
                         >
                            <option value={undefined}>- - -</option>
@@ -225,7 +212,7 @@ export default function AddProductModal({ ...props }: Props) {
                                        <option key={index} value={category.id}>
                                           {category.name}
                                        </option>
-                                    )
+                                    ),
                               )}
                         </select>
                      </div>
@@ -238,9 +225,7 @@ export default function AddProductModal({ ...props }: Props) {
                      <select
                         name="brand"
                         value={productData.brand_id || ""}
-                        onChange={(e) =>
-                           handleInput("brand_id", +e.target.value)
-                        }
+                        onChange={(e) => handleInput("brand_id", +e.target.value)}
                         className={inputClasses.input}
                      >
                         <option value={undefined}>- - -</option>

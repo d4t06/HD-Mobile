@@ -14,7 +14,7 @@ export default function useGetRatingAverage() {
 
          console.log("get aver");
 
-         if (import.meta.env.DEV) await sleep(600);
+         if (import.meta.env.DEV) await sleep(300);
 
          const res = await publicRequest.get(`${RATING_URL}/avg`, {
             params: { product_id: productId },

@@ -18,7 +18,7 @@ function App() {
                   </h1>
                }
             />
-            <Route path="/dashboard/init" element={<Init />} />
+            <Route path="/dashboard/welcome" element={<Init />} />
 
             <Route element={<PersistLogin />}>
                {publicRoutes.map((route, index) => {

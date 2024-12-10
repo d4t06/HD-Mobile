@@ -34,7 +34,7 @@ export type ModalRef = {
 
 function Modal(
    { children, className, zIndexClass, ...props }: Props,
-   ref: Ref<ModalRef>
+   ref: Ref<ModalRef>,
 ) {
    const variant = props.variant || "default";
 
@@ -55,7 +55,6 @@ function Modal(
 
       if (props.variant === "animation") {
          close();
-         props.onClose ? props.onClose() : "";
       }
    };
 
@@ -70,6 +69,10 @@ function Modal(
       if (!isMounted) {
          setTimeout(() => {
             setIsOpen(false);
+
+            if (props.variant === "animation") {
+               props.onClose ? props.onClose() : "";
+            }
          }, 400);
       }
    }, [isMounted]);
@@ -122,7 +125,7 @@ function Modal(
                      </div>
                   )}
                </div>,
-               document.getElementById("portals")!
+               document.getElementById("portals")!,
             )}
       </>
    );

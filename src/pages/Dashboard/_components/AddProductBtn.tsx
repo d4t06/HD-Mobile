@@ -12,9 +12,6 @@ import { useRef, useState } from "react";
 import useImportProduct from "../_hooks/useImportProduct";
 import JsonInput from "@/components/Modal/JsonInput";
 
-type Props = {
-   currentCategory: Category | undefined;
-};
 
 type Modal = "Form" | "Json";
 
@@ -29,7 +26,7 @@ type JsonProduct = {
    sliders: string[];
 };
 
-export default function AddProductBtn({ currentCategory }: Props) {
+export default function AddProductBtn() {
    const [modal, setModal] = useState<Modal | "">("");
    const [jsonProducts, setJsonProducts] = useState<JsonProduct[]>();
 
@@ -70,7 +67,7 @@ export default function AddProductBtn({ currentCategory }: Props) {
 
    const classes = {
       menuItem:
-         "px-3 py-1 flex font-[500] items-center hover:text-[#cd1818] space-x-1 hover:bg-[#e1e1e1]",
+         "px-3 py-1 flex font-[500] items-center hover:text-[#cd1818] space-x-1 hover:bg-[#f4f6f8]",
    };
 
    return (
@@ -109,7 +106,6 @@ export default function AddProductBtn({ currentCategory }: Props) {
             {modal === "Form" && (
                <AddProductModal
                   type="Add"
-                  curCategory={currentCategory}
                   closeModal={closeModal}
                />
             )}

@@ -51,10 +51,7 @@ type ProductVariant = Omit<ProductVariantDetail, "default_combine"> & {
    default_combine: DefaultVariantCombine;
 };
 
-type ProductVariantSchema = Omit<
-   ProductVariantDetail,
-   "id" | "default_combine"
->;
+type ProductVariantSchema = Omit<ProductVariantDetail, "id" | "default_combine">;
 
 type ProductColor = {
    id: number;
@@ -86,10 +83,7 @@ type DefaultVariantCombineDetail = {
 
 type DefaultVariantCombine = Omit<DefaultVariantCombineDetail, "combine">;
 
-type DefaultVariantCombineSchema = Omit<
-   DefaultVariantCombineDetail,
-   "combine" | "id"
->;
+type DefaultVariantCombineSchema = Omit<DefaultVariantCombineDetail, "combine" | "id">;
 
 type ProductResponse = {
    products: Product[];
@@ -251,7 +245,7 @@ type ImageType = {
 type ImageTypeSchema = Omit<ImageType, "id">;
 
 type Toast = {
-   title?: "success" | "error" | "warning";
+   variant: "success" | "error";
    desc: string;
    id: string;
 };
@@ -267,10 +261,7 @@ type Rating = {
    rate: number;
 };
 
-type RatingSchema = Omit<
-   Rating,
-   "id" | "total_like" | "approve" | "date_convert"
->;
+type RatingSchema = Omit<Rating, "id" | "total_like" | "approve" | "date_convert">;
 
 type PriceRange = {
    id: number;

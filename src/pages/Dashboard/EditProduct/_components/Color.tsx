@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import AddItem from "@/components/Modal/AddItem";
 import ColorItem from "./child/ColorItem";
-import { generateId } from "@/utils/appHelper";
 import useColorAction from "../_hooks/useColorAction";
 
 type Props = {
@@ -25,7 +24,7 @@ export default function Color({ mainClasses }: Props) {
 
       const schema: ProductColorSchema = {
          name: value,
-         name_ascii: generateId(value),
+         name_ascii: "",
          product_id: product.id,
       };
 

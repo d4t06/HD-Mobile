@@ -78,7 +78,7 @@ function ProductFilter() {
    return (
       <div className={cx("product-filter", { disable: status === "loading" })}>
          <div className={cx("filter-section")}>
-            <h1 className={cx("filter-title")}>Brands</h1>
+            <h1 className={cx("filter-title")}>Brand</h1>
             <div className={cx("filter-list")}>
                {categoryStatus === "loading" ? (
                   BrandSkeleton
@@ -94,7 +94,7 @@ function ProductFilter() {
             </div>
          </div>
          <div className={cx("filter-section")}>
-            <h1 className={cx("filter-title")}>Prices</h1>
+            <h1 className={cx("filter-title")}>Price</h1>
             <div className={cx("filter-list")}>
                {categoryStatus === "loading" ? (
                   PriceSkeleton

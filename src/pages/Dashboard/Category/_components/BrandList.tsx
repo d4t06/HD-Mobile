@@ -2,7 +2,6 @@ import { inputClasses } from "@/components/ui/Input";
 import { useMemo, useState } from "react";
 import BrandItem from "./child/BrandItem";
 import useBrandAction from "../_hooks/uesBrandAction";
-import { generateId } from "@/utils/appHelper";
 import { Empty, Modal } from "@/components";
 import AddItem from "@/components/Modal/AddItem";
 import { useSelector } from "react-redux";
@@ -34,7 +33,7 @@ export default function BrandList({ mainClasses }: Props) {
 
       const schema: BrandSchema = {
          name: value,
-         name_ascii: generateId(value),
+         name_ascii: "",
          category_id: currentCategory!.id,
          image_url: "",
       };

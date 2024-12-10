@@ -33,7 +33,7 @@ export default function Init() {
          next();
       } catch (error) {
          console.log({ message: error });
-         setErrorToast("");
+         setErrorToast();
       } finally {
          setIsFetching(false);
       }

@@ -1,17 +1,22 @@
+import { ModalRef } from "@/components/Modal";
 import { useToast } from "@/store/ToastContext";
 import { setCategory } from "@/store/categorySlice";
 import { privateRequest } from "@/utils/request";
-import { useState } from "react";
+import { RefObject, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const IMPORT_URL = "/categories/import";
 
-export function useImportCategory() {
+type Props = {
+   modalRef: RefObject<ModalRef>;
+};
+
+export function useImportCategory({ modalRef }: Props) {
    const dispatch = useDispatch();
 
-   const [status, setStatus] = useState<
-      "input" | "fetching" | "error" | "finish"
-   >("input");
+   const [status, setStatus] = useState<"input" | "fetching" | "error" | "finish">(
+      "input",
+   );
 
    const { setErrorToast, setSuccessToast } = useToast();
 
@@ -32,15 +37,16 @@ export function useImportCategory() {
          setStatus("finish");
          setSuccessToast("Import category successful");
       } catch (error) {
-         console.log(error);
+         console.log({ message: error });
 
-         setStatus("error");
-         setErrorToast("");
+         modalRef.current?.close();
+         setErrorToast();
       }
    };
 
    return {
       status,
+      setStatus,
       submit,
    };
 }
