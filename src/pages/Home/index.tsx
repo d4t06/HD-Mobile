@@ -1,7 +1,7 @@
 import { ImageSlider } from "@/components";
 import Skeleton from "@/components/Skeleton";
 import { useEffect, useMemo, useState } from "react";
-import MobileCategories from "./child/MobileCategories";
+// import MobileCategories from "./child/MobileCategories";
 import useCurrentCategory from "@/hooks/useCurrentCategory";
 import NewProduct from "./child/NewProduct";
 
@@ -22,7 +22,7 @@ export default function Home() {
    return (
       <div className="space-y-[30px]">
          {status === "loading" ? sliderSkeleton : <ImageSlider data={homeSlider} />}
-         {status === "success" && <MobileCategories categories={categories} />}
+         {/*{status === "success" && <MobileCategories categories={categories} />}*/}
 
          <NewProduct loading={status === "loading"} />
       </div>

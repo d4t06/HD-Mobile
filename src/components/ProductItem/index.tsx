@@ -17,14 +17,11 @@ export default function ProductItem({ product }: Props) {
    const [activeVariant, setActiveVariant] = useState<ProductVariantDetail>();
 
    const findDefaultStorage = (): ProductVariantDetail | undefined => {
-      return product.variants.find(
-         (v) => v.id === product.default_variant.variant_id
-      );
+      return product.variants.find((v) => v.id === product.default_variant.variant_id);
    };
 
    const isDefaultVariant =
-      product.variants.length === 1 &&
-      product.variants[0].name_ascii === "default";
+      product.variants.length === 1 && product.variants[0].name_ascii === "default";
 
    useEffect(() => {
       const founded = findDefaultStorage();
@@ -33,24 +30,19 @@ export default function ProductItem({ product }: Props) {
 
    return (
       <div className={cx("product-item")}>
-         <Link
-            to={`/product/${product.id}`}
-            className={cx("product-item-frame")}
-         >
+         <Link to={`/product/${product.id}`} className={cx("product-item__top")}>
             <Image src={product.image_url} />
          </Link>
 
-         <div className={cx("product-item-body", "space-y-[14px]")}>
-            <h4 className={cx("product-item_name")}>{product.name}</h4>
+         <div className={cx("product-item__bottom")}>
+            <h4 className={cx("name")}>{product.name}</h4>
 
-            {!!product.variants.length && product.default_variant.variant ? (
+            {!!product.variants.length && product.default_variant.variant.default_combine ? (
                <>
                   {isDefaultVariant ? (
                      <></>
                   ) : (
-                     <div
-                        className={cx("variant-box", "mx-[-2px] md:mx-[-4px]")}
-                     >
+                     <div className={cx("variant-box", "mx-[-2px] md:mx-[-4px]")}>
                         {product.variants.map((v, index) => {
                            const isActive = activeVariant?.id === v.id;
                            return (
@@ -73,19 +65,12 @@ export default function ProductItem({ product }: Props) {
                         })}
                      </div>
                   )}
-                  <div className={cx("product-item_price")}>
-                     <h1 className={cx("product-item_price--current")}>
-                        {moneyFormat(
-                           activeVariant?.default_combine.combine.price || ""
-                        )}
-                        đ
-                     </h1>
+                  <div className={cx("price")}>
+                     {moneyFormat(activeVariant?.default_combine.combine.price || "")}đ
                   </div>
                </>
             ) : (
-               <div className={cx("product-item_price")}>
-                  <h1 className={cx("product-item_price--current")}>Contact</h1>
-               </div>
+               <div className={cx("price")}>Contact</div>
             )}
          </div>
       </div>

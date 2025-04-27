@@ -73,12 +73,11 @@ export default function SearchResultPage() {
       <div className={""}>
          <div className={"flex"}>
             <div className="col w-full">
-               <h1 className="text-[24px]  ">
+               <h1 className="text-xl font-[500]  ">
                   {status !== "loading" ? (
                      <>
-                        Tìm thấy{" "}
-                        <span className="text-[#cd1818]">{count || 0}</span> kết
-                        quả cho từ khóa '{key}'
+                        Found{" "}
+                        <span className="text-[#cd1818]">{count || 0}</span> results for '{key}'
                      </>
                   ) : (
                      <>
@@ -107,7 +106,7 @@ export default function SearchResultPage() {
                         disabled={status === "loading" || remaining === 0}
                         onClick={() => handleGetMore()}
                      >
-                        Xem thêm
+                        More
                      </Button>
                   </p>
                )}

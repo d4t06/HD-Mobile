@@ -17,8 +17,8 @@ export default function NewProduct({ loading }: Props) {
 
    const ProductsSkeletons = useMemo(
       () =>
-         [...Array(5).keys()].map((index) => (
-            <div key={index} className="px-[4px] mt-[8px] w-1/2 md:w-1/5">
+         [...Array(4).keys()].map((index) => (
+            <div key={index} className="px-[4px] mt-[8px] w-1/2 md:w-1/4">
                <ProductSkeleton />
             </div>
          )),
@@ -45,7 +45,7 @@ export default function NewProduct({ loading }: Props) {
                      products.map((product, index) => (
                         <div
                            key={index}
-                           className="px-[4px] w-1/2 md:w-1/5 mt-[8px]"
+                           className="px-[4px] w-1/2 md:w-1/4 mt-[8px]"
                         >
                            <ProductItem product={product} />
                         </div>

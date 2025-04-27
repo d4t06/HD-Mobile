@@ -10,16 +10,44 @@
    border-radius: 8px;
    height: 100%;
 
-   &-body {
+   &__bottom {
       padding: 10px 10px 14px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .name {
+         font-weight: 500;
+         display: -webkit-box;
+         -webkit-box-orient: vertical;
+         -webkit-line-clamp: 2;
+         overflow: hidden;
+
+         // @media screen and (max-width: 768px) {
+         //    font-size: 16px;
+         // }
+      }
+
+      .price {
+         font-size: 20px;
+         line-height: 20px;
+         color: #cd1818;
+         font-weight: 600;
+         margin-top: auto;
+
+         @media screen and (max-width: 768px) {
+            font-size: 18px;
+         }
+      }
    }
-   &-frame {
+   &__top {
       position: relative;
       height: 225px;
       padding: 0 16px;
       margin-top: 15px;
       display: flex;
       align-items: center;
+      flex-shrink: 0;
       img {
          height: 100%;
          width: 100%;
@@ -29,21 +57,7 @@
       }
    }
 
-   &_name {
-      font-weight: 500;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-
-      @media screen and (max-width: 768px) {
-         font-size: 16px;
-      }
-   }
-
-   
-
-   &-installment {
+   &__installment {
       position: absolute;
       left: -9px;
       height: 24px;
@@ -78,28 +92,10 @@
    }
 }
 
-.product-item .price-top {
-   height: 19px;
-   line-height: 19px;
-}
-.product-item_price--old .discount-percent {
-   margin-left: 7px;
-}
-
-.product-item_price--current {
-   font-size: 20px;
-   line-height: 20px;
-   color: #cd1818;
-   font-weight: 600;
-
-   @media screen and (max-width: 768px) {
-      font-size: 18px;
-   }
-}
-
 .variant-box {
    display: flex;
    flex-wrap: wrap;
+   margin: 14px 0;
 
    @media screen and (max-width: 756px) {
       > div {

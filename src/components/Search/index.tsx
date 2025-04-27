@@ -30,6 +30,7 @@ type Props = Home | Dashboard;
 
 function Search(props: Props) {
    const [searchKey, setSearchKey] = useState("");
+   const [isShow, setIsShow] = useState(false);
 
    const modalRef = useRef<ModalRef>(null);
 
@@ -83,7 +84,7 @@ function Search(props: Props) {
       navigate(`/search/${searchKey}`);
    };
 
-   const isShowResult = !!searchResult.length;
+   const isShowResult = !!searchResult.length && isShow;
 
    // return;
    return (
@@ -106,12 +107,12 @@ function Search(props: Props) {
                                  <div className={cx("product-info")}>
                                     <h2>{p.name}</h2>
                                     <p className={cx("price")}>
-                                       {moneyFormat(
-                                          p.default_variant.variant
-                                             .default_combine.combine.price ||
-                                             ""
-                                       )}
-                                       ₫
+                                       {p?.default_variant?.variant?.default_combine
+                                          ? moneyFormat(
+                                               p.default_variant.variant.default_combine
+                                                  ?.combine?.price || "",
+                                            ) + "₫"
+                                          : "Contact"}
                                     </p>
                                  </div>
                               </li>
@@ -124,9 +125,14 @@ function Search(props: Props) {
                visible: isShowResult,
                appendTo: () => document.body,
                placement: props.variant === "home" ? "auto" : "bottom-start",
+               onClickOutside: () => {
+                  setIsShow(false);
+               },
             }}
          >
-            <div className={`${cx("wrap")} ${props.variant === "dashboard" ? 'z-[0]' : 'z-[999]'}`}>
+            <div
+               className={`${cx("wrap")} ${props.variant === "dashboard" ? "z-[0]" : "z-[999]"}`}
+            >
                <form className={cx("form")} onSubmit={handleSubmit}>
                   <input
                      className={cx("input")}
@@ -134,7 +140,9 @@ function Search(props: Props) {
                      placeholder="iPhone 15..."
                      value={searchKey}
                      onChange={(e) => handleSearchText(e)}
-                     onFocus={() => modalRef.current?.open()}
+                     onFocus={() => {
+                        modalRef.current?.open(), setIsShow(true);
+                     }}
                   />
                   {isFetching && searchKey && (
                      <button className={cx("loading-btn", "btn")}>
@@ -157,9 +165,7 @@ function Search(props: Props) {
             </div>
          </Popup>
 
-         {props.variant !== "dashboard" && (
-            <Modal ref={modalRef} variant="animation" />
-         )}
+         {props.variant !== "dashboard" && <Modal ref={modalRef} variant="animation" />}
       </>
    );
 }

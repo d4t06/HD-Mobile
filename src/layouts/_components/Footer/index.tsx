@@ -1,6 +1,6 @@
 import PushFrame from "@/components/ui/PushFrame";
 import "./style.scss";
-import { DevicePhoneMobileIcon, MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import { DevicePhoneMobileIcon, MapPinIcon } from "@heroicons/react/24/outline";
 
 function Footer() {
    return (

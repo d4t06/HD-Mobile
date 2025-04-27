@@ -151,7 +151,7 @@ export default function DetailTop({ loading, product }: Props) {
                   <ImageSlider
                      sticky
                      size={1}
-                     className="pt-[60%] md:pt-[75%]"
+                     className="pt-[65%] md:pt-[75%]"
                      data={slider?.slider_images || []}
                   />
                )}
