@@ -16,7 +16,7 @@ export const countDayDiff = (dateString: string) => {
    const currentDate = new Date();
 
    const daysDiff = Math.floor(
-      Math.abs(currentDate.getTime() - mysqlDate.getTime()) / (1000 * 60 * 60 * 24)
+      Math.abs(currentDate.getTime() - mysqlDate.getTime()) / (1000 * 60 * 60 * 24),
    );
 
    return daysDiff;
@@ -78,12 +78,14 @@ export const formatSize = (size: number) => {
    return mb + "," + size + units[1];
 };
 
+const KEY = import.meta.env.DEV ? "hd-mobile_DEV" : "hd-mobile";
+
 export const getLocalStorage = () =>
-   JSON.parse(localStorage.getItem("HD-Mobile") || "{}") as Record<string, any>;
+   JSON.parse(localStorage.getItem(KEY) || "{}") as Record<string, any>;
 
 export const setLocalStorage = (key: string, value: any) => {
    const storage = getLocalStorage();
    storage[key] = value;
 
-   return localStorage.setItem("HD-Mobile", JSON.stringify(storage));
+   return localStorage.setItem(KEY, JSON.stringify(storage));
 };

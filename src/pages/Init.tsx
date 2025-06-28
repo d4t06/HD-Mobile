@@ -4,9 +4,7 @@ import { sleep } from "@/utils/appHelper";
 import { publicRequest } from "@/utils/request";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const INIT_URL = `${
-   import.meta.env.VITE_API_ENDPOINT || "https://hd-mobile-backend-ts.vercel.app/api"
-}/init`;
+const INIT_URL = `${import.meta.env.VITE_API_ENDPOINT}/init`;
 
 export default function Init() {
    const { setErrorToast } = useToast();

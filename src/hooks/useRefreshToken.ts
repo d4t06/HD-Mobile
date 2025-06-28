@@ -2,9 +2,7 @@ import { useAuth } from "@/store/AuthContext";
 import { sleep } from "@/utils/appHelper";
 import axios from "axios";
 
-const REFRESH_URL =
-   (import.meta.env.VITE_API_ENDPOINT || "https://hd-mobile-backend-ts.vercel.app/api") +
-   "/auth/refresh";
+const REFRESH_URL = import.meta.env.VITE_API_ENDPOINT + "/auth/refresh";
 
 const useRefreshToken = () => {
    const { setAuth } = useAuth();

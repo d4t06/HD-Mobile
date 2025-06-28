@@ -5,9 +5,7 @@ import axios from "axios";
 import { classes as loginClasses } from "@/shares/classes/loginForm";
 import { Button } from "@/components";
 
-const LOGIN_URL =
-   (import.meta.env.VITE_API_ENDPOINT || "https://hd-mobile-backend-ts.vercel.app/api") +
-   "/auth/login";
+const LOGIN_URL = import.meta.env.VITE_API_ENDPOINT + "/auth/login";
 
 export default function LoginPage() {
    const { auth, setAuth, loading } = useAuth();
@@ -37,7 +35,7 @@ export default function LoginPage() {
             },
             {
                withCredentials: true,
-            }
+            },
          );
 
          const data = response.data.data as AuthResponse;
