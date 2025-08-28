@@ -114,7 +114,7 @@ export default function DetailTop({ loading, product }: Props) {
    );
 
    const classes = {
-      proName: "text-[26px] font-[500] leading-[1.2]",
+      proName: "text-xl font-bold",
       price: "text-[30px] md:text-[34px] text-[#cd1818] font-[600] leading-[1.4]",
    };
 

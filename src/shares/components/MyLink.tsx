@@ -3,24 +3,22 @@ import { Link, useMatch, useResolvedPath } from "react-router-dom";
 
 type Props = {
 	to: string;
-	target?: HTMLAttributeAnchorTarget
+	target?: HTMLAttributeAnchorTarget;
 	activeClass?: string;
 	children: ReactNode;
 	className?: string;
 };
 
-export default function MyLink({
-	activeClass = "",
-	className = "",
-	to,
-	target,
-	children,
-}: Props) {
+export default function MyLink({ className = "", to, target, children }: Props) {
 	const resolved = useResolvedPath(to);
 	const match = useMatch({ path: resolved.pathname, end: true });
 
 	return (
-		<Link target={target} className={`${className} ${match ? activeClass : ""}`} to={to}>
+		<Link
+			target={target}
+			className={`${className} ${match ? "text-[#cd1818] bg-[--a-5-cl]" : ""}`}
+			to={to}
+		>
 			{children}
 		</Link>
 	);

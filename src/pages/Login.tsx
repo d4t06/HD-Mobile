@@ -4,6 +4,7 @@ import { useAuth } from "@/store/AuthContext";
 import axios from "axios";
 import { classes as loginClasses } from "@/shares/classes/loginForm";
 import { Button } from "@/components";
+import Logo from "@/components/ui/Logo";
 
 const LOGIN_URL = import.meta.env.VITE_API_ENDPOINT + "/auth/login";
 
@@ -84,9 +85,7 @@ export default function LoginPage() {
          <div className={loginClasses.container}>
             <form onSubmit={handleSubmit} className={loginClasses.form}>
                <div className={loginClasses.left}>
-                  <h1 className={loginClasses.logo}>
-                     HD <span className="text-[#cd1818]">Mobile</span>
-                  </h1>
+                  <Logo />
                   <h1 className="text-3xl text-[#1f1f1f] mt-[10px]">Sign in</h1>
 
                   {errMsg && <p className={loginClasses.errorMessage}>{errMsg}</p>}

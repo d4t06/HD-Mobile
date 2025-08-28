@@ -46,12 +46,12 @@ function Header() {
    return (
       <>
          <div className={cx("header")}>
-            <div className={cx("header-banner")}>
+            {/*<div className={cx("header-banner")}>
                <img
                   src="https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn/2024/01/banner/Big-steak-1200-44-1200x44.png"
                   alt=""
                />
-            </div>
+            </div>*/}
             <div className="container mx-auto relative">
                {/* mobile header */}
                <MobileHeader
@@ -62,9 +62,14 @@ function Header() {
                <div className={cx("header-top")}>
                   <div className={cx("header-top-wrap")}>
                      <div className="left w-1/4 max-[768px]:hidden">
-                        <Link className={"text-2xl font-medium"} to={"/"}>
-                           HD <span className="text-[#cd1818]">Mobile</span>
-                        </Link>
+                        <div className="flex items-center">
+                           <div className="bg-[#cd1818] flex-shrink-0 w-8 flex h-8 rounded-md justify-center items-center">
+                              <span className="text-white text-xl font-bold translate-y-[1px]">
+                                 :D
+                              </span>
+                           </div>
+                           <span className="ml-2 font-bold">Dstore</span>
+                        </div>
                      </div>
                      <Search variant="home" closeSidebar={closeSidebar} />
 

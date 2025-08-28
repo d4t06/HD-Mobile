@@ -53,7 +53,7 @@ export default function Rating({ loading, product }: Props) {
                </div>
             </div>
          )),
-      []
+      [],
    );
 
    useEffect(() => {
@@ -89,29 +89,31 @@ export default function Rating({ loading, product }: Props) {
             </div>
 
             <div className="space-y-[20px]">
-               <div className="flex flex-col items-center mb-[30px] font-medium">
-                  <h2 className="text-lg text-[#3f3f3f]  ">Average rating</h2>
-                  {getAvgStatus === "loading" && (
-                     <>
-                        <Skeleton className="h-[52px] my-1 w-[200px] rounded-md" />
-                        <Skeleton className="h-[18px] my-1 w-[100px] rounded-md" />
-                     </>
-                  )}
+               {!!ratings.length && (
+                  <div className="flex flex-col items-center mb-[30px] font-medium">
+                     <h2 className="text-lg text-[#3f3f3f]  ">Average rating</h2>
+                     {getAvgStatus === "loading" && (
+                        <>
+                           <Skeleton className="h-[52px] my-1 w-[200px] rounded-md" />
+                           <Skeleton className="h-[18px] my-1 w-[100px] rounded-md" />
+                        </>
+                     )}
 
-                  {getAvgStatus !== "loading" && (
-                     <h1 className="text-[50px] leading-[60px]  text-[#cd1818]">
-                        {getAvgStatus === "success" && avg ? (
-                           <span>{avg.toFixed(0)} / 5</span>
-                        ) : (
-                           <span>--</span>
-                        )}
-                     </h1>
-                  )}
+                     {getAvgStatus !== "loading" && (
+                        <h1 className="text-[50px] leading-[60px]  text-[#cd1818]">
+                           {getAvgStatus === "success" && avg ? (
+                              <span>{avg.toFixed(0)} / 5</span>
+                           ) : (
+                              <span>--</span>
+                           )}
+                        </h1>
+                     )}
 
-                  {getAvgStatus !== "loading" && (
-                     <p className="text-[#3f3f3f]">{count} ratings</p>
-                  )}
-               </div>
+                     {getAvgStatus !== "loading" && (
+                        <p className="text-[#3f3f3f]">{count} ratings</p>
+                     )}
+                  </div>
+               )}
 
                {status !== "error" && (
                   <>
@@ -129,9 +131,7 @@ export default function Rating({ loading, product }: Props) {
                         </>
                      )}
 
-                     {(loading ||
-                        status === "loading" ||
-                        status === "more-loading") &&
+                     {(loading || status === "loading" || status === "more-loading") &&
                         renderSkeleton}
 
                      {!!count && (

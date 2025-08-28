@@ -8,6 +8,7 @@ import DashboardProductCta from "@/components/DashboardProductCta";
 
 import AddProductBtn from "./_components/AddProductBtn";
 import DashboardSearch from "./_components/DashboardSearch";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
    // const [curCategory, setCurCategory] = useState<Category>();
@@ -34,7 +35,14 @@ export default function Dashboard() {
                      {products.map((p, index) => {
                         return (
                            <tr key={index}>
-                              <td className="font-[500]">{p.name}</td>
+                              <td>
+                                 <Link
+                                    className="hover:underline"
+                                    to={`/dashboard/product/${p.id}`}
+                                 >
+                                    {p.name}
+                                 </Link>
+                              </td>
                               {/* loop here */}
                               <td className="!text-right">
                                  <DashboardProductCta index={index} product={p} />

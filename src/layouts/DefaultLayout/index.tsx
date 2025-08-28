@@ -1,10 +1,10 @@
-import Footer from "../_components/Footer";
 import Header from "../_components/Header";
 import classNames from "classnames/bind";
 import styles from "./DefaultLayout.module.scss";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { ScrollTop } from "@/components";
 import useGetCategory from "@/hooks/useGetCategory";
+import { useLocation } from "react-router-dom";
 const cx = classNames.bind(styles);
 
 type Props = {
@@ -12,18 +12,25 @@ type Props = {
 };
 
 export default function DefaultLayout({ children }: Props) {
+   const location = useLocation();
+
    useGetCategory();
 
+   useEffect(() => {
+      window.scrollTo(0, 0);
+   }, [location]);
    return (
       <div className={cx("app")}>
          <Header />
          <div className={cx("page-wrapper", "container mx-auto")}>{children}</div>
          <ScrollTop />
-         <Footer />
+         {/*<Footer />*/}
 
          <div className="container mx-auto">
-            <p className="py-[10px] text-[14px] text-[#333] font-[500]">
-               Make with ❤️ by Nguyen Huu Dat <br />© All rights no reserve ¯\_(ツ)_/¯
+            <p className="pt-10 text-sm pb-5 text-center">
+               Make with
+               <img className="w-4 inline-block mx-1" src="./heart.png" />
+               by Nguyen Huu Dat <br />© 2025
             </p>
          </div>
       </div>

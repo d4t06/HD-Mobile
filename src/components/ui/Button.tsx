@@ -23,7 +23,7 @@ const ButtonVariant = cva(classes.button, {
          primary:
             "before:border-[#cd1818] text-[#333] bg-[#fff] before:shadow-[0_2px_0_#cd1818]",
          second:
-            "before:border-[#ccc] text-[#333] bg-[#f6f6f6] before:shadow-[0_2px_0_#ccc]",
+            "before:border-[#e6e6e6] text-[#333] bg-[#fff] before:shadow-[0_2px_0_#e6e6e6]",
          third: "before:border-[#a00000] bg-[#cd1818] text-[#fff] before:shadow-[0_2px_0_#a00000]",
          clear: "",
       },

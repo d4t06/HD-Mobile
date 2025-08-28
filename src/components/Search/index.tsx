@@ -54,18 +54,9 @@ function Search(props: Props) {
    };
 
    const handleNavigate = (item: ProductSearch) => {
-      modalRef.current?.close();
+      setIsShow(false);
 
-      let prefix = "";
-
-      switch (props.variant) {
-         case "home":
-            prefix = "/product";
-            break;
-         case "dashboard":
-            prefix = "/dashboard/product";
-            break;
-      }
+      const prefix = props.variant === "home" ? "/product" : "/dashboard/product";
 
       navigate(`${prefix}/${item.id}`);
    };
@@ -141,7 +132,7 @@ function Search(props: Props) {
                      value={searchKey}
                      onChange={(e) => handleSearchText(e)}
                      onFocus={() => {
-                        modalRef.current?.open(), setIsShow(true);
+                        (modalRef.current?.open(), setIsShow(true));
                      }}
                   />
                   {isFetching && searchKey && (

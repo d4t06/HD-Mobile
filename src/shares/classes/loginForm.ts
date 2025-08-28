@@ -5,10 +5,10 @@ export const classes = {
    logo: 'text-[26px] font-[500] leading-[40px]',
    left: 'mt-0 md:mt-[-50px] text-center md:text-left',
    form: 'flex flex-col md:flex-row justify-between',
-   right: 'space-y-[16px] mt-[20px] md:mt-0',
+   right: 'space-y-[16px] mt-[20px] md:mt-0 md:pl-4',
    inputGroup: 'flex flex-col space-y-[2px]',
    label: 'text-[#3f3f3f] font-medium',
-   input: 'py-[4px] rounded-[6px] font-medium border border-black/15 outline-none px-[10px]',
+   input: 'py-[4px] rounded-[6px] font-medium border bg-[--a-5-cl] outline-none px-[10px]',
    errorMessage:
       'bg-red-500 text-white p-[6px] rounded-[6px] inline-block mt-3 font-medium',
 };

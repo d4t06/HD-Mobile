@@ -21,7 +21,7 @@
    }
    &-nav {
       margin-top: 14px;
-      height: 44px;
+      height: 36px;
       &-wrap {
          padding: 0 10px;
          background: #cd1818;
@@ -62,22 +62,11 @@
    margin-left: auto;
 }
 .nav-item {
-   color: #fff;
-   transition: scale linear 0.1s;
-   font-weight: 500;
+   color: white;
+   font-weight: bold;
 
    * + * {
       margin-left: 4px;
-   }
-
-   &:hover {
-      color: #efd63d;
-      scale: 1.05;
-   }
-
-   &.active {
-      color: #efd63d;
-      font-weight: 600;
    }
 
    a {

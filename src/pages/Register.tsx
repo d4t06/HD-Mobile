@@ -4,6 +4,7 @@ import { publicRequest } from "@/utils/request";
 import { useToast } from "@/store/ToastContext";
 import { classes as loginClasses } from "@/shares/classes/loginForm";
 import { Button } from "@/components";
+import Logo from "@/components/ui/Logo";
 
 const REGISTER_URL = "/auth/register";
 
@@ -32,7 +33,7 @@ export default function Register() {
 
    const ableToSubmit = useMemo(
       () => validPwd && validMatchPwg,
-      [validPwd, validMatchPwg]
+      [validPwd, validMatchPwg],
    );
 
    useEffect(() => {
@@ -98,9 +99,7 @@ export default function Register() {
                   className={loginClasses.form}
                >
                   <div className={loginClasses.left}>
-                     <h1 className={loginClasses.logo}>
-                        HD <span className="text-[#cd1818]">Mobile</span>
-                     </h1>
+                     <Logo />
                      <h1 className="text-3xl text-[#1f1f1f] mt-[10px]">Sign up</h1>
 
                      {errMsg && <p className={loginClasses.errorMessage}>{errMsg}</p>}
