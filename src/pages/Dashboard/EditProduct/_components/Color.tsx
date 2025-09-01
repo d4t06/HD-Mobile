@@ -1,10 +1,11 @@
-import { Empty, Modal } from "@/components";
+import { Button, Modal } from "@/components";
 import { selectProduct } from "@/store/productSlice";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import AddItem from "@/components/Modal/AddItem";
 import ColorItem from "./child/ColorItem";
 import useColorAction from "../_hooks/useColorAction";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 type Props = {
    mainClasses: LayoutClasses;
@@ -40,22 +41,21 @@ export default function Color({ mainClasses }: Props) {
 
    return (
       <>
-         <h1 className={mainClasses.label}>Color</h1>
+         <div className="flex justify-between">
+            <h1 className={mainClasses.label}>Color</h1>
+
+            <Button onClick={() => setOpenModal(true)} colors={"third"}>
+               <PlusIcon className="w-6" />
+               <span>Add color</span>
+            </Button>
+         </div>
          <div className={mainClasses.group}>
             <div
                className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}
             >
                {product.colors.map((item, index) => (
-                  <div key={index} className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
-                     <ColorItem index={index} color={item} />
-                  </div>
+                  <ColorItem index={index} color={item} />
                ))}
-               <div className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
-                  <Empty
-                     fontClassName="bg-[#f1f1f1]"
-                     onClick={() => setOpenModal(true)}
-                  />
-               </div>
             </div>
          </div>
 

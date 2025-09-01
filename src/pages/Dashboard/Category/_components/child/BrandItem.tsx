@@ -1,11 +1,11 @@
-import { Empty, Modal } from "@/components";
-import OverlayCTA from "@/components/ui/OverlayCTA";
+import { Modal } from "@/components";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMemo, useState } from "react";
 import useBrandAction from "../../_hooks/uesBrandAction";
 import ConfirmModal from "@/components/Modal/Confirm";
 import { generateId } from "@/utils/appHelper";
 import AddItem from "@/components/Modal/AddItem";
+import ItemRightCta from "@/pages/Dashboard/_components/ItemRightCta";
 
 type Props = {
    categoryIndex: number;
@@ -95,21 +95,18 @@ export default function BrandItem({ brand, categoryIndex, index }: Props) {
 
    return (
       <>
-         <Empty fontClassName="bg-[#f6f6f6]">
-            <span className="font-semibold">{brand.name}</span>
-            <OverlayCTA
-               data={[
-                  {
-                     cb: () => setOpenModal("edit"),
-                     icon: <PencilIcon className="w-[24px]" />,
-                  },
-                  {
-                     cb: () => setOpenModal("delete"),
-                     icon: <TrashIcon className="w-[24px]" />,
-                  },
-               ]}
-            />
-         </Empty>
+         <ItemRightCta>
+            <span>{brand.name}</span>
+
+            <div>
+               <button className="" onClick={() => setOpenModal("edit")}>
+                  <PencilIcon className="w-5" />
+               </button>
+               <button onClick={() => setOpenModal("delete")}>
+                  <TrashIcon className="w-5" />
+               </button>
+            </div>
+         </ItemRightCta>
 
          {openModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
       </>

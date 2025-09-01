@@ -30,7 +30,7 @@ export default function DefaultLayout({ children }: Props) {
             <p className="pt-10 text-sm pb-5 text-center">
                Make with
                <img className="w-4 inline-block mx-1" src="./heart.png" />
-               by Nguyen Huu Dat <br />© 2025
+               by <a className="underline" href="https://dat-nguyen.vercel.app/" target="_blank">Nguyen Huu Dat</a> <br />© 2025
             </p>
          </div>
       </div>

@@ -10,6 +10,7 @@ import { ShoppingBagIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 import MyLink from "@/shares/components/MyLink";
+import Logo from "@/components/ui/Logo";
 const cx = classNames.bind(styles);
 
 function Header() {
@@ -33,8 +34,8 @@ function Header() {
             !cat.hidden && (
                <MyLink
                   key={index}
+                  activeClass="bg-white !text-[--primary-cl]"
                   className={cx("nav-item")}
-                  activeClass={cx("active")}
                   to={`/${cat.name_ascii}`}
                >
                   {cat.name}
@@ -62,14 +63,9 @@ function Header() {
                <div className={cx("header-top")}>
                   <div className={cx("header-top-wrap")}>
                      <div className="left w-1/4 max-[768px]:hidden">
-                        <div className="flex items-center">
-                           <div className="bg-[#cd1818] flex-shrink-0 w-8 flex h-8 rounded-md justify-center items-center">
-                              <span className="text-white text-xl font-bold translate-y-[1px]">
-                                 :D
-                              </span>
-                           </div>
-                           <span className="ml-2 font-bold">Dstore</span>
-                        </div>
+                        <Link to={"/"}>
+                           <Logo />
+                        </Link>
                      </div>
                      <Search variant="home" closeSidebar={closeSidebar} />
 

@@ -55,6 +55,7 @@ function Search(props: Props) {
 
    const handleNavigate = (item: ProductSearch) => {
       setIsShow(false);
+      modalRef.current?.close()
 
       const prefix = props.variant === "home" ? "/product" : "/dashboard/product";
 

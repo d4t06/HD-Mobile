@@ -1,34 +1,15 @@
-import { createPortal } from "react-dom";
-import { useRef } from "react";
 import useUploadImage from "@/hooks/useUploadImage";
+import { useImageContext } from "@/store/ImageContext";
+import { useImperativeHandle } from "react";
 
 function UploadImagePortal() {
-   const inputRef = useRef<HTMLInputElement>(null);
+   const { uploaderRef } = useImageContext();
 
-   const { handleInputChange } = useUploadImage();
+   const { uploadImage } = useUploadImage();
 
-   const classes = {
-      container: `upload portal fixed z-[199] bottom-[120px] right-[30px] max-[549px]:bottom-[unset] max-[540px]:top-[10px] max-[540px]:right-[10px]`,
-   };
+   useImperativeHandle(uploaderRef, () => ({ upload: uploadImage }));
 
-   return (
-      <>
-         {createPortal(
-            <div className={classes.container}>
-               <input
-                  ref={inputRef}
-                  onChange={handleInputChange}
-                  type="file"
-                  multiple
-                  accept="image"
-                  id="image_upload"
-                  className="hidden"
-               />
-            </div>,
-            document.getElementById("portals")!
-         )}
-      </>
-   );
+   return <></>;
 }
 
 export default UploadImagePortal;

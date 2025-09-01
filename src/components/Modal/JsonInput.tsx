@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react";
 import ModalHeader from "./ModalHeader";
 import { inputClasses } from "../ui/Input";
 import { Button } from "..";
+import { ModalContentWrapper } from ".";
 
 type Props = {
    status: "input" | "error" | "fetching" | "successful" | "finish";
@@ -33,7 +34,7 @@ export default function JsonInput({
    };
 
    return (
-      <div className="w-[500px] max-w-[90vw]">
+      <ModalContentWrapper>
          <ModalHeader
             closeModal={status !== "fetching" ? closeModal : () => {}}
             title={title || "Json import"}
@@ -72,6 +73,6 @@ export default function JsonInput({
                   </Button>
                ))}
          </p>
-      </div>
+      </ModalContentWrapper>
    );
 }

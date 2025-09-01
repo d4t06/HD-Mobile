@@ -8,6 +8,7 @@ import {
 import Input, { inputClasses } from "../ui/Input";
 import ModalHeader from "./ModalHeader";
 import Button from "../ui/Button";
+import { ModalContentWrapper } from ".";
 
 type Props = {
    closeModal: () => void;
@@ -41,7 +42,7 @@ export default function AddItem({
    };
 
    return (
-      <div className="w-[400px] max-w-[85vw] bg-[#fff]">
+      <ModalContentWrapper>
          <ModalHeader closeModal={closeModal} title={title} />
          <form action="" onSubmit={handleSubmit}>
             {variant === "input" && (
@@ -70,6 +71,6 @@ export default function AddItem({
                </Button>
             </p>
          </form>
-      </div>
+      </ModalContentWrapper>
    );
 }

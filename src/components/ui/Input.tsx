@@ -1,7 +1,7 @@
 import { InputHTMLAttributes, Ref, forwardRef } from "react";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
-  cb: (value: string) => void;
+  cb?: (value: string) => void;
 }
 
 export const inputClasses = {
@@ -11,7 +11,7 @@ export const inputClasses = {
 function Input({ cb, className, type, ...props }: Props, ref: Ref<any>) {
   return (
     <div className="bg-[#ccc] rounded-[12px] w-full">
-      <input ref={ref} onChange={(e) => cb(e.target.value)} type={type || "text"} className={`${inputClasses.input} ${className} `} {...props} />
+      <input ref={ref} onChange={(e) => cb && cb(e.target.value)} type={type || "text"} className={`${inputClasses.input} ${className} `} {...props} />
     </div>
   );
 }

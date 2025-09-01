@@ -1,11 +1,13 @@
 import { inputClasses } from "@/components/ui/Input";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import BrandItem from "./child/BrandItem";
 import useBrandAction from "../_hooks/uesBrandAction";
-import { Empty, Modal } from "@/components";
+import { Button, Modal } from "@/components";
 import AddItem from "@/components/Modal/AddItem";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { ModalRef } from "@/components/Modal";
 
 type Props = {
    mainClasses: LayoutClasses;
@@ -15,7 +17,7 @@ export default function BrandList({ mainClasses }: Props) {
    const { categories } = useSelector(selectCategory);
    const [currentCategoryIndex, setCurrentCategoryIndex] = useState<number>();
 
-   const [openModal, setOpenModal] = useState(false);
+   const modalRef = useRef<ModalRef>(null);
 
    //    hooks
    const { actions, isFetching } = useBrandAction();
@@ -23,10 +25,8 @@ export default function BrandList({ mainClasses }: Props) {
    const currentCategory = useMemo(
       () =>
          currentCategoryIndex != undefined ? categories[currentCategoryIndex] : undefined,
-      [categories, currentCategoryIndex]
+      [categories, currentCategoryIndex],
    );
-
-   const closeModal = () => setOpenModal(false);
 
    const handleAddBrand = async (value: string) => {
       if (currentCategoryIndex === undefined) return;
@@ -43,12 +43,23 @@ export default function BrandList({ mainClasses }: Props) {
          brand: schema,
          categoryIndex: currentCategoryIndex,
       });
-      closeModal();
+      modalRef.current?.close();
    };
 
    return (
       <>
-         <h1 className={mainClasses.label}>Brand</h1>
+         <div className="flex items-center justify-between">
+            <h1 className={mainClasses.label}>Brand</h1>
+
+            <Button
+               colors={"third"}
+               disabled={!currentCategory}
+               onClick={() => modalRef.current?.open()}
+            >
+               <PlusIcon className="w-6" />
+               <span className="hidden sm:inline-block ml-1">Add new brand</span>
+            </Button>
+         </div>
          <div className={mainClasses.group}>
             <div className="inline-flex gap-[16px] items-center">
                <span>Category: </span>
@@ -67,7 +78,7 @@ export default function BrandList({ mainClasses }: Props) {
                               <option key={index} value={index}>
                                  {category.name}
                               </option>
-                           )
+                           ),
                      )}
                </select>
             </div>
@@ -86,27 +97,18 @@ export default function BrandList({ mainClasses }: Props) {
                         />
                      </div>
                   ))}
-
-                  <div className={`${mainClasses.flexCol}  w-1/2 sm:w-1/6`}>
-                     <Empty
-                        fontClassName="bg-[#f1f1f1]"
-                        onClick={() => setOpenModal(true)}
-                     />
-                  </div>
                </div>
             )}
          </div>
 
-         {openModal && (
-            <Modal closeModal={closeModal}>
-               <AddItem
-                  loading={isFetching}
-                  title="Add brand"
-                  cbWhenSubmit={(value) => handleAddBrand(value)}
-                  closeModal={closeModal}
-               />
-            </Modal>
-         )}
+         <Modal variant="animation" ref={modalRef}>
+            <AddItem
+               loading={isFetching}
+               title="Add brand"
+               cbWhenSubmit={(value) => handleAddBrand(value)}
+               closeModal={() => modalRef.current?.close()}
+            />
+         </Modal>
       </>
    );
 }

@@ -1,7 +1,6 @@
 import useCategoryAction from "../_hooks/useCategoryAction";
 import { useRef, useState } from "react";
-import { Empty, Modal } from "@/components";
-import OverlayCTA from "@/components/ui/OverlayCTA";
+import { Modal } from "@/components";
 import { generateId } from "@/utils/appHelper";
 import AddItem from "@/components/Modal/AddItem";
 import ConfirmModal from "@/components/Modal/Confirm";
@@ -11,6 +10,7 @@ import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 import { ModalRef } from "@/components/Modal";
 import AddCategoryBtn from "./child/AddCategoryBtn";
+import ItemRightCta from "../../_components/ItemRightCta";
 
 type Modal = "edit" | "delete";
 
@@ -132,40 +132,36 @@ export default function CategoryList({ mainClasses }: Props) {
          <div className={mainClasses.group}>
             {!!(categories.length - 1) ? (
                <div
-                  className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}
+                  className="flex flex-wrap -mt-2 -mx-2"
                >
                   <>
                      {categories.map(
-                        (item, index) =>
-                           !item.hidden && (
-                              <div
-                                 key={index}
-                                 className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}
-                              >
-                                 <Empty>
-                                    <span className="font-[500]">{item.name}</span>
-                                    <OverlayCTA
-                                       data={[
-                                          {
-                                             cb: () =>
-                                                handleOpenModal({
-                                                   modal: "edit",
-                                                   index,
-                                                }),
-                                             icon: <PencilIcon className="w-[24px]" />,
-                                          },
-                                          {
-                                             cb: () =>
-                                                handleOpenModal({
-                                                   modal: "delete",
-                                                   index,
-                                                }),
-                                             icon: <TrashIcon className="w-[24px]" />,
-                                          },
-                                       ]}
-                                    />
-                                 </Empty>
-                              </div>
+                        (c, index) =>
+                           !c.hidden && (
+                              <ItemRightCta>
+                                 <span>{c.name}</span>
+
+                                 <div>
+                                    <button
+                                       className=""
+                                       onClick={() =>
+                                          handleOpenModal({
+                                             index,
+                                             modal: "edit",
+                                          })
+                                       }
+                                    >
+                                       <PencilIcon className="w-5" />
+                                    </button>
+                                    <button
+                                       onClick={() =>
+                                          handleOpenModal({ modal: "delete", index })
+                                       }
+                                    >
+                                       <TrashIcon className="w-5" />
+                                    </button>
+                                 </div>
+                              </ItemRightCta>
                            ),
                      )}
                   </>

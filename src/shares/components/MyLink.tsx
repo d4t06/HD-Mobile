@@ -9,14 +9,20 @@ type Props = {
 	className?: string;
 };
 
-export default function MyLink({ className = "", to, target, children }: Props) {
+export default function MyLink({
+	className = "",
+	activeClass = "text-[#cd1818] bg-[--a-5-cl]",
+	to,
+	target,
+	children,
+}: Props) {
 	const resolved = useResolvedPath(to);
 	const match = useMatch({ path: resolved.pathname, end: true });
 
 	return (
 		<Link
 			target={target}
-			className={`${className} ${match ? "text-[#cd1818] bg-[--a-5-cl]" : ""}`}
+			className={`${className} ${match ? activeClass : ""}`}
 			to={to}
 		>
 			{children}

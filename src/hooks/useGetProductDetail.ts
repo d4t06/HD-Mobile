@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { sleep } from "@/utils/appHelper";
 import { useParams } from "react-router-dom";
 import { publicRequest } from "@/utils/request";
@@ -14,21 +14,23 @@ const PRODUCT_URL = "/products";
 
 export default function useGetProductDetail() {
    const dispatch = useDispatch();
-   const ranUseEffect = useRef(false);
 
    const { status, product } = useSelector(selectProduct);
 
+   const [productID, setProductID] = useState<string>();
+
    //   hooks
-   const { productId } = useParams();
+   const params = useParams<{ productId: string }>();
 
    const getProductDetail = async () => {
       try {
-         if (!productId) throw new Error("missing params");
-
          dispatch(storingProduct({ status: "loading" }));
-         if (import.meta.env.DEV) await sleep(300);
+         if (import.meta.env.DEV) {
+            await sleep(300);
+            console.log(">>> api: Get product detail");
+         }
 
-         const res = await publicRequest.get(`${PRODUCT_URL}/${productId}`);
+         const res = await publicRequest.get(`${PRODUCT_URL}/${productID}`);
 
          dispatch(storingProduct({ product: res.data.data, status: "successful" }));
       } catch (error) {
@@ -38,15 +40,21 @@ export default function useGetProductDetail() {
    };
 
    useEffect(() => {
-      if (!ranUseEffect.current) {
-         getProductDetail();
-         ranUseEffect.current = true;
-      }
+      const productId = params.productId;
+      if (!productId) return;
+
+      if (!isNaN(+productId)) setProductID(productId);
+   }, [params]);
+
+   useEffect(() => {
+      if (productID === undefined) return;
+
+      getProductDetail();
 
       return () => {
          dispatch(resetProduct());
       };
-   }, [productId]);
+   }, [productID]);
 
    return {
       status,

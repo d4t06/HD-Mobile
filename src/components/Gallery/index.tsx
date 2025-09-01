@@ -1,59 +1,36 @@
-import { useState, useMemo } from "react";
-import classNames from "classnames/bind";
-import styles from "./Gallery.module.scss";
-import { useImage } from "@/store/ImageContext";
-import Skeleton from "../Skeleton";
-import {
-   ArrowPathIcon,
-   ArrowUpTrayIcon,
-   XMarkIcon,
-} from "@heroicons/react/24/outline";
-import { Button } from "..";
 import useGalleryAction from "@/hooks/useGalleryActiont";
-import ImageList from "./ImageList";
-import ImageInfo from "./ImageInfo";
-
-const cx = classNames.bind(styles);
+import { useImageContext } from "@/store/ImageContext";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Skeleton from "../Skeleton";
+import Modal, { ModalContentWrapper, ModalRef } from "../Modal";
+import { Button } from "..";
+import { ArrowPathIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
+import GalleryItem from "./GalleryItem";
+import ChooseBtn from "./ChooseImageBtn";
+import Image from "../ui/Image";
+import { formatSize } from "@/utils/appHelper";
+import { Link } from "react-router-dom";
+import ChooseImageModal from "@/pages/Dashboard/_components/ChooseImageModal";
 
 type Props = {
-   setImageUrl: (image_url: ImageType[]) => void;
+   setImageUrl: (images: ImageType[]) => void;
    closeModal: () => void;
    multiple?: boolean;
+   width?: number;
+   height?: number;
 };
 
-function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
-   const { currentImages, tempImages, page, count, page_size } = useImage();
+function Gallery({ setImageUrl, closeModal, multiple, ...props }: Props) {
+   const { images, uploadingImages, page, shoudFetchingImage } = useImageContext();
 
    const [choseList, setChoseList] = useState<ImageType[]>([]);
-   const [active, setActive] = useState<ImageType | null>(null);
+   const [activeImage, setActiveImage] = useState<ImageType>();
 
-   // hooks
-   const { deleteImage, getImages, fetching, imageStatus } = useGalleryAction();
+   const modalRef = useRef<ModalRef>(null);
 
-   const ableToSubmit = useMemo(
-      () => (multiple ? !!choseList.length : !!active),
-      [active, choseList]
-   );
-   const isRemaining = useMemo(
-      () => count - page * page_size > 0,
-      [currentImages]
-   );
-   const isNoHaveImage =
-      !currentImages.length && !tempImages.length && imageStatus !== "fetching";
+   const { actions, status } = useGalleryAction();
 
-   const handleSubmit = () => {
-      switch (multiple) {
-         case true:
-            if (!choseList.length) return;
-
-            setImageUrl(choseList);
-            break;
-         case false:
-            if (!active) return;
-            setImageUrl([active]);
-      }
-      closeModal();
-   };
+   const ableToChosenImage = !!activeImage;
 
    const handleSelect = (image: ImageType) => {
       const newChoseList = [...choseList];
@@ -65,143 +42,169 @@ function Gallery({ setImageUrl, closeModal, multiple = false }: Props) {
       setChoseList(newChoseList);
    };
 
-   const handleDeleteImage = async () => {
-      if (!active || !active.public_id) return;
-      await deleteImage(active.public_id);
+   const handleSubmit = () => {
+      if (multiple) {
+         if (choseList.length) setImageUrl(choseList);
+      } else {
+         if (activeImage) setImageUrl([activeImage]);
+      }
+
+      closeModal();
+   };
+
+   // const handleImageLoaded: ReactEventHandler<HTMLImageElement> = (e) => {
+   //   const target = e.target as HTMLImageElement;
+   //   if (imageSizeRef.current) {
+   //     imageSizeRef.current.innerText = `${target.naturalWidth} x ${target.naturalHeight}`;
+   //   }
+   // };
+
+   const classes = {
+      galleryTop: "flex justify-between border-b border-[--a-5-cl] mb-[10px] pb-[10px]",
+      galleryBody: "flex-grow overflow-hidden flex mx-[-10px]",
+      bodyLeft: "w-full sm:w-2/3 overflow-auto px-[10px]",
+      bodyRight:
+         "hidden sm:block pb-1 overflow-auto px-[10px] w-1/3 border-l border-[--a-5-cl] space-y-3",
    };
 
    const imageSkeleton = useMemo(
       () =>
-         [...Array(6).keys()].map((item) => (
-            <div
-               key={item}
-               className={cx(
-                  "w-1/3 sm:w-1/5 mt-[8px]",
-                  "px-[4px] gallery-item"
-               )}
-            >
-               <Skeleton className="pt-[100%] w-[100% rounded-[6px]" />
+         [...Array(12).keys()].map((item) => (
+            <div key={item} className={"w-1/3 sm:w-1/6 px-[4px] mt-[8px]"}>
+               <Skeleton className="pt-[100%]" />
             </div>
          )),
-      []
+      [],
    );
 
-   const renderTempImages = useMemo(
-      () =>
-         !!tempImages.length &&
-         tempImages?.map((item) => {
-            return (
-               <div
-                  key={item.image_url}
-                  className={cx("w-1/3 sm:w-1/5 mt-[8px] px-[4px]")}
-               >
-                  <div className={cx("image-container")}>
-                     <div className={cx("image-frame", "relative")}>
-                        <img
-                           className="opacity-[.4]"
-                           src={item.image_url}
-                           alt="img"
-                        />
-                        <ArrowPathIcon className="animate-spin absolute w-[30px]" />
-                     </div>
-                  </div>
-               </div>
-            );
-         }),
-      [tempImages]
-   );
-
-   const classes = {
-      galleryTop:
-         "flex justify-between border-b border-[#ccc] mb-[10px] pb-[10px]",
-   };
+   useEffect(() => {
+      if (shoudFetchingImage.current) {
+         shoudFetchingImage.current = false;
+         actions({
+            variant: "get-image",
+            page: 1,
+         });
+      }
+   }, []);
 
    return (
-      <div className={cx("gallery")}>
-         <div className={classes.galleryTop}>
-            <div className={"flex items-center"}>
-               <p className="text-[18px] sm:text-[22px] font-[500]">Gallery</p>
-               <Button
-                  disabled={!!tempImages.length}
-                  colors={"second"}
-                  size="clear"
-                  className="ml-[10px] h-full"
-               >
-                  <label
-                     className="flex items-center px-[10px] h-full cursor-pointer"
-                     htmlFor="image_upload"
+      <>
+         <ModalContentWrapper className="w-[900px] h-[500px]">
+            <div className={classes.galleryTop}>
+               <div className={"flex items-center"}>
+                  <p className="text-lg sm:text-xl font-bold">Gallery</p>
+                  <Button
+                     onClick={() => modalRef.current?.open()}
+                     colors={"second"}
+                     size={"clear"}
+                     className="ml-3 p-1.5"
                   >
-                     <ArrowUpTrayIcon className="w-[20px]" />
-                     <span className="hidden sm:block ml-[6px]">Upload</span>
-                  </label>
-               </Button>
-            </div>
+                     <ArrowUpTrayIcon className="w-5" />
+                  </Button>
+               </div>
 
-            <div className="flex">
                <Button
-                  className="mr-[10px]"
-                  colors={"third"}
-                  disabled={!ableToSubmit}
+                  disabled={!ableToChosenImage}
                   onClick={handleSubmit}
+                  colors={'third'}
                >
                   Select
                </Button>
-
-               <Button
-                  size={"clear"}
-                  className="px-[6px]"
-                  colors={"second"}
-                  onClick={closeModal}
-               >
-                  <XMarkIcon className="w-[20px]" />
-               </Button>
             </div>
-         </div>
-         <div className={cx("gallery__body", "flex mx-[-8px]")}>
-            <div className={cx("px-[8px] no-scrollbar", "left")}>
-               <div className="flex flex-wrap mt-[-8px]">
-                  {imageStatus === "error" && <p>Some thing went wrong</p>}
-                  {imageStatus !== "error" && (
+            <div className={classes.galleryBody}>
+               <div className={classes.bodyLeft}>
+                  <div className="flex flex-wrap mt-[-8px] overflow-x-hidden overflow-y-auto mx-[-4px]">
+                     {uploadingImages.map((item, index) => (
+                        <GalleryItem variant="upload" image={item} key={index}>
+                           <ArrowPathIcon className="animate-spin absolute duration-1000 w-6" />
+                        </GalleryItem>
+                     ))}
+
+                     {images.map((item, index) => (
+                        <GalleryItem
+                           variant="gallery-item"
+                           key={index}
+                           image={item}
+                           active={activeImage?.id === item.id}
+                           setActive={() => setActiveImage(item)}
+                        >
+                           {multiple && (
+                              <ChooseBtn
+                                 index={choseList.findIndex((i) => i.id === item.id)}
+                                 select={() => handleSelect(item)}
+                              />
+                           )}
+                        </GalleryItem>
+                     ))}
+
+                     {status === "get-image" && imageSkeleton}
+                  </div>
+
+                  {!!images.length && status !== "get-image" && (
+                     <div className="text-center mt-[14px]">
+                        <Button
+                           colors={"second"}
+                           onClick={() =>
+                              actions({ variant: "get-image", page: page + 1 })
+                           }
+                        >
+                           More
+                        </Button>
+                     </div>
+                  )}
+               </div>
+               <div className={classes.bodyRight}>
+                  {activeImage && (
                      <>
-                        {renderTempImages}
-                        {isNoHaveImage ? (
-                           <p className="text-[16px]">No have image jet...</p>
-                        ) : (
-                           <ImageList
-                              active={active}
-                              choseList={choseList}
-                              handleSelect={handleSelect}
-                              images={currentImages}
-                              setActive={setActive}
-                              multiple={multiple}
-                           />
-                        )}
+                        <Image
+                           className="w-full rounded-lg"
+                           src={activeImage.image_url}
+                        />
+
+                        <div className="[&_span]:ml-2 [&_span]:text-gray-600 text-sm ">
+                           <p className="break-words text-lg font-bold">
+                              {activeImage.name}
+                           </p>
+                           <p className="truncate">
+                              Link:
+                              <span>
+                                 <Link
+                                    className="hover:underline"
+                                    to={activeImage.image_url}
+                                    target="_blank"
+                                 >
+                                    {activeImage.image_url}
+                                 </Link>
+                              </span>
+                           </p>
+                           <p>
+                              Size:
+                              <span>{formatSize(activeImage.size)}</span>
+                           </p>
+                        </div>
+
+                        <Button
+                           loading={status === "delete-image"}
+                           onClick={() =>
+                              actions({
+                                 variant: "delete-image",
+                                 image: activeImage,
+                              })
+                           }
+                           colors={'second'}
+                        >
+                           Delete
+                        </Button>
                      </>
                   )}
-
-                  {imageStatus === "fetching" && imageSkeleton}
                </div>
-
-               {!!currentImages.length && isRemaining && (
-                  <div className="text-center mt-[30px]">
-                     <Button
-                        disabled={!!tempImages.length}
-                        loading={imageStatus === "fetching"}
-                        colors={"second"}
-                        onClick={() => getImages({ page: page + 1 })}
-                     >
-                        Thêm
-                     </Button>
-                  </div>
-               )}
             </div>
-            <ImageInfo
-               fetching={fetching}
-               handleDeleteImage={handleDeleteImage}
-               image={active}
-            />
-         </div>
-      </div>
+         </ModalContentWrapper>
+
+         <Modal variant="animation" ref={modalRef}>
+            <ChooseImageModal {...props} title="Upload image" modalRef={modalRef} />
+         </Modal>
+      </>
    );
 }
 

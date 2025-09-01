@@ -1,94 +1,71 @@
-import { useEffect, useRef, useState } from "react";
+import { useImageContext } from "@/store/ImageContext";
+import { useToast } from "@/store/ToastContext";
 import { usePrivateRequest } from ".";
-import { useImage } from "@/store/ImageContext";
-import { sleep } from "@/utils/appHelper";
+
+
+type GetImageRes = {
+  page: number;
+  images: ImageType[];
+  page_size: number;
+  count: number;
+};
 
 const IMAGE_URL = "/images";
 
 export default function useGalleryAction() {
-   const { currentImages, storeImages } = useImage();
+  const { images, setStatus, status, setImages, setPage } = useImageContext();
+  const { setErrorToast, setSuccessToast } = useToast();
 
-   const [imageStatus, setImageStatus] = useState<
-      "fetching" | "deleting" | "success" | "error" | ""
-   >("");
+  const $fetch = usePrivateRequest();
 
-   const [fetching, setFetching] = useState(false);
-   const ranUseEffect = useRef(false);
+  type GetImages = {
+    variant: "get-image";
+    page: number;
+  };
 
-   //    hooks
-   const privateRequest = usePrivateRequest();
+  type Delete = {
+    variant: "delete-image";
+    image: ImageType;
+  };
 
-   const deleteImage = async (publicId: string) => {
-      try {
-         setFetching(true);
-         const controller = new AbortController();
+  const actions = async (props: GetImages | Delete) => {
+    try {
+      switch (props.variant) {
+        case "get-image": {
+          setStatus("get-image");
+          const res = await $fetch.get(`${IMAGE_URL}?page=${props.page}`);
+          const data = res.data.data as GetImageRes;
 
-         await privateRequest.delete(
-            `${IMAGE_URL}/${encodeURIComponent(publicId)}`
-         );
+          const newImages = [...images, ...data.images];
 
-         const newImages = currentImages.filter(
-            (image) => image.public_id !== publicId
-         );
-         storeImages({ currentImages: newImages });
+          setPage(props.page);
+          setImages(newImages);
 
-         return () => {
-            controller.abort();
-         };
-      } catch (error) {
-         console.log({ message: error });
-      } finally {
-         setFetching(false);
+          break;
+        }
+
+        case "delete-image": {
+          setStatus("delete-image");
+
+          await $fetch.delete(
+            `${IMAGE_URL}/${encodeURIComponent(props.image.public_id)}`,
+          );
+
+          const newImages = images.filter((image) => image.public_id !== props.image.public_id);
+          setImages(newImages);
+
+          setSuccessToast("Delete image succesful");
+
+          break;
+        }
       }
-   };
+    } catch (error) {
+      console.log({ message: error });
+      setErrorToast();
+    } finally {
+      setStatus("idle");
+    }
+  };
 
-   type getImagesRes = {
-      page: number;
-      images: ImageType[];
-      page_size: number;
-      count: number;
-   };
-
-   const getImages = async ({
-      page,
-      size = 20,
-   }: {
-      page: number;
-      size?: number;
-   }) => {
-      try {
-         setImageStatus("fetching");
-         if (import.meta.env.DEV) await sleep(300);
-
-         const res = await privateRequest.get(
-            `${IMAGE_URL}?page=${page}&size=${size}`
-         );
-         const data = res.data.data as getImagesRes;
-
-         const newImages = [...currentImages, ...data.images];
-
-         storeImages({
-            count: data.count,
-            page_size: data.page_size,
-            page: data.page,
-            currentImages: newImages,
-         });
-
-         setImageStatus("success");
-      } catch (error) {
-         console.log({ message: error });
-         setImageStatus("error");
-      }
-   };
-
-   useEffect(() => {
-      if (currentImages.length) return;
-
-      if (!ranUseEffect.current) {
-         ranUseEffect.current = true;
-         getImages({ page: 1 });
-      }
-   }, []);
-
-   return { getImages, deleteImage, imageStatus, fetching };
+  return { actions, status };
 }

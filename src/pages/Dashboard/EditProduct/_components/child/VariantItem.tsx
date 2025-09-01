@@ -1,11 +1,11 @@
-import { Empty, Modal } from "@/components";
-import OverlayCTA from "@/components/ui/OverlayCTA";
+import { Modal } from "@/components";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMemo, useState } from "react";
 import ConfirmModal from "@/components/Modal/Confirm";
 import { generateId } from "@/utils/appHelper";
 import AddItem from "@/components/Modal/AddItem";
 import useVariantAction from "../../_hooks/useVariantAction";
+import ItemRightCta from "@/pages/Dashboard/_components/ItemRightCta";
 
 type Props = {
    index: number;
@@ -92,21 +92,18 @@ export default function VariantItem({ variant, index }: Props) {
 
    return (
       <>
-         <Empty fontClassName="bg-[#f6f6f6]">
-            <span className="font-medium">{variant.name}</span>
-            <OverlayCTA
-               data={[
-                  {
-                     cb: () => setOpenModal("edit"),
-                     icon: <PencilIcon className="w-[24px]" />,
-                  },
-                  {
-                     cb: () => setOpenModal("delete"),
-                     icon: <TrashIcon className="w-[24px]" />,
-                  },
-               ]}
-            />
-         </Empty>
+         <ItemRightCta>
+            <span>{variant.name}</span>
+
+            <div>
+               <button className="" onClick={() => setOpenModal("edit")}>
+                  <PencilIcon className="w-5" />
+               </button>
+               <button onClick={() => setOpenModal("delete")}>
+                  <TrashIcon className="w-5" />
+               </button>
+            </div>
+         </ItemRightCta>
 
          {openModal && <Modal closeModal={closeModal}>{renderModal}</Modal>}
       </>

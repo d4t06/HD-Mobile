@@ -16,7 +16,7 @@ function EditProductMain() {
 
 
    const mainClasses: LayoutClasses = {
-      flexContainer: "flex mt-[-8px] mx-[-4px] flex-wrap",
+      flexContainer: "flex -mt-2 -ml-2 flex-wrap",
       flexCol: "px-[4px] mt-[8px]",
       group: "p-[20px] rounded-[12px] bg-[#fff]",
       label: "text-lg sm:text-xl font-[500]",

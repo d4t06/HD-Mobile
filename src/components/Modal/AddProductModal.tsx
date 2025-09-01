@@ -6,11 +6,11 @@ import { inputClasses } from "@/components/ui/Input";
 import ModalHeader from "./ModalHeader";
 import useProductAction from "@/hooks/useProductAction";
 import { useToast } from "@/store/ToastContext";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import OverlayCTA from "../ui/OverlayCTA";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { selectCategory } from "@/store/categorySlice";
 import Image from "../ui/Image";
+import { ModalContentWrapper } from ".";
 
 type AddProduct = {
    type: "Add";
@@ -149,12 +149,12 @@ export default function AddProductModal({ ...props }: Props) {
    };
 
    return (
-      <div className="w-[700px] max-h-[90vh] max-w-[80vw] flex flex-col">
+      <ModalContentWrapper className="w-[700px]">
          <ModalHeader closeModal={props.closeModal} title={`${tileMap[props.type]}`} />
          <div className="flex-grow overflow-auto">
             <div className="flex flex-col sm:flex-row">
                <div className="sm:w-1/3 sm:mr-[16px]">
-                  <div className="group relative rounded-md mx-auto border border-black/15">
+                  <div className="group relative mx-auto">
                      {!productData.image_url && (
                         <Empty
                            className="pt-[50%] sm:pt-[100%]"
@@ -164,16 +164,20 @@ export default function AddProductModal({ ...props }: Props) {
                      )}
                      {productData.image_url && (
                         <>
-                           <Image className="max-h-[200px]" src={productData.image_url} />
-
-                           <OverlayCTA
-                              data={[
-                                 {
-                                    cb: () => setIsOpenModal(true),
-                                    icon: <ArrowPathIcon className="w-[24px]" />,
-                                 },
-                              ]}
+                           <Image
+                              className="max-h-[200px] rounded-md border"
+                              src={productData.image_url}
                            />
+
+                           <Button
+                              className="mt-3 py-1 px-3"
+                              size={"clear"}
+                              colors={"second"}
+                              onClick={() => setIsOpenModal(true)}
+                           >
+                              <PhotoIcon className="w-6" />
+                              <span>Change image</span>
+                           </Button>
                         </>
                      )}
                   </div>
@@ -260,6 +264,6 @@ export default function AddProductModal({ ...props }: Props) {
                />
             </Modal>
          )}
-      </div>
+      </ModalContentWrapper>
    );
 }

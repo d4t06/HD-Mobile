@@ -47,6 +47,8 @@ export default function useCategoryAction({ modalRef }: Props) {
 
    const actions = async ({ ...props }: Props) => {
       try {
+         setIsFetching(true);
+
          switch (props.type) {
             case "Add":
                const { category } = props;
@@ -71,7 +73,7 @@ export default function useCategoryAction({ modalRef }: Props) {
                      type: "update",
                      category: category,
                      index: curIndex,
-                  })
+                  }),
                );
 
                break;

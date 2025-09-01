@@ -12,7 +12,7 @@ const ButtonVariant = cva(classes.button, {
    variants: {
       variant: {
          primary:
-            "before:content-[''] before:absolute before:z-[-1] before:inset-0 before:rounded-[8px] rounded-[8px]  active:translate-y-[2px] active:before:shadow-none",
+            "before:content-[''] before:absolute before:z-[-1] before:inset-0 before:rounded-[8px] rounded-[8px] space-x-1 active:translate-y-[2px] active:before:shadow-none",
          clear: "",
       },
       size: {

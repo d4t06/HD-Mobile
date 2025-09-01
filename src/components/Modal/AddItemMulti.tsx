@@ -11,6 +11,7 @@ import Input from "../ui/Input";
 import ModalHeader from "./ModalHeader";
 import { generateId, moneyFormat } from "@/utils/appHelper";
 import Button from "../ui/Button";
+import { ModalContentWrapper } from ".";
 
 export type FieldType = (
    | string
@@ -28,7 +29,7 @@ type Props = {
 };
 
 const initState = (
-   fields: Props["fields"]
+   fields: Props["fields"],
 ): {
    name: string;
    name_ascii: string;
@@ -71,7 +72,7 @@ export default function AddItemMulti({
    }, [fields]);
 
    const [fieldData, setFieldData] = useState(
-      intiFieldData || intiFieldDataState(inputFields)
+      intiFieldData || intiFieldDataState(inputFields),
    );
 
    const inputRef = useRef<HTMLInputElement>(null);
@@ -100,15 +101,12 @@ export default function AddItemMulti({
    }, []);
 
    return (
-      <div className="w-[400px] max-w-[85vw] bg-[#fff]">
+      <ModalContentWrapper>
          <ModalHeader closeModal={closeModal} title={title} />
          <form action="" onSubmit={handleSubmit}>
             {inputFields.map((item, index) => (
                <div key={index} className="mb-[15px] space-y-[6px]">
-                  <label
-                     className="font-semibold"
-                     htmlFor={item.name_ascii}
-                  >
+                  <label className="font-semibold" htmlFor={item.name_ascii}>
                      {item.name}
                   </label>
                   {item.type === "price" ? (
@@ -141,11 +139,11 @@ export default function AddItemMulti({
             {children}
 
             <p className="text-right mt-[20px]">
-               <Button colors={'third'} loading={loading} type="submit">
+               <Button colors={"third"} loading={loading} type="submit">
                   Save
                </Button>
             </p>
          </form>
-      </div>
+      </ModalContentWrapper>
    );
 }

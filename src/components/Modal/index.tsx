@@ -13,6 +13,7 @@ type BaseProps = {
    className?: string;
    zIndexClass?: string;
    children?: ReactNode;
+   noWrap?: boolean;
 };
 
 type NoAnimation = BaseProps & {
@@ -33,7 +34,7 @@ export type ModalRef = {
 };
 
 function Modal(
-   { children, className, zIndexClass, ...props }: Props,
+   { children, className, zIndexClass, noWrap = false, ...props }: Props,
    ref: Ref<ModalRef>,
 ) {
    const variant = props.variant || "default";
@@ -73,7 +74,7 @@ function Modal(
             if (props.variant === "animation") {
                props.onClose ? props.onClose() : "";
             }
-         }, 400);
+         }, 200);
       }
    }, [isMounted]);
 
@@ -101,7 +102,7 @@ function Modal(
                <div className={`fixed inset-0 ${zIndexClass || "z-[99]"} `}>
                   <div
                      onClick={handleOverlayClick}
-                     className={`transition-opacity duration-300 absolute bg-black/60 inset-0 z-[90]
+                     className={`transition-opacity duration-200 absolute bg-black/60 inset-0 z-[90]
                              ${isMounted ? classes.mountedLayer : classes.unMountedLayer}
                         `}
                   ></div>
@@ -109,7 +110,7 @@ function Modal(
                      <div
                         className={`absolute ${
                            zIndexClass || "z-[99]"
-                        }  duration-300 transition-[transform,opacity] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                        }  duration-200 transition-[transform,opacity] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                             ${
                                isMounted
                                   ? classes.mountedContent
@@ -117,11 +118,7 @@ function Modal(
                             }
                         `}
                      >
-                        <div
-                           className={`bg-white p-6 sm:p-5 rounded-lg ${className || ""}`}
-                        >
-                           {children}
-                        </div>
+                        {children}
                      </div>
                   )}
                </div>,
@@ -131,4 +128,25 @@ function Modal(
    );
 }
 
+function ModalContentWrapper({
+   children,
+   noStyle,
+   disable,
+   className = "w-[400px]",
+}: {
+   disable?: boolean;
+   children: ReactNode;
+   className?: string;
+   noStyle?: boolean;
+}) {
+   return (
+      <div
+         className={`relative transition-[color] overflow-hidden max-h-[80vh] max-w-[90vw] flex flex-col bg-white  ${disable ? "disabled" : ""} ${!noStyle ? "p-3 md:p-4s rounded-xl" : ""} ${className}`}
+      >
+         {children}
+      </div>
+   );
+}
+
+export { ModalContentWrapper };
 export default forwardRef(Modal);

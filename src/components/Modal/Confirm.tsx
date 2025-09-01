@@ -1,5 +1,6 @@
 import { Button } from "@/components";
 import { ReactNode } from "react";
+import { ModalContentWrapper } from ".";
 
 type Props = {
    callback: () => void;
@@ -20,16 +21,11 @@ export default function ConfirmModal({
    buttonLabel,
    desc = "This action cannot be undone",
    children,
-   className,
 }: Props) {
    return (
-      <div
-         className={`${className || "w-[400px] max-w-[calc(90vw-40px)]"} ${
-            loading ? "opacity-60 pointer-events-none" : ""
-         }`}
-      >
+      <ModalContentWrapper>
          {children}
-         
+
          <h1 className="text-[20px] font-semibold">{label || "Wait a minute"}</h1>
          {desc && <p className=" text-[16px] font-semibold text-red-500">{desc}</p>}
 
@@ -41,6 +37,6 @@ export default function ConfirmModal({
                {buttonLabel || "Yes please"}
             </Button>
          </div>
-      </div>
+      </ModalContentWrapper>
    );
 }

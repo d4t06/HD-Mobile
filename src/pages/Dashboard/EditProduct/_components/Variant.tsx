@@ -1,4 +1,4 @@
-import { Empty, Modal } from "@/components";
+import { Button, Modal } from "@/components";
 import { selectProduct } from "@/store/productSlice";
 import { useSelector } from "react-redux";
 import useVariantAction from "../_hooks/useVariantAction";
@@ -6,6 +6,7 @@ import { useState } from "react";
 import AddItem from "@/components/Modal/AddItem";
 import VariantItem from "./child/VariantItem";
 import { generateId } from "@/utils/appHelper";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 type Props = {
    mainClasses: LayoutClasses;
@@ -40,22 +41,21 @@ export default function Variant({ mainClasses }: Props) {
 
    return (
       <>
-         <h1 className={mainClasses.label}>Variant</h1>
+         <div className="flex justify-between">
+            <h1 className={mainClasses.label}>Variant</h1>
+
+            <Button onClick={() => setOpenModal(true)} colors={"third"}>
+               <PlusIcon className="w-6" />
+               <span>Add variant</span>
+            </Button>
+         </div>
          <div className={mainClasses.group}>
             <div
                className={`${mainClasses.flexContainer} ${isFetching ? "disable" : ""}`}
             >
                {product.variants.map((item, index) => (
-                  <div key={index} className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
-                     <VariantItem index={index} variant={item} />
-                  </div>
+                  <VariantItem index={index} variant={item} />
                ))}
-               <div className={`${mainClasses.flexCol} w-1/2 sm:w-1/6`}>
-                  <Empty
-                     fontClassName="bg-[#f1f1f1]"
-                     onClick={() => setOpenModal(true)}
-                  />
-               </div>
             </div>
          </div>
 

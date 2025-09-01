@@ -1,86 +1,96 @@
 import { generateId, initImageObject } from "@/utils/appHelper";
-import { ChangeEvent } from "react";
-
-import { useImage } from "@/store/ImageContext";
-import { useToast } from "@/store/ToastContext";
 
 import { usePrivateRequest } from ".";
+import { useImageContext } from "@/store/ImageContext";
+import { useToast } from "@/store/ToastContext";
 
 const IMAGE_URL = "/images";
 
 export default function useUploadImage() {
-   // hooks
-   const { setTempImages, addImage } = useImage();
-   const { setErrorToast } = useToast();
-   const privateRequest = usePrivateRequest();
+  // hooks
+  const { setUploadingImages, setImages } = useImageContext();
+  const { setErrorToast } = useToast();
 
-   const handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
-      try {
-         const inputEle = e.target as HTMLInputElement & { files: FileList };
-         const fileLists = inputEle.files;
+  const privateRequest = usePrivateRequest();
 
-         // init tempImage
-         const processImageList: ImageTypeSchema[] = [];
-         const fileNeedToUploadIndexes: number[] = [];
+  const uploadImage = async (
+    files: File[],
+    props?: { width?: number; height?: number },
+  ) => {
+    try {
+      // init tempImage
+      const processImageList: ImageTypeSchema[] = [];
+      const fileNeedToUploadIndexes: number[] = [];
 
-         const checkDuplicateImage = (ob: ImageTypeSchema) => {
-            return processImageList.some(
-               (image) => image.name === ob.name && image.size == ob.size
-            );
-         };
+      const checkDuplicateImage = (ob: ImageTypeSchema) => {
+        return processImageList.some(
+          (image) => image.name === ob.name && image.size == ob.size,
+        );
+      };
 
-         let i = 0;
-         for (const file of fileLists) {
-            const imageObject: ImageTypeSchema = initImageObject({
-               name: generateId(file.name),
-               image_url: URL.createObjectURL(file),
-               size: file.size,
-            });
+      let i = 0;
+      for (const file of files) {
+        const imageObject = initImageObject({
+          name: generateId(file.name),
+          image_url: URL.createObjectURL(file),
+          size: file.size,
+        });
 
-            if (checkDuplicateImage(imageObject)) {
-               URL.revokeObjectURL(imageObject.image_url);
+        if (checkDuplicateImage(imageObject)) {
+          URL.revokeObjectURL(imageObject.image_url);
 
-               i++;
-               continue;
-            }
+          i++;
+          continue;
+        }
 
-            processImageList.push(imageObject);
-            fileNeedToUploadIndexes.push(i);
+        processImageList.push(imageObject);
+        fileNeedToUploadIndexes.push(i);
 
-            Object.assign(file, {
-               for_image_index: processImageList.length - 1,
-            });
+        Object.assign(file, {
+          for_image_index: processImageList.length - 1,
+        });
 
-            i++;
-         }
-
-         setTempImages(processImageList);
-
-         for (const val of fileNeedToUploadIndexes.reverse()) {
-            const file = fileLists[val] as File & { for_image_index: number };
-
-            const formData = new FormData();
-            formData.append("image", file);
-
-            const controller = new AbortController();
-
-            const res = await privateRequest.post(IMAGE_URL, formData, {
-               headers: { "Content-Type": "multipart/form-data" },
-               signal: controller.signal,
-            });
-
-            const newImage = res.data.data as ImageType;
-            processImageList.pop();
-
-            setTempImages([...processImageList]);
-            addImage(newImage);
-         }
-      } catch (error) {
-         console.log(error);
-         setErrorToast("Upload images failed");
-         setTempImages([]);
+        i++;
       }
-   };
 
-   return { handleInputChange };
+      setUploadingImages((prev) => [...processImageList, ...prev]);
+
+      for (const val of fileNeedToUploadIndexes.reverse()) {
+        const file = files[val] as File & { for_image_index: number };
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const controller = new AbortController();
+
+        const res = await privateRequest.post(IMAGE_URL, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          signal: controller.signal,
+          params: { ...props },
+        });
+
+        const newImage = res.data.data as ImageType;
+        processImageList.pop();
+
+        setUploadingImages((prev) => {
+          if (prev) {
+            prev.pop();
+
+            return prev;
+          }
+
+          return [];
+        });
+
+        setImages((prev) => [newImage, ...prev]);
+      }
+      // setSuccessToast("Upload images successful");
+    } catch (error) {
+      console.log(error);
+      setErrorToast("Upload images failed");
+      setUploadingImages([]);
+    }
+  };
+
+  return { uploadImage };
 }

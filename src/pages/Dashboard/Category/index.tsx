@@ -7,7 +7,7 @@ import PriceRangeList from "./_components/PriceRangeList";
 import AttributeList from "./_components/AttributeList";
 
 const classes: LayoutClasses = {
-   flexContainer: "flex mt-[-8px] mx-[-4px] flex-wrap",
+   flexContainer: "flex flex-wrap -mt-2 -mx-2",
    flexCol: "px-[4px] mt-[8px]",
    group: "p-[20px] rounded-[12px] bg-[#fff]",
    label: "text-[24px]",

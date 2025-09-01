@@ -7,11 +7,12 @@
   --a-5-cl: rgba(0, 0, 0, 0.05);
   --a-10-cl: rgba(0, 0, 0, 0.1);
   --primary-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.15);
+  --primary-cl: #cd1818;
 }
 
 @font-face {
   font-family: "Comfortaa";
-  src: url("./Comfortaa-VariableFont.ttf") format("truetype-variations");
+  src: url("/Comfortaa-VariableFont.ttf") format("truetype-variations");
   font-weight: 600 700;
   font-display: swap;
 }

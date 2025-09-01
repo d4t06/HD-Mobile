@@ -39,6 +39,8 @@ export default function useBrandAction() {
 
    const actions = async ({ ...props }: Props) => {
       try {
+         setIsFetching(true);
+
          switch (props.type) {
             case "Add":
                const { brand, categoryIndex } = props;

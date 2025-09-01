@@ -5,6 +5,7 @@ import { inputClasses } from "../ui/Input";
 import { StarIcon } from "@heroicons/react/16/solid";
 import useRatingAction from "@/hooks/useRatingAction";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
+import { ModalContentWrapper } from ".";
 
 type Props = {
    product: ProductDetail;
@@ -24,24 +25,19 @@ const initReview = (product: ProductDetail, username: string) => {
 
 export default function AddRating({ product, username, closeModal }: Props) {
    const [ratingData, setRatingData] = useState<RatingSchema>(
-      initReview(product, username)
+      initReview(product, username),
    );
    const [showConfirm, setShowConfirm] = useState(false);
 
    const { action, isFetching } = useRatingAction();
 
-   const handleRatingData = (
-      field: keyof typeof ratingData,
-      value: string | number
-   ) => {
+   const handleRatingData = (field: keyof typeof ratingData, value: string | number) => {
       setRatingData((prev) => ({ ...prev, [field]: value }));
    };
 
    const handleSubmit = async () => {
       await action({ rating: ratingData, variant: "add" }).then((res: any) => {
-
-         console.log('check res', res);
-         
+         console.log("check res", res);
 
          if ([200, 201].includes(res?.response?.status || res?.code))
             setShowConfirm(true);
@@ -64,26 +60,17 @@ export default function AddRating({ product, username, closeModal }: Props) {
 
    return (
       <>
-         <div className="w-[400px]">
-            <ModalHeader
-               title={`Rating '${product.name}'`}
-               closeModal={closeModal}
-            />
+         <ModalContentWrapper>
+            <ModalHeader title={`Rating '${product.name}'`} closeModal={closeModal} />
 
             {showConfirm && (
                <>
                   <div className="flex flex-col items-center">
                      <CheckBadgeIcon className="w-[100px] text-emerald-500" />
-                     <p className=" font-medium text-[#3f3f3f]">
-                        We are got your rating
-                     </p>
+                     <p className=" font-medium text-[#3f3f3f]">We are got your rating</p>
                   </div>
                   <div className="text-center mt-5">
-                     <Button
-                        colors={"third"}
-                        loading={false}
-                        onClick={closeModal}
-                     >
+                     <Button colors={"third"} loading={false} onClick={closeModal}>
                         Cút
                      </Button>
                   </div>
@@ -98,16 +85,12 @@ export default function AddRating({ product, username, closeModal }: Props) {
                            const isActive = index + 1 <= ratingData.rate;
                            return (
                               <button
-                                 onClick={() =>
-                                    handleRatingData("rate", index + 1)
-                                 }
+                                 onClick={() => handleRatingData("rate", index + 1)}
                                  key={index}
                               >
                                  <StarIcon
                                     className={`w-[36px] ${classes.star} ${
-                                       isActive
-                                          ? "text-[#efb140]"
-                                          : "text-[#808080]"
+                                       isActive ? "text-[#efb140]" : "text-[#808080]"
                                     }`}
                                  />
                               </button>
@@ -121,26 +104,20 @@ export default function AddRating({ product, username, closeModal }: Props) {
 
                   <div className="bg-[#ccc] rounded-[12px]">
                      <textarea
-                        placeholder="Nội dung"
+                        placeholder="..."
                         value={ratingData.content}
                         className={`${inputClasses.input} w-full min-h-[100px]`}
-                        onChange={(e) =>
-                           handleRatingData("content", e.target.value)
-                        }
+                        onChange={(e) => handleRatingData("content", e.target.value)}
                      ></textarea>
                   </div>
                   <div className="text-right mt-[30px]">
-                     <Button
-                        colors={"third"}
-                        loading={isFetching}
-                        onClick={handleSubmit}
-                     >
+                     <Button colors={"third"} loading={isFetching} onClick={handleSubmit}>
                         Post
                      </Button>
                   </div>
                </>
             )}
-         </div>
+         </ModalContentWrapper>
       </>
    );
 }

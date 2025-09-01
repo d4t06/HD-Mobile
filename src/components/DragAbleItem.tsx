@@ -1,5 +1,3 @@
-"use client";
-
 import useDrag from "@/hooks/useDragItem";
 import { ReactNode } from "react";
 
